@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<#include "/adminPage/common.html"/>
+<style type="text/css">
+.layui-form-label {
+	width: 100px;
+}
+
+.layui-input-block {
+	margin-left: 130px;
+}
+</style>
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+
+		<#include "/adminPage/header.html"/>
+		<#include "/adminPage/menu.html"/>
+
+		<div class="layui-body">
+			<!-- 内容主体区域 -->
+			<div style="padding: 15px">
+				<fieldset class="layui-elem-field layui-field-title">
+					<legend>负载均衡</legend>
+				</fieldset>
+
+				<form action="${ctx}/adminPage/upstream" id="searchForm" method="post">
+					<div class="layui-form">
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加负载均衡</button>
+						</div>
+
+						<div class="layui-inline">
+							<label class="layui-form-label">关键字</label>
+						</div>
+						<div class="layui-input-inline">
+							<input type="text" name="keywords" class="layui-input" value="${keywords}">
+						</div>
+
+						<button type="button" class="layui-btn" onclick="search()">搜索</button>
+
+						<input type="hidden" name="curr" value="${page.curr}">
+					</div>
+				</form>
+
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>转发类型</th>
+							<th>名称</th>
+							<th>策略</th>
+							<th>负载</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list page.records as ext>
+						<tr>
+							<td>
+								<#if ext.upstream.proxyType==0>http</#if>
+								<#if ext.upstream.proxyType==1>TCP</#if>
+							</td>
+							<td>${ext.upstream.name}</td>
+							<td>
+								<#if ext.upstream.tactics==""> 默认 </#if>
+								<#if ext.upstream.tactics=="ip_hash"> ip绑定(ip_hash) </#if>
+								<#if ext.upstream.tactics=="least_conn"> 最少连接(least_conn) </#if>
+								<#if ext.upstream.tactics=="least_time"> 最短时间(least_time) </#if>
+							</td>
+							<td>${ext.serverStr}</td>
+							<td>
+								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.upstream.id}')">编辑</button>
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.upstream.id}')">删除</button>
+							</td>
+						</tr>
+						</#list>
+					</tbody>
+				</table>
+				<div id="pageInfo"></div>
+			</div>
+		</div>
+	</div>
+
+	<div style="height: 0px; width: 0px; overflow: hidden;">
+		<!-- 弹出框 -->
+		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none">
+			<form id="addForm">
+				<input type="hidden" name="id" id="id">
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">转发类型</label>
+					<div class="layui-input-inline">
+						<select name="proxyType" id="proxyType">
+							<option value="0">http</option>
+							<option value="1">TCP</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">名称<span class="red">*</span></label>
+					<div class="layui-input-inline">
+						<input type="text" name="name" id="name" class="layui-input">
+					</div>
+
+					<label class="layui-form-label">负载策略</label>
+					<div class="layui-input-inline">
+						<select name="tactics" id="tactics">
+							<option value="">默认</option>
+							<option value="ip_hash">ip绑定(ip_hash)</option>
+							<option value="least_conn">最少连接(least_conn)</option>
+							<option value="least_time">最短时间(least_time)</option>
+						</select>
+					</div>
+					<div class="layui-form-mid layui-word-aux proxyHttp">如果负载状态包含备用或停用,负载策略只能选择默认</div>
+
+				</div>
+
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addItem()">添加负载</button>
+				</div>
+
+				<div class="layui-form-item">
+
+					<table class="layui-table">
+						<thead>
+							<tr>
+								<th>ip</th>
+								<th>端口</th>
+								<th>权重</th>
+								<th>最大失败次数</th>
+								<th>失败等待时间(s)</th>
+								<th>状态</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="itemList">
+
+						</tbody>
+					</table>
+
+				</div>
+
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<#include '/adminPage/script.html'/>
+	<script src="${ctx}/js/adminPage/upstream/index.js?v=${jsrandom}" type="text/javascript"></script>
+</body>
+
+
+</html>

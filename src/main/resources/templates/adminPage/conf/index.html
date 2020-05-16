@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<#include "/adminPage/common.html"/>
+
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+
+		<#include "/adminPage/header.html"/>
+		<#include "/adminPage/menu.html"/>
+
+		<div class="layui-body">
+			<!-- 内容主体区域 -->
+			<div style="padding: 15px">
+				<fieldset class="layui-elem-field layui-field-title">
+					<legend>生成conf</legend>
+				</fieldset>
+
+				<div class="layui-form">
+					<div class="layui-input-inline">
+						<label class="layui-form-label">目标路径</label>
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" id="nginxPath" class="layui-input" style="width: 400px;" value="${nginxPath}">
+					</div>
+					
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-normal" onclick="loadOrg()">读取文件</button>
+					</div>
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-normal" onclick="replace()">替换文件</button>
+					</div>
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-normal" onclick="check()">效验文件</button>
+					</div>
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-normal" onclick="reboot()">重启nginx</button>
+					</div>
+				</div>
+
+				<div class="layui-form" style="margin-top: 10px;display: flex;">
+					<div style="width: 47%; ">
+						<div style="padding: 10px;padding-left:0px;font-size: 16px;">生成配置文件(可手动修改)</div>
+						<textarea class="layui-textarea" id="nginxContent" style="height: 700px; resize: none;"  spellcheck="false">${confStr}</textarea>
+					</div>
+					<div style="width: 47%;">
+						<div style="padding: 10px;font-size: 16px;">目标配置文件</div>
+						<textarea class="layui-textarea" id="org" style=" height: 700px; margin-left:10px; resize: none; background-color: #ededed;"  readonly="readonly" spellcheck="false"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<#include '/adminPage/script.html'/>
+	<script src="${ctx}/lib/auto-line-number/auto-line-number.js" type="text/javascript"></script>
+	<script src="${ctx}/js/adminPage/conf/index.js?v=${jsrandom}" type="text/javascript"></script>
+</body>
+
+
+</html>

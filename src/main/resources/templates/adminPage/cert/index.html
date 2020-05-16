@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<#include "/adminPage/common.html"/>
+
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+
+		<#include "/adminPage/header.html"/>
+		<#include "/adminPage/menu.html"/>
+
+		<div class="layui-body">
+			<!-- 内容主体区域 -->
+			<div style="padding: 15px">
+				<fieldset class="layui-elem-field layui-field-title">
+					<legend>证书管理</legend>
+				</fieldset>
+
+				<form action="${ctx}/adminPage/cert" id="searchForm" method="post">
+					<div class="layui-form">
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加证书</button>
+						</div>
+						<div class="layui-inline">
+							<div class="layui-form-mid layui-word-aux proxyHttp">请确认已经把证书的域名指向本服务器，自动续签将在每天凌晨2点进行，续签打开自动续签项并超过60天的证书</div>
+						</div>
+					</div>
+				</form>
+
+				<table class="layui-table layui-form">
+					<thead>
+						<tr>
+							<th>域名</th>
+							<th>签发时间</th>
+							<th>证书路径</th>
+							<th>是否自动续签</th>
+							
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list certs as cert>
+						<tr>
+							<td>${cert.domain}</td>
+							<td>
+								<#if cert.makeTime!=null>
+								${cert.makeTime?number_to_datetime?string('yyyy-MM-dd HH:mm:ss')}
+								</#if>
+							</td>
+							<td>pem: ${cert.pem} <br>
+								key: ${cert.key}</td>
+							<td>
+								 <input type="checkbox" name="switch" lay-filter="autoRenew" value="${cert.id}" lay-text="开启|关闭" lay-skin="switch" ${(cert.autoRenew==1)?string('checked','')}>
+							</td>
+							<td>
+								<button class="layui-btn layui-btn-sm" onclick="apply('${cert.id}')">申请</button>
+								
+								<button class="layui-btn layui-btn-sm" onclick="renew('${cert.id}')">续签</button>
+								
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">删除</button>
+							</td>
+						</tr>
+						</#list>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div style="height: 0px; width: 0px; overflow: hidden;">
+		<!-- 弹出框 -->
+		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none">
+			<form id="addForm">
+				<input type="hidden" name="id" id="id">
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">域名</label>
+					<div class="layui-input-block">
+						<input type="text" name="domain" id="domain" class="layui-input">
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+				</div>
+			</form>
+		</div>
+
+	</div>
+
+	<#include '/adminPage/script.html'/>
+	<script src="${ctx}/js/adminPage/cert/index.js?v=${jsrandom}" type="text/javascript"></script>
+</body>
+
+
+</html>

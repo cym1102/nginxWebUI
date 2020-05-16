@@ -1,0 +1,107 @@
+.clear {
+	clear: both;
+}
+
+.main {
+	
+}
+
+.main .title {
+	text-align: center;
+	font-size: 16px;
+	padding: 10px;
+	border-bottom: 1px solid #cccccc;
+	position: fixed;
+	top: 0px;
+	width: 100%;
+	box-sizing: border-box;
+	background-color: white;
+	z-index: 900;
+}
+
+.main .title .back_arrow {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	padding: 10px;
+	z-index: 901;
+}
+
+.main .title .back_arrow img {
+	height: 20px;
+}
+
+.main .title .right {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	font-size: 16px;
+	color: gray;
+	z-index: 901;
+}
+
+.main .hold {
+	height: 42px;
+	width: 100%;
+}
+
+.main .search {
+	padding-top: 10px;
+	padding-bottom: 5px;
+}
+
+.main .list {
+	
+}
+
+.main .list .card {
+	background-color: #efefef;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	margin-top: 5px;
+	border: 1px solid gray;
+}
+
+.main .list .card  .item {
+	display: flex;
+}
+
+.main .list .card  .item .name {
+	text-align: right;
+	flex-basis: 40%;
+	line-height: 20px;
+}
+
+.main .list .card  .item .content {
+	flex-basis: 60%;
+	line-height: 20px;
+}
+
+.main .list .card  .btn {
+	margin-top: 5px;
+	text-align: right;
+}
+
+.clear {
+	clear: both;
+}
+
+.load {
+	text-align: center;
+	padding: 10px;
+	color: #aaa;
+}
+
+.red {
+	color: red;
+}
+
+.green {
+	color: green;
+}
+
+.blue {
+	color: blue;
+}

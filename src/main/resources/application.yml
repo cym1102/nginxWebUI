@@ -1,0 +1,34 @@
+server:
+  port: 8080
+  servlet: 
+    session:
+      timeout: 7200 
+      
+spring:
+  application:
+    name: nginx配置器
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+      
+  devtools:
+    restart:
+      enabled: false
+  jackson:
+    default-property-inclusion: NON_NULL
+  jmx:
+    enabled: true 
+  database: 
+    type: sqlite
+    package: com.cym.model
+    print: true
+    sqlite-name: .sqlite #sqlite文件名称
+#  datasource: #使用mysql和postgresql时才需要配置
+#    url: jdbc:mysql://127.0.0.1:3306/test
+#    username: root
+#    password: 1qaz2wsx
+    
+logging: 
+  level: 
+    root: info

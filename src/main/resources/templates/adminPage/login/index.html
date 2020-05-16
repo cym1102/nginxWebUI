@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<#include '/adminPage/common.html'/>
+
+</head>
+<body style="background-image: url('${ctx}/img/back.jpg'); background-size: cover;">
+	<div style="height: 0px; width: 0px; overflow: hidden;">
+		<!-- 弹出框 -->
+		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none;">
+			<form id="loginForm">
+				<input type="hidden" name="id" id="id">
+				<div class="layui-form-item">
+					<label class="layui-form-label">用户名</label>
+					<div class="layui-input-block">
+						<input type="text" name="name" id="name" class="layui-input" value="">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">密码</label>
+					<div class="layui-input-block">
+						<input type="password" name="pass" id="pass" class="layui-input" value="" onkeyup="getKey()">
+					</div>
+				</div>
+				<div class="layui-form-item" style="text-align: center;">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="login()">登录</button>
+
+				</div>
+			</form>
+		</div>
+
+	</div>
+	
+<#include '/adminPage/script.html'/>
+<script src="${ctx}/js/adminPage/login/index.js?v=${jsrandom}" type="text/javascript"></script>
+</body>
+</html>

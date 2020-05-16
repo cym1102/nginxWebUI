@@ -1,0 +1,38 @@
+<div class="layui-side layui-bg-black">
+	<div class="layui-side-scroll">
+		<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+		<ul class="layui-nav layui-nav-tree" lay-filter="test">
+
+			<li class="layui-nav-item layui-nav-itemed">
+				<a class="" href="javascript:;">
+					<span style="color: aqua;">菜单</span>
+				</a>
+				<dl class="layui-nav-child">
+					
+					<dd>
+						<a href="${ctx}/adminPage/http">http转发配置(http)</a>
+					</dd>
+					<dd>
+						<a href="${ctx}/adminPage/stream">TCP转发配置(stream)</a>
+					</dd>
+					<dd>
+						<a href="${ctx}/adminPage/server">反向代理(server)</a>
+					</dd>
+					<dd>
+						<a href="${ctx}/adminPage/upstream">负载均衡(upstream)</a>
+					</dd>
+					<dd>
+						<a href="${ctx}/adminPage/cert">证书管理</a>
+					</dd>
+					<dd>
+						<a href="${ctx}/adminPage/conf">生成conf</a>
+					</dd>
+					
+					<dd>
+						<a href="${ctx}/adminPage/admin">管理员管理</a>
+					</dd>
+				</dl>
+			</li>
+		</ul>
+	</div>
+</div>

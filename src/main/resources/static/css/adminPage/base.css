@@ -1,0 +1,16 @@
+.red{
+	color: red;
+}
+
+.green{
+	color: green;
+}
+
+.blue{
+	color: blue;
+}
+
+
+.layui-layout-admin .layui-body {
+	bottom: 0px;
+}
