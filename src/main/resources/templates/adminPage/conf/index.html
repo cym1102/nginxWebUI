@@ -2,7 +2,18 @@
 <html>
 <head>
 <#include "/adminPage/common.html"/>
+<style type="text/css">
+.name {
+	padding: 10px;
+	padding-left: 0px;
+	font-size: 16px;
+}
 
+.title {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+</style>
 </head>
 <body class="layui-layout-body">
 	<div class="layui-layout layui-layout-admin">
@@ -16,44 +27,97 @@
 				<fieldset class="layui-elem-field layui-field-title">
 					<legend>生成conf</legend>
 				</fieldset>
+				<form id="addForm">
+					<div class="layui-form">
+						<div>
+							<div class="layui-input-inline">
+								<label class="layui-form-label" style="width: 120px;">conf文件路径<span class="red">*</span></label>
+							</div>
+							<div class="layui-input-inline">
+								<input type="text" id="nginxPath" name="nginxPath" class="layui-input" style="width: 300px;" value="${nginxPath}">
+								
+							</div>
+							<div class="layui-input-inline">
+								<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxPath')"></i>   
+							</div>
 
-				<div class="layui-form">
-					<div class="layui-input-inline">
-						<label class="layui-form-label">目标路径</label>
-					</div>
-					<div class="layui-input-inline">
-						<input type="text" id="nginxPath" class="layui-input" style="width: 400px;" value="${nginxPath}">
-					</div>
-					
-					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-normal" onclick="loadOrg()">读取文件</button>
-					</div>
-					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-normal" onclick="replace()">替换文件</button>
-					</div>
-					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-normal" onclick="check()">效验文件</button>
-					</div>
-					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-normal" onclick="reboot()">重启nginx</button>
-					</div>
-				</div>
+							<div class="layui-input-inline">
+								<label class="layui-form-label" style="width: 120px;">nginx执行命令<span class="red">*</span></label>
+							</div>
+							<div class="layui-input-inline">
+								<input type="text" id="nginxExe" name="nginxExe" class="layui-input" style="width: 300px;" value="${nginxExe}">
+							</div>
+							<div class="layui-input-inline">
+								<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxExe')"></i>   
+							</div>
+							
+							<div class="layui-input-inline">
+								<label class="layui-form-label" style="width: 120px;">nginx目录</label>
+							</div>
+							<div class="layui-input-inline">
+								<input type="text" id="nginxDir" name="nginxDir" class="layui-input" style="width: 300px;" value="${nginxDir}">
+							</div>
+							<div class="layui-input-inline">
+								<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxDir')"></i>   
+							</div>
+						</div>
 
-				<div class="layui-form" style="margin-top: 10px;display: flex;">
-					<div style="width: 47%; ">
-						<div style="padding: 10px;padding-left:0px;font-size: 16px;">生成配置文件(可手动修改)</div>
-						<textarea class="layui-textarea" id="nginxContent" style="height: 700px; resize: none;"  spellcheck="false">${confStr}</textarea>
+						<div style="margin-top: 20px; padding-left: 150px;">
+							<div class="layui-inline">
+								<button type="button" class="layui-btn layui-btn-normal" onclick="loadOrg()">读取文件</button>
+							</div>
+							<div class="layui-inline">
+								<button type="button" class="layui-btn layui-btn-normal" onclick="replace()">替换文件</button>
+							</div>
+							<div class="layui-inline">
+								<button type="button" class="layui-btn layui-btn-normal" onclick="check()">效验文件</button>
+							</div>
+							<div class="layui-inline">
+								<button type="button" class="layui-btn layui-btn-normal" onclick="reload()">重新装载</button>
+							</div>
+
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width: 120px;">按域名分解文件</label>
+							</div>
+							<div class="layui-inline">
+								<input type="checkbox" name="switch" lay-filter="decompose" lay-text="开启|关闭" lay-skin="switch" ${(decompose=='true')?string('checked','')}>
+							</div>
+
+							<div class="layui-inline" style="margin-left: 20px;">
+								<button type="button" class="layui-btn" onclick="start()">启动nginx</button>
+							</div>
+							<div class="layui-inline">
+								<button type="button" class="layui-btn" onclick="stop()">停止nginx</button>
+							</div>
+						</div>
 					</div>
-					<div style="width: 47%;">
-						<div style="padding: 10px;font-size: 16px;">目标配置文件</div>
-						<textarea class="layui-textarea" id="org" style=" height: 700px; margin-left:10px; resize: none; background-color: #ededed;"  readonly="readonly" spellcheck="false"></textarea>
+
+					<div class="layui-form" style="margin-top: 10px; display: flex;">
+
+						<div style="width: 47%;">
+							<div class="name">生成配置文件</div>
+							<div class="title">nginx.conf</div>
+							<textarea class="layui-textarea" id="nginxContent" name="nginxContent" style="height: 500px; resize: none;" spellcheck="false"></textarea>
+
+							<div id="nginxContentOther"></div>
+						</div>
+
+
+						<div style="width: 47%;">
+							<div class="name">目标配置文件</div>
+							<div class="title">nginx.conf</div>
+							<textarea class="layui-textarea" id="org" name="org" style="height: 500px; margin-left: 10px; resize: none; background-color: #ededed;" readonly="readonly" spellcheck="false"></textarea>
+
+							<div id="orgOther"></div>
+						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 		</div>
 	</div>
 
 	<#include '/adminPage/script.html'/>
+	<#include '/adminPage/select_root.html'/>
 	<script src="${ctx}/lib/auto-line-number/auto-line-number.js" type="text/javascript"></script>
 	<script src="${ctx}/js/adminPage/conf/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>

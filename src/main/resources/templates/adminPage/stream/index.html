@@ -37,7 +37,7 @@
 						<#list streamList as stream>
 						<tr>
 							<td>${stream.name}</td>
-							<td>${stream.value}</td>
+							<td style="width: 50%;">${stream.value}</td>
 							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${stream.id}')">编辑</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${stream.id}')">删除</button>
@@ -66,7 +66,7 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label">值</label>
 					<div class="layui-input-block">
-						<input type="text" name="value" id="value" class="layui-input">
+						<textarea  name="value" id="value" class="layui-textarea" ></textarea>
 					</div>
 				</div>
 

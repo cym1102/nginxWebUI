@@ -59,10 +59,10 @@ function checkType(type,id){
 
 function checkSsl(value){
 	if (value == 0) {
-		$("#pemDiv").hide();
+		$(".pemDiv").hide();
 	} 
 	if (value == 1) {
-		$("#pemDiv").show();
+		$(".pemDiv").show();
 	} 
 }
 
@@ -117,6 +117,11 @@ function showWindow(title) {
 function addOver() {
 	if($("#listen").val().trim() == ''){
 		layer.msg("端口未填写");
+		return;
+	}
+	
+	if($("#ssl").val() == 1 && $("#serverName").val() == ''){
+		layer.msg("开启ssl必须填写域名");
 		return;
 	}
 	
@@ -211,12 +216,13 @@ function edit(id) {
 									<select name="type" lang='${uuid}' lay-filter="type">
 										<option ${location.type=='0'?'selected':''} value="0">代理动态http</option>
 										<option ${location.type=='1'?'selected':''} value="1">代理静态html</option>
-										<option ${location.type=='2'?'selected':''} value="2">负债均衡</option>
+										<option ${location.type=='2'?'selected':''} value="2">负载均衡</option>
 									</select>
 								</td>
 								
 								<td>
-									<input type="text" name="value" class="layui-input" value=""  placeholder="例：http://127.0.0.1:8080 或 /root/www">
+									<input type="text" name="value" id="value_${uuid}" class="layui-input" value=""  placeholder="例：http://127.0.0.1:8080 或 /root/www">
+									
 									<span name="upstreamSelect">
 									${upstreamSelect}
 									</span>
@@ -285,12 +291,13 @@ function addItem(){
 							<select name="type" lang='${uuid}' lay-filter="type">
 								<option value="0">代理动态http</option>
 								<option value="1">代理静态html</option>
-								<option value="2">负债均衡</option>
+								<option value="2">负载均衡</option>
 							</select>
 						</td>
 						
 						<td>
-							<input type="text" name="value" class="layui-input" value="" placeholder="例：http://127.0.0.1:8080 或 /root/www">
+							<input type="text" name="value" id="value_${uuid}" class="layui-input" value=""  placeholder="例：http://127.0.0.1:8080 或 /root/www">
+							
 							<span name="upstreamSelect">
 								${upstreamSelect}
 							</span>
@@ -346,4 +353,20 @@ function selectCertOver(){
 			alert("出错了,请联系技术人员!");
 		}
 	});
+}
+
+
+function selectPem(){
+	rootSelect.selectOne(function(rs){
+		$("#pem").val(rs);
+		$("#pemPath").html(rs);
+	})
+}
+
+
+function selectKey(){
+	rootSelect.selectOne(function(rs){
+		$("#key").val(rs);
+		$("#keyPath").html(rs);
+	})
 }

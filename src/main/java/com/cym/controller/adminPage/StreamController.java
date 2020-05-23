@@ -20,6 +20,7 @@ import com.cym.utils.JsonResult;
 import cn.craccd.sqlHelper.bean.Page;
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
+import cn.hutool.core.util.StrUtil;
 
 @Controller
 @RequestMapping("/adminPage/stream")
@@ -39,7 +40,7 @@ public class StreamController extends BaseController {
 	@RequestMapping("addOver")
 	@ResponseBody
 	public JsonResult addOver(Stream stream)  {
-		if(streamService.hasName(stream.getName())) {
+		if(StrUtil.isEmpty(stream.getId()) && streamService.hasName(stream.getName())) {
 			return renderError("名称已存在");
 		}
 		sqlHelper.insertOrUpdate(stream);

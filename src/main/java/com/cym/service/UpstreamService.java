@@ -43,27 +43,28 @@ public class UpstreamService {
 
 	@Transactional
 	public void addOver(Upstream upstream, String[] servers, Integer[] ports, Integer[] weights, Integer[] maxFails, Integer[] failTimeout, String[] status) {
-		if(upstream.getProxyType() == 1 || upstream.getTactics() == null) {
+		if (upstream.getProxyType() == 1 || upstream.getTactics() == null) {
 			upstream.setTactics("");
-		}  
-		
+		}
+
 		sqlHelper.insertOrUpdate(upstream);
-		
-		
+
 		sqlHelper.deleteByQuery(new CriteriaAndWrapper().eq("upstreamId", upstream.getId()), UpstreamServer.class);
 
-		for (int i = 0; i < servers.length; i++) {
-			UpstreamServer upstreamServer = new UpstreamServer();
-			upstreamServer.setUpstreamId(upstream.getId());
-			upstreamServer.setServer(servers[i]);
-			upstreamServer.setPort(ports[i]);
-			upstreamServer.setWeight(weights[i]);
+		if (servers != null) {
+			for (int i = 0; i < servers.length; i++) {
+				UpstreamServer upstreamServer = new UpstreamServer();
+				upstreamServer.setUpstreamId(upstream.getId());
+				upstreamServer.setServer(servers[i]);
+				upstreamServer.setPort(ports[i]);
+				upstreamServer.setWeight(weights[i]);
 
-			upstreamServer.setMaxFails(maxFails[i]);
-			upstreamServer.setFailTimeout(failTimeout[i]);
-			upstreamServer.setStatus(status[i]);
-			
-			sqlHelper.insert(upstreamServer);
+				upstreamServer.setMaxFails(maxFails[i]);
+				upstreamServer.setFailTimeout(failTimeout[i]);
+				upstreamServer.setStatus(status[i]);
+
+				sqlHelper.insert(upstreamServer);
+			}
 		}
 
 	}
@@ -76,11 +77,15 @@ public class UpstreamService {
 	public void del(String id) {
 		sqlHelper.deleteById(id, Upstream.class);
 		sqlHelper.deleteByQuery(new CriteriaAndWrapper().eq("upstreamId", id), UpstreamServer.class);
-		
+
 	}
 
 	public List<Upstream> getListByProxyType(Integer proxyType) {
 		return sqlHelper.findListByQuery(new CriteriaAndWrapper().eq("proxyType", proxyType), Upstream.class);
+	}
+
+	public Long getCountByName(String name) {
+		return sqlHelper.findCountByQuery(new CriteriaAndWrapper().eq("name", name), Upstream.class);
 	}
 
 }

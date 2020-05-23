@@ -11,12 +11,13 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import com.cym.service.SettingService;
+import com.cym.utils.RuntimeTool;
+import com.cym.utils.SystemTool;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
-import cn.hutool.system.SystemUtil;
 
 @Component
 public class CertConfig {
@@ -27,7 +28,7 @@ public class CertConfig {
 
 	@PostConstruct
 	public void init() throws IOException {
-		if (!SystemUtil.get(SystemUtil.OS_NAME).toLowerCase().contains("win")) {
+		if (SystemTool.isLinux()) {
 			// 初始化acme.sh
 			String userDir = FileUtil.getUserHomePath();
 
@@ -40,17 +41,28 @@ public class CertConfig {
 			FileUtil.del(userDir + File.separator + "acme.zip");
 
 			acmeSh = userDir + File.separator + ".acme.sh" + File.separator + "acme.sh";
+			RuntimeUtil.exec("chmod 777 " + acmeSh);
 
-			RuntimeUtil.execForStr("chmod 777 " + acmeSh);
-			System.err.println(acmeSh);
+			// 找寻nginx配置文件
+			String nginxPath = settingService.get("nginxPath");
+			if (StrUtil.isEmpty(nginxPath)) {
+				nginxPath = RuntimeTool.execForOne("find / -name nginx.conf");
+
+				if (StrUtil.isNotEmpty(nginxPath)) {
+					settingService.set("nginxPath", nginxPath.replace("\\", "/"));
+				}
+			}
+
+			String nginxExe = settingService.get("nginxExe");
+			if (StrUtil.isEmpty(nginxExe)) {
+				String rs = RuntimeTool.execForOne("which nginx");
+				if (StrUtil.isNotEmpty(rs)) {
+					settingService.set("nginxExe", "nginx");
+				} 
+			}
+
 		}
 
-		// 初始化nginx配置文件
-		String nginxPath = settingService.get("nginxPath");
-		if (StrUtil.isEmpty(nginxPath)) {
-			nginxPath = "/etc/nginx/nginx.conf";
-			settingService.set("nginxPath", nginxPath);
-		}
 	}
 
 }

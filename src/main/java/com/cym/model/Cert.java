@@ -18,8 +18,23 @@ public class Cert extends BaseModel{
 	@InitValue("0")
 	Integer autoRenew; // 自动续签
 
+	String pemStr;
+	String keyStr;
 	
 	
+	
+	public String getPemStr() {
+		return pemStr;
+	}
+	public void setPemStr(String pemStr) {
+		this.pemStr = pemStr;
+	}
+	public String getKeyStr() {
+		return keyStr;
+	}
+	public void setKeyStr(String keyStr) {
+		this.keyStr = keyStr;
+	}
 	public Integer getAutoRenew() {
 		return autoRenew;
 	}

@@ -18,6 +18,9 @@
 .value{
 	display: inline-block;
 }
+.liteBtn{
+	width: 90px;
+}
 </style>
 </head>
 <body class="layui-layout-body">
@@ -125,11 +128,22 @@
 								</#list>
 								
 								<#if upstreamTcpSize == 0>
-								<option value="">--无可用负债均衡--</option>
+								<option value="">--无可用负载均衡--</option>
 								</#if>
 							</select>
 						</div>
 					</div>
+					
+					
+					<div class="pemDiv">
+						<label class="layui-form-label"></label>
+						<div class="layui-input-black">
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectCert()">选择内置证书</button>
+							<div class="layui-form-mid layui-word-aux"></div>
+						</div>
+					</div>
+					
+					
 				</div>
 							
 				<div class="layui-container" >
@@ -162,12 +176,13 @@
 							</div>
 						</div>
 						<div class="layui-col-md8 proxyHttp">
-							<div id="pemDiv"  style="display: none;">
+							<div class="pemDiv"  style="display: none;">
 								<div class="layui-form-item">
 									<label class="layui-form-label">pem文件路径</label>
 									<div class="layui-input-block">
-										<button type="button" class="layui-btn layui-btn-sm" id="pemBtn">上传pem文件</button>
-										<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectCert()">选择内置证书</button>
+										<button type="button" class="layui-btn layui-btn-sm liteBtn" id="pemBtn">上传pem文件</button>
+										
+										<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectPem()">选择系统路径</button>
 										
 										<input type="hidden" name="pem" id="pem" class="layui-input">
 										<div class="layui-form-mid layui-word-aux" id="pemPath"></div>
@@ -177,7 +192,10 @@
 								<div class="layui-form-item">
 									<label class="layui-form-label">key文件路径</label>
 									<div class="layui-input-block">
-										<button type="button" class="layui-btn layui-btn-sm" id="keyBtn">上传key文件</button>
+										<button type="button" class="layui-btn layui-btn-sm liteBtn" id="keyBtn">上传key文件</button>
+										
+										<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectKey()">选择系统路径</button>
+										
 										<input type="hidden" name="key" id="key" class="layui-input">
 										<div class="layui-form-mid layui-word-aux" id="keyPath"></div>
 									</div>
@@ -234,7 +252,7 @@
 				</#list>
 				
 				<#if upstreamSize == 0>
-				<option value="">--无可用负债均衡--</option>
+				<option value="">--无可用负载均衡--</option>
 				</#if>
 			</select>
 		</div>
@@ -254,13 +272,14 @@
 
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="selectCertOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+					<button type="button" class="layui-btn" onclick="layer.close(certIndex)">关闭</button>
 				</div>
 			</div>
 		</div>
 	</div>
 
 	<#include '/adminPage/script.html'/>
+	<#include '/adminPage/select_root.html'/>
 	<script src="${ctx}/js/adminPage/server/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

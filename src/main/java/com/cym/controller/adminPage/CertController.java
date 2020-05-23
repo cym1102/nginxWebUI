@@ -17,10 +17,10 @@ import com.cym.model.Cert;
 import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
+import com.cym.utils.SystemTool;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.system.SystemUtil;
 
 @Controller
 @RequestMapping("/adminPage/cert")
@@ -62,16 +62,25 @@ public class CertController extends BaseController {
 	@RequestMapping("del")
 	@ResponseBody
 	public JsonResult del(String id) {
-		sqlHelper.deleteById(id, Cert.class);
+		Cert cert = sqlHelper.findById(id, Cert.class);
+		if (cert.getKey() != null) {
+			File file = new File(cert.getKey());
+			
+			FileUtil.del(file.getParent());
+		}
 
+		sqlHelper.deleteById(id, Cert.class);
 		return renderSuccess();
 	}
 
 	@RequestMapping("apply")
 	@ResponseBody
 	public JsonResult apply(String id) {
-		if (SystemUtil.get(SystemUtil.OS_NAME).toLowerCase().contains("win")) {
+		if (SystemTool.getSystem().equals("Windows")) {
 			return renderError("证书操作只能在linux下进行");
+		}
+		if (!SystemTool.hasNginx()) {
+			return renderError("系统中未安装nginx命令，如果是编译安装nginx，请尝试在系统中执行ln -s [nginx执行文件路径] /usr/bin建立命令链接");
 		}
 
 		String nginxPath = settingService.get("nginxPath");
@@ -114,10 +123,13 @@ public class CertController extends BaseController {
 	@RequestMapping("renew")
 	@ResponseBody
 	public JsonResult renew(String id) {
-		if (SystemUtil.get(SystemUtil.OS_NAME).toLowerCase().contains("win")) {
+		if (SystemTool.isWindows()) {
 			return renderError("证书操作只能在linux下进行");
 		}
-
+		if (!SystemTool.hasNginx()) {
+			return renderError("系统中未安装nginx命令");
+		}
+		
 		String nginxPath = settingService.get("nginxPath");
 		if (!FileUtil.exist(nginxPath)) {
 			return renderError("未找到nginx配置文件:" + nginxPath + ", 请先在【生成conf】模块中设置并读取.");
@@ -139,14 +151,14 @@ public class CertController extends BaseController {
 
 		// 还原nginx.conf并重启
 		backupStartNginx(nginxPath);
-				
+
 		if (rs.contains("Cert success")) {
 			cert.setMakeTime(System.currentTimeMillis());
 			sqlHelper.updateById(cert);
 		} else {
 			return renderError(rs.replace("\n", "<br>"));
 		}
-		
+
 		return renderSuccess();
 	}
 
@@ -168,7 +180,7 @@ public class CertController extends BaseController {
 		FileUtil.writeString(nginxContent, nginxPath, Charset.defaultCharset());
 
 		// 重启nginx
-		RuntimeUtil.execForStr("nginx -s reload");
+		RuntimeUtil.exec("nginx -s reload");
 	}
 
 	// 还原nginx.conf并重启
@@ -177,9 +189,9 @@ public class CertController extends BaseController {
 		// 还原备份文件
 		FileUtil.copy(nginxPath + ".org", nginxPath, true);
 		FileUtil.del(nginxPath + ".org");
-
+		
 		// 重启nginx
-		RuntimeUtil.execForStr("nginx -s reload");
+		RuntimeUtil.exec("nginx -s reload");
 
 	}
 

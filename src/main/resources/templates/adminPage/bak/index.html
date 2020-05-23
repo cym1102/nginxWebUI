@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<#include "/adminPage/common.html"/>
+
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+
+		<#include "/adminPage/header.html"/>
+		<#include "/adminPage/menu.html"/>
+
+		<div class="layui-body">
+			<!-- 内容主体区域 -->
+			<div style="padding: 15px">
+				<fieldset class="layui-elem-field layui-field-title">
+					<legend>备份文件管理</legend>
+				</fieldset>
+
+				<form action="${ctx}/adminPage/bak" id="searchForm" method="post">
+					<div class="layui-form">
+					</div>
+				</form>
+
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>路径</th>
+							<th>创建时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list bakList as bak>
+						<tr>
+							<td>${bak.path}</td>
+							<td>${bak.time}</td>
+							<td>
+								<button class="layui-btn layui-btn-sm" onclick="content('${bak.path}')">查看内容</button>
+								<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="replace('${bak.path}')">还原</button>
+								<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="del('${bak.path}')">删除</button>
+							</td>
+						</tr>
+						</#list>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div style="height: 0px; width: 0px; overflow: hidden;">
+		<!-- 弹出框 -->
+		<div class="layui-form" id="windowDiv" style=" display: none">
+			<input type="hidden" id="path" value="path">
+			
+			<textarea class="layui-textarea" id="content" style=" height: 700px; width:1200px;resize: none; background-color: #ededed;"  readonly="readonly" spellcheck="false"></textarea>
+
+		</div>
+
+	</div>
+
+	<#include '/adminPage/script.html'/>
+	<script src="${ctx}/lib/auto-line-number/auto-line-number.js" type="text/javascript"></script>
+	<script src="${ctx}/js/adminPage/bak/index.js?v=${jsrandom}" type="text/javascript"></script>
+</body>
+
+
+</html>

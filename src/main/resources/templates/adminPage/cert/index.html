@@ -23,7 +23,7 @@
 							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加证书</button>
 						</div>
 						<div class="layui-inline">
-							<div class="layui-form-mid layui-word-aux proxyHttp">请确认已经把证书的域名指向本服务器，自动续签将在每天凌晨2点进行，续签打开自动续签项并超过60天的证书</div>
+							<div class="layui-form-mid layui-word-aux proxyHttp">请确认已经把证书的域名指向本服务器，自动续签将在每天凌晨2点进行，超过60天的证书会被续签</div>
 						</div>
 					</div>
 				</form>
@@ -54,9 +54,13 @@
 								 <input type="checkbox" name="switch" lay-filter="autoRenew" value="${cert.id}" lay-text="开启|关闭" lay-skin="switch" ${(cert.autoRenew==1)?string('checked','')}>
 							</td>
 							<td>
+								<#if cert.pem == null>
 								<button class="layui-btn layui-btn-sm" onclick="apply('${cert.id}')">申请</button>
+								</#if>
 								
+								<#if cert.pem != null>
 								<button class="layui-btn layui-btn-sm" onclick="renew('${cert.id}')">续签</button>
+								</#if>
 								
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">删除</button>
 							</td>

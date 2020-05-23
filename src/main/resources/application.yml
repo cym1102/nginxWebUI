@@ -28,7 +28,10 @@ spring:
 #    url: jdbc:mysql://127.0.0.1:3306/test
 #    username: root
 #    password: 1qaz2wsx
-    
+
+project:
+  version: v@project.version@
+  
 logging: 
   level: 
     root: info

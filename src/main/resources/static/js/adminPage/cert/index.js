@@ -16,7 +16,7 @@ $(function(){
 				success : function(data) {
 				
 					if (data.success) {
-						location.reload();
+						//location.reload();
 					} else {
 						layer.msg(data.msg);
 					}
@@ -115,7 +115,7 @@ function apply(id){
 				}else{
 					layer.open({
 						  type: 0, 
-						  area : [ '800px', '400px' ],
+						  area : [ '810px', '400px' ],
 						  content: data.msg
 					});
 				}
@@ -146,7 +146,7 @@ function renew(id){
 				}else{
 					layer.open({
 						  type: 0, 
-						  area : [ '800px', '400px' ],
+						  area : [ '810px', '400px' ],
 						  content: data.msg
 					});
 				}

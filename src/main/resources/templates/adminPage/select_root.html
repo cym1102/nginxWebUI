@@ -1,0 +1,16 @@
+
+
+<script src="${ctx}/js/adminPage/select_root.js?v=${jsrandom}" type="text/javascript"></script>
+<div style="height: 0px; width: 0px; overflow: hidden;">
+	<!-- 弹出框 -->
+	<div class="layui-form" id="rootSelectDiv" style="padding: 15px; display: none">
+		<ul id="rootSelect" class="ztree" style="height: 450px;overflow: auto;"></ul>
+		
+		<div class="layui-form-item" style="text-align: center;margin-top: 20px;">
+			<button type="button" class="layui-btn layui-btn-sm" onclick="rootSelect.selectOver()">确定</button>
+			<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="rootSelect.clear()">清空</button>
+			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="rootSelect.close()">关闭</button>
+			
+		</div>
+	</div>
+</div>

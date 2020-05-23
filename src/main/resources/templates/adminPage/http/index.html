@@ -2,7 +2,20 @@
 <html>
 <head>
 <#include "/adminPage/common.html"/>
+<style type="text/css">
 
+.long{
+	width: 150px;
+}
+
+.short{
+	width: 110px!important;
+}
+
+input[name='param']{
+	width: 100px;
+}
+</style>
 </head>
 <body class="layui-layout-body">
 	<div class="layui-layout layui-layout-admin">
@@ -21,8 +34,9 @@
 					<div class="layui-form">
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加http转发配置</button>
+							
+							<button type="button" class="layui-btn" onclick="guide()">简易配置向导</button>
 						</div>
-
 					</div>
 				</form>
 
@@ -38,7 +52,7 @@
 						<#list httpList as http>
 						<tr>
 							<td>${http.name}</td>
-							<td>${http.value}</td>
+							<td  style="width: 50%;">${http.value}</td>
 							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${http.id}')">编辑</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${http.id}')">删除</button>
@@ -67,7 +81,7 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label">值</label>
 					<div class="layui-input-block">
-						<input type="text" name="value" id="value" class="layui-input">
+						<textarea  name="value" id="value" class="layui-textarea" ></textarea>
 					</div>
 				</div>
 
@@ -78,6 +92,72 @@
 			</form>
 		</div>
 
+		<div class="layui-form" id="guideDiv" style="padding: 15px; display: none">
+			<form id="addForm">
+				<div class="layui-form-item">
+					<label class="layui-form-label long">keepalive_timeout</label>
+					<div class="layui-input-inline short">
+						<input type="text" name="param" id="keepalive_timeout" class="layui-input" value="75" lang="s">
+					</div>
+					<div class="layui-form-mid layui-word-aux">秒，连接超时时间</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label long">gzip</label>
+					<div class="layui-input-inline short">
+						<input type="checkbox" name="param" id="gzip" lay-skin="primary" checked lang="">
+					</div>
+					<div class="layui-form-mid layui-word-aux">是否开启压缩传输</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label long">gzip_min_length</label>
+					<div class="layui-input-inline short">
+						<input type="text" name="param" id="gzip_min_length" class="layui-input" value="8" lang="k">
+					</div>
+					<div class="layui-form-mid layui-word-aux">KB，最小压缩文件</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label long">gzip_comp_level</label>
+					<div class="layui-input-inline short">
+						<input type="text" name="param" id="gzip_comp_level" class="layui-input" value="2" lang="">
+					</div>
+					<div class="layui-form-mid layui-word-aux">压缩率</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label long">client_max_body_size</label>
+					<div class="layui-input-inline short">
+						<input type="text" name="param" id="client_max_body_size" class="layui-input" value="512" lang="m">
+					</div>
+					<div class="layui-form-mid layui-word-aux">MB，最大上传限制</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label long">client_header_buffer_size</label>
+					<div class="layui-input-inline short">
+						<input type="text" name="param" id="client_header_buffer_size" class="layui-input" value="32" lang="k">
+					</div>
+					<div class="layui-form-mid layui-word-aux">KB，客户端请求头buffer大小</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label long">client_body_buffer_size</label>
+					<div class="layui-input-inline short">
+						<input type="text" name="param" id="client_body_buffer_size" class="layui-input" value="8" lang="m">
+					</div>
+					<div class="layui-form-mid layui-word-aux">MB，请求主体缓冲区</div>
+				</div>
+				
+
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addGiudeOver()">提交</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+				</div>
+			</form>
+		</div>
+		
 	</div>
 
 	<#include '/adminPage/script.html'/>

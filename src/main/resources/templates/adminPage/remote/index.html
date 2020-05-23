@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<#include "/adminPage/common.html"/>
+
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+
+		<#include "/adminPage/header.html"/>
+		<#include "/adminPage/menu.html"/>
+
+		<div class="layui-body">
+			<!-- 内容主体区域 -->
+			<div style="padding: 15px">
+				<fieldset class="layui-elem-field layui-field-title">
+					<legend>远程服务器管理</legend>
+				</fieldset>
+
+				<form action="${ctx}/adminPage/remote" id="searchForm" method="post">
+					<div class="layui-form">
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加远程服务器</button>
+							
+							<button type="button" class="layui-btn" onclick="addGroup()">添加分组</button>
+						</div>
+						<div class="layui-inline">
+							<div class="layui-form-mid layui-word-aux proxyHttp">
+							注意同步只能在相同操作系统之间同步.
+							</div>
+						</div>
+						<input type="hidden" name="curr" value="${page.curr}">
+					</div>
+				</form>
+
+
+				<table  class="layui-table" id="tree-table">
+					
+				</table>
+				
+				
+				<table class="layui-table" style="display: none;">
+					<thead>
+						<tr>
+							<th>协议</th>
+							<th>ip</th>
+							<th>端口</th>
+							<th>版本</th>
+							<th>操作系统</th>
+							<th>别名</th>
+							<th>状态</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list remoteList as remote>
+						<tr>
+							<td>${remote.protocol}</td>
+							<td>${remote.ip}</td>
+							<td>${remote.port}</td>
+							<td>${remote.version}</td>
+							<td>${remote.system}</td>
+							<td>${remote.descr}</td>
+							<td>
+								<#if remote.status==0><span class="red">掉线</span></#if>
+								<#if remote.status==1><span class="green">在线</span></#if>
+							</td>
+							<td>
+								<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="change('${remote.id}')">切换到此服务器</button>
+								<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="asyc('${remote.id}')">同步到其他服务器</button>
+									
+								<#if remote.ip != '本地'>
+									<button class="layui-btn layui-btn-sm" onclick="content('${remote.id}')">查看conf</button>
+									<button class="layui-btn layui-btn-sm" onclick="edit('${remote.id}')">编辑</button>
+									<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${remote.id}')">删除</button>
+								</#if>
+								
+								<#if remote.ip == '本地'>
+									<button class="layui-btn layui-btn-sm" onclick="contentLocal()">查看conf</button>
+								</#if>
+								
+								
+							</td>
+						</tr>
+						</#list>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div style="height: 0px; width: 0px; overflow: hidden;">
+		<!-- 弹出框 -->
+		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none">
+			<form id="addForm">
+				<input type="hidden" name="id" id="id">
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">别名</label>
+					<div class="layui-input-block">
+						<input type="text" name="descr" id="descr" class="layui-input">
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">协议</label>
+					<div class="layui-input-block">
+						<select id="protocol" name="protocol">
+							<option>http</option>
+							<option>https</option>
+						</select>
+					</div>
+				</div>
+				
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">ip</label>
+					<div class="layui-input-block">
+						<input type="text" name="ip" id="ip" class="layui-input">
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">端口</label>
+					<div class="layui-input-block">
+						<input type="number" name="port" id="port" class="layui-input">
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">用户名</label>
+					<div class="layui-input-block">
+						<input type="text" name="name" id="name" class="layui-input">
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">密码</label>
+					<div class="layui-input-block">
+						<input type="password" name="pass" id="pass" class="layui-input">
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">分组</label>
+					<div class="layui-input-block">
+						
+						
+						<div id="parentId"></div>
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+				</div>
+			</form>
+		</div>
+		
+		<div class="layui-form" id="groupDiv" style="padding: 15px; display: none">
+			<form id="addGroupForm">
+				<input type="hidden" name="id" id="groupId">
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">名称</label>
+					<div class="layui-input-block">
+						<input type="text" name="name" id="groupName" class="layui-input">
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">上级分组</label>
+					<div class="layui-input-block">
+						<div  id="groupParentId">
+						</div>
+					</div>
+				</div>
+			
+
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addGroupOver()">提交</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+				</div>
+			</form>
+		</div>
+		
+		<!-- 弹出框 -->
+		<div class="layui-form" id="contentDiv" style=" display: none">
+			<input type="hidden" id="path" value="path">
+			<textarea class="layui-textarea" id="content" style=" height: 700px;width:1200px; resize: none; background-color: #ededed;"  readonly="readonly" spellcheck="false"></textarea>
+		</div>
+		
+		
+		<div class="layui-form" id="selectDiv" style="padding:15px;display: none">
+			<form  id="asycForm">
+			<input type="hidden" name="fromId" id="fromId"> 
+			<div class="layui-form-item" id="checkboxDiv">
+			</div>
+			
+			<div class="layui-form-item">
+				<button type="button" class="layui-btn layui-btn-normal" onclick="asycOver()">同步</button>
+				<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+			</div>
+			</form>
+		</div>
+		
+	</div>
+
+	<#include '/adminPage/script.html'/>
+	<script src="${ctx}/lib/auto-line-number/auto-line-number.js" type="text/javascript"></script>
+	<script src="${ctx}/js/adminPage/remote/index.js" type="text/javascript"></script>
+</body>
+
+
+</html>

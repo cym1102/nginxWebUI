@@ -5,7 +5,8 @@
 
 			<li class="layui-nav-item layui-nav-itemed">
 				<a class="" href="javascript:;">
-					<span style="color: aqua;">菜单</span>
+					<span style="color: aqua;" id="localType">
+					</span>
 				</a>
 				<dl class="layui-nav-child">
 					
@@ -27,10 +28,24 @@
 					<dd>
 						<a href="${ctx}/adminPage/conf">生成conf</a>
 					</dd>
-					
+					<dd>
+						<a href="${ctx}/adminPage/bak">备份文件管理</a>
+					</dd>
 					<dd>
 						<a href="${ctx}/adminPage/admin">管理员管理</a>
 					</dd>
+				</dl>
+			</li>
+			
+			<li class="layui-nav-item layui-nav-itemed">
+				<a class="" href="javascript:;">
+					<span style="color: aqua;">远程管理</span>
+				</a>
+				<dl class="layui-nav-child">
+					<dd>
+						<a href="${ctx}/adminPage/remote">远程服务器</a>
+					</dd>
+				
 				</dl>
 			</li>
 		</ul>

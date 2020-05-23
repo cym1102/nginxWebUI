@@ -17,7 +17,22 @@ public class Server extends BaseModel {
 	Integer proxyType; //  0 http 1 tcp
 	String proxyUpstreamId;
 	
+	String pemStr;
+	String keyStr;
 	
+	
+	public String getPemStr() {
+		return pemStr;
+	}
+	public void setPemStr(String pemStr) {
+		this.pemStr = pemStr;
+	}
+	public String getKeyStr() {
+		return keyStr;
+	}
+	public void setKeyStr(String keyStr) {
+		this.keyStr = keyStr;
+	}
 	public String getProxyUpstreamId() {
 		return proxyUpstreamId;
 	}

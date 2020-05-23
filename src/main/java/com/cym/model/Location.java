@@ -9,7 +9,7 @@ public class Location extends BaseModel {
 	String serverId;
 	
 	String path;
-	Integer type; // 0 http 1 root 2 负债均衡
+	Integer type; // 0 http 1 root 2 负载均衡
 	
 	String value;
 	String upstreamId;

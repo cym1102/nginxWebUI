@@ -52,7 +52,7 @@ public class FrontInterceptor implements HandlerInterceptor {
 		} catch (Throwable var4) {
 			effectiveURI = null;
 		}
-		return effectiveURI.toString();
+		return effectiveURI.toString().replace("http:", "").replace("https:" , "");
 	}
 
 }

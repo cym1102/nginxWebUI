@@ -46,11 +46,6 @@ public class SqlConfig {
 
 			sqlHelper.insertAll(https);
 		}
- 
-//		Cert cert = sqlHelper.findOneByQuery(new CriteriaAndWrapper(), Cert.class);
-//		cert.setPem("/root/.acme.sh/test1.craccd.cn/test1.craccd.cn.cer"); 
-//		sqlHelper.updateById(cert);
-		
 
 	}
 }

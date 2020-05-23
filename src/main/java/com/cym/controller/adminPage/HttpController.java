@@ -19,6 +19,8 @@ import com.cym.utils.JsonResult;
 import cn.craccd.sqlHelper.bean.Page;
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 
 @Controller
 @RequestMapping("/adminPage/http")
@@ -38,7 +40,7 @@ public class HttpController extends BaseController {
 	@RequestMapping("addOver")
 	@ResponseBody
 	public JsonResult addOver(Http http)  {
-		if(httpService.hasName(http.getName())) {
+		if(StrUtil.isEmpty(http.getId()) && httpService.hasName(http.getName())) {
 			return renderError("名称已存在");
 		}
 		sqlHelper.insertOrUpdate(http);
@@ -60,4 +62,17 @@ public class HttpController extends BaseController {
 		return renderSuccess();
 	}
 
+	
+	@RequestMapping("addGiudeOver")
+	@ResponseBody
+	public JsonResult addGiudeOver(String json)  {
+		List<Http> https = JSONUtil.toList(JSONUtil.parseArray(json), Http.class); 
+		
+		httpService.setAll(https);
+		
+		return renderSuccess();
+	}
+
+	
+	
 }

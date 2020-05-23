@@ -60,21 +60,24 @@ public class UpstreamController extends BaseController {
 			status = upstreamServer.getStatus();
 		}
 
-//		if (proxyType == 0) {
-			return upstreamServer.getServer() + ":" + upstreamServer.getPort() //
-					+ " weight=" + upstreamServer.getWeight() //
-					+ " fail_timeout=" + upstreamServer.getFailTimeout() + "s"//
-					+ " max_fails=" + upstreamServer.getMaxFails() //
-					+ " " + status;
-//		} else {
-//			return upstreamServer.getServer() + ":" + upstreamServer.getPort();
-//		}
+		return upstreamServer.getServer() + ":" + upstreamServer.getPort() //
+				+ " weight=" + upstreamServer.getWeight() //
+				+ " fail_timeout=" + upstreamServer.getFailTimeout() + "s"//
+				+ " max_fails=" + upstreamServer.getMaxFails() //
+				+ " " + status;
 
 	}
 
 	@RequestMapping("addOver")
 	@ResponseBody
-	public JsonResult addOver(Upstream upstream, String[] server, Integer[] port, Integer[] weight, Integer[] maxFails, Integer[] failTimeout, String[] status)  {
+	public JsonResult addOver(Upstream upstream, String[] server, Integer[] port, Integer[] weight, Integer[] maxFails, Integer[] failTimeout, String[] status) {
+
+		if (StrUtil.isEmpty( upstream.getId())) {
+			Long count = upstreamService.getCountByName(upstream.getName());
+			if (count > 0) {
+				return renderError("与已有负载均衡重名");
+			}
+		}
 
 		upstreamService.addOver(upstream, server, port, weight, maxFails, failTimeout, status);
 
@@ -83,7 +86,7 @@ public class UpstreamController extends BaseController {
 
 	@RequestMapping("detail")
 	@ResponseBody
-	public JsonResult detail(String id)  {
+	public JsonResult detail(String id) {
 
 		UpstreamExt upstreamExt = new UpstreamExt();
 		upstreamExt.setUpstream(sqlHelper.findById(id, Upstream.class));
@@ -94,7 +97,7 @@ public class UpstreamController extends BaseController {
 
 	@RequestMapping("del")
 	@ResponseBody
-	public JsonResult del(String id)  {
+	public JsonResult del(String id) {
 
 		upstreamService.del(id);
 

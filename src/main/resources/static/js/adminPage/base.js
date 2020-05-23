@@ -59,6 +59,21 @@ $(function() {
 	// 菜单选中
 	var url = location.pathname + location.search;
 	$("a[href='" + ctx + url.substr(1) + "']").parent().addClass("layui-this");
+	
+	
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/login/getLocalType',
+		dataType : 'json',
+		success : function(data) {
+			if (data.success) {
+				$("#localType").html(data.obj)
+			} 
+		},
+		error : function() {
+			alert("出错了,请联系技术人员!");
+		}
+	});
 })
 
 // 关闭AJAX相应的缓存
