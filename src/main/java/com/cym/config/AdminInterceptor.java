@@ -1,10 +1,16 @@
 package com.cym.config;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +27,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.cym.model.Remote;
 import com.cym.service.CreditService;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
 
 @Component
 public class AdminInterceptor implements HandlerInterceptor {
@@ -81,8 +89,25 @@ public class AdminInterceptor implements HandlerInterceptor {
 
 				response.setCharacterEncoding("utf-8");
 				response.setContentType("text/html;charset=utf-8");
-				PrintWriter out = response.getWriter();
-				out.append(rs);
+				
+				if(JSONUtil.isJson(rs)) {
+					String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
+					response.addHeader("Content-Type", "application/octet-stream");
+					response.setHeader("content-disposition", "attachment;filename=" + URLEncoder.encode(date + ".json", "UTF-8")); // 设置文件名
+
+					byte[] buffer = new byte[1024];
+					BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(rs.getBytes(Charset.forName("UTF-8"))));
+					OutputStream os = response.getOutputStream();
+					int i = bis.read(buffer);
+					while (i != -1) {
+						os.write(buffer, 0, i);
+						i = bis.read(buffer);
+					}
+				}else {
+					PrintWriter out = response.getWriter();
+					out.append(rs);
+				}
+		
 
 			} catch (Exception e) {
 				e.printStackTrace();

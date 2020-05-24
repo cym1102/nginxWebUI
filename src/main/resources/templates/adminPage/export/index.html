@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<#include "/adminPage/common.html"/>
+
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+
+		<#include "/adminPage/header.html"/>
+		<#include "/adminPage/menu.html"/>
+
+		<div class="layui-body">
+			<!-- 内容主体区域 -->
+			<div style="padding: 15px">
+				<fieldset class="layui-elem-field layui-field-title">
+					<legend>数据导入导出</legend>
+				</fieldset>
+
+				<form action="${ctx}/adminPage/admin" id="searchForm" method="post">
+					<div class="layui-form">
+						<div class="layui-inline">
+							<button type="button" id="dataExport" class="layui-btn layui-btn-normal" onclick="dExport()">导出数据</button>
+						</div>
+						<div class="layui-inline">
+							<button type="button" id="dataImport" class="layui-btn" onclick="dImport()">导入数据</button>
+
+							<div style="display: none;">
+								<input type="file" id="file" onchange="dImportOver()">
+							</div>
+						</div>
+					</div>
+				</form>
+
+
+			</div>
+		</div>
+	</div>
+
+
+	<#include '/adminPage/script.html'/>
+	<script src="${ctx}/js/adminPage/export/index.js?v=${jsrandom}" type="text/javascript"></script>
+</body>
+
+
+</html>

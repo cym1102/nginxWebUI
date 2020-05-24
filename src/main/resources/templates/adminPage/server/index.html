@@ -21,10 +21,11 @@
 .liteBtn{
 	width: 90px;
 }
+
 </style>
 </head>
 <body class="layui-layout-body">
-	<div class="layui-layout layui-layout-admin">
+	<div class="layui-layout layui-layout-admin" >
 
 		<#include "/adminPage/header.html"/>
 		<#include "/adminPage/menu.html"/>
@@ -215,9 +216,13 @@
 					</div>
 				</div>
 
-
-				<div class="layui-form-item proxyHttp">
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addItem()">添加代理目标</button>
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn layui-btn-sm" style="margin-left: 195px;" onclick="serverParam()">设置额外参数</button>
+					<input type="hidden" id="serverParamJson" name="serverParamJson" value="">
+				</div>
+					
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal proxyHttp" onclick="addItem()">添加代理目标</button>
 				</div>
 
 				<div class="layui-form-item proxyHttp">
@@ -242,6 +247,32 @@
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
 				</div>
 			</form>
+		</div>
+		
+		<div id="paramJsonDiv" style="display: none;padding: 15px;"> 
+			<div class="layui-form-item">
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">添加参数</button>
+			</div>
+			<div class="layui-form-item">
+				<input type="hidden" id="targertId" >
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>名称</th>
+							<th>值</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody id="paramList">
+
+					</tbody>
+				</table>
+			</div>
+
+			<div class="layui-form-item">
+				<button type="button" class="layui-btn layui-btn-normal" onclick="addParamOver()">提交</button>
+				<button type="button" class="layui-btn" onclick="layer.close(paramIndex)">关闭</button>
+			</div>
 		</div>
 
 		<div id="upstreamSelect" style="display: none;"> 

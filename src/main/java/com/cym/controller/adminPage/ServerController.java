@@ -16,6 +16,7 @@ import com.cym.model.Cert;
 import com.cym.model.Location;
 import com.cym.model.Server;
 import com.cym.model.Upstream;
+import com.cym.service.ParamService;
 import com.cym.service.ServerService;
 import com.cym.service.UpstreamService;
 import com.cym.utils.BaseController;
@@ -31,6 +32,9 @@ public class ServerController extends BaseController {
 	ServerService serverService;
 	@Autowired
 	UpstreamService upstreamService;
+	@Autowired
+	ParamService paramService;
+
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page) {
 		page = serverService.search(page);
@@ -55,13 +59,13 @@ public class ServerController extends BaseController {
 		List<Upstream> upstreamList = upstreamService.getListByProxyType(0);
 		modelAndView.addObject("upstreamList", upstreamList);
 		modelAndView.addObject("upstreamSize", upstreamList.size());
-		
+
 		List<Upstream> upstreamTcpList = upstreamService.getListByProxyType(1);
 		modelAndView.addObject("upstreamTcpList", upstreamTcpList);
 		modelAndView.addObject("upstreamTcpSize", upstreamTcpList.size());
-		
+
 		modelAndView.addObject("certList", sqlHelper.findAll(Cert.class));
-		
+
 		modelAndView.setViewName("/adminPage/server/index");
 		return modelAndView;
 	}
@@ -85,12 +89,12 @@ public class ServerController extends BaseController {
 
 	@RequestMapping("addOver")
 	@ResponseBody
-	public JsonResult addOver(Server server, Integer type[], String[] path, String[] value, String[] upstreamId)  {
+	public JsonResult addOver(Server server, String serverParamJson, Integer type[], String[] path, String[] value, String[] upstreamId, String[] locationParamJson) {
 
 		if (server.getProxyType() == 0) {
-			serverService.addOver(server, type, path, value, upstreamId);
+			serverService.addOver(server, serverParamJson, type, path, value, upstreamId, locationParamJson);
 		} else {
-			serverService.addOverTcp(server);
+			serverService.addOverTcp(server, serverParamJson);
 		}
 
 		return renderSuccess();
@@ -98,19 +102,24 @@ public class ServerController extends BaseController {
 
 	@RequestMapping("detail")
 	@ResponseBody
-	public JsonResult detail(String id)  {
+	public JsonResult detail(String id) {
 		Server server = sqlHelper.findById(id, Server.class);
 
 		ServerExt serverExt = new ServerExt();
 		serverExt.setServer(server);
-		serverExt.setLocationList(serverService.getLocationByServerId(id));
+		List<Location> list = serverService.getLocationByServerId(id);
+		for (Location location : list) {
+			location.setLocationParamJson(paramService.getJsonByTypeId(location.getId(), "location"));
+		}
+		serverExt.setLocationList(list);
+		serverExt.setParamJson(paramService.getJsonByTypeId(server.getId(), "server"));
 
 		return renderSuccess(serverExt);
 	}
 
 	@RequestMapping("del")
 	@ResponseBody
-	public JsonResult del(String id)  {
+	public JsonResult del(String id) {
 		serverService.deleteById(id);
 
 		return renderSuccess();

@@ -27,5 +27,5 @@
 }
 
 textarea {
-	resize: none;
+	resize: none!important;
 }

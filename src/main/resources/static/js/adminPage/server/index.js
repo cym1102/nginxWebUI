@@ -97,6 +97,7 @@ function add() {
 	$("#key").val("");
 	$("#keyPath").html("");
 	$("#itemList").html("");
+	$("#paramJson").val("");
 	
 	checkSsl(0);
 	checkProxyType(0);
@@ -192,6 +193,7 @@ function edit(id) {
 				$("#keyPath").html(server.key);
 				$("#proxyType").val(server.proxyType);
 				$("#proxyUpstreamId").val(server.proxyUpstreamId);
+				$("#serverParamJson").val(data.obj.paramJson.replace(/,/g,"%2C"));
 				
 				if(server.rewrite != null){
 					$("#rewrite").val(server.rewrite);
@@ -208,16 +210,20 @@ function edit(id) {
 				for(let i=0;i<list.length;i++){
 					var location = list[i];
 					var uuid = guid();
+					
+					location.locationParamJson = location.locationParamJson.replace(/,/g,"%2C");
 					var html = `<tr id='${uuid}'>
 								<td>
 									<input type="text" name="path" class="layui-input" value="${location.path}">
 								</td>
-								<td>
+								<td style="width: 200px;">
+									<div class="layui-input-inline">
 									<select name="type" lang='${uuid}' lay-filter="type">
 										<option ${location.type=='0'?'selected':''} value="0">代理动态http</option>
 										<option ${location.type=='1'?'selected':''} value="1">代理静态html</option>
 										<option ${location.type=='2'?'selected':''} value="2">负载均衡</option>
 									</select>
+									</div>
 								</td>
 								
 								<td>
@@ -227,7 +233,11 @@ function edit(id) {
 									${upstreamSelect}
 									</span>
 								</td> 
-								<td><button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button></td>
+								<td>
+									<input type="hidden" id="locationParamJson_${uuid}" name="locationParamJson" value='${location.locationParamJson}'>
+									<button type="button" class="layui-btn layui-btn-sm" onclick="locationParam('${uuid}')">设置额外参数</button>
+									<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+								</td>
 						</tr>`
 						
 					$("#itemList").append(html);
@@ -287,12 +297,14 @@ function addItem(){
 						<td>
 							<input type="text" name="path" class="layui-input" value="/">
 						</td>
-						<td>
+						<td style="width: 200px;">
+							<div class="layui-input-inline">
 							<select name="type" lang='${uuid}' lay-filter="type">
 								<option value="0">代理动态http</option>
 								<option value="1">代理静态html</option>
 								<option value="2">负载均衡</option>
 							</select>
+							</div>
 						</td>
 						
 						<td>
@@ -302,7 +314,11 @@ function addItem(){
 								${upstreamSelect}
 							</span>
 						</td> 
-						<td><button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button></td>
+						<td>
+							<input type="hidden" id="locationParamJson_${uuid}" name="locationParamJson" >
+							<button type="button" class="layui-btn layui-btn-sm" onclick="locationParam('${uuid}')">设置额外参数</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+						</td>
 				</tr>`
 	$("#itemList").append(html);
 	checkType(0, uuid);
@@ -369,4 +385,90 @@ function selectKey(){
 		$("#key").val(rs);
 		$("#keyPath").html(rs);
 	})
+}
+
+
+function serverParam(){
+	var json = $("#serverParamJson").val();
+	$("#targertId").val("serverParamJson");
+	var params = json!=''?JSON.parse(json.replace(/%2C/g,",")):[];
+	fillTable(params);
+	
+}
+
+function locationParam(uuid){
+	var json = $("#locationParamJson_" + uuid).val();
+	$("#targertId").val("locationParamJson_" + uuid);
+	var params = json!=''?JSON.parse(json.replace(/%2C/g,",")):[];
+	fillTable(params);
+}
+
+var paramIndex;
+function fillTable(params){
+	var html = "";
+	for(var i=0;i<params.length;i++){
+		var param = params[i];
+		
+		var uuid = guid();
+		
+		html += `
+		<tr name="param" id=${uuid}>
+			<td>
+				<textarea  name="name" class="layui-textarea">${param.name}</textarea>
+			</td>
+			<td  style="width: 60%;">
+				<textarea  name="value" class="layui-textarea">${param.value}</textarea>
+			</td>
+			<td>
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+			</td>
+		</tr>
+		`;
+	}
+	
+	$("#paramList").html(html);
+	
+	paramIndex = layer.open({
+		type : 1,
+		title : "添加参数",
+		area : [ '800px', '600px' ], // 宽高
+		content : $('#paramJsonDiv')
+	});
+}
+
+function addParam(){
+	var uuid = guid();
+	
+	var html = `
+	<tr name="param" id="${uuid}">
+		<td>
+			<textarea  name="name" class="layui-textarea"></textarea>
+		</td>
+		<td  style="width: 60%;">
+			<textarea  name="value" class="layui-textarea"></textarea>
+		</td>
+		<td>
+			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+		</td>
+	</tr>
+	`;
+	
+	$("#paramList").append(html);
+	
+}
+
+
+function addParamOver(){
+	var targertId = $("#targertId").val();
+	var params = [];
+	$("tr[name='param']").each(function(){
+		var param = {};
+		param.name = $(this).find("textarea[name='name']").val();
+		param.value = $(this).find("textarea[name='value']").val();
+		
+		params.push(param);
+	})
+	$("#" + targertId).val(JSON.stringify(params).replace(/,/g,"%2C"));
+	
+	layer.close(paramIndex);
 }

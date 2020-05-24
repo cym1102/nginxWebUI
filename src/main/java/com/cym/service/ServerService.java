@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cym.model.Location;
+import com.cym.model.Param;
 import com.cym.model.Server;
 import com.cym.model.Upstream;
 
@@ -18,6 +19,7 @@ import cn.craccd.sqlHelper.utils.CriteriaOrWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 
 @Service
 public class ServerService {
@@ -41,8 +43,16 @@ public class ServerService {
 	}
 
 	@Transactional
-	public void addOver(Server server, Integer[] type, String[] path, String[] value, String[] upstreamId) {
+	public void addOver(Server server, String serverParamJson, Integer[] type, String[] path, String[] value, String[] upstreamId, String[] locationParamJson) {
 		sqlHelper.insertOrUpdate(server);
+		List<Param> paramList = JSONUtil.toList(JSONUtil.parseArray(serverParamJson.replace("%2C", ",")), Param.class);
+		List<String> locationIds = sqlHelper.findIdsByQuery(new CriteriaAndWrapper().eq("serverId", server.getId()), Location.class);
+		sqlHelper.deleteByQuery(new CriteriaOrWrapper().eq("serverId", server.getId()).in("locationId", locationIds), Param.class);
+		for (Param param : paramList) {
+			param.setServerId(server.getId());
+			sqlHelper.insert(param);
+		}
+
 		sqlHelper.deleteByQuery(new CriteriaAndWrapper().eq("serverId", server.getId()), Location.class);
 
 		if (type != null) {
@@ -59,30 +69,43 @@ public class ServerService {
 				}
 
 				sqlHelper.insert(location);
+
+				paramList = JSONUtil.toList(JSONUtil.parseArray(locationParamJson[i].replace("%2C", ",")), Param.class);
+				for (Param param : paramList) {
+					param.setLocationId(location.getId());
+					sqlHelper.insert(param);
+				}
 			}
 		}
 	}
 
 	@Transactional
-	public void addOverTcp(Server server) {
+	public void addOverTcp(Server server, String serverParamJson) {
 		server.setSsl(null);
 		server.setPem(null);
 		server.setKey(null);
 		server.setRewrite(null);
 		server.setServerName(null);
-		
+
 		if (StrUtil.isEmpty(server.getId())) {
 			sqlHelper.insert(server);
-		}else {
+		} else {
 			sqlHelper.updateAllColumnById(server);
 		}
-		
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper().eq("serverId", server.getId()), Location.class);
 
+		List<String> locationIds = sqlHelper.findIdsByQuery(new CriteriaAndWrapper().eq("serverId", server.getId()), Location.class);
+		sqlHelper.deleteByQuery(new CriteriaOrWrapper().eq("serverId", server.getId()).in("locationId", locationIds), Param.class);
+		List<Param> paramList = JSONUtil.toList(JSONUtil.parseArray(serverParamJson.replace("%2C", ",")), Param.class);
+		for (Param param : paramList) {
+			param.setServerId(server.getId());
+			sqlHelper.insert(param);
+		}
+
+		sqlHelper.deleteByQuery(new CriteriaAndWrapper().eq("serverId", server.getId()), Location.class);
 	}
 
 	public List<Server> getListByProxyType(Integer proxyType) {
 		return sqlHelper.findListByQuery(new CriteriaAndWrapper().eq("proxyType", proxyType), Server.class);
-		}
+	}
 
 }

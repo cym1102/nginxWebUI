@@ -10,8 +10,18 @@ public class ServerExt {
 	Server server;
 	List<Location> locationList;
 	String locationStr;
-
+	String paramJson;
 	
+	
+	
+	public String getParamJson() {
+		return paramJson;
+	}
+
+	public void setParamJson(String paramJson) {
+		this.paramJson = paramJson;
+	}
+
 	public String getLocationStr() {
 		return locationStr;
 	}

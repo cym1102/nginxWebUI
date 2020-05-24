@@ -52,10 +52,14 @@ wget https://craccd.oss-cn-beijing.aliyuncs.com/nginxWebUI-1.1.7.jar
 启动命令
 
 ```
-nohup java -jar nginxWebUI-1.1.7.jar --server.port=8080 --spring.database.sqlite-name=.sqlite > nginxWebUI.log &
+nohup java -jar -Xms64m -Xmx64m nginxWebUI-1.1.7.jar --server.port=8080 --spring.database.sqlite-name=.sqlite > nginxWebUI.log &
 ```
 
-参数说明
+参数说明(非必填)
+
+-Xms64m 起始分配内存数
+
+-Xmx64m 最大分配内存数
 
 --server.port 占用端口, 默认以8080端口启动
 

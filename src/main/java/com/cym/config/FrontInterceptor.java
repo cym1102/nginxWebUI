@@ -5,6 +5,7 @@ import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -15,6 +16,14 @@ public class FrontInterceptor implements HandlerInterceptor {
 
 	@Value("${spring.application.name}")
 	String projectName;
+
+	@Autowired
+	VersionConfig versionConfig;
+
+	@Value("${project.version}")
+	String currentVersion;
+	
+	
 	/*
 	 * 视图渲染之后的操作
 	 */
@@ -40,6 +49,15 @@ public class FrontInterceptor implements HandlerInterceptor {
 		request.setAttribute("ctx", ctx);
 		request.setAttribute("jsrandom", System.currentTimeMillis());
 		request.setAttribute("projectName", projectName);
+
+		if (versionConfig.getVersion() != null) {
+			request.setAttribute("version", versionConfig.getVersion());
+			
+			if(Integer.parseInt(currentVersion.replace(".", "").replace("v", "")) < Integer.parseInt(versionConfig.getVersion().getVersion().replace(".", "").replace("v", ""))) {
+				request.setAttribute("hasNewVersion", 1);
+			}
+			
+		}
 		return true;
 	}
 
@@ -52,7 +70,7 @@ public class FrontInterceptor implements HandlerInterceptor {
 		} catch (Throwable var4) {
 			effectiveURI = null;
 		}
-		return effectiveURI.toString().replace("http:", "").replace("https:" , "");
+		return effectiveURI.toString().replace("http:", "").replace("https:", "");
 	}
 
 }

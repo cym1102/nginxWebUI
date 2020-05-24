@@ -14,7 +14,18 @@ public class Location extends BaseModel {
 	String value;
 	String upstreamId;
 	
+	String locationParamJson;
 	
+	
+	
+	public String getLocationParamJson() {
+		return locationParamJson;
+	}
+
+	public void setLocationParamJson(String locationParamJson) {
+		this.locationParamJson = locationParamJson;
+	}
+
 	public String getUpstreamId() {
 		return upstreamId;
 	}

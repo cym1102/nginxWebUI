@@ -5,8 +5,8 @@ import java.util.List;
 import com.cym.model.Cert;
 import com.cym.model.Http;
 import com.cym.model.Location;
+import com.cym.model.Param;
 import com.cym.model.Server;
-import com.cym.model.Setting;
 import com.cym.model.Stream;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
@@ -19,12 +19,20 @@ public class AsycPack {
 	List<Upstream> upstreamList;
 	List<UpstreamServer> upstreamServerList;
 	List<Stream> streamList;
+	List<Param> paramList;
 
 	ConfExt confExt;
 
 	String decompose;
-	
-	
+
+	public List<Param> getParamList() {
+		return paramList;
+	}
+
+	public void setParamList(List<Param> paramList) {
+		this.paramList = paramList;
+	}
+
 	public String getDecompose() {
 		return decompose;
 	}
@@ -96,6 +104,5 @@ public class AsycPack {
 	public void setUpstreamServerList(List<UpstreamServer> upstreamServerList) {
 		this.upstreamServerList = upstreamServerList;
 	}
-
 
 }
