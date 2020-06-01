@@ -22,8 +22,43 @@
 						<input type="password" name="pass" id="pass" class="layui-input" value="" onkeyup="getKey()">
 					</div>
 				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">验证码</label>
+					<div class="layui-input-inline" style="width: 240px;">
+						<input type="text" name="code" class="layui-input" style="width: 100px;display: inline-block;" onkeyup="getKey()">
+						<img src="${ctx}/adminPage/login/getCode?t=${jsrandom}" id="codeImg" onclick="refreshCode('codeImg')">
+					</div>
+				</div>
 				<div class="layui-form-item" style="text-align: center;">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="login()">登录</button>
+				</div>
+			</form>
+		</div>
+		
+		<input type="hidden" id="adminCount" value="${adminCount}">
+		<div class="layui-form" id="addUserDiv" style="padding: 15px; display: none;">
+			<form id="adminForm">
+				<div class="layui-form-item">
+					<label class="layui-form-label">用户名</label>
+					<div class="layui-input-block">
+						<input type="text" name="name" id="adminName" class="layui-input" value="">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">密码</label>
+					<div class="layui-input-block">
+						<input type="password" name="pass" id="adminPass" class="layui-input" value="" >
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">再次输入</label>
+					<div class="layui-input-block">
+						<input type="password" id="repeatPass" class="layui-input" value="" >
+						<div class="layui-form-mid layui-word-aux">密码至少8位,包含大写小写和数字</div>
+					</div>
+				</div>
+				<div class="layui-form-item" style="text-align: center;">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addAdmin()">添加</button>
 
 				</div>
 			</form>

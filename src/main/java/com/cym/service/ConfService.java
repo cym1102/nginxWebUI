@@ -32,7 +32,7 @@ import com.github.odiszapc.nginxparser.NgxDumper;
 import com.github.odiszapc.nginxparser.NgxEntry;
 import com.github.odiszapc.nginxparser.NgxParam;
 
-import cn.craccd.sqlHelper.utils.CriteriaAndWrapper;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
@@ -69,7 +69,8 @@ public class ConfService {
 
 			// 获取http
 			List<Http> httpList = sqlHelper.findAll(Http.class);
-			NgxBlock ngxBlockHttp = ngxConfig.findBlock("http");
+			NgxBlock ngxBlockHttp = new NgxBlock();
+			ngxBlockHttp.addValue("http"); 
 			for (Http http : httpList) {
 				NgxParam ngxParam = new NgxParam();
 				ngxParam.addValue(http.getName() + " " + http.getValue());
@@ -158,7 +159,7 @@ public class ConfService {
 
 				List<Location> locationList = serverService.getLocationByServerId(server.getId());
 
-				// http转发配置
+				// http参数配置
 				for (Location location : locationList) {
 					NgxBlock ngxBlockLocation = new NgxBlock();
 					if (location.getType() == 0 || location.getType() == 2) { // http或负载均衡
@@ -265,22 +266,22 @@ public class ConfService {
 					// 是否需要分解
 					if (decompose) {
 						addConfFile(confExt, server.getServerName() + ".conf", ngxBlockServer);
-
 					} else {
 						ngxBlockHttp.addEntry(ngxBlockServer);
 					}
 				}
 
 			}
-			if (!hasHttp) {
-				ngxConfig.remove(ngxBlockHttp);
+			if (hasHttp) {
+				ngxConfig.addEntry(ngxBlockHttp);
 			}
 
 			// TCP转发
 			// 创建stream
 			List<Stream> streamList = sqlHelper.findAll(Stream.class);
 			boolean hasStream = false;
-			NgxBlock ngxBlockStream = ngxConfig.findBlock("stream");
+			NgxBlock ngxBlockStream = new NgxBlock();
+			ngxBlockStream.addValue("stream");
 			for (Stream stream : streamList) {
 				ngxParam = new NgxParam();
 				ngxParam.addValue(stream.getName() + " " + stream.getValue());
@@ -369,8 +370,8 @@ public class ConfService {
 				hasStream = true;
 			}
 
-			if (!hasStream) {
-				ngxConfig.remove(ngxBlockStream);
+			if (hasStream) {
+				ngxConfig.addEntry(ngxBlockStream);
 			}
 
 			String conf = new NgxDumper(ngxConfig).dump();
@@ -378,11 +379,11 @@ public class ConfService {
 			// 装载ngx_stream_module模块
 			if (hasStream && SystemTool.isLinux()) {
 				String module = settingService.get("ngx_stream_module");
-				if (StrUtil.isEmpty(module)) {
-					module = RuntimeTool.execForOne("find / -name ngx_stream_module.so").trim();
+				if (StrUtil.isEmpty(module) || !FileUtil.exist(module)) {
+					module = RuntimeTool.execForOne("find / -name ngx_stream_module.so");
 				}
 
-				if (StrUtil.isNotEmpty(module)) {
+				if (StrUtil.isNotEmpty(module) && FileUtil.exist(module)) {
 					settingService.set("ngx_stream_module", module);
 					conf = "load_module " + module + ";\n" + conf;
 				}
@@ -450,7 +451,7 @@ public class ConfService {
 		ZipUtil.zip(confd, nginxPath + date + ".zip");
 
 		// 写入主文件
-		FileUtil.writeString(nginxContent, nginxPath, Charset.defaultCharset());
+		FileUtil.writeString(nginxContent, nginxPath, Charset.forName("UTF-8"));
 		String decompose = settingService.get("decompose");
 
 		if ("true".equals(decompose)) {
@@ -458,7 +459,7 @@ public class ConfService {
 			if (subContent != null) {
 				for (int i = 0; i < subContent.length; i++) {
 					String tagert = nginxPath.replace("nginx.conf", "conf.d/" + subName[i]);
-					FileUtil.writeString(subContent[i], tagert, Charset.defaultCharset()); // 清空
+					FileUtil.writeString(subContent[i], tagert, Charset.forName("UTF-8")); // 清空
 				}
 			}
 		} else {
@@ -474,8 +475,8 @@ public class ConfService {
 		List<Cert> certList = sqlHelper.findAll(Cert.class);
 		for (Cert cert : certList) {
 			if (StrUtil.isNotEmpty(cert.getPem())) {
-				cert.setPemStr(FileUtil.readString(cert.getPem(), Charset.defaultCharset()));
-				cert.setKeyStr(FileUtil.readString(cert.getKey(), Charset.defaultCharset()));
+				cert.setPemStr(FileUtil.readString(cert.getPem(), Charset.forName("UTF-8")));
+				cert.setKeyStr(FileUtil.readString(cert.getKey(), Charset.forName("UTF-8")));
 			}
 		}
 
@@ -484,8 +485,8 @@ public class ConfService {
 		List<Server> serverList = sqlHelper.findAll(Server.class);
 		for (Server server : serverList) {
 			if (StrUtil.isNotEmpty(server.getPem())) {
-				server.setPemStr(FileUtil.readString(server.getPem(), Charset.defaultCharset()));
-				server.setKeyStr(FileUtil.readString(server.getKey(), Charset.defaultCharset()));
+				server.setPemStr(FileUtil.readString(server.getPem(), Charset.forName("UTF-8")));
+				server.setKeyStr(FileUtil.readString(server.getKey(), Charset.forName("UTF-8")));
 			}
 		}
 		asycPack.setServerList(serverList);
@@ -503,7 +504,7 @@ public class ConfService {
 		ConfExt confExt = buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"));
 
 		if (FileUtil.exist(nginxPath)) {
-			String orgStr = FileUtil.readString(nginxPath, Charset.defaultCharset());
+			String orgStr = FileUtil.readString(nginxPath, Charset.forName("UTF-8"));
 			confExt.setConf(orgStr);
 
 			for (ConfFile confFile : confExt.getFileList()) {
@@ -511,7 +512,7 @@ public class ConfService {
 
 				String filePath = nginxPath.replace("nginx.conf", "conf.d/" + confFile.getName());
 				if (FileUtil.exist(filePath)) {
-					confFile.setConf(FileUtil.readString(filePath, Charset.defaultCharset()));
+					confFile.setConf(FileUtil.readString(filePath, Charset.forName("UTF-8")));
 				}
 			}
 		}
@@ -524,14 +525,14 @@ public class ConfService {
 	@Transactional
 	public void setAsycPack(AsycPack asycPack) {
 
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper(), Cert.class);
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper(), Http.class);
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper(), Server.class);
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper(), Location.class);
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper(), Upstream.class);
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper(), UpstreamServer.class);
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper(), Stream.class);
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper(), Param.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Cert.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Http.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Server.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Location.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Upstream.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), UpstreamServer.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Stream.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Param.class);
 
 		sqlHelper.insertAll(asycPack.getCertList());
 		sqlHelper.insertAll(asycPack.getHttpList());
@@ -544,15 +545,15 @@ public class ConfService {
 
 		for (Cert cert : asycPack.getCertList()) {
 			if (StrUtil.isNotEmpty(cert.getPem())) {
-				FileUtil.writeString(cert.getPemStr(), cert.getPem(), Charset.defaultCharset());
-				FileUtil.writeString(cert.getKeyStr(), cert.getKey(), Charset.defaultCharset());
+				FileUtil.writeString(cert.getPemStr(), cert.getPem(), Charset.forName("UTF-8"));
+				FileUtil.writeString(cert.getKeyStr(), cert.getKey(), Charset.forName("UTF-8"));
 			}
 		}
 
 		for (Server server : asycPack.getServerList()) {
 			if (StrUtil.isNotEmpty(server.getPem())) {
-				FileUtil.writeString(server.getPemStr(), server.getPem(), Charset.defaultCharset());
-				FileUtil.writeString(server.getKeyStr(), server.getKey(), Charset.defaultCharset());
+				FileUtil.writeString(server.getPemStr(), server.getPem(), Charset.forName("UTF-8"));
+				FileUtil.writeString(server.getKeyStr(), server.getKey(), Charset.forName("UTF-8"));
 			}
 		}
 

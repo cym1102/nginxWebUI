@@ -1,5 +1,6 @@
 package com.cym.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,8 @@ import com.cym.model.Upstream;
 import cn.craccd.sqlHelper.bean.Page;
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
-import cn.craccd.sqlHelper.utils.CriteriaAndWrapper;
-import cn.craccd.sqlHelper.utils.CriteriaOrWrapper;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
+import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -35,25 +36,28 @@ public class ServerService {
 	@Transactional
 	public void deleteById(String id) {
 		sqlHelper.deleteById(id, Server.class);
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper().eq("serverId", id), Location.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("serverId", id), Location.class);
 	}
 
 	public List<Location> getLocationByServerId(String serverId) {
-		return sqlHelper.findListByQuery(new CriteriaAndWrapper().eq("serverId", serverId), Location.class);
+		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq("serverId", serverId), Location.class);
 	}
 
 	@Transactional
 	public void addOver(Server server, String serverParamJson, Integer[] type, String[] path, String[] value, String[] upstreamId, String[] locationParamJson) {
 		sqlHelper.insertOrUpdate(server);
-		List<Param> paramList = JSONUtil.toList(JSONUtil.parseArray(serverParamJson.replace("%2C", ",")), Param.class);
-		List<String> locationIds = sqlHelper.findIdsByQuery(new CriteriaAndWrapper().eq("serverId", server.getId()), Location.class);
-		sqlHelper.deleteByQuery(new CriteriaOrWrapper().eq("serverId", server.getId()).in("locationId", locationIds), Param.class);
+		List<Param> paramList = new ArrayList<Param>();
+		if (StrUtil.isNotEmpty(serverParamJson) && JSONUtil.isJson(serverParamJson.replace("%2C", ","))) {
+			paramList = JSONUtil.toList(JSONUtil.parseArray(serverParamJson.replace("%2C", ",")), Param.class);
+		}
+		List<String> locationIds = sqlHelper.findIdsByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
+		sqlHelper.deleteByQuery(new ConditionOrWrapper().eq("serverId", server.getId()).in("locationId", locationIds), Param.class);
 		for (Param param : paramList) {
 			param.setServerId(server.getId());
 			sqlHelper.insert(param);
 		}
 
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper().eq("serverId", server.getId()), Location.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
 
 		if (type != null) {
 			for (int i = 0; i < type.length; i++) {
@@ -70,7 +74,11 @@ public class ServerService {
 
 				sqlHelper.insert(location);
 
-				paramList = JSONUtil.toList(JSONUtil.parseArray(locationParamJson[i].replace("%2C", ",")), Param.class);
+				paramList = new ArrayList<Param>();
+				if (locationParamJson.length > 0 && StrUtil.isNotEmpty(locationParamJson[i]) && JSONUtil.isJson(locationParamJson[i].replace("%2C", ","))) {
+					paramList = JSONUtil.toList(JSONUtil.parseArray(locationParamJson[i].replace("%2C", ",")), Param.class);
+				}
+
 				for (Param param : paramList) {
 					param.setLocationId(location.getId());
 					sqlHelper.insert(param);
@@ -93,19 +101,23 @@ public class ServerService {
 			sqlHelper.updateAllColumnById(server);
 		}
 
-		List<String> locationIds = sqlHelper.findIdsByQuery(new CriteriaAndWrapper().eq("serverId", server.getId()), Location.class);
-		sqlHelper.deleteByQuery(new CriteriaOrWrapper().eq("serverId", server.getId()).in("locationId", locationIds), Param.class);
-		List<Param> paramList = JSONUtil.toList(JSONUtil.parseArray(serverParamJson.replace("%2C", ",")), Param.class);
+		List<String> locationIds = sqlHelper.findIdsByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
+		sqlHelper.deleteByQuery(new ConditionOrWrapper().eq("serverId", server.getId()).in("locationId", locationIds), Param.class);
+		List<Param> paramList = new ArrayList<Param>();
+		if (StrUtil.isNotEmpty(serverParamJson) && JSONUtil.isJson(serverParamJson.replace("%2C", ","))) {
+			paramList = JSONUtil.toList(JSONUtil.parseArray(serverParamJson.replace("%2C", ",")), Param.class);
+		}
+
 		for (Param param : paramList) {
 			param.setServerId(server.getId());
 			sqlHelper.insert(param);
 		}
 
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper().eq("serverId", server.getId()), Location.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
 	}
 
 	public List<Server> getListByProxyType(Integer proxyType) {
-		return sqlHelper.findListByQuery(new CriteriaAndWrapper().eq("proxyType", proxyType), Server.class);
+		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq("proxyType", proxyType), Server.class);
 	}
 
 }

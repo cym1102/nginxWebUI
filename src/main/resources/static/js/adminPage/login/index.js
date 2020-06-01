@@ -1,13 +1,25 @@
 $(function() {
 
-	layer.open({
-		type : 1,
-		shade : false,
-		title : "nginx配置器",
-		closeBtn : false,
-		area : [ '400px', '330px' ], //宽高
-		content : $('#windowDiv')
-	});
+	if($("#adminCount").val() > 0){
+		layer.open({
+			type : 1,
+			shade : false,
+			title : "nginx配置器",
+			closeBtn : false,
+			area : [ '400px', '330px' ], //宽高
+			content : $('#windowDiv')
+		});
+	}else{
+		layer.open({
+			type : 1,
+			shade : false,
+			title : "初始化管理员",
+			closeBtn : false,
+			area : [ '400px', '330px' ], //宽高
+			content : $('#addUserDiv')
+		});
+	}
+	
 
 })
 
@@ -21,7 +33,7 @@ function login() {
 			if (data.success) {
 				location.href = ctx + "adminPage/http";
 			} else {
-				alert("登录失败,请检查输入");
+				layer.msg(data.msg);
 			}
 		},
 		error : function() {
@@ -31,8 +43,47 @@ function login() {
 	
 }
 
+
+function addAdmin(){
+	if($("#adminName").val()==''){
+		layer.msg("用户名未填写");
+		return;
+	}
+	if($("#adminPass").val() == '' || $("#repeatPass").val() == ''){
+		layer.msg("密码未填写");
+		return;
+	}
+	if($("#adminPass").val() != $("#repeatPass").val()){
+		layer.msg("密码不一致");
+		return;
+	}
+	
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/login/addAdmin',
+		data : $("#adminForm").serialize(),
+		dataType : 'json',
+		success : function(data) {
+			if (data.success) {
+				location.reload();
+			} else {
+				layer.msg(data.msg);
+			}
+		},
+		error : function() {
+			alert("出错了,请联系技术人员!");
+		}
+	});
+}
+
 function getKey() {
 	if (event.keyCode == 13) {
 		login();
 	}
 }
+
+
+function refreshCode(id) {
+	$("#" + id).attr("src", ctx + "adminPage/login/getCode?t=" + (new Date()).getTime());
+}
+

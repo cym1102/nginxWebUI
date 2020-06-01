@@ -34,31 +34,31 @@
 								<label class="layui-form-label" style="width: 120px;">conf文件路径<span class="red">*</span></label>
 							</div>
 							<div class="layui-input-inline">
-								<input type="text" id="nginxPath" name="nginxPath" class="layui-input" style="width: 300px;" value="${nginxPath}">
+								<input type="text" id="nginxPath" name="nginxPath" class="layui-input" style="width: 300px;" value="${nginxPath}" oninput="saveCmd()">
 								
 							</div>
 							<div class="layui-input-inline">
-								<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxPath')"></i>   
+								<i class="layui-icon layui-icon-export" onclick="selectRootCustom('nginxPath')"></i>   
 							</div>
 
 							<div class="layui-input-inline">
 								<label class="layui-form-label" style="width: 120px;">nginx执行命令<span class="red">*</span></label>
 							</div>
 							<div class="layui-input-inline">
-								<input type="text" id="nginxExe" name="nginxExe" class="layui-input" style="width: 300px;" value="${nginxExe}">
+								<input type="text" id="nginxExe" name="nginxExe" class="layui-input" style="width: 300px;" value="${nginxExe}" oninput="saveCmd()">
 							</div>
 							<div class="layui-input-inline">
-								<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxExe')"></i>   
+								<i class="layui-icon layui-icon-export" onclick="selectRootCustom('nginxExe')"></i>   
 							</div>
 							
 							<div class="layui-input-inline">
 								<label class="layui-form-label" style="width: 120px;">nginx目录</label>
 							</div>
 							<div class="layui-input-inline">
-								<input type="text" id="nginxDir" name="nginxDir" class="layui-input" style="width: 300px;" value="${nginxDir}">
+								<input type="text" id="nginxDir" name="nginxDir" class="layui-input" style="width: 300px;" value="${nginxDir}" oninput="saveCmd()">
 							</div>
 							<div class="layui-input-inline">
-								<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxDir')"></i>   
+								<i class="layui-icon layui-icon-export" onclick="selectRootCustom('nginxDir')"></i>   
 							</div>
 						</div>
 
@@ -88,6 +88,10 @@
 							</div>
 							<div class="layui-inline">
 								<button type="button" class="layui-btn" onclick="stop()">停止nginx</button>
+							</div>
+							
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width: 150px;" id="nginxStatus"></label>
 							</div>
 						</div>
 					</div>

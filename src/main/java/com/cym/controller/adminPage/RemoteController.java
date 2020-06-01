@@ -28,7 +28,9 @@ import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.net.URLEncoder;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 
@@ -43,7 +45,9 @@ public class RemoteController extends BaseController {
 	ConfService confService;
 	@Autowired
 	GroupService groupService;
-	
+	@Autowired
+	ConfController confController;
+
 	@Value("${project.version}")
 	String version;
 	@Value("${server.port}")
@@ -101,14 +105,14 @@ public class RemoteController extends BaseController {
 			Remote remoteGroup = new Remote();
 			remoteGroup.setDescr(group.getName());
 			remoteGroup.setId(group.getId());
-			remoteGroup.setParentId(group.getParentId()!=null?group.getParentId():"");
+			remoteGroup.setParentId(group.getParentId() != null ? group.getParentId() : "");
 			remoteGroup.setType(1);
-			
+
 			remoteGroup.setIp("");
 			remoteGroup.setProtocol("");
 			remoteGroup.setVersion("");
 			remoteGroup.setSystem("");
-			
+
 			remoteList.add(remoteGroup);
 		}
 
@@ -118,7 +122,7 @@ public class RemoteController extends BaseController {
 	@RequestMapping("addGroupOver")
 	@ResponseBody
 	public JsonResult addGroupOver(Group group) {
-		
+
 		sqlHelper.insertOrUpdate(group);
 
 		return renderSuccess();
@@ -129,11 +133,11 @@ public class RemoteController extends BaseController {
 	public JsonResult groupDetail(String id) {
 		return renderSuccess(sqlHelper.findById(id, Group.class));
 	}
-	
+
 	@RequestMapping("delGroup")
 	@ResponseBody
 	public JsonResult delGroup(String id) {
-		
+
 		groupService.delete(id);
 		return renderSuccess();
 	}
@@ -141,79 +145,174 @@ public class RemoteController extends BaseController {
 	@RequestMapping("getGroupTree")
 	@ResponseBody
 	public JsonResult getGroupTree() {
-		
+
 		List<Group> groups = groupService.getListByParent(null);
 		List<Tree> treeList = new ArrayList<>();
-		fillTree(groups ,treeList);
-		
+		fillTree(groups, treeList);
+
 		Tree tree = new Tree();
 		tree.setName("--无分组--");
 		tree.setValue("");
-		
+
 		treeList.add(0, tree);
-		
+
 		return renderSuccess(treeList);
 	}
 
 	private void fillTree(List<Group> groups, List<Tree> treeList) {
-		for(Group group:groups) {
+		for (Group group : groups) {
 			Tree tree = new Tree();
 			tree.setName(group.getName());
 			tree.setValue(group.getId());
-			
+
 			List<Tree> treeSubList = new ArrayList<>();
-			fillTree(groupService.getListByParent(group.getId()),treeSubList);
+			fillTree(groupService.getListByParent(group.getId()), treeSubList);
 			tree.setChildren(treeSubList);
-			
+
 			treeList.add(tree);
 		}
-		
+
 	}
 
-	@RequestMapping("getAllowRemote")
+//	@RequestMapping("getAllowRemote")
+//	@ResponseBody
+//	public JsonResult getAllowRemote(String id) {
+//		Remote remoteFrom = sqlHelper.findById(id, Remote.class);
+//		String system = null;
+//		List<Remote> remotes = null;
+//		if (remoteFrom == null) {
+//			// 本地
+//			system = SystemTool.getSystem();
+//			remotes = remoteService.getBySystem(system);
+//		} else {
+//			// 远程
+//			system = remoteFrom.getSystem();
+//			remotes = remoteService.getBySystem(system);
+//
+//			// 去掉自己
+//			for (Remote remote : remotes) {
+//				if (remote.getId().equals(remoteFrom.getId())) {
+//					remotes.remove(remote);
+//					break;
+//				}
+//			}
+//
+//			// 系统相同,加上本地
+//			if (system.equals(SystemTool.getSystem())) {
+//				Remote remote = new Remote();
+//				remote.setId("本地");
+//				remote.setIp("本地");
+//				remote.setVersion(version);
+//				remote.setPort(port);
+//				remote.setSystem(SystemTool.getSystem());
+//				remote.setDescr("");
+//
+//				remotes.add(0, remote);
+//			}
+//		}
+//
+//		return renderSuccess(remotes);
+//	}
+
+	@RequestMapping("getCmdRemote")
 	@ResponseBody
-	public JsonResult getAllowRemote(String id) {
-		Remote remoteFrom = sqlHelper.findById(id, Remote.class);
-		String system = null;
-		List<Remote> remotes = null;
-		if (remoteFrom == null) {
-			// 本地
-			system = SystemTool.getSystem();
-			remotes = remoteService.getBySystem(system);
-		} else {
-			// 远程
-			system = remoteFrom.getSystem();
-			remotes = remoteService.getBySystem(system);
+	public JsonResult getCmdRemote() {
+//		List<Remote> remotes = sqlHelper.findAll(Remote.class);
 
-			// 去掉自己
-			for (Remote remote : remotes) {
-				if (remote.getId().equals(remoteFrom.getId())) {
-					remotes.remove(remote);
-					break;
+		List<Group> groups = groupService.getListByParent(null);
+		List<Remote> remotes = remoteService.getListByParent(null);
+
+		List<Tree> treeList = new ArrayList<>();
+		fillTreeRemote(groups, remotes, treeList);
+
+		Tree tree = new Tree();
+		tree.setName("本地");
+		tree.setValue("本地");
+
+		treeList.add(0, tree);
+
+		return renderSuccess(treeList);
+	}
+
+	private void fillTreeRemote(List<Group> groups, List<Remote> remotes, List<Tree> treeList) {
+		for (Group group : groups) {
+			Tree tree = new Tree();
+			tree.setName(group.getName());
+			tree.setValue(group.getId());
+
+			List<Tree> treeSubList = new ArrayList<>();
+
+			fillTreeRemote(groupService.getListByParent(group.getId()), remoteService.getListByParent(group.getId()), treeSubList);
+
+			tree.setChildren(treeSubList);
+
+			treeList.add(tree);
+		}
+
+		for (Remote remote : remotes) {
+			Tree tree = new Tree();
+			tree.setName(remote.getIp() + "【" + remote.getDescr() + "】");
+			tree.setValue(remote.getId());
+
+			treeList.add(tree);
+		}
+
+	}
+
+	@RequestMapping("cmdOver")
+	@ResponseBody
+	public JsonResult cmdOver(String[] remoteId, String cmd) {
+		if (remoteId == null || remoteId.length == 0) {
+			return renderSuccess("未选择服务器");
+		}
+
+		String rs = "";
+		if (remoteId != null) {
+			for (String id : remoteId) {
+				JsonResult jsonResult = null;
+				if (id.equals("本地")) {
+					if (cmd.contentEquals("check")) {
+						jsonResult = confController.check(null, null, null);
+					}
+					if (cmd.contentEquals("reload")) {
+						jsonResult = confController.reload(null, null, null);
+					}
+					if (cmd.contentEquals("start")) {
+						jsonResult = confController.start(null, null);
+					}
+					if (cmd.contentEquals("stop")) {
+						jsonResult = confController.stop(null, null);
+					}
+
+					rs += "<span class='blue'>本地> </span>";
+				} else {
+					Remote remote = sqlHelper.findById(id, Remote.class);
+					rs += "<span class='blue'>" + remote.getIp() + "> </span>";
+					String json = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/conf/" + cmd + "?creditKey=" + remote.getCreditKey(), 500);
+					jsonResult = JSONUtil.toBean(json, JsonResult.class);
+
 				}
-			}
 
-			// 系统相同,加上本地
-			if (system.equals(SystemTool.getSystem())) {
-				Remote remote = new Remote();
-				remote.setId("本地");
-				remote.setIp("本地");
-				remote.setVersion(version);
-				remote.setPort(port);
-				remote.setSystem(SystemTool.getSystem());
-				remote.setDescr("");
+				if (jsonResult.isSuccess()) {
+					rs += jsonResult.getObj().toString();
+				} else {
+					rs += jsonResult.getMsg();
+				}
 
-				remotes.add(0, remote);
+				rs += "<br>";
 			}
 		}
 
-		return renderSuccess(remotes);
+		return renderSuccess(rs);
 	}
 
 	@RequestMapping("asyc")
 	@ResponseBody
 	public JsonResult asyc(String fromId, String[] remoteId) {
-
+		if (StrUtil.isEmpty(fromId) || remoteId == null || remoteId.length == 0) {
+			return renderSuccess("未选择服务器");
+		}
+		
 		Remote remoteFrom = sqlHelper.findById(fromId, Remote.class);
 		String json = null;
 		if (remoteFrom == null) {
@@ -227,11 +326,11 @@ public class RemoteController extends BaseController {
 		if (remoteId != null) {
 			for (String remoteToId : remoteId) {
 				if (remoteToId.equals("本地")) {
-					System.err.println("同步到本地");
+					System.out.println("同步到本地");
 					setAsycPack(json);
 				} else {
 					Remote remoteTo = sqlHelper.findById(remoteToId, Remote.class);
-					System.err.println("同步到" + remoteTo.getIp());
+					System.out.println("同步到" + remoteTo.getIp());
 					try {
 						String version = HttpUtil.get(remoteTo.getProtocol() + "://" + remoteTo.getIp() + ":" + remoteTo.getPort() + "/adminPage/remote/version?creditKey=" + remoteTo.getCreditKey(),
 								500);
@@ -256,13 +355,13 @@ public class RemoteController extends BaseController {
 	public String getAsycPack() {
 		AsycPack asycPack = confService.getAsycPack();
 
-		return JSONUtil.toJsonStr(asycPack);
+		return JSONUtil.toJsonPrettyStr(asycPack);
 	}
 
 	@RequestMapping("setAsycPack")
 	@ResponseBody
 	public JsonResult setAsycPack(String json) {
-		System.err.println("收到同步信息");
+		System.err.println("收到同步信息:" + json);
 		AsycPack asycPack = JSONUtil.toBean(json, AsycPack.class);
 
 		confService.setAsycPack(asycPack);
@@ -323,7 +422,7 @@ public class RemoteController extends BaseController {
 		String nginxPath = settingService.get("nginxPath");
 
 		if (FileUtil.exist(nginxPath)) {
-			String orgStr = FileUtil.readString(nginxPath, Charset.defaultCharset());
+			String orgStr = FileUtil.readString(nginxPath, Charset.forName("UTF-8"));
 			return orgStr;
 		} else {
 			return "文件不存在";

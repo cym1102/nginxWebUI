@@ -29,8 +29,10 @@ nginx本身功能复杂, 本项目并不能涵盖nginx所有功能, 只能配置
 
 添加tcp/ip转发配置支持时, 一些低版本的nginx可能需要重新编译，通过添加–with-stream参数指定安装stream模块才能使用, 但在ubuntu 18.04下, 官方软件库中的nginx已经带有stream模块, 不需要重新编译. 本系统如果配置了tcp转发项的话, 会自动引入ngx_stream_module.so的配置项, 如果没有开启则不引入, 最大限度优化ngnix配置文件. 
 
-#### 安装说明
-以Ubuntu操作系统为例, 以下命令请使用root账户权限执行
+#### jar安装说明
+以Ubuntu操作系统为例, 以下命令请使用root账户权限执行  
+
+ **注意：本项目需要在root用户下运行系统命令，极容易被黑客利用，请一定修改密码为复杂密码**
 
 1.安装java运行环境和nginx
 
@@ -44,7 +46,7 @@ apt install nginx
 码云的服务器下载较慢, CDN地址(可使用wget下载): 
 
 ```
-wget https://craccd.oss-cn-beijing.aliyuncs.com/nginxWebUI-1.1.7.jar
+wget https://craccd.oss-cn-beijing.aliyuncs.com/nginxWebUI-1.2.4.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -52,23 +54,50 @@ wget https://craccd.oss-cn-beijing.aliyuncs.com/nginxWebUI-1.1.7.jar
 启动命令
 
 ```
-nohup java -jar -Xms64m -Xmx64m nginxWebUI-1.1.7.jar --server.port=8080 --spring.database.sqlite-name=.sqlite > nginxWebUI.log &
+java -jar -Xmx64m nginxWebUI-1.2.4.jar --server.port=8080 --logging.file.path=/home/log/nginxWebUI.log --spring.database.sqlite-path=/home/nginxWebUI/sqlite &
 ```
 
-参数说明(非必填)
-
--Xms64m 起始分配内存数
+参数说明(都是非必填)
 
 -Xmx64m 最大分配内存数
 
 --server.port 占用端口, 默认以8080端口启动
 
---spring.database.sqlite-name sqlite文件释放后文件名, 默认释放为.sqlite, 修改此项可在一台机器上部署多个nginxWebUI
+--spring.database.sqlite-path sqlite文件释放后文件路径, 默认释放为/home/nginxWebUI/sqlite.db
+
+--logging.file.name 日志存放路径，会已10m大小为界限分割日志文件, 默认为/home/nginxWebUI/log/nginxWebUI.log
+
+注意命令最后加一个&号, 表示项目后台运行
+
+#### docker安装说明
+
+本项目制作了docker镜像, 同时包含nginx和nginxWebUI在内, 一体化管理与运行nginx. 
+
+下载镜像: 
+
+```
+docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.2.4
+```
+
+启动容器: 
+
+```
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--变量名=变量值 --变量名2=变量值2" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.2.4 /bin/bash
+```
+
+注意: 
+
+1. 启动容器时请使用--net=host参数, 直接映射本机端口, 因为内部nginx可能使用任意一个端口, 所以必须映射本机所有端口. 
+
+2. 容器需要映射路径/home/nginxWebUI:/home/nginxWebUI, 此路径下存放项目所有数据文件, 包括数据库, nginx配置文件, 日志, 证书等, 升级镜像时, 此目录可保证项目数据不丢失. 请注意备份.
+
+3. -e BOOT_OPTIONS 参数可填充java启动参数, jar安装教程中的参数均可使用, 可以靠此项参数修改端口号等
+
+4. 日志默认存放在/home/nginxWebUI/log/nginxWebUI.log
 
 #### 使用说明
 
-打开http://xxx.xxx.xxx.xx:8080
-默认登录名密码为admin/admin
+打开 http://xxx.xxx.xxx.xxx:8080 第一次打开会要求初始化管理员账号
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0515/165140_ee1bd853_1100382.jpeg "login.jpg")
 
@@ -78,11 +107,11 @@ nohup java -jar -Xms64m -Xmx64m nginxWebUI-1.1.7.jar --server.port=8080 --spring
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0518/171217_a1c2effc_1100382.jpeg "http.jpg")
 
-在http转发配置中可以配置nginx的http项目,进行http转发,默认会给出几个常用配置,其他需要的配置可自由增删改查
+在http参数配置中可以配置nginx的http项目,进行http转发,默认会给出几个常用配置,其他需要的配置可自由增删改查
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0518/171234_e767f5a6_1100382.jpeg "stream.jpg")
 
-在tcp转发配置中可以配置nginx的steam项目参数,进行tcp转发
+在TCP参数配置中可以配置nginx的steam项目参数,进行tcp转发
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0518/171323_8865fca3_1100382.jpeg "server.jpg")
 

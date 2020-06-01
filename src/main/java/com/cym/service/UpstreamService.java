@@ -12,9 +12,8 @@ import com.cym.model.UpstreamServer;
 import cn.craccd.sqlHelper.bean.Page;
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
-import cn.craccd.sqlHelper.utils.CriteriaAndWrapper;
-import cn.craccd.sqlHelper.utils.CriteriaOrWrapper;
-import cn.craccd.sqlHelper.utils.CriteriaWrapper;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
+import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.util.StrUtil;
 
@@ -24,13 +23,13 @@ public class UpstreamService {
 	SqlHelper sqlHelper;
 
 	public Page search(Page page, String word) {
-		CriteriaAndWrapper criteriaAndWrapper = new CriteriaAndWrapper();
+		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper();
 
 		if (StrUtil.isNotEmpty(word)) {
-			criteriaAndWrapper.and(new CriteriaOrWrapper().like("name", word));
+			conditionAndWrapper.and(new ConditionOrWrapper().like("name", word));
 		}
 
-		page = sqlHelper.findPage(criteriaAndWrapper, new Sort("id", Direction.DESC), page, Upstream.class);
+		page = sqlHelper.findPage(conditionAndWrapper, new Sort("id", Direction.DESC), page, Upstream.class);
 
 		return page;
 	}
@@ -38,7 +37,7 @@ public class UpstreamService {
 	@Transactional
 	public void deleteById(String id) {
 		sqlHelper.deleteById(id, Upstream.class);
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper().eq("upstreamId", id), UpstreamServer.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("upstreamId", id), UpstreamServer.class);
 	}
 
 	@Transactional
@@ -49,7 +48,7 @@ public class UpstreamService {
 
 		sqlHelper.insertOrUpdate(upstream);
 
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper().eq("upstreamId", upstream.getId()), UpstreamServer.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("upstreamId", upstream.getId()), UpstreamServer.class);
 
 		if (servers != null) {
 			for (int i = 0; i < servers.length; i++) {
@@ -70,22 +69,22 @@ public class UpstreamService {
 	}
 
 	public List<UpstreamServer> getUpstreamServers(String id) {
-		return sqlHelper.findListByQuery(new CriteriaAndWrapper().eq("upstreamId", id), UpstreamServer.class);
+		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq("upstreamId", id), UpstreamServer.class);
 	}
 
 	@Transactional
 	public void del(String id) {
 		sqlHelper.deleteById(id, Upstream.class);
-		sqlHelper.deleteByQuery(new CriteriaAndWrapper().eq("upstreamId", id), UpstreamServer.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("upstreamId", id), UpstreamServer.class);
 
 	}
 
 	public List<Upstream> getListByProxyType(Integer proxyType) {
-		return sqlHelper.findListByQuery(new CriteriaAndWrapper().eq("proxyType", proxyType), Upstream.class);
+		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq("proxyType", proxyType), Upstream.class);
 	}
 
 	public Long getCountByName(String name) {
-		return sqlHelper.findCountByQuery(new CriteriaAndWrapper().eq("name", name), Upstream.class);
+		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("name", name), Upstream.class);
 	}
 
 }

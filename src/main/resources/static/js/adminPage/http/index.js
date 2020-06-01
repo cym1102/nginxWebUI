@@ -8,7 +8,7 @@ function add() {
 	$("#name").val(""); 
 	$("#value").val(""); 
 	
-	showWindow("添加http转发配置");
+	showWindow("添加http参数配置");
 }
 
 
@@ -67,7 +67,7 @@ function edit(id) {
 				$("#name").val(http.name);
 				
 				form.render();
-				showWindow("编辑http转发配置");
+				showWindow("编辑http参数配置");
 			}else{
 				layer.msg(data.msg);
 			}

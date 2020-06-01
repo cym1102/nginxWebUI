@@ -2,8 +2,27 @@ package com.cym.model;
 
 public class Version {
 	String version;
-	
+	String docker;
 	String url;
+	String update;
+	
+	
+	
+	public String getUpdate() {
+		return update;
+	}
+
+	public void setUpdate(String update) {
+		this.update = update;
+	}
+
+	public String getDocker() {
+		return docker;
+	}
+
+	public void setDocker(String docker) {
+		this.docker = docker;
+	}
 
 	public String getVersion() {
 		return version;

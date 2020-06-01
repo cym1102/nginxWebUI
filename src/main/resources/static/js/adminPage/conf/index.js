@@ -23,8 +23,28 @@ $(function() {
 					alert("出错了,请联系技术人员!");
 				}
 		});
-	});       
+	});   
+	
+	nginxStatus();
 })
+
+function nginxStatus() {
+
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/conf/nginxStatus',
+		dataType : 'json',
+		success : function(data) {
+			if (data.success) {
+				$("#nginxStatus").html(data.obj);
+			} 
+		},
+		error : function() {
+			
+		}
+	});
+}
+
 
 function replace() {
 	if ($("#nginxPath").val() == '') {
@@ -241,7 +261,6 @@ function start(){
 		}
 	}
 	
-	
 	if(confirm("确认启动?")){
 		$.ajax({
 			type : 'POST',
@@ -266,6 +285,8 @@ function start(){
 						  content: data.msg
 					});
 				}
+				
+				nginxStatus();
 			},
 			error : function() {
 				layer.closeAll();
@@ -315,6 +336,8 @@ function stop(){
 						  content: data.msg
 					});
 				}
+				
+				nginxStatus();
 			},
 			error : function() {
 				layer.closeAll();
@@ -322,4 +345,35 @@ function stop(){
 			}
 		});
 	}
+}
+
+
+function saveCmd(){
+	
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/conf/saveCmd',
+		data : {
+			nginxExe : $("#nginxExe").val(),
+			nginxDir : $("#nginxDir").val(),
+			nginxPath : $("#nginxPath").val()
+		},
+		dataType : 'json',
+		success : function(data) {
+			//layer.msg("ok");
+		},
+		error : function() {
+			
+		}
+	});
+	
+}
+
+
+
+function selectRootCustom(inputId){
+	rootSelect.selectOne(function callBack(val){
+		$("#" + inputId).val(val);
+		saveCmd();
+	});
 }

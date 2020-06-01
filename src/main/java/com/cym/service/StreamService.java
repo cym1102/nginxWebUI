@@ -8,7 +8,7 @@ import com.cym.model.Stream;
 import cn.craccd.sqlHelper.bean.Page;
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
-import cn.craccd.sqlHelper.utils.CriteriaAndWrapper;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 
 @Service
@@ -17,7 +17,7 @@ public class StreamService {
 	SqlHelper sqlHelper;
 
 	public boolean hasName(String name) {
-		return sqlHelper.findCountByQuery(new CriteriaAndWrapper().eq("name", name), Stream.class) > 0;
+		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("name", name), Stream.class) > 0;
 	}
 	
 	

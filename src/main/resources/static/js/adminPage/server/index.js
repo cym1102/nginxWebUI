@@ -315,7 +315,7 @@ function addItem(){
 							</span>
 						</td> 
 						<td>
-							<input type="hidden" id="locationParamJson_${uuid}" name="locationParamJson" >
+							<input type="hidden" id="locationParamJson_${uuid}" name="locationParamJson"  value="">
 							<button type="button" class="layui-btn layui-btn-sm" onclick="locationParam('${uuid}')">设置额外参数</button>
 							<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
 						</td>

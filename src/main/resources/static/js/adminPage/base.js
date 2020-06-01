@@ -162,3 +162,19 @@ function downloadFile(url, name) {
 	window.open(ctx + "downloadFile?url=" + encodeURIComponent(url) + "&name="
 			+ encodeURIComponent(name));
 }
+
+function showUpdate(version, url, docker,update){
+	var str = `
+		<div style="font-size: 16px; font-weight: bolder;">有新版本发布 ${version}</div>
+		<div>更新内容: ${update}</div>
+		<div>jar下载地址: <a href='${url}' class='blue' target="_blank">${url}</a></div>
+		<div>docker地址: <span class='blue'>${docker}</span></div>
+	`;
+	
+	layer.open({
+		  type: 0, 
+		  area : [ '600px', '400px' ],
+		  content: str
+	});
+	
+}

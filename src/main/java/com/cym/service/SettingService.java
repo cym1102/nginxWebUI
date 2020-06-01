@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.cym.model.Setting;
 
-import cn.craccd.sqlHelper.utils.CriteriaAndWrapper;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 
 @Service
@@ -14,7 +14,7 @@ public class SettingService {
 	SqlHelper sqlHelper;
 
 	public void set(String key, String value) {
-		Setting setting = sqlHelper.findOneByQuery(new CriteriaAndWrapper().eq("key", key), Setting.class);
+		Setting setting = sqlHelper.findOneByQuery(new ConditionAndWrapper().eq("key", key), Setting.class);
 		if (setting == null) {
 			setting = new Setting();
 		}
@@ -26,7 +26,7 @@ public class SettingService {
 	}
 
 	public String get(String key) {
-		Setting setting = sqlHelper.findOneByQuery(new CriteriaAndWrapper().eq("key", key), Setting.class);
+		Setting setting = sqlHelper.findOneByQuery(new ConditionAndWrapper().eq("key", key), Setting.class);
 
 		if (setting == null) {
 			return null;

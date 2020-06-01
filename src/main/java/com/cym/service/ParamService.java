@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.cym.model.Param;
 
-import cn.craccd.sqlHelper.utils.CriteriaAndWrapper;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.json.JSONUtil;
 
@@ -19,7 +19,7 @@ public class ParamService {
 
 	public String getJsonByTypeId(String id, String type) {
 
-		List<Param> list = sqlHelper.findListByQuery(new CriteriaAndWrapper().eq(type + "Id", id), Param.class);
+		List<Param> list = sqlHelper.findListByQuery(new ConditionAndWrapper().eq(type + "Id", id), Param.class);
 
 		return JSONUtil.toJsonStr(list);
 	}
@@ -27,7 +27,7 @@ public class ParamService {
 	
 	public List<Param> getListByTypeId(String id, String type) {
 
-		List<Param> list = sqlHelper.findListByQuery(new CriteriaAndWrapper().eq(type + "Id", id), Param.class);
+		List<Param> list = sqlHelper.findListByQuery(new ConditionAndWrapper().eq(type + "Id", id), Param.class);
 
 		return list;
 	}

@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cym.model.Group;
 import com.cym.model.Remote;
 
-import cn.craccd.sqlHelper.utils.CriteriaAndWrapper;
-import cn.craccd.sqlHelper.utils.CriteriaOrWrapper;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
+import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.util.StrUtil;
 
@@ -24,13 +24,13 @@ public class GroupService {
 
 		sqlHelper.deleteById(id, Group.class);
 
-		List<Remote> remoteList = sqlHelper.findListByQuery(new CriteriaAndWrapper().eq("parentId", id), Remote.class);
+		List<Remote> remoteList = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("parentId", id), Remote.class);
 		for (Remote remote : remoteList) {
 			remote.setParentId(null);
 			sqlHelper.updateAllColumnById(remote);
 		}
 
-		List<Group> groupList = sqlHelper.findListByQuery(new CriteriaAndWrapper().eq("parentId", id), Group.class);
+		List<Group> groupList = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("parentId", id), Group.class);
 		for (Group group : groupList) {
 			group.setParentId(null);
 			sqlHelper.updateAllColumnById(group);
@@ -39,14 +39,14 @@ public class GroupService {
 	}
 
 	public List<Group> getListByParent(String id) {
-		CriteriaAndWrapper criteriaAndWrapper = new CriteriaAndWrapper();
+		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper();
 		if (StrUtil.isEmpty(id)) {
-			criteriaAndWrapper.and(new CriteriaOrWrapper().eq("parentId", "").isNull("parentId"));
+			conditionAndWrapper.and(new ConditionOrWrapper().eq("parentId", "").isNull("parentId"));
 		} else {
-			criteriaAndWrapper.eq("parentId", id);
+			conditionAndWrapper.eq("parentId", id);
 		}
 
-		return sqlHelper.findListByQuery(criteriaAndWrapper, Group.class);
+		return sqlHelper.findListByQuery(conditionAndWrapper, Group.class);
 	}
 
 }

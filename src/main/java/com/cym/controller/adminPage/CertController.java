@@ -65,7 +65,7 @@ public class CertController extends BaseController {
 		Cert cert = sqlHelper.findById(id, Cert.class);
 		if (cert.getKey() != null) {
 			File file = new File(cert.getKey());
-			
+
 			FileUtil.del(file.getParent());
 		}
 
@@ -95,20 +95,29 @@ public class CertController extends BaseController {
 
 		// 替换nginx.conf并重启
 		replaceStartNginx(nginxPath, cert.getDomain());
+		String rs = "";
+		try {
+			// 申请
+			String cmd = certConfig.acmeSh + " --issue --nginx -d " + cert.getDomain();
+			System.out.println(cmd);
+			rs = RuntimeUtil.execForStr(cmd);
+			System.out.println(rs);
+		} catch (Exception e) {
+			e.printStackTrace();
+			rs = e.getMessage();
+		}
 
-		// 申请
-		String cmd = certConfig.acmeSh + " --issue --nginx -d " + cert.getDomain();
-		System.out.println(cmd);
-		String rs = RuntimeUtil.execForStr(cmd);
-		System.out.println(rs);
-
-		// 还原nginx.conf并重启
 		backupStartNginx(nginxPath);
-
 		if (rs.contains("Cert success")) {
-			String certDir = FileUtil.getUserHomePath() + File.separator + ".acme.sh" + File.separator + cert.getDomain() + File.separator;
-			cert.setPem(certDir + cert.getDomain() + ".cer");
-			cert.setKey(certDir + cert.getDomain() + ".key");
+			String certDir = "/root/.acme.sh/" + cert.getDomain() + "/";
+
+			String dest = "/home/nginxWebUI/cert/" + cert.getDomain() + ".cer";
+			FileUtil.copy(new File(certDir + cert.getDomain() + ".cer"), new File(dest), true);
+			cert.setPem(dest);
+
+			dest = "/home/nginxWebUI/cert/" + cert.getDomain() + ".key";
+			FileUtil.copy(new File(certDir + cert.getDomain() + ".key"), new File(dest), true);
+			cert.setKey(dest);
 
 			cert.setMakeTime(System.currentTimeMillis());
 			sqlHelper.updateById(cert);
@@ -129,7 +138,7 @@ public class CertController extends BaseController {
 		if (!SystemTool.hasNginx()) {
 			return renderError("系统中未安装nginx命令");
 		}
-		
+
 		String nginxPath = settingService.get("nginxPath");
 		if (!FileUtil.exist(nginxPath)) {
 			return renderError("未找到nginx配置文件:" + nginxPath + ", 请先在【生成conf】模块中设置并读取.");
@@ -142,29 +151,44 @@ public class CertController extends BaseController {
 
 		// 替换nginx.conf并重启
 		replaceStartNginx(nginxPath, cert.getDomain());
+		String rs = "";
+		try {
+			// 续签
+			String cmd = certConfig.acmeSh + " --renew --force -d " + cert.getDomain();
+			System.out.println(cmd);
+			rs = RuntimeUtil.execForStr(cmd);
+			System.out.println(rs);
+		} catch (Exception e) {
+			e.printStackTrace();
+			rs = e.getMessage();
+		}
 
-		// 续签
-		String cmd = certConfig.acmeSh + " --renew --force -d " + cert.getDomain();
-		System.out.println(cmd);
-		String rs = RuntimeUtil.execForStr(cmd);
-		System.out.println(rs);
-
-		// 还原nginx.conf并重启
 		backupStartNginx(nginxPath);
-
 		if (rs.contains("Cert success")) {
+			String certDir = "/root/.acme.sh/" + cert.getDomain() + "/";
+
+			String dest = "/home/nginxWebUI/cert/" + cert.getDomain() + ".cer";
+			FileUtil.copy(new File(certDir + cert.getDomain() + ".cer"), new File(dest), true);
+			cert.setPem(dest);
+
+			dest = "/home/nginxWebUI/cert/" + cert.getDomain() + ".key";
+			FileUtil.copy(new File(certDir + cert.getDomain() + ".key"), new File(dest), true);
+			cert.setKey(dest);
+
 			cert.setMakeTime(System.currentTimeMillis());
 			sqlHelper.updateById(cert);
+
+			return renderSuccess();
 		} else {
 			return renderError(rs.replace("\n", "<br>"));
 		}
 
-		return renderSuccess();
 	}
 
 	// 替换nginx.conf并重启
 	private void replaceStartNginx(String nginxPath, String domain) {
-		String nginxContent = "worker_processes  1; \n" //
+		System.out.println("替换nginx.conf并重启");
+		String nginxContent = "worker_processes  auto; \n" //
 				+ "events {worker_connections  1024;} \n" //
 				+ "http { \n" //
 				+ "   server { \n" //
@@ -177,7 +201,7 @@ public class CertController extends BaseController {
 
 		// 替换备份文件
 		FileUtil.copy(nginxPath, nginxPath + ".org", true);
-		FileUtil.writeString(nginxContent, nginxPath, Charset.defaultCharset());
+		FileUtil.writeString(nginxContent, nginxPath, Charset.forName("UTF-8"));
 
 		// 重启nginx
 		RuntimeUtil.exec("nginx -s reload");
@@ -185,11 +209,11 @@ public class CertController extends BaseController {
 
 	// 还原nginx.conf并重启
 	private void backupStartNginx(String nginxPath) {
-
+		System.out.println("还原nginx.conf并重启");
 		// 还原备份文件
 		FileUtil.copy(nginxPath + ".org", nginxPath, true);
 		FileUtil.del(nginxPath + ".org");
-		
+
 		// 重启nginx
 		RuntimeUtil.exec("nginx -s reload");
 

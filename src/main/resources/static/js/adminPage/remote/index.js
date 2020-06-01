@@ -31,7 +31,6 @@ $(function(){
 					    	strict: false,
 					    	// 默认展开节点
 					    	expandedKeys: true,
-					    	
 					    },
 					    data: data.obj
 					})
@@ -64,10 +63,6 @@ $(function(){
 				alert("出错了,请联系技术人员!");
 			}
 		});
-		
-		
-		
-		
 	})
 	
 	
@@ -134,12 +129,13 @@ $(function(){
 							},{
 								title : '操作',
 								template : function(remote) {
-									var html = 
-										`<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="change('${remote.id}')">切换到此服务器</button>
-										<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="asyc('${remote.id}')">同步到其他服务器</button>
-										`
+									var html = "";
 									
 									if(remote.type == 0){
+										// 服务器
+										html += `<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="change('${remote.id}')">切换到此服务器</button>
+											`;
+											
 										if(remote.id != '本地'){
 											html += `
 												<button class="layui-btn layui-btn-sm" onclick="content('${remote.id}')">查看conf</button>
@@ -149,13 +145,15 @@ $(function(){
 										} else {
 											html += `
 												<button class="layui-btn layui-btn-sm" onclick="contentLocal()">查看conf</button>
-											`
+											`;
 										}
-									}else{
+										
+									} else {
+										// 分组
 										html += `
 										<button class="layui-btn layui-btn-sm" onclick="editGroup('${remote.id}')">编辑</button>
 										<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="delGroup('${remote.id}')">删除</button>
-										`
+										`;
 									}
 									return html;
 								}
@@ -362,33 +360,72 @@ function change(id){
 	}
 }
 
-function asyc(id){
+function asycSelect(){
 	
-	$("#fromId").val(id);
 	$.ajax({
 		type : 'POST',
-		url : ctx + '/adminPage/remote/getAllowRemote',
+		url : ctx + '/adminPage/remote/getCmdRemote',
 		data : {
-			id : id
+			
 		},
 		dataType : 'json',
 		success : function(data) {
 			layer.closeAll();
 			if (data.success) {
-				var list = data.obj;
-				var html = ``;
-				for(let i=0;i<list.length;i++){
-					var remote = list[i];
-					html += `<input type="checkbox" name="remoteId" title="${remote.ip}  ${remote.descr}" lay-skin="primary" value="${remote.id}"><br>`
-				}
-				$("#checkboxDiv").html(html);
+
+				// 渲染多选
+				xmSelect.render({
+				    el: '#remoteFromId', 
+				    name : 'fromId',
+				    // 显示为text模式
+				    model: { label: { type: 'text' } },
+				    // 单选模式
+				    radio: true,
+				    // 高度
+				    height: '400px',
+				    // 选中关闭
+				    clickClose: true,
+				    // 树
+				    tree: {
+				    	show: true,
+				    	// 非严格模式
+				    	strict: true,
+				    	// 默认展开节点
+				    	expandedKeys: true,
+				    },
+				    data: data.obj
+				})
+				
+				
+				// 渲染多选
+				xmSelect.render({
+				    el: '#remoteSelectId', 
+				    name : 'remoteId',
+				    // 显示为text模式
+				    model: { label: { type: 'text' } },
+				    // 单选模式
+				    radio: false,
+				    // 高度
+				    height: '400px',
+				    // 选中关闭
+				    clickClose: false,
+				    // 树
+				    tree: {
+				    	show: true,
+				    	// 非严格模式
+				    	strict: true,
+				    	// 默认展开节点
+				    	expandedKeys: true,
+				    },
+				    data: data.obj
+				})
 				
 				form.render();
 				
 				layer.open({
 					type : 1,
-					title : "同步到",
-					area : [ '400px', '500px' ], // 宽高
+					title : "同步服务器",
+					area : [ '600px', '500px' ], // 宽高
 					content : $('#selectDiv')
 				});
 			} else {
@@ -428,10 +465,94 @@ function asycOver(){
 }
 
 
+function cmdGroup(){
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/remote/getCmdRemote',
+		data : {
+		
+		},
+		dataType : 'json',
+		success : function(data) {
+			layer.closeAll();
+			if (data.success) {
+				
+				// 渲染多选
+				xmSelect.render({
+				    el: '#remoteCmdSelectId', 
+				    name : 'remoteId',
+				    // 显示为text模式
+				    model: { label: { type: 'text' } },
+				    // 单选模式
+				    radio: false,
+				    // 高度
+				    height: '400px',
+				    // 选中关闭
+				    clickClose: false,
+				    // 树
+				    tree: {
+				    	show: true,
+				    	// 非严格模式
+				    	strict: true,
+				    	// 默认展开节点
+				    	expandedKeys: true,
+				    },
+				    data: data.obj
+				})
+				
+				form.render();
+				
+				layer.open({
+					type : 1,
+					title : "执行命令",
+					area : [ '600px', '500px' ], // 宽高
+					content : $('#cmdDiv')
+				});
+			} else {
+				layer.msg(data.msg)
+			}
+		},
+		error : function() {
+			layer.closeAll();
+			alert("出错了,请联系技术人员!");
+		}
+	});
+	
+}
+
+
+
+function cmdOver(){
+	
+	layer.load();
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/remote/cmdOver',
+		data : $("#cmdForm").serialize(),
+		dataType : 'json',
+		success : function(data) {
+			layer.closeAll();
+			if (data.success) {
+				layer.open({
+					  type: 0, 
+					  area : [ '810px', '400px' ],
+					  content: data.obj
+				});
+			}else{
+				layer.msg(data.msg)
+			}
+		},
+		error : function() {
+			layer.closeAll();
+			alert("出错了,请联系技术人员!");
+		}
+	});
+}
+
+
 function addGroup(){
 	$("#groupId").val("");
 	$("#GroupName").val("");
-	//$("#groupParentId option:first").prop("checked", true);
 	groupParentId.setValue([""]);
 	
 	layer.open({
@@ -459,7 +580,6 @@ function editGroup(id) {
 				var group = data.obj;
 				$("#groupId").val(group.id); 
 				$("#groupName").val(group.name);
-				//$("#groupParentId").val(group.parentId); 
 				groupParentId.setValue([group.parentId]);
 				layer.open({
 					type : 1,

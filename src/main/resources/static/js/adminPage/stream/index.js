@@ -8,7 +8,7 @@ function add() {
 	$("#name").val(""); 
 	$("#value").val(""); 
 	
-	showWindow("添加TCP转发配置");
+	showWindow("添加TCP参数配置");
 }
 
 
@@ -68,7 +68,7 @@ function edit(id) {
 				$("#name").val(http.name);
 				
 				form.render();
-				showWindow("编辑TCP转发配置");
+				showWindow("编辑TCP参数配置");
 			}else{
 				layer.msg(data.msg);
 			}

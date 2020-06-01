@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.cym.model.Credit;
 
-import cn.craccd.sqlHelper.utils.CriteriaAndWrapper;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
@@ -30,7 +30,7 @@ public class CreditService {
 			return false;
 		}
 		
-		Credit credit = sqlHelper.findOneByQuery(new CriteriaAndWrapper().eq("key", key), Credit.class);
+		Credit credit = sqlHelper.findOneByQuery(new ConditionAndWrapper().eq("key", key), Credit.class);
 
 		if (credit == null) {
 			return false;

@@ -3,10 +3,10 @@
 	<ul class="layui-nav layui-layout-right">
 		<li class="layui-nav-item">
 			<#if hasNewVersion == 1>
-				<a href="${version.url}" target="_blank" style="font-weight: bold;color: red;">有新版本发布 ${version.version}</a>
+				<a href="javascript:showUpdate('${version.version}','${version.url}','${version.docker}','${version.update}')"  style="font-weight: bold;color: red;">有新版本发布 ${version.version}</a>
 			</#if>
 		
-			<a href="${ctx}/welcome">${admin.name}</a>
+			<a href="${ctx}/welcome" >${admin.name}</a>
 		</li>
 		<li class="layui-nav-item">
 			<a href="javascript:loginOut();">退出</a>

@@ -7,7 +7,7 @@ import com.cym.model.Admin;
 import com.cym.model.Server;
 
 import cn.craccd.sqlHelper.bean.Page;
-import cn.craccd.sqlHelper.utils.CriteriaAndWrapper;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 
 @Service
@@ -17,7 +17,7 @@ public class AdminService {
 
 	public boolean login(String name, String pass) {
 
-		return sqlHelper.findCountByQuery(new CriteriaAndWrapper().eq("name", name).eq("pass", pass), Admin.class) > 0;
+		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("name", name).eq("pass", pass), Admin.class) > 0;
 	}
 
 	public Page search(Page page) {

@@ -3,6 +3,8 @@ server:
   servlet: 
     session:
       timeout: 7200 
+  tomcat: 
+    max-threads: 5
       
 spring:
   application:
@@ -23,15 +25,12 @@ spring:
     type: sqlite
     package: com.cym.model
     print: true
-    sqlite-name: .sqlite #sqlite文件名称
-#  datasource: #使用mysql和postgresql时才需要配置
-#    url: jdbc:mysql://127.0.0.1:3306/test
-#    username: root
-#    password: 1qaz2wsx
+    sqlite-path: /home/nginxWebUI/sqlite.db 
 
 project:
   version: v@project.version@
   
 logging: 
+  file:    name: /home/nginxWebUI/log/nginxWebUI.log
   level: 
     root: info
