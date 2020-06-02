@@ -4,7 +4,7 @@ server:
     session:
       timeout: 7200 
   tomcat: 
-    max-threads: 5
+    max-threads: 5 #减少tomcat线程数
       
 spring:
   application:

@@ -10,15 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cym.model.Location;
 import com.cym.model.Param;
 import com.cym.model.Server;
-import com.cym.model.Upstream;
 
 import cn.craccd.sqlHelper.bean.Page;
 import cn.craccd.sqlHelper.bean.Sort;
-import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
-import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
@@ -28,7 +25,7 @@ public class ServerService {
 	SqlHelper sqlHelper;
 
 	public Page search(Page page) {
-		page = sqlHelper.findPage(page, Server.class);
+		page = sqlHelper.findPage(new Sort("seq", Sort.Direction.DESC), page, Server.class);
 
 		return page;
 	}

@@ -70,7 +70,7 @@ public class ConfService {
 			// 获取http
 			List<Http> httpList = sqlHelper.findAll(Http.class);
 			NgxBlock ngxBlockHttp = new NgxBlock();
-			ngxBlockHttp.addValue("http"); 
+			ngxBlockHttp.addValue("http");
 			for (Http http : httpList) {
 				NgxParam ngxParam = new NgxParam();
 				ngxParam.addValue(http.getName() + " " + http.getValue());
@@ -116,6 +116,10 @@ public class ConfService {
 			// 添加server
 			List<Server> servers = serverService.getListByProxyType(0);
 			for (Server server : servers) {
+				if (!server.getEnable()) {
+					continue;
+				}
+
 				NgxBlock ngxBlockServer = new NgxBlock();
 				ngxBlockServer.addValue("server");
 
@@ -129,14 +133,17 @@ public class ConfService {
 				// 监听端口
 				ngxParam = new NgxParam();
 				String value = "listen " + server.getListen();
-				if (server.getSsl() == 1) {
+				if (server.getSsl() != null && server.getSsl() == 1) {
 					value += " ssl";
+					if (server.getHttp2() != null && server.getHttp2() == 1) {
+						value += " http2";
+					}
 				}
 				ngxParam.addValue(value);
 				ngxBlockServer.addEntry(ngxParam);
 
 				// ssl配置
-				if (server.getSsl() == 1) {
+				if (server.getSsl() != null && server.getSsl() == 1) {
 					ngxParam = new NgxParam();
 					ngxParam.addValue("ssl_certificate " + server.getPem());
 					ngxBlockServer.addEntry(ngxParam);
@@ -149,6 +156,20 @@ public class ConfService {
 					ngxParam.addValue("ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3");
 					ngxBlockServer.addEntry(ngxParam);
 
+					// https添加80端口重写
+					if (server.getRewrite() == 1) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("listen 80");
+						ngxBlockServer.addEntry(ngxParam);
+
+						NgxBlock ngxBlock = new NgxBlock();
+						ngxBlock.addValue("if ($server_port = 80)");
+						ngxParam = new NgxParam();
+						ngxParam.addValue("rewrite ^(.*) https://$server_name$1 permanent");
+						ngxBlock.addEntry(ngxParam);
+
+						ngxBlockServer.addEntry(ngxBlock);
+					}
 				}
 
 				// 自定义参数
@@ -244,32 +265,32 @@ public class ConfService {
 				}
 
 				// https添加80端口重写
-				if (server.getSsl() == 1 && server.getRewrite() == 1) {
-					ngxBlockServer = new NgxBlock();
-					ngxBlockServer.addValue("server");
-
-					if (StrUtil.isNotEmpty(server.getServerName())) {
-						ngxParam = new NgxParam();
-						ngxParam.addValue("server_name " + server.getServerName());
-						ngxBlockServer.addEntry(ngxParam);
-					}
-					ngxParam = new NgxParam();
-					ngxParam.addValue("listen 80");
-					ngxBlockServer.addEntry(ngxParam);
-
-					ngxParam = new NgxParam();
-					ngxParam.addValue("rewrite ^(.*)$ https://${server_name}$1 permanent");
-					ngxBlockServer.addEntry(ngxParam);
-
-					hasHttp = true;
-
-					// 是否需要分解
-					if (decompose) {
-						addConfFile(confExt, server.getServerName() + ".conf", ngxBlockServer);
-					} else {
-						ngxBlockHttp.addEntry(ngxBlockServer);
-					}
-				}
+//				if (server.getSsl() == 1 && server.getRewrite() == 1) {
+//					ngxBlockServer = new NgxBlock();
+//					ngxBlockServer.addValue("server");
+//
+//					if (StrUtil.isNotEmpty(server.getServerName())) {
+//						ngxParam = new NgxParam();
+//						ngxParam.addValue("server_name " + server.getServerName());
+//						ngxBlockServer.addEntry(ngxParam);
+//					}
+//					ngxParam = new NgxParam();
+//					ngxParam.addValue("listen 80");
+//					ngxBlockServer.addEntry(ngxParam);
+//
+//					ngxParam = new NgxParam();
+//					ngxParam.addValue("rewrite ^(.*)$ https://${server_name}$1 permanent");
+//					ngxBlockServer.addEntry(ngxParam);
+//
+//					hasHttp = true;
+//
+//					// 是否需要分解
+//					if (decompose) {
+//						addConfFile(confExt, server.getServerName() + ".conf", ngxBlockServer);
+//					} else {
+//						ngxBlockHttp.addEntry(ngxBlockServer);
+//					}
+//				}
 
 			}
 			if (hasHttp) {

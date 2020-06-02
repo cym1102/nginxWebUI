@@ -21,7 +21,14 @@
 .liteBtn{
 	width: 90px;
 }
-
+.blk{
+	display: inline-block;
+	width: 85px;
+}
+.blk2{
+	display: inline-block;
+	width: 40px;
+}
 </style>
 </head>
 <body class="layui-layout-body">
@@ -45,18 +52,19 @@
 
 						<input type="hidden" name="curr" value="${page.curr}">
 					</div>
-				</form>
+			
 
-				<table class="layui-table">
+				<table class="layui-table layui-form">
 					<thead>
 						<tr>
 							<th>转发类型</th>
 							<th>监听端口</th>
 							<th>监听域名</th>
 							<th>开启ssl</th>
-							<th>http自动跳转https</th>
+							<th>ssl选项</th>
 							<th>ssl文件路径</th>
 							<th>代理目标</th>
+							<th>启用</th>
 							<th>操作</th>
 						</tr>
 					</thead>
@@ -78,13 +86,21 @@
 							</td>
 							<td>
 								<#if ext.server.ssl==1> 
+									<span class="blk">80转跳443：</span>
 									<#if ext.server.rewrite==0>否</#if> 
 									<#if ext.server.rewrite==1>是</#if> 
+									<br>
+									<span class="blk">开启http2：</span>
+									<#if ext.server.http2==0>否</#if> 
+									<#if ext.server.http2==1>是</#if> 
 								</#if>
 							</td>
 							<td>
-								<#if ext.server.ssl==1> pem: ${ext.server.pem} <br>
-								key: ${ext.server.key} </#if>
+								<#if ext.server.ssl==1> 
+									<span class="blk2">pem：</span>${ext.server.pem} 
+									<br>
+									<span class="blk2">key：</span>${ext.server.key}  
+								</#if>
 							</td>
 						
 							
@@ -93,8 +109,14 @@
 							</td>
 
 							<td>
+								<input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="启用|停用" lay-skin="switch" ${(ext.server.enable)?string('checked','')}>
+							</td>
+							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.server.id}')">编辑</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.server.id}')">删除</button>
+								
+								<!-- <button class="layui-btn layui-btn-sm" onclick="seq('${ext.server.id}',1)">↑</button>
+								<button class="layui-btn layui-btn-sm" onclick="seq('${ext.server.id}',-1)">↓</button> -->
 							</td>
 						</tr>
 						</#list>
@@ -206,8 +228,16 @@
 
 								<div class="layui-form-item">
 									<label class="layui-form-label">http自动跳转https</label>
-									<div class="layui-input-inline">
+									<div class="layui-input-inline" style="width: 100px;">
 										<select name="rewrite" id="rewrite">
+											<option value="1">是</option>
+											<option value="0">否</option>
+										</select>
+									</div>
+									
+									<label class="layui-form-label" style="width: 80px;">开启http2</label>
+									<div class="layui-input-inline" style="width: 100px;">
+										<select name="http2" id="http2">
 											<option value="1">是</option>
 											<option value="0">否</option>
 										</select>

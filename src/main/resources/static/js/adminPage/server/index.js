@@ -1,4 +1,24 @@
 $(function() {
+	form.on('switch(enable)', function(data){
+		  
+		  $.ajax({
+				type : 'POST',
+				url : ctx + '/adminPage/server/setEnable',
+				data : {
+					enable : data.elem.checked,
+					id : data.elem.value
+				},
+				dataType : 'json',
+				success : function(data) {			
+					
+				},
+				error : function() {
+					alert("出错了,请联系技术人员!");
+				}
+		});
+	});   
+	
+	
 	form.on('select(type)', function(data) {
 		checkType(data.value, $(data.elem).attr("lang"));
 	});
@@ -89,6 +109,7 @@ function add() {
 	$("#serverName").val("");
 	$("#ssl option:first").prop("selected", true);
 	$("#rewrite option:first").prop("selected", true);
+	$("#http2 option:first").prop("selected", true);
 	$("#proxyType option:first").prop("selected", true);
 	$("#proxyUpstreamId option:first").prop("selected", true);
 	
@@ -199,6 +220,12 @@ function edit(id) {
 					$("#rewrite").val(server.rewrite);
 				} else{
 					$("#rewrite option:first").prop("selected", true);
+				}
+				
+				if(server.http2 != null){
+					$("#http2").val(server.http2);
+				} else{
+					$("#http2 option:first").prop("selected", true);
 				}
 				
 				checkSsl(server.ssl);
@@ -370,6 +397,31 @@ function selectCertOver(){
 		}
 	});
 }
+
+
+//function seq(id, count){
+//	
+//	$.ajax({
+//		type : 'POST',
+//		url : ctx + '/adminPage/server/seq',
+//		data : {
+//			id : id,
+//			count : count
+//		},
+//		dataType : 'json',
+//		success : function(data) {
+//			if (data.success) {
+//				location.reload();
+//			} else {
+//				layer.msg(data.msg)
+//			}
+//		},
+//		error : function() {
+//			alert("出错了,请联系技术人员!");
+//		}
+//	});
+//}
+
 
 
 function selectPem(){
