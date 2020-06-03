@@ -178,3 +178,15 @@ function showUpdate(version, url, docker,update){
 	});
 	
 }
+
+// form转json
+function form2JsonString(formId) {
+	var paramArray = $('#' + formId).serializeArray();  
+	/* 请求参数转json对象 */  
+	var jsonObj={};  
+	$(paramArray).each(function(){  
+		jsonObj[this.name]=this.value;  
+	});  
+	return JSON.stringify(jsonObj);
+	
+}

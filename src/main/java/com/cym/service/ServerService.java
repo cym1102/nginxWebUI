@@ -13,6 +13,7 @@ import com.cym.model.Server;
 
 import cn.craccd.sqlHelper.bean.Page;
 import cn.craccd.sqlHelper.bean.Sort;
+import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
@@ -24,8 +25,13 @@ public class ServerService {
 	@Autowired
 	SqlHelper sqlHelper;
 
-	public Page search(Page page) {
-		page = sqlHelper.findPage(new Sort("seq", Sort.Direction.DESC), page, Server.class);
+	public Page search(Page page, String sortColum, String direction) {
+		Sort sort = null;
+		if (StrUtil.isNotEmpty(sortColum)) {
+			sort = new Sort(sortColum, "asc".equalsIgnoreCase(direction) ? Direction.ASC : Direction.DESC);
+		}
+
+		page = sqlHelper.findPage(sort, page, Server.class);
 
 		return page;
 	}
@@ -41,7 +47,7 @@ public class ServerService {
 	}
 
 	@Transactional
-	public void addOver(Server server, String serverParamJson, Integer[] type, String[] path, String[] value, String[] upstreamId, String[] locationParamJson) {
+	public void addOver(Server server, String serverParamJson, Integer[] type, String[] path, String[] value, String[] upstreamId, String[] upstreamPath, String[] locationParamJson) {
 		sqlHelper.insertOrUpdate(server);
 		List<Param> paramList = new ArrayList<Param>();
 		if (StrUtil.isNotEmpty(serverParamJson) && JSONUtil.isJson(serverParamJson.replace("%2C", ","))) {
@@ -67,6 +73,10 @@ public class ServerService {
 					location.setValue(value[i]);
 				} else if (location.getType() == 2) {
 					location.setUpstreamId(upstreamId[i]);
+
+					if (!upstreamPath[i].equals("is_null")) {
+						location.setUpstreamPath(upstreamPath[i]);
+					}
 				}
 
 				sqlHelper.insert(location);

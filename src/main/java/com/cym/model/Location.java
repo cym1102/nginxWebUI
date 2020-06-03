@@ -13,11 +13,19 @@ public class Location extends BaseModel {
 	
 	String value;
 	String upstreamId;
-	
+	String upstreamPath;
 	String locationParamJson;
 	
 	
 	
+	public String getUpstreamPath() {
+		return upstreamPath;
+	}
+
+	public void setUpstreamPath(String upstreamPath) {
+		this.upstreamPath = upstreamPath;
+	}
+
 	public String getLocationParamJson() {
 		return locationParamJson;
 	}

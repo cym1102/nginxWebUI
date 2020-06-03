@@ -196,7 +196,7 @@ public class ConfService {
 							Upstream upstream = sqlHelper.findById(location.getUpstreamId(), Upstream.class);
 							if (upstream != null) {
 								ngxParam = new NgxParam();
-								ngxParam.addValue("proxy_pass http://" + upstream.getName());
+								ngxParam.addValue("proxy_pass http://" + upstream.getName() + (location.getUpstreamPath() != null ? location.getUpstreamPath() : ""));
 								ngxBlockLocation.addEntry(ngxParam);
 							}
 						}

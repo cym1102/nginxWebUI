@@ -56,7 +56,7 @@ public class LoginController extends BaseController {
 	@ResponseBody
 	public JsonResult submitLogin(String name, String pass,String code, HttpSession httpSession) {
 		String imgCode = (String) httpSession.getAttribute("imgCode");
-		if (!imgCode.equalsIgnoreCase(code)) {
+		if (StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
 			return renderError("验证码不正确");
 		}
 

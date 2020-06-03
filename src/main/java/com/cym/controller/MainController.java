@@ -37,12 +37,14 @@ public class MainController extends BaseController {
 	@ResponseBody
 	@RequestMapping("/upload")
 	public JsonResult upload(@RequestParam("file") MultipartFile file, HttpSession httpSession) {
-		String path = FileUtil.getUserHomePath() + File.separator + System.currentTimeMillis() + "." + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
-
-		File dest = new File(path);
-		// 保存文件
 		try {
-			file.transferTo(dest);
+			File temp = new File(FileUtil.getUserHomePath() + File.separator + System.currentTimeMillis() + "." + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
+			file.transferTo(temp);
+
+			// 保存文件
+			File dest = new File("/home/nginxWebUI/cert/" + System.currentTimeMillis() + "." + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
+			FileUtil.move(temp, dest, true);
+
 			String localType = (String) httpSession.getAttribute("localType");
 			if ("远程".equals(localType)) {
 				Remote remote = (Remote) httpSession.getAttribute("remote");
@@ -63,8 +65,5 @@ public class MainController extends BaseController {
 
 		return renderError();
 	}
-	
-	
 
-	
 }

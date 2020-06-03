@@ -173,6 +173,13 @@ function addOver() {
 		return;
 	}
 	
+	$("input[name='upstreamPath']").each(function(){
+		if($(this).val() == ''){
+			$(this).val("is_null");
+		}
+	})
+	
+	
 	$.ajax({
 		type : 'POST',
 		url : ctx + '/adminPage/server/addOver',
@@ -273,6 +280,7 @@ function edit(id) {
 						$("#" + uuid + " input[name='value']").val(location.value);
 					} else {
 						$("#" + uuid + " select[name='upstreamId']").val(location.upstreamId);
+						$("#" + uuid + " input[name='upstreamPath']").val(location.upstreamPath);
 					}
 					
 					checkType(location.type, uuid)
@@ -399,30 +407,6 @@ function selectCertOver(){
 }
 
 
-//function seq(id, count){
-//	
-//	$.ajax({
-//		type : 'POST',
-//		url : ctx + '/adminPage/server/seq',
-//		data : {
-//			id : id,
-//			count : count
-//		},
-//		dataType : 'json',
-//		success : function(data) {
-//			if (data.success) {
-//				location.reload();
-//			} else {
-//				layer.msg(data.msg)
-//			}
-//		},
-//		error : function() {
-//			alert("出错了,请联系技术人员!");
-//		}
-//	});
-//}
-
-
 
 function selectPem(){
 	rootSelect.selectOne(function(rs){
@@ -523,4 +507,20 @@ function addParamOver(){
 	$("#" + targertId).val(JSON.stringify(params).replace(/,/g,"%2C"));
 	
 	layer.close(paramIndex);
+}
+
+
+function sort(id){
+	$("#sort").val(id.replace("Sort",""))
+	if($("#"+id).attr("class").indexOf("blue") > -1){
+		if($("#direction").val()=='asc'){
+			$("#direction").val("desc")
+		}else{
+			$("#direction").val("asc")
+		}
+	}else{
+		$("#direction").val("asc")
+	}
+	
+	search();
 }

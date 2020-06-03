@@ -29,6 +29,14 @@
 	display: inline-block;
 	width: 40px;
 }
+
+.layui-icon{
+	cursor: pointer;
+}
+
+.blue{
+	font-weight: bolder;
+}
 </style>
 </head>
 <body class="layui-layout-body">
@@ -49,80 +57,82 @@
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加反向代理</button>
 						</div>
-
+						
+						<input type="hidden" name="sort" id="sort" value="${sort}">
+						<input type="hidden" name="direction" id="direction" value="${direction}">
+						
 						<input type="hidden" name="curr" value="${page.curr}">
 					</div>
 			
 
-				<table class="layui-table layui-form">
-					<thead>
-						<tr>
-							<th>转发类型</th>
-							<th>监听端口</th>
-							<th>监听域名</th>
-							<th>开启ssl</th>
-							<th>ssl选项</th>
-							<th>ssl文件路径</th>
-							<th>代理目标</th>
-							<th>启用</th>
-							<th>操作</th>
-						</tr>
-					</thead>
-					<tbody>
-						<#list page.records as ext>
-						<tr>
-							<td>
-								<#if ext.server.proxyType==0>http</#if>
-								<#if ext.server.proxyType==1>TCP</#if>
-							</td>
-							<td>${ext.server.listen}</td>
-							<td>
-								<#if ext.server.serverName==''>全部</#if>
-								<#if ext.server.serverName!=''>${ext.server.serverName}</#if>
-							</td>
-							<td>
-								<#if ext.server.ssl==0>否</#if>
-								<#if ext.server.ssl==1>是</#if>
-							</td>
-							<td>
-								<#if ext.server.ssl==1> 
-									<span class="blk">80转跳443：</span>
-									<#if ext.server.rewrite==0>否</#if> 
-									<#if ext.server.rewrite==1>是</#if> 
-									<br>
-									<span class="blk">开启http2：</span>
-									<#if ext.server.http2==0>否</#if> 
-									<#if ext.server.http2==1>是</#if> 
-								</#if>
-							</td>
-							<td>
-								<#if ext.server.ssl==1> 
-									<span class="blk2">pem：</span>${ext.server.pem} 
-									<br>
-									<span class="blk2">key：</span>${ext.server.key}  
-								</#if>
-							</td>
-						
+					<table class="layui-table layui-form">
+						<thead>
+							<tr>
+								<th>转发类型 <i class="layui-icon ${(direction=='desc'&&sort=='proxyType')?string('layui-icon-down','layui-icon-up')} ${(sort=='proxyType')?string('blue','')}" id="proxyTypeSort"  onclick="sort('proxyTypeSort')"></i></th>
+								<th>监听端口 <i class="layui-icon ${(direction=='desc'&&sort=='listen')?string('layui-icon-down','layui-icon-up')} ${(sort=='listen')?string('blue','')}" id="listenSort"  onclick="sort('listenSort')"></i></th>
+								<th>监听域名 <i class="layui-icon ${(direction=='desc'&&sort=='serverName')?string('layui-icon-down','layui-icon-up')} ${(sort=='serverName')?string('blue','')}" id="serverNameSort" onclick="sort('serverNameSort')"></i></th>
+								<th>开启ssl</th>
+								<th>ssl选项</th>
+								<th>ssl文件路径</th>
+								<th>代理目标</th>
+								<th>启用</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<#list page.records as ext>
+							<tr>
+								<td>
+									<#if ext.server.proxyType==0>http</#if>
+									<#if ext.server.proxyType==1>TCP</#if>
+								</td>
+								<td>${ext.server.listen}</td>
+								<td>
+									<#if ext.server.serverName==''>全部</#if>
+									<#if ext.server.serverName!=''>${ext.server.serverName}</#if>
+								</td>
+								<td>
+									<#if ext.server.ssl==0>否</#if>
+									<#if ext.server.ssl==1>是</#if>
+								</td>
+								<td>
+									<#if ext.server.ssl==1> 
+										<span class="blk">80转跳443：</span>
+										<#if ext.server.rewrite==0>否</#if> 
+										<#if ext.server.rewrite==1>是</#if> 
+										<br>
+										<span class="blk">开启http2：</span>
+										<#if ext.server.http2==0>否</#if> 
+										<#if ext.server.http2==1>是</#if> 
+									</#if>
+								</td>
+								<td>
+									<#if ext.server.ssl==1> 
+										<span class="blk2">pem：</span>${ext.server.pem} 
+										<br>
+										<span class="blk2">key：</span>${ext.server.key}  
+									</#if>
+								</td>
 							
-							<td>
-								${ext.locationStr} 
-							</td>
-
-							<td>
-								<input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="启用|停用" lay-skin="switch" ${(ext.server.enable)?string('checked','')}>
-							</td>
-							<td>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.server.id}')">编辑</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.server.id}')">删除</button>
 								
-								<!-- <button class="layui-btn layui-btn-sm" onclick="seq('${ext.server.id}',1)">↑</button>
-								<button class="layui-btn layui-btn-sm" onclick="seq('${ext.server.id}',-1)">↓</button> -->
-							</td>
-						</tr>
-						</#list>
-					</tbody>
-				</table>
-				<div id="pageInfo"></div>
+								<td>
+									${ext.locationStr} 
+								</td>
+	
+								<td>
+									<input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="启用|停用" lay-skin="switch" ${(ext.server.enable)?string('checked','')}>
+								</td>
+								<td>
+									<button type="button" class="layui-btn layui-btn-sm" onclick="edit('${ext.server.id}')">编辑</button>
+									<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.server.id}')">删除</button>
+									
+								</td>
+							</tr>
+							</#list>
+						</tbody>
+					</table>
+					<div id="pageInfo"></div>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -308,16 +318,21 @@
 		</div>
 
 		<div id="upstreamSelect" style="display: none;"> 
-			<select name="upstreamId">
-				
-				<#list upstreamList as upstream>
-				<option value="${upstream.id}">${upstream.name}</option>
-				</#list>
-				
-				<#if upstreamSize == 0>
-				<option value="">--无可用负载均衡--</option>
-				</#if>
-			</select>
+			<div class="layui-inline" style="width: 150px;">
+				<select name="upstreamId" >
+					
+					<#list upstreamList as upstream>
+					<option value="${upstream.id}">${upstream.name}</option>
+					</#list>
+					
+					<#if upstreamSize == 0>
+					<option value="">--无可用负载均衡--</option>
+					</#if>
+				</select>
+			</div>
+			<div class="layui-inline" style="width: 150px;">
+				<input type="text" name="upstreamPath" class="layui-input" placeholder="额外路径，默认为空">
+			</div>
 		</div>
 		
 		<div id="certDiv"  style="padding: 15px; display: none"> 
