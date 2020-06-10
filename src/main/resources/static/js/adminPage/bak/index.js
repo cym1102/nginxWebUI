@@ -86,3 +86,25 @@ function replace(path){
 	}
 }
 
+function delAll(){
+	if(confirm("是否清空备份?")){
+		$.ajax({
+			type : 'GET',
+			url : ctx + '/adminPage/bak/delAll',
+			dataType : 'json',
+		
+			success : function(data) {
+				if (data.success) {
+					location.reload();
+				} else {
+					layer.msg(data.msg);
+				}
+			},
+			error : function() {
+				layer.closeAll();
+				alert("出错了,请联系技术人员!");
+			}
+		});
+	}
+	
+}

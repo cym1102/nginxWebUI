@@ -25,12 +25,14 @@ spring:
     type: sqlite
     package: com.cym.model
     print: true
-    sqlite-path: /home/nginxWebUI/sqlite.db 
+    sqlite-path: ${project.home}sqlite.db 
 
 project:
   version: v@project.version@
+  home: /home/nginxWebUI/
   
 logging: 
-  file:    name: /home/nginxWebUI/log/nginxWebUI.log
+  file:    name: ${project.home}log/nginxWebUI.log
   level: 
     root: info
+  

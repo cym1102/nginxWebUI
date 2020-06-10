@@ -31,7 +31,6 @@ public class SystemTool {
 		if (SystemTool.isLinux()) {
 			String rs = RuntimeUtil.execForStr("which nginx");
 			if (StrUtil.isEmpty(rs)) {
-				// 没有安装，查找是否有编译版
 				return false;
 			}
 		}

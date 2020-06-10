@@ -75,7 +75,7 @@ function replace() {
 
 
 function loadConf() {
-
+	layer.load();
 	$.ajax({
 		type : 'POST',
 		url : ctx + '/adminPage/conf/loadConf',
@@ -84,6 +84,7 @@ function loadConf() {
 		},
 		dataType : 'json',
 		success : function(data) {
+			layer.closeAll();
 			if (data.success) {
 				var confExt = data.obj
 				$("#nginxContent").val(confExt.conf)
@@ -106,6 +107,7 @@ function loadConf() {
 			}
 		},
 		error : function() {
+			layer.closeAll();
 			alert("出错了,请联系技术人员!");
 		}
 	});
@@ -262,6 +264,7 @@ function start(){
 	}
 	
 	if(confirm("确认启动?")){
+		layer.load();
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/conf/start',
@@ -313,6 +316,7 @@ function stop(){
 	
 	
 	if(confirm("确认停止?")){
+		layer.load();
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/conf/stop',

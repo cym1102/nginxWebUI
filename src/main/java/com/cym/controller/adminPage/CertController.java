@@ -6,13 +6,15 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cym.config.CertConfig;
+import com.cym.config.InitConfig;
 import com.cym.model.Cert;
 import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
@@ -26,10 +28,12 @@ import cn.hutool.core.util.RuntimeUtil;
 @RequestMapping("/adminPage/cert")
 public class CertController extends BaseController {
 	@Autowired
-	CertConfig certConfig;
-	@Autowired
 	SettingService settingService;
-
+	
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	Boolean isInApply = false;
+	
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
 		List<Cert> certs = sqlHelper.findAll(Cert.class);
@@ -93,15 +97,21 @@ public class CertController extends BaseController {
 			return renderError("该证书已申请");
 		}
 
+		if(isInApply) {
+			return renderError("另一个申请进程正在进行，请稍后再申请");
+		}
+		isInApply = true;
+		
 		// 替换nginx.conf并重启
 		replaceStartNginx(nginxPath, cert.getDomain());
 		String rs = "";
 		try {
 			// 申请
-			String cmd = certConfig.acmeSh + " --issue --nginx -d " + cert.getDomain();
-			System.out.println(cmd);
+			String cmd = InitConfig.acmeSh + " --issue --nginx -d " + cert.getDomain();
+			logger.info(cmd);
 			rs = RuntimeUtil.execForStr(cmd);
-			System.out.println(rs);
+			logger.info(rs);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			rs = e.getMessage();
@@ -111,19 +121,22 @@ public class CertController extends BaseController {
 		if (rs.contains("Cert success")) {
 			String certDir = "/root/.acme.sh/" + cert.getDomain() + "/";
 
-			String dest = "/home/nginxWebUI/cert/" + cert.getDomain() + ".cer";
+			String dest = InitConfig.home + "cert/" + cert.getDomain() + ".cer";
 			FileUtil.copy(new File(certDir + cert.getDomain() + ".cer"), new File(dest), true);
 			cert.setPem(dest);
 
-			dest = "/home/nginxWebUI/cert/" + cert.getDomain() + ".key";
+			dest = InitConfig.home + "cert/" + cert.getDomain() + ".key";
 			FileUtil.copy(new File(certDir + cert.getDomain() + ".key"), new File(dest), true);
 			cert.setKey(dest);
 
 			cert.setMakeTime(System.currentTimeMillis());
 			sqlHelper.updateById(cert);
 
+			isInApply = false;
 			return renderSuccess();
 		} else {
+			
+			isInApply = false;
 			return renderError(rs.replace("\n", "<br>"));
 		}
 
@@ -136,7 +149,7 @@ public class CertController extends BaseController {
 			return renderError("证书操作只能在linux下进行");
 		}
 		if (!SystemTool.hasNginx()) {
-			return renderError("系统中未安装nginx命令");
+			return renderError("系统中未安装nginx命令，如果是编译安装nginx，请尝试在系统中执行ln -s [nginx执行文件路径] /usr/bin建立命令链接");
 		}
 
 		String nginxPath = settingService.get("nginxPath");
@@ -149,15 +162,20 @@ public class CertController extends BaseController {
 			return renderError("该证书还未申请");
 		}
 
+		if(isInApply) {
+			return renderError("另一个申请进程正在进行，请稍后再申请");
+		}
+		isInApply = true;
+		
 		// 替换nginx.conf并重启
 		replaceStartNginx(nginxPath, cert.getDomain());
 		String rs = "";
 		try {
 			// 续签
-			String cmd = certConfig.acmeSh + " --renew --force -d " + cert.getDomain();
-			System.out.println(cmd);
+			String cmd = InitConfig.acmeSh + " --renew --force -d " + cert.getDomain();
+			logger.info(cmd);
 			rs = RuntimeUtil.execForStr(cmd);
-			System.out.println(rs);
+			logger.info(rs);
 		} catch (Exception e) {
 			e.printStackTrace();
 			rs = e.getMessage();
@@ -167,19 +185,22 @@ public class CertController extends BaseController {
 		if (rs.contains("Cert success")) {
 			String certDir = "/root/.acme.sh/" + cert.getDomain() + "/";
 
-			String dest = "/home/nginxWebUI/cert/" + cert.getDomain() + ".cer";
+			String dest = InitConfig.home + "cert/" + cert.getDomain() + ".cer";
 			FileUtil.copy(new File(certDir + cert.getDomain() + ".cer"), new File(dest), true);
 			cert.setPem(dest);
 
-			dest = "/home/nginxWebUI/cert/" + cert.getDomain() + ".key";
+			dest = InitConfig.home + "cert/" + cert.getDomain() + ".key";
 			FileUtil.copy(new File(certDir + cert.getDomain() + ".key"), new File(dest), true);
 			cert.setKey(dest);
 
 			cert.setMakeTime(System.currentTimeMillis());
 			sqlHelper.updateById(cert);
 
+			isInApply = false;
 			return renderSuccess();
 		} else {
+			
+			isInApply = false;
 			return renderError(rs.replace("\n", "<br>"));
 		}
 
@@ -187,7 +208,7 @@ public class CertController extends BaseController {
 
 	// 替换nginx.conf并重启
 	private void replaceStartNginx(String nginxPath, String domain) {
-		System.out.println("替换nginx.conf并重启");
+		logger.info("替换nginx.conf并重启");
 		String nginxContent = "worker_processes  auto; \n" //
 				+ "events {worker_connections  1024;} \n" //
 				+ "http { \n" //
@@ -209,7 +230,7 @@ public class CertController extends BaseController {
 
 	// 还原nginx.conf并重启
 	private void backupStartNginx(String nginxPath) {
-		System.out.println("还原nginx.conf并重启");
+		logger.info("还原nginx.conf并重启");
 		// 还原备份文件
 		FileUtil.copy(nginxPath + ".org", nginxPath, true);
 		FileUtil.del(nginxPath + ".org");

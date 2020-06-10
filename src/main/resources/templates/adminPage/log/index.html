@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<#include "/adminPage/common.html"/>
+<style type="text/css">
+.group{
+	width: 550px;
+	height: 300px;
+	float: left;
+}
+</style>
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+
+		<#include "/adminPage/header.html"/>
+		<#include "/adminPage/menu.html"/>
+
+		<div class="layui-body">
+			<!-- 内容主体区域 -->
+			<div style="padding: 15px">
+				<fieldset class="layui-elem-field layui-field-title">
+					<legend>日志解析</legend>
+				</fieldset>
+
+				<form action="${ctx}/adminPage/log" id="searchForm" method="post">
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-normal" onclick="delAll()">清空日志</button>
+					</div>
+					<input type="hidden" name="curr" value="${page.curr}">
+				</form>
+
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>记录时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list page.records as log>
+						<tr>
+							<td>${log.date}</td>
+							<td>
+								<button class="layui-btn layui-btn-sm" onclick="detail('${log.id}')">解析</button>
+								<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="del('${log.id}')">删除</button>
+							</td>
+						</tr>
+						</#list>
+					</tbody>
+				</table>
+				<div id="pageInfo"></div>
+			</div>
+		</div>
+	</div>
+
+	<div style="height: 0px; width: 0px; overflow: hidden;">
+		<!-- 弹出框 -->
+		<div id="windowDiv" style="padding: 15px;">
+		
+			<div id="statusDiv" class="group"></div>
+			
+			<div id="browser" class="group"></div>
+			
+			<div id="pvuv" class="group"></div>
+
+			<div id="httpReferer" class="group"></div>
+		</div>
+
+	</div>
+	<#include '/adminPage/script.html'/>
+	<script src="${ctx}/js/adminPage/log/index.js?v=${jsrandom}" type="text/javascript"></script>
+</body>
+
+
+</html>

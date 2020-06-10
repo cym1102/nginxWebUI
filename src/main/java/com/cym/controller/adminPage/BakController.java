@@ -112,5 +112,16 @@ public class BakController extends BaseController {
 		FileUtil.del(path.replace(".bak", ".zip"));
 		return renderSuccess();
 	}
+	
+	@RequestMapping("delAll")
+	@ResponseBody
+	public JsonResult delAll() {
+		List<Bak> list = getBakList();
+		for(Bak bak:list) {
+			del(bak.getPath());
+		}
+		
+		return renderSuccess();
+	}
 
 }

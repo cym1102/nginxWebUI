@@ -40,7 +40,7 @@ input[name='param']{
 					</div>
 				</form>
 
-				<table class="layui-table">
+				<table class="layui-table" style="table-layout:fixed; WORD-BREAK:break-all;">
 					<thead>
 						<tr>
 							<th>名称</th>
@@ -52,7 +52,7 @@ input[name='param']{
 						<#list httpList as http>
 						<tr>
 							<td>${http.name}</td>
-							<td  style="width: 50%;">${http.value}</td>
+							<td>${http.value}</td>
 							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${http.id}')">编辑</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${http.id}')">删除</button>
@@ -150,7 +150,16 @@ input[name='param']{
 					<div class="layui-form-mid layui-word-aux">MB，请求主体缓冲区</div>
 				</div>
 				
-
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label long">开启日志跟踪</label>
+					<div class="layui-input-inline short">
+						<input type="checkbox" name="logStatus" id="logStatus" value="on" lay-skin="primary" >
+					</div>
+					<div class="layui-form-mid layui-word-aux">开启日志跟踪后,可在日志分析中进行分析</div>
+				</div>
+				
+				
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addGiudeOver()">提交</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>

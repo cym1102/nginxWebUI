@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cym</groupId>
 	<artifactId>nginxWebUI</artifactId>
-	<version>1.2.6</version>
+	<version>1.3.0</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>cn.craccd</groupId>
 			<artifactId>sqlHelper</artifactId>
-			<version>0.1.5</version>
+			<version>0.1.6</version>
 		</dependency>
 
 		<dependency>

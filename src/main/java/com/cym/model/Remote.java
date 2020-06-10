@@ -20,8 +20,17 @@ public class Remote extends BaseModel{
 	
 	String parentId;
 	Integer type; //0 服务器 1分组
-
+	Integer nginx; //0未运行 1在运行 2未知
 	
+	
+	public Integer getNginx() {
+		return nginx;
+	}
+
+	public void setNginx(Integer nginx) {
+		this.nginx = nginx;
+	}
+
 	public Integer getType() {
 		return type;
 	}

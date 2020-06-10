@@ -3,9 +3,10 @@ package com.cym.service;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -19,6 +20,7 @@ import com.cym.ext.ConfFile;
 import com.cym.model.Cert;
 import com.cym.model.Http;
 import com.cym.model.Location;
+import com.cym.model.LogInfo;
 import com.cym.model.Param;
 import com.cym.model.Server;
 import com.cym.model.Stream;
@@ -32,12 +34,15 @@ import com.github.odiszapc.nginxparser.NgxDumper;
 import com.github.odiszapc.nginxparser.NgxEntry;
 import com.github.odiszapc.nginxparser.NgxParam;
 
+import cn.craccd.sqlHelper.bean.Sort;
+import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
+import cn.hutool.json.JSONUtil;
 
 @Service
 public class ConfService {
@@ -68,7 +73,7 @@ public class ConfService {
 			NgxConfig ngxConfig = NgxConfig.read(inputStream);
 
 			// 获取http
-			List<Http> httpList = sqlHelper.findAll(Http.class);
+			List<Http> httpList = sqlHelper.findAll(new Sort("name", Direction.DESC), Http.class);
 			NgxBlock ngxBlockHttp = new NgxBlock();
 			ngxBlockHttp.addValue("http");
 			for (Http http : httpList) {
@@ -116,7 +121,7 @@ public class ConfService {
 			// 添加server
 			List<Server> servers = serverService.getListByProxyType(0);
 			for (Server server : servers) {
-				if (!server.getEnable()) {
+				if (server.getEnable() == null || !server.getEnable()) {
 					continue;
 				}
 
@@ -264,34 +269,6 @@ public class ConfService {
 					ngxBlockHttp.addEntry(ngxBlockServer);
 				}
 
-				// https添加80端口重写
-//				if (server.getSsl() == 1 && server.getRewrite() == 1) {
-//					ngxBlockServer = new NgxBlock();
-//					ngxBlockServer.addValue("server");
-//
-//					if (StrUtil.isNotEmpty(server.getServerName())) {
-//						ngxParam = new NgxParam();
-//						ngxParam.addValue("server_name " + server.getServerName());
-//						ngxBlockServer.addEntry(ngxParam);
-//					}
-//					ngxParam = new NgxParam();
-//					ngxParam.addValue("listen 80");
-//					ngxBlockServer.addEntry(ngxParam);
-//
-//					ngxParam = new NgxParam();
-//					ngxParam.addValue("rewrite ^(.*)$ https://${server_name}$1 permanent");
-//					ngxBlockServer.addEntry(ngxParam);
-//
-//					hasHttp = true;
-//
-//					// 是否需要分解
-//					if (decompose) {
-//						addConfFile(confExt, server.getServerName() + ".conf", ngxBlockServer);
-//					} else {
-//						ngxBlockHttp.addEntry(ngxBlockServer);
-//					}
-//				}
-
 			}
 			if (hasHttp) {
 				ngxConfig.addEntry(ngxBlockHttp);
@@ -346,6 +323,9 @@ public class ConfService {
 			// 添加server
 			servers = serverService.getListByProxyType(1);
 			for (Server server : servers) {
+				if (server.getEnable() == null || !server.getEnable()) {
+					continue;
+				}
 
 				NgxBlock ngxBlockServer = new NgxBlock();
 				ngxBlockServer.addValue("server");

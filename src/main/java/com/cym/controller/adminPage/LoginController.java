@@ -44,6 +44,15 @@ public class LoginController extends BaseController {
 	CreditService creditService;
 	@Autowired
 	VersionConfig versionConfig;
+	
+	@RequestMapping("map")
+	public ModelAndView map(ModelAndView modelAndView) {
+
+		modelAndView.setViewName("/adminPage/login/map");
+		return modelAndView;
+	}
+	
+	
 	@RequestMapping("")
 	public ModelAndView admin(ModelAndView modelAndView) {
 

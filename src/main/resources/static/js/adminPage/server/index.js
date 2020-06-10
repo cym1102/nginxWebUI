@@ -5,7 +5,7 @@ $(function() {
 				type : 'POST',
 				url : ctx + '/adminPage/server/setEnable',
 				data : {
-					enable : data.elem.checked,
+					enable : data.elem.checked?1:0,
 					id : data.elem.value
 				},
 				dataType : 'json',

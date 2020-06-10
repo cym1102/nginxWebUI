@@ -115,6 +115,21 @@ $(function(){
 								key: 'system',
 								title : '操作系统'
 							},{	
+								title : 'nginx',
+								template : function(remote) {
+									if(remote.nginx == 2){
+										return `<span class="black">未知</span>`
+									}
+									if(remote.nginx == 1){
+										return `<span class="green">运行中</span>`
+									}
+									if(remote.nginx == 0){
+										return `<span class="red">未运行</span>`
+									}
+									
+									return "";
+								}
+							},{	
 								title : '状态',
 								template : function(remote) {
 									if(remote.status == 1){
@@ -133,19 +148,25 @@ $(function(){
 									
 									if(remote.type == 0){
 										// 服务器
-										html += `<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="change('${remote.id}')">切换到此服务器</button>
-											`;
-											
+										if(remote.status == 1){
+											html += `<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="change('${remote.id}')">切换到此服务器</button>`;
+										}
+										
 										if(remote.id != '本地'){
+											// 本地
+											if(remote.status == 1){
+												html += `<button class="layui-btn layui-btn-sm" onclick="content('${remote.id}')">查看conf</button>`;
+											}
+											
 											html += `
-												<button class="layui-btn layui-btn-sm" onclick="content('${remote.id}')">查看conf</button>
 												<button class="layui-btn layui-btn-sm" onclick="edit('${remote.id}')">编辑</button>
 												<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${remote.id}')">删除</button>
 											`;
 										} else {
-											html += `
-												<button class="layui-btn layui-btn-sm" onclick="contentLocal()">查看conf</button>
-											`;
+											// 远程
+											if(remote.status == 1){
+												html += `<button class="layui-btn layui-btn-sm" onclick="contentLocal()">查看conf</button>`;
+											}
 										}
 										
 									} else {

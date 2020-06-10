@@ -67,10 +67,12 @@ public class FrontInterceptor implements HandlerInterceptor {
 		try {
 			URI uri = new URI(url);
 			effectiveURI = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
-		} catch (Throwable var4) {
-			effectiveURI = null;
+			
+			return effectiveURI.toString().replace("http:", "").replace("https:", "");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return effectiveURI.toString().replace("http:", "").replace("https:", "");
+		return null;
 	}
 
 }

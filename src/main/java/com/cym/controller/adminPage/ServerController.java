@@ -42,6 +42,10 @@ public class ServerController extends BaseController {
 		List<ServerExt> exts = new ArrayList<ServerExt>();
 		for (Server server : page.getRecords(Server.class)) {
 			ServerExt serverExt = new ServerExt();
+			if(server.getEnable() == null) {
+				server.setEnable(false);
+			}
+			
 			serverExt.setServer(server);
 			if (server.getProxyType() == 0) {
 				serverExt.setLocationStr(buildLocationStr(server.getId()));

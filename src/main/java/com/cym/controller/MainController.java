@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cym.config.InitConfig;
 import com.cym.model.Remote;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
@@ -42,7 +43,7 @@ public class MainController extends BaseController {
 			file.transferTo(temp);
 
 			// 保存文件
-			File dest = new File("/home/nginxWebUI/cert/" + System.currentTimeMillis() + "." + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
+			File dest = new File(InitConfig.home + "cert/" + System.currentTimeMillis() + "." + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
 			FileUtil.move(temp, dest, true);
 
 			String localType = (String) httpSession.getAttribute("localType");

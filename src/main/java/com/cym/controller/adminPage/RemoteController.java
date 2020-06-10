@@ -28,9 +28,8 @@ import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.net.URLEncoder;
+import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 
@@ -69,18 +68,20 @@ public class RemoteController extends BaseController {
 
 		for (Remote remote : remoteList) {
 			remote.setStatus(0);
+			remote.setType(0);
+			if (remote.getParentId() == null) {
+				remote.setParentId("");
+			}
+
 			try {
-				String version = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/remote/version?creditKey=" + remote.getCreditKey(), 500);
-				if (StrUtil.isNotEmpty(version)) {
+				String json = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/remote/version?creditKey=" + remote.getCreditKey(), 500);
+				if (StrUtil.isNotEmpty(json)) {
+					Map<String, Object> map = JSONUtil.toBean(json, Map.class);
+
 					remote.setStatus(1);
-					remote.setVersion(version);
+					remote.setVersion((String) map.get("version"));
+					remote.setNginx((Integer) map.get("nginx"));
 				}
-
-				if (remote.getParentId() == null) {
-					remote.setParentId("");
-				}
-
-				remote.setType(0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -93,7 +94,9 @@ public class RemoteController extends BaseController {
 		remoteLocal.setProtocol("");
 		remoteLocal.setParentId("");
 		remoteLocal.setDescr("本地");
-		remoteLocal.setVersion(version);
+		Map<String, Object> map = version();
+		remoteLocal.setVersion((String) map.get("version"));
+		remoteLocal.setNginx((Integer) map.get("nginx"));
 		remoteLocal.setPort(port);
 		remoteLocal.setStatus(1);
 		remoteLocal.setType(0);
@@ -174,50 +177,9 @@ public class RemoteController extends BaseController {
 
 	}
 
-//	@RequestMapping("getAllowRemote")
-//	@ResponseBody
-//	public JsonResult getAllowRemote(String id) {
-//		Remote remoteFrom = sqlHelper.findById(id, Remote.class);
-//		String system = null;
-//		List<Remote> remotes = null;
-//		if (remoteFrom == null) {
-//			// 本地
-//			system = SystemTool.getSystem();
-//			remotes = remoteService.getBySystem(system);
-//		} else {
-//			// 远程
-//			system = remoteFrom.getSystem();
-//			remotes = remoteService.getBySystem(system);
-//
-//			// 去掉自己
-//			for (Remote remote : remotes) {
-//				if (remote.getId().equals(remoteFrom.getId())) {
-//					remotes.remove(remote);
-//					break;
-//				}
-//			}
-//
-//			// 系统相同,加上本地
-//			if (system.equals(SystemTool.getSystem())) {
-//				Remote remote = new Remote();
-//				remote.setId("本地");
-//				remote.setIp("本地");
-//				remote.setVersion(version);
-//				remote.setPort(port);
-//				remote.setSystem(SystemTool.getSystem());
-//				remote.setDescr("");
-//
-//				remotes.add(0, remote);
-//			}
-//		}
-//
-//		return renderSuccess(remotes);
-//	}
-
 	@RequestMapping("getCmdRemote")
 	@ResponseBody
 	public JsonResult getCmdRemote() {
-//		List<Remote> remotes = sqlHelper.findAll(Remote.class);
 
 		List<Group> groups = groupService.getListByParent(null);
 		List<Remote> remotes = remoteService.getListByParent(null);
@@ -312,7 +274,7 @@ public class RemoteController extends BaseController {
 		if (StrUtil.isEmpty(fromId) || remoteId == null || remoteId.length == 0) {
 			return renderSuccess("未选择服务器");
 		}
-		
+
 		Remote remoteFrom = sqlHelper.findById(fromId, Remote.class);
 		String json = null;
 		if (remoteFrom == null) {
@@ -411,8 +373,23 @@ public class RemoteController extends BaseController {
 
 	@RequestMapping("version")
 	@ResponseBody
-	public String version() {
-		return version;
+	public Map<String, Object> version() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("version", version);
+		map.put("nginx", 2);
+
+		if (SystemTool.isLinux()) {
+			String[] command = { "/bin/sh", "-c", "ps -ef|grep nginx" };
+			String rs = RuntimeUtil.execForStr(command);
+
+			if (rs.contains("nginx: master process")) {
+				map.put("nginx", 1);
+			} else {
+				map.put("nginx", 0);
+			}
+		}
+
+		return map;
 	}
 
 	@RequestMapping("readContent")

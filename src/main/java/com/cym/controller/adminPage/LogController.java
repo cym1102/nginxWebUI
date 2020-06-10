@@ -8,49 +8,53 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cym.model.Admin;
-import com.cym.service.AdminService;
+import com.cym.model.Log;
+import com.cym.service.LogService;
+import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 
 import cn.craccd.sqlHelper.bean.Page;
+import cn.hutool.core.io.FileUtil;
 
 @Controller
-@RequestMapping("/adminPage/admin")
-public class AdminController extends BaseController {
+@RequestMapping("/adminPage/log")
+public class LogController extends BaseController {
 	@Autowired
-	AdminService adminService;
-	
+	SettingService settingService;
+	@Autowired
+	LogService logService;
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page) {
-		page = adminService.search(page);
+		page = logService.search(page);
 
 		modelAndView.addObject("page", page);
-		modelAndView.setViewName("/adminPage/admin/index");
+		modelAndView.setViewName("/adminPage/log/index");
 		return modelAndView;
 	}
-
-	@RequestMapping("addOver")
-	@ResponseBody
-	public JsonResult addOver(Admin admin)  {
-
-		sqlHelper.insertOrUpdate(admin);
-
-		return renderSuccess();
-	}
-
-	@RequestMapping("detail")
-	@ResponseBody
-	public JsonResult detail(String id)  {
-		return renderSuccess(sqlHelper.findById(id, Admin.class));
-	}
-
+	
 	@RequestMapping("del")
 	@ResponseBody
-	public JsonResult del(String id)  {
-		sqlHelper.deleteById(id, Admin.class);
-		
+	public JsonResult del(String id) {
+		sqlHelper.deleteById(id, Log.class);
 		return renderSuccess();
 	}
+	
+	@RequestMapping("delAll")
+	@ResponseBody
+	public JsonResult delAll(String id) {
+		sqlHelper.deleteByQuery(null, Log.class); 
+		return renderSuccess();
+	}
+	
+	@RequestMapping("detail")
+	@ResponseBody
+	public JsonResult detail(String id) {
+		Log log = sqlHelper.findById(id, Log.class);
+		return renderSuccess(log);
+		
+	}
+	
+	
 
 }

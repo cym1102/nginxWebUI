@@ -24,18 +24,5 @@ public class SqlConfig  {
 	@Autowired
 	SqlHelper sqlHelper;
 
-	@PostConstruct
-	public void initAdmin() {
-
-		Long count = sqlHelper.findAllCount(Http.class);
-		if (count == 0) {
-			List<Http> https = new ArrayList<Http>();
-			https.add(new Http("include", "mime.types"));
-			https.add(new Http("default_type", "application/octet-stream"));
-
-			sqlHelper.insertAll(https);
-		}
-
-	}
 
 }

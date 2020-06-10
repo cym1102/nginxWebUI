@@ -137,7 +137,8 @@ function addGiudeOver(){
 		type : 'POST',
 		url : ctx + '/adminPage/http/addGiudeOver',
 		data : {
-			json : JSON.stringify(params)
+			json : JSON.stringify(params),
+			logStatus : $("#logStatus").prop("checked")
 		},
 		dataType : 'json',
 		success : function(data) {
