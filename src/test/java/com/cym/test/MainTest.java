@@ -1,24 +1,14 @@
 package com.cym.test;
 
-import java.nio.charset.Charset;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import cn.craccd.sqlHelper.utils.SqlHelper;
+import com.cym.NginxWebUI;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import com.cym.NginxWebUI;
-import com.cym.model.Version;
-
-import cn.craccd.sqlHelper.utils.SqlHelper;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.json.JSONUtil;
-
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = NginxWebUI.class)
 public class MainTest {
 	@Autowired
@@ -26,21 +16,18 @@ public class MainTest {
 	@Value("${project.version}")
 	String version;
 
-	@Before
-	public void before() {
+	@BeforeAll
+	static void before() {
 		System.out.println("--------------测试开始----------");
 	}
 
 	@Test
 	public void testStartUp() {
 		
-		
-		
-		
 	}
 
-	@After
-	public void after() {
+	@AfterAll
+	static void after() {
 		System.out.println("--------------测试结束----------");
 	}
 

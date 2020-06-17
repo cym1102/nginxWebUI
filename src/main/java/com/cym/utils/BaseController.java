@@ -12,7 +12,6 @@ public class BaseController {
 	@Autowired
 	protected SqlHelper sqlHelper;
 	
-	
 	protected JsonResult renderError() {
 		JsonResult result = new JsonResult();
 		result.setSuccess(false);

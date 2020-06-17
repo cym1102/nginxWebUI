@@ -37,6 +37,14 @@
 .blue{
 	font-weight: bolder;
 }
+
+.short{
+	width: 200px;
+}
+.long{
+	width: 300px;
+	display: inline;
+}
 </style>
 </head>
 <body class="layui-layout-body">
@@ -64,8 +72,7 @@
 						<input type="hidden" name="curr" value="${page.curr}">
 					</div>
 			
-
-					<table class="layui-table layui-form">
+					<table class="layui-table layui-form" >
 						<thead>
 							<tr>
 								<th>转发类型 <i class="layui-icon ${(direction=='desc'&&sort=='proxyType')?string('layui-icon-down','layui-icon-up')} ${(sort=='proxyType')?string('blue','')}" id="proxyTypeSort"  onclick="sort('proxyTypeSort')"></i></th>
@@ -124,6 +131,7 @@
 								</td>
 								<td>
 									<button type="button" class="layui-btn layui-btn-sm" onclick="edit('${ext.server.id}')">编辑</button>
+									<button type="button" class="layui-btn layui-btn-sm" onclick="clone('${ext.server.id}')">克隆</button>
 									<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.server.id}')">删除</button>
 									
 								</td>
@@ -155,7 +163,7 @@
 					<div class="proxyTcp">
 						<label class="layui-form-label">指向负载均衡</label>
 						<div class="layui-input-inline">
-							<select name="proxyUpstreamId">
+							<select name="proxyUpstreamId" id="proxyUpstreamId">
 								<#list upstreamTcpList as upstream>
 								<option value="${upstream.id}">${upstream.name}</option>
 								</#list>
@@ -350,7 +358,28 @@
 
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="selectCertOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.close(certIndex)">关闭</button>
+					<button type="button" class="layui-btn" onclick="layer.close(wwwIndex)">关闭</button>
+				</div>
+			</div>
+		</div>
+		
+			
+		<div id="wwwDiv"  style="padding: 15px; display: none"> 
+			<div class="layui-form">
+				<div class="layui-form-item">
+					<label class="layui-form-label">静态网页</label>
+					<div class="layui-input-inline">
+						<select name="wwwId" id="wwwId">
+							<#list wwwList as www>
+								<option value="${www.dir}">${www.name}</option>
+							</#list>
+						</select>
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="selectWwwOver()">提交</button>
+					<button type="button" class="layui-btn" onclick="layer.close(wwwIndex)">关闭</button>
 				</div>
 			</div>
 		</div>

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -42,6 +43,9 @@ public class LogService {
 	
 	@Transactional
 	public DataGroup buildDataGroup(String path) {
+		if (!new File(path).exists()) {
+			return null;
+		}
 		insertIntoDb(path);
 
 		DataGroup dataGroup = new DataGroup();
@@ -77,8 +81,9 @@ public class LogService {
 		dataGroup.getBrowser().add(keyValue);
 
 		// 域名
-		dataGroup.setHttpReferer(
-				jdbcTemplate.query("select http_host as name,count(1) as value FROM log_info group by http_host order by value asc", new BeanPropertyRowMapper<KeyValue>(KeyValue.class)));
+		List<KeyValue> httpReferer = jdbcTemplate.query("select http_host as name,count(1) as value FROM log_info group by http_host order by value DESC limit 10", new BeanPropertyRowMapper<KeyValue>(KeyValue.class));
+		Collections.reverse(httpReferer);
+		dataGroup.setHttpReferer(httpReferer);
 
 		saveLog(dataGroup, path);
 		return dataGroup;

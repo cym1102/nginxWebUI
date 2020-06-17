@@ -1,0 +1,6 @@
+project:
+  home: /Users/sai/test/nginxDemo/
+
+spring:
+  freemarker:
+    cache: true

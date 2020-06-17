@@ -16,6 +16,7 @@ import com.cym.model.Cert;
 import com.cym.model.Location;
 import com.cym.model.Server;
 import com.cym.model.Upstream;
+import com.cym.model.Www;
 import com.cym.service.ParamService;
 import com.cym.service.ServerService;
 import com.cym.service.UpstreamService;
@@ -23,6 +24,8 @@ import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 
 import cn.craccd.sqlHelper.bean.Page;
+import cn.craccd.sqlHelper.bean.Sort;
+import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.hutool.core.util.StrUtil;
 
 @Controller
@@ -69,6 +72,7 @@ public class ServerController extends BaseController {
 		modelAndView.addObject("upstreamTcpSize", upstreamTcpList.size());
 
 		modelAndView.addObject("certList", sqlHelper.findAll(Cert.class));
+		modelAndView.addObject("wwwList", sqlHelper.findAll(new Sort("dir", Direction.ASC), Www.class));
 		modelAndView.addObject("sort", sort);
 		modelAndView.addObject("direction", direction);
 		modelAndView.setViewName("/adminPage/server/index");
@@ -138,4 +142,15 @@ public class ServerController extends BaseController {
 		return renderSuccess();
 	}
 
+	@RequestMapping("clone")
+	@ResponseBody
+	public JsonResult clone(String id) {
+		serverService.clone(id);
+
+		return renderSuccess();
+	}
+
+	
+	
+	
 }

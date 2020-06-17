@@ -60,7 +60,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object obj) throws Exception {
 //		System.err.println(request.getRequestURL());
-		String ctx = getCtx(request.getRequestURL().toString() + "/");
+		String ctx = getCtx(request.getRequestURL().toString());
 
 		if (request.getRequestURL().toString().contains("adminPage/login")) {
 			return true;
@@ -103,7 +103,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 						os.write(buffer, 0, i);
 						i = bis.read(buffer);
 					}
-				}else {
+				} else {
 					PrintWriter out = response.getWriter();
 					out.append(rs);
 				}
@@ -111,7 +111,6 @@ public class AdminInterceptor implements HandlerInterceptor {
 
 			} catch (Exception e) {
 				e.printStackTrace();
-				
 				response.sendRedirect(ctx + "/adminPage/login/noServer");
 			}
 

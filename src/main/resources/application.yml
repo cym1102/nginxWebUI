@@ -3,9 +3,10 @@ server:
   servlet: 
     session:
       timeout: 7200 
-  tomcat: 
-    max-threads: 5 #减少tomcat线程数
-      
+  tomcat:
+    # 默认是200
+    threads:
+      max: 5 #减少tomcat线程数
 spring:
   application:
     name: nginx配置器
@@ -13,10 +14,6 @@ spring:
     store-type: jdbc
     jdbc:
       initialize-schema: always
-      
-  devtools:
-    restart:
-      enabled: false
   jackson:
     default-property-inclusion: NON_NULL
   jmx:
@@ -25,14 +22,14 @@ spring:
     type: sqlite
     package: com.cym.model
     print: true
-    sqlite-path: ${project.home}sqlite.db 
+    sqlite-path: ${project.home}sqlite.db
 
 project:
   version: v@project.version@
   home: /home/nginxWebUI/
   
 logging: 
-  file:    name: ${project.home}log/nginxWebUI.log
+  file:
+    name: ${project.home}log/nginxWebUI.log
   level: 
     root: info
-  

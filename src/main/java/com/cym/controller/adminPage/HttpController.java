@@ -1,8 +1,6 @@
 package com.cym.controller.adminPage;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -50,7 +48,6 @@ public class HttpController extends BaseController {
 		}
 		sqlHelper.insertOrUpdate(http);
 
-
 		return renderSuccess();
 	}
 
@@ -73,27 +70,26 @@ public class HttpController extends BaseController {
 	public JsonResult addGiudeOver(String json, Boolean logStatus) {
 		List<Http> https = JSONUtil.toList(JSONUtil.parseArray(json), Http.class);
 
-		if(logStatus) {
+		if (logStatus) {
 			Http http = new Http();
 			http.setName("log_format");
-			http.setValue("main escape=json '" +  buildLogFormat() + "'");
+			http.setValue("main escape=json '" + buildLogFormat() + "'");
 			http.setUnit("");
 			https.add(http);
-			
+
 			http = new Http();
 			http.setName("access_log");
 			http.setValue(InitConfig.home + "log/access.log main");
 			http.setUnit("");
 			https.add(http);
-			
+
 		}
-		
+
 		httpService.setAll(https);
 
 		return renderSuccess();
 	}
-	
-	
+
 	private String buildLogFormat() {
 		LogInfo logInfo = new LogInfo();
 		logInfo.setRemoteAddr("$remote_addr");
@@ -108,8 +104,8 @@ public class HttpController extends BaseController {
 		logInfo.setHttpUserAgent("$http_user_agent");
 		logInfo.setRequestTime("$request_time");
 		logInfo.setUpstreamResponseTime("$upstream_response_time");
-		
-		return "'" + JSONUtil.toJsonStr(logInfo) + "'";
+
+		return JSONUtil.toJsonStr(logInfo);
 	}
 
 }

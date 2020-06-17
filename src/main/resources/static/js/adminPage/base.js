@@ -63,7 +63,7 @@ $(function() {
 	
 	$.ajax({
 		type : 'POST',
-		url : ctx + '/adminPage/login/getLocalType',
+		url : ctx + 'adminPage/login/getLocalType',
 		dataType : 'json',
 		success : function(data) {
 			if (data.success) {

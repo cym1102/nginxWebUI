@@ -96,24 +96,8 @@ public class ServerService {
 
 	@Transactional
 	public void addOverTcp(Server server, String serverParamJson) {
-//		server.setSsl(null);
-//		server.setPem(null);
-//		server.setKey(null);
-//		server.setRewrite(null);
-//		server.setServerName(null);
-//
-//		if (StrUtil.isEmpty(server.getId())) {
-//			sqlHelper.insert(server);
-//		} else {
-//			Server serverOrg = sqlHelper.findById(server.getId(), Server.class);
-//			server.setEnable(serverOrg.getEnable());
-//			if (server.getEnable() == null) {
-//				server.setEnable(true);
-//			}
-//			sqlHelper.updateAllColumnById(server);
-//		}
 		sqlHelper.insertOrUpdate(server);
-		
+
 		List<String> locationIds = sqlHelper.findIdsByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
 		sqlHelper.deleteByQuery(new ConditionOrWrapper().eq("serverId", server.getId()).in("locationId", locationIds), Param.class);
 		List<Param> paramList = new ArrayList<Param>();
@@ -131,6 +115,39 @@ public class ServerService {
 
 	public List<Server> getListByProxyType(Integer proxyType) {
 		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq("proxyType", proxyType), Server.class);
+	}
+
+	@Transactional
+	public void clone(String id) {
+		Server server = sqlHelper.findById(id, Server.class);
+
+		List<Location> locations = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
+		List<Param> params = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Param.class);
+
+		server.setId(null);
+		sqlHelper.insertOrUpdate(server);
+		for (Param param : params) {
+			param.setId(null);
+			param.setServerId(server.getId());
+			sqlHelper.insert(param);
+		}
+		
+		
+		for (Location location : locations) {
+			params = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("locationId", location.getId()), Param.class);
+			
+			location.setId(null);
+			location.setServerId(server.getId());
+			sqlHelper.insert(location);
+			
+			for (Param param : params) {
+				param.setId(null);
+				param.setLocationId(location.getId());
+				sqlHelper.insert(param);
+			}
+		}
+
+		
 	}
 
 }

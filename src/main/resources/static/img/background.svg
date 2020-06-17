@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1266px" height="881px" viewBox="0 0 1266 881" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 63.1 (101010) - https://sketch.com -->
+    <title>157422A6-29B2-4F17-81E3-A7274C0B39D1</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="1266" height="900"></rect>
+        <linearGradient x1="39.5825108%" y1="4.41267968%" x2="2.76867691%" y2="43.9444809%" id="linearGradient-3">
+            <stop stop-color="#FB9729" offset="0%"></stop>
+            <stop stop-color="#FF6B00" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="39.5825108%" y1="4.40863302%" x2="2.76867691%" y2="43.9439434%" id="linearGradient-4">
+            <stop stop-color="#FB9729" offset="0%"></stop>
+            <stop stop-color="#FF6B00" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="1.-🎨-Styles-/-Atoms-/-Molecules-/-Compounds" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="08.6-Various-(Light)" transform="translate(-66.000000, -304.000000)">
+            <g id="3.-Layout/Background/Wallpaper-BG-generic" transform="translate(66.000000, 303.000000)">
+                <g id="standards/bgWallpaper-ColCircles" transform="translate(0.000000, 1.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g id="Mask"></g>
+                    <g id="interectionsShapes" mask="url(#mask-2)">
+                        <g transform="translate(-5164.225000, -2427.539062)" id="Petals-outlines">
+                            <g transform="translate(0.528510, 0.528353)">
+                                <path d="M5395.88845,2869.83099 C5918.2359,2869.86491 6341.65466,2446.28359 6341.62072,1923.73563 C6341.58679,1401.18768 5918.113,977.551377 5395.76556,977.517463 C5217.74319,977.505905 4898.84505,977.4852 4439.07113,977.455349 C4446.36817,1437.9524 4450.02222,1753.33822 4450.03328,1923.61282 C4450.06722,2446.16077 4873.541,2869.79708 5395.88845,2869.83099 Z" id="Petal-Blue" stroke="#0055B8" stroke-width="4.39453125" transform="translate(5390.345924, 1923.643170) rotate(-193.000000) translate(-5390.345924, -1923.643170) "></path>
+                                <path d="M5317.34041,2884.20406 C5770.80887,2884.26634 6138.36717,2516.51645 6138.30487,2062.81168 C6138.24256,1609.10691 5770.58323,1241.25604 5317.11477,1241.19376 C5162.5672,1241.17253 4885.72034,1241.1345 4486.57419,1241.07968 C4492.93797,1640.90891 4496.13001,1914.7444 4496.15031,2062.58614 C4496.21262,2516.2909 4863.87195,2884.14178 5317.34041,2884.20406 Z" id="Petal-Green" stroke="#8BC34A" stroke-width="8.7890625" transform="translate(5312.439529, 2062.641872) rotate(-236.000000) translate(-5312.439529, -2062.641872) "></path>
+                                <path d="M3934.48555,6680.83263 C5460.29007,6680.60662 6697.38225,5443.47052 6697.60826,3917.61181 C6697.83428,2391.7531 5461.10856,1154.98344 3935.30404,1155.20945 C3415.2913,1155.28648 2483.77296,1155.42446 1140.74902,1155.6234 C1161.77754,2500.28672 1172.25498,3421.22235 1172.18133,3918.43027 C1171.95531,5444.28898 2408.68104,6681.05864 3934.48555,6680.83263 Z" id="Petal-thin-orange" stroke="url(#linearGradient-3)" stroke-width="1.7578125" transform="translate(3919.178643, 3918.021040) rotate(-135.000000) translate(-3919.178643, -3918.021040) "></path>
+                                <path d="M5910.63741,3300.72163 C6249.47013,3300.76748 6524.11115,3026.0846 6524.0653,2687.20024 C6524.01944,2348.31588 6249.30408,2073.55865 5910.47135,2073.5128 C5794.99304,2073.49717 5588.1324,2073.46918 5289.88944,2073.42881 C5294.64385,2372.07207 5297.02852,2576.60719 5297.04346,2687.03419 C5297.08932,3025.91855 5571.80469,3300.67577 5910.63741,3300.72163 Z" id="Petal-orange" stroke="url(#linearGradient-4)" stroke-width="20.2148438" transform="translate(5906.977367, 2687.075220) rotate(-57.000000) translate(-5906.977367, -2687.075220) "></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

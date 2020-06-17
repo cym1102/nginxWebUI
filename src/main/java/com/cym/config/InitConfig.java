@@ -54,7 +54,6 @@ public class InitConfig {
 
 		if (SystemTool.isLinux()) {
 			// 初始化acme.sh
-
 			if (!FileUtil.exist("/root/.acme.sh")) {
 				ClassPathResource resource = new ClassPathResource("acme.zip");
 				InputStream inputStream = resource.getInputStream();
@@ -72,7 +71,7 @@ public class InitConfig {
 			if (StrUtil.isEmpty(nginxPath)) {
 				// 查找nginx.conf
 				nginxPath = RuntimeTool.execForOne("find / -name nginx.conf");
-				if (StrUtil.isNotEmpty(nginxPath) && FileUtil.exist(nginxPath)) {
+				if (StrUtil.isNotEmpty(nginxPath)) {
 					// 判断是否是容器中
 					String lines = FileUtil.readUtf8String(nginxPath);
 					if (StrUtil.isNotEmpty(lines) && lines.contains("include " + home + "nginx.conf;")) {
@@ -97,7 +96,16 @@ public class InitConfig {
 					settingService.set("nginxExe", nginxExe);
 				}
 			}
-
+			
+			// 查找ngx_stream_module模块
+			String module = settingService.get("ngx_stream_module");
+			if (StrUtil.isEmpty(module)) {
+				module = RuntimeTool.execForOne("find / -name ngx_stream_module.so");
+				if (StrUtil.isNotEmpty(module)) {
+					settingService.set("ngx_stream_module", module);
+				}
+			}
+			
 			// 尝试启动nginx
 			if (nginxExe.equals("nginx")) {
 				String[] command = { "/bin/sh", "-c", "ps -ef|grep nginx" };

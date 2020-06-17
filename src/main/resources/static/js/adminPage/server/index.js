@@ -68,11 +68,11 @@ $(function() {
 
 function checkType(type,id){
 	if (type == 0 || type == 1) {
-		$("#" + id + " input[name='value']").show();
+		$("#" + id + " input[lang='value']").show();
 		$("#" + id + " span[name='upstreamSelect']").hide();
 	} 
 	if (type == 2) {
-		$("#" + id + " input[name='value']").hide();
+		$("#" + id + " input[lang='value']").hide();
 		$("#" + id + " span[name='upstreamSelect']").show();
 	} 
 }
@@ -210,6 +210,7 @@ function edit(id) {
 		},
 		success : function(data) {
 			if (data.success) {
+				
 				var server = data.obj.server;
 				$("#id").val(server.id);
 				$("#listen").val(server.listen);
@@ -248,7 +249,7 @@ function edit(id) {
 					location.locationParamJson = location.locationParamJson.replace(/,/g,"%2C");
 					var html = `<tr id='${uuid}'>
 								<td>
-									<input type="text" name="path" class="layui-input" value="${location.path}">
+									<input type="text" name="path" class="layui-input short" value="${location.path}">
 								</td>
 								<td style="width: 200px;">
 									<div class="layui-input-inline">
@@ -261,7 +262,8 @@ function edit(id) {
 								</td>
 								
 								<td>
-									<input type="text" name="value" id="value_${uuid}" class="layui-input" value=""  placeholder="例：http://127.0.0.1:8080 或 /root/www">
+									<input type="text" lang="value" name="value" id="value_${uuid}" class="layui-input long" value=""  placeholder="例：http://127.0.0.1:8080 或 /root/www">
+									<i class="layui-icon layui-icon-export" lang="value" onclick="selectWww('${uuid}')"></i>  
 									
 									<span name="upstreamSelect">
 									${upstreamSelect}
@@ -330,7 +332,7 @@ function addItem(){
 	
 	var html = `<tr id='${uuid}'>
 						<td>
-							<input type="text" name="path" class="layui-input" value="/">
+							<input type="text" name="path" class="layui-input short" value="/">
 						</td>
 						<td style="width: 200px;">
 							<div class="layui-input-inline">
@@ -343,7 +345,8 @@ function addItem(){
 						</td>
 						
 						<td>
-							<input type="text" name="value" id="value_${uuid}" class="layui-input" value=""  placeholder="例：http://127.0.0.1:8080 或 /root/www">
+							<input type="text" lang="value" name="value" id="value_${uuid}" class="layui-input long" value=""  placeholder="例：http://127.0.0.1:8080 或 /root/www">
+							<i class="layui-icon layui-icon-export" lang="value" onclick="selectWww('${uuid}')"></i>  
 							
 							<span name="upstreamSelect">
 								${upstreamSelect}
@@ -523,4 +526,49 @@ function sort(id){
 	}
 	
 	search();
+}
+
+
+var wwwIndex;
+var uuid;
+function selectWww(id){
+	uuid = id;
+	wwwIndex = layer.open({
+		type : 1,
+		title : "选择静态网页",
+		area : [ '500px', '300px' ], // 宽高
+		content : $('#wwwDiv')
+	});
+	
+}
+
+function selectWwwOver(){
+	var dir = $("#wwwId").val();
+	$("#value_" + uuid).val(dir);
+	layer.close(wwwIndex)
+}
+
+
+function clone(id){
+	if(confirm("确认进行克隆?")){
+		$.ajax({
+			type : 'POST',
+			url : ctx + '/adminPage/server/clone',
+			data : {
+				id : id
+			},
+			dataType : 'json',
+			success : function(data) {
+				if (data.success) {
+					location.reload();
+				} else {
+					layer.msg(data.msg)
+				}
+			},
+			error : function() {
+				alert("出错了,请联系技术人员!");
+			}
+		});
+	}
+	
 }

@@ -75,7 +75,7 @@ function replace() {
 
 
 function loadConf() {
-	layer.load();
+	//layer.load();
 	$.ajax({
 		type : 'POST',
 		url : ctx + '/adminPage/conf/loadConf',
@@ -84,7 +84,7 @@ function loadConf() {
 		},
 		dataType : 'json',
 		success : function(data) {
-			layer.closeAll();
+			//layer.closeAll();
 			if (data.success) {
 				var confExt = data.obj
 				$("#nginxContent").val(confExt.conf)
@@ -107,7 +107,7 @@ function loadConf() {
 			}
 		},
 		error : function() {
-			layer.closeAll();
+			//layer.closeAll();
 			alert("出错了,请联系技术人员!");
 		}
 	});

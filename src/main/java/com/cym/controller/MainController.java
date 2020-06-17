@@ -39,11 +39,11 @@ public class MainController extends BaseController {
 	@RequestMapping("/upload")
 	public JsonResult upload(@RequestParam("file") MultipartFile file, HttpSession httpSession) {
 		try {
-			File temp = new File(FileUtil.getUserHomePath() + File.separator + System.currentTimeMillis() + "." + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
+			File temp = new File(FileUtil.getTmpDir() + "/" + file.getOriginalFilename()); 
 			file.transferTo(temp);
 
-			// 保存文件
-			File dest = new File(InitConfig.home + "cert/" + System.currentTimeMillis() + "." + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
+			// 移动文件
+			File dest = new File(InitConfig.home + "cert/" + file.getOriginalFilename());
 			FileUtil.move(temp, dest, true);
 
 			String localType = (String) httpSession.getAttribute("localType");

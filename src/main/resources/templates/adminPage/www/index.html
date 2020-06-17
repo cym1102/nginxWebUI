@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<#include "/adminPage/common.html"/>
+
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+
+		<#include "/adminPage/header.html"/>
+		<#include "/adminPage/menu.html"/>
+
+		<div class="layui-body">
+			<!-- 内容主体区域 -->
+			<div style="padding: 15px">
+				<fieldset class="layui-elem-field layui-field-title">
+					<legend>静态网页上传</legend>
+				</fieldset>
+
+				<form action="${ctx}/adminPage/www" id="searchForm" method="post">
+					<div class="layui-form">
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">上传静态网页包</button>
+						</div>
+					</div>
+				</form>
+
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>名称</th>
+							<th>路径</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list list as www>
+						<tr>
+							<td>${www.name}</td>
+							<td>${www.dir}</td>
+							<td>
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${www.id}')">删除</button>
+							</td>
+						</tr>
+						</#list>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div style="height: 0px; width: 0px; overflow: hidden;">
+		<!-- 弹出框 -->
+		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none">
+			<form id="addForm">
+				<input type="hidden" name="id" id="id">
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">目录名称</label>
+					<div class="layui-input-inline">
+						<input type="text" name="name" id="name" class="layui-input">
+					</div>
+				</div>
+				
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">上传zip包</label>
+					<div class="layui-input-inline">
+						<button type="button" class="layui-btn" id="upload">选择zip文件</button>
+					</div>
+					<div class="layui-form-mid layui-word-aux" id="fileName"></div>
+					<input type="hidden" name="dir" id="dir" >
+					
+				</div>
+
+
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+				</div>
+			</form>
+		</div>
+
+	</div>
+
+	<#include '/adminPage/script.html'/>
+	<script src="${ctx}/js/adminPage/www/index.js?v=${jsrandom}" type="text/javascript"></script>
+</body>
+
+
+</html>

@@ -1,18 +1,8 @@
 package com.cym.controller.adminPage;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.sql.SQLException;
-
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
 import com.cym.service.ConfService;
@@ -22,27 +12,38 @@ import com.cym.service.UpstreamService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 @Controller
 @RequestMapping("/adminPage/conf")
 public class ConfController extends BaseController {
-	@Autowired
+	final
 	UpstreamController upstreamController;
-	@Autowired
+	final
 	UpstreamService upstreamService;
-	@Autowired
+	final
 	SettingService settingService;
-	@Autowired
+	final
 	ServerService serverService;
-	@Autowired
+	final
 	ConfService confService;
 
+	public ConfController(UpstreamController upstreamController, UpstreamService upstreamService, SettingService settingService, ServerService serverService, ConfService confService) {
+		this.upstreamController = upstreamController;
+		this.upstreamService = upstreamService;
+		this.settingService = settingService;
+		this.serverService = serverService;
+		this.confService = confService;
+	}
+
 	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) throws IOException, SQLException {
+	public ModelAndView index(ModelAndView modelAndView) {
 
 		String nginxPath = settingService.get("nginxPath");
 		modelAndView.addObject("nginxPath", nginxPath);
@@ -112,19 +113,18 @@ public class ConfController extends BaseController {
 			nginxDir = settingService.get("nginxDir");
 		}
 
-		String rs = null;
+		String rs;
 		String cmd = null;
 		try {
 			if (SystemTool.isWindows()) {
 				cmd = nginxExe + " -t -c " + nginxPath + " -p " + nginxDir;
-				rs = RuntimeUtil.execForStr(cmd);
 			} else {
 				cmd = nginxExe + " -t";
 				if (nginxExe.contains("/")) {
 					cmd = cmd + " -c " + nginxPath + " -p " + nginxDir;
 				}
-				rs = RuntimeUtil.execForStr(cmd);
 			}
+			rs = RuntimeUtil.execForStr(cmd);
 		} catch (Exception e) {
 			e.printStackTrace();
 			rs = e.getMessage().replace("\n", "<br>");
@@ -156,7 +156,7 @@ public class ConfController extends BaseController {
 
 	@RequestMapping(value = "reload")
 	@ResponseBody
-	public JsonResult reload(String nginxPath, String nginxExe, String nginxDir) {
+	public synchronized JsonResult reload(String nginxPath, String nginxExe, String nginxDir) {
 		if (nginxPath == null) {
 			nginxPath = settingService.get("nginxPath");
 		}
@@ -168,18 +168,20 @@ public class ConfController extends BaseController {
 		}
 
 		try {
-			String rs = null;
-			String cmd = null;
+			String rs;
+			String cmd;
 			if (SystemTool.isWindows()) {
 				cmd = nginxExe + " -s reload -c " + nginxPath + " -p " + nginxDir;
-				rs = RuntimeUtil.execForStr(cmd);
 			} else {
 				cmd = nginxExe + " -s reload";
 				if (nginxExe.contains("/")) {
 					cmd = cmd + " -c " + nginxPath + " -p " + nginxDir;
 				}
-				rs = RuntimeUtil.execForStr(cmd);
 			}
+			rs = RuntimeUtil.execForStr(cmd);
+
+			// 延时3秒
+//			Thread.sleep(3000L);
 
 			cmd = "<span class='blue'>" + cmd + "</span>";
 			if (StrUtil.isEmpty(rs) || rs.contains("signal process started")) {
@@ -207,8 +209,8 @@ public class ConfController extends BaseController {
 			nginxDir = settingService.get("nginxDir");
 		}
 		try {
-			String rs = null;
-			String cmd = null;
+			String rs = "";
+			String cmd;
 			if (SystemTool.isWindows()) {
 				cmd = "cmd /c start nginx.exe";
 				RuntimeUtil.exec(new String[] {}, new File(nginxDir), cmd);
@@ -228,7 +230,7 @@ public class ConfController extends BaseController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return renderError("启动失败<br>" + e.getMessage().replace("\n", "<br>"));
+			return renderError("启动失败");
 		}
 	}
 
@@ -242,18 +244,17 @@ public class ConfController extends BaseController {
 			nginxDir = settingService.get("nginxDir");
 		}
 		try {
-			String rs = null;
-			String cmd = null;
+			String rs;
+			String cmd;
 			if (SystemTool.isWindows()) {
 				cmd = nginxExe + " -s stop -p " + nginxDir;
-				rs = RuntimeUtil.execForStr(cmd);
 			} else {
 				cmd = nginxExe + " -s stop";
 				if (nginxExe.contains("/") && StrUtil.isNotEmpty(nginxDir)) {
 					cmd = cmd + " -p " + nginxDir;
 				}
-				rs = RuntimeUtil.execForStr(cmd);
 			}
+			rs = RuntimeUtil.execForStr(cmd);
 
 			cmd = "<span class='blue'>" + cmd + "</span>";
 			if (StrUtil.isEmpty(rs) || rs.contains("signal process started")) {
@@ -283,8 +284,8 @@ public class ConfController extends BaseController {
 		String decompose = settingService.get("decompose");
 		ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"));
 
-		if (FileUtil.exist(nginxPath)) {
-			String orgStr = FileUtil.readString(nginxPath, Charset.forName("UTF-8"));
+		if (StrUtil.isNotEmpty(nginxPath) && FileUtil.exist(nginxPath)) {
+			String orgStr = FileUtil.readString(nginxPath, StandardCharsets.UTF_8);
 			confExt.setConf(orgStr);
 
 			for (ConfFile confFile : confExt.getFileList()) {
@@ -292,7 +293,7 @@ public class ConfController extends BaseController {
 
 				String filePath = nginxPath.replace("nginx.conf", "conf.d/" + confFile.getName());
 				if (FileUtil.exist(filePath)) {
-					confFile.setConf(FileUtil.readString(filePath, Charset.forName("UTF-8")));
+					confFile.setConf(FileUtil.readString(filePath, StandardCharsets.UTF_8));
 				}
 			}
 

@@ -5,6 +5,8 @@ nginx网页配置工具
 
 QQ技术交流群: 1106758598
 
+官网地址: https://nginxwebui.gitee.io
+
 #### 功能说明
 
 本项目可以使用WebUI配置nginx的各项功能, 包括http协议转发, tcp协议转发, 反向代理, 负载均衡, ssl证书自动申请、续签、配置等, 最终生成nginx.conf文件并覆盖nginx的默认配置文件, 完成nginx的最终功能配置. 
@@ -44,7 +46,7 @@ apt install nginx
 2.下载最新版发行包jar
 
 ```
-wget https://craccd.oss-cn-beijing.aliyuncs.com/nginxWebUI-1.3.0.jar
+wget https://craccd.oss-cn-beijing.aliyuncs.com/nginxWebUI-1.3.5.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -52,7 +54,7 @@ wget https://craccd.oss-cn-beijing.aliyuncs.com/nginxWebUI-1.3.0.jar
 3.启动程序
 
 ```
-nohup java -jar -Xmx64m nginxWebUI-1.3.0.jar --server.port=8080 --logging.file.name=/home/nginxWebUI/log/nginxWebUI.log --spring.database.sqlite-path=/home/nginxWebUI/sqlite.db &
+nohup java -jar -Xmx64m nginxWebUI-1.3.5.jar --server.port=8080 ----project.home=/home/nginxWebUI/  &
 ```
 
 参数说明(都是非必填)
@@ -61,9 +63,7 @@ nohup java -jar -Xmx64m nginxWebUI-1.3.0.jar --server.port=8080 --logging.file.n
 
 --server.port 占用端口, 默认以8080端口启动
 
---spring.database.sqlite-path sqlite文件释放后文件路径, 默认释放为/home/nginxWebUI/sqlite.db
-
---logging.file.name 日志存放路径，会已10m大小为界限分割日志文件, 默认为/home/nginxWebUI/log/nginxWebUI.log
+--project.home 项目配置文件目录，存放数据库文件，证书文件，日志等, 默认为/home/nginxWebUI/
 
 注意命令最后加一个&号, 表示项目后台运行
 
@@ -80,13 +80,13 @@ apt install docker.io
 2.下载镜像: 
 
 ```
-docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.3.0
+docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.3.5
 ```
 
 3. 启动容器: 
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--变量名=变量值 --变量名2=变量值2" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.3.0 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--变量名=变量值 --变量名2=变量值2" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.3.5 /bin/bash
 ```
 
 注意: 
@@ -126,6 +126,10 @@ docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--变量�
 ![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/upstream.jpeg "upstream.jpg")
 
 在负载均衡中可配置nginx的负载均衡即upstream项功能, 在反向代理管理中可选择代理目标为配置好的负载均衡
+
+![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/html.jpeg "html.jpg")
+
+在html静态文件上传中可直接上传html压缩包到指定路径,上传后可直接在反向代理中使用,省去在Linux中上传html文件的步骤
 
 ![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/cert.jpeg "cert.jpg")
 
