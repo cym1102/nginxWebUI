@@ -72,7 +72,7 @@ public class ServerController extends BaseController {
 		modelAndView.addObject("upstreamTcpSize", upstreamTcpList.size());
 
 		modelAndView.addObject("certList", sqlHelper.findAll(Cert.class));
-		modelAndView.addObject("wwwList", sqlHelper.findAll(new Sort("dir", Direction.ASC), Www.class));
+		modelAndView.addObject("wwwList", sqlHelper.findAll(Www.class));
 		modelAndView.addObject("sort", sort);
 		modelAndView.addObject("direction", direction);
 		modelAndView.setViewName("/adminPage/server/index");

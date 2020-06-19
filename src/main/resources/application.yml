@@ -9,7 +9,7 @@ server:
       max: 5 #减少tomcat线程数
 spring:
   application:
-    name: nginx配置器
+    name: nginxWebUI
   session:
     store-type: jdbc
     jdbc:

@@ -1,10 +1,5 @@
 $(function(){
 	form.on('switch(autoRenew)', function(data){
-		  //console.log(data.elem); //得到checkbox原始DOM对象
-		  //console.log(data.elem.checked); //是否被选中，true或者false
-		  //console.log(data.value); //复选框value值，也可以通过data.elem.value得到
-		  //console.log(data.othis); //得到美化后的DOM对象
-		  
 		  $.ajax({
 				type : 'POST',
 				url : ctx + '/adminPage/cert/setAutoRenew',
@@ -25,24 +20,79 @@ $(function(){
 					alert("出错了,请联系技术人员!");
 				}
 		});
-	});        
+	});   
 	
+	form.on('select(dnsType)', function(data) {
+		checkType(data.value);
+	});
 })
 
+
+function checkType(value){
+	
+	if (value == 'ali') {
+		$("#ali").show();
+		$("#dp").hide();
+	} 
+	if (value == 'dp') {
+		$("#ali").hide();
+		$("#dp").show();
+	} 
+}
 
 function add() {
 	$("#id").val(""); 
 	$("#domain").val(""); 
+	$("#dnsType option:first").prop("selected", true);
+	$("#aliKey").val(""); 
+	$("#aliSecret").val(""); 
+	$("#dpId").val(""); 
+	$("#dpKey").val(""); 
+	checkType('ali');
 	
 	showWindow("添加证书");
 }
 
 
+function edit(id) {
+	$("#id").val(id);
+
+	$.ajax({
+		type : 'GET',
+		url : ctx + '/adminPage/cert/detail',
+		dataType : 'json',
+		data : {
+			id : id
+		},
+		success : function(data) {
+			if (data.success) {
+				
+				var cert = data.obj;
+				$("#domain").val(cert.domain); 
+				$("#dnsType").val(cert.dnsType!=null?cert.dnsType:'ali');
+				$("#aliKey").val(cert.aliKey); 
+				$("#aliSecret").val(cert.aliSecret); 
+				$("#dpId").val(cert.dpId); 
+				$("#dpKey").val(cert.dpKey); 
+				checkType(cert.dnsType!=null?cert.dnsType:'ali');
+				
+				showWindow("编辑证书");
+				
+			} else {
+				layer.msg(data.msg);
+			}
+		},
+		error : function() {
+			alert("出错了,请联系技术人员!");
+		}
+	});
+}
+
 function showWindow(title){
 	layer.open({
 		type : 1,
 		title : title,
-		area : [ '400px', '300px' ], // 宽高
+		area : [ '500px', '400px' ], // 宽高
 		content : $('#windowDiv')
 	});
 }
@@ -51,6 +101,19 @@ function addOver() {
 	if ($("#domain").val() == "") {
 		layer.msg("域名为空");
 		return;
+	}
+	
+	if($("#dnsType").val() == 'ali'){
+		if($("#aliKey").val() == '' || $("#aliSecret").val() == ''){
+			layer.msg("填写不完整");
+			return;
+		}
+	}
+	if($("#dnsType").val() == 'dp'){
+		if($("#dpId").val() == '' || $("#dpKey").val() == ''){
+			layer.msg("填写不完整");
+			return;
+		}
 	}
 	
 	$.ajax({
@@ -99,7 +162,7 @@ function del(id){
 
 function apply(id){
 	
-	if(confirm("确认申请? 过程中nginx将被暂时关闭.")){
+	if(confirm("确认开始申请？申请时间较长，请耐心等待。")){
 		layer.load();
 		$.ajax({
 			type : 'POST',
@@ -111,8 +174,9 @@ function apply(id){
 			success : function(data) {
 				layer.closeAll();
 				if (data.success) {
+					alert("申请成功!");
 					location.reload();
-				}else{
+				} else {
 					layer.open({
 						  type: 0, 
 						  area : [ '810px', '400px' ],
@@ -121,6 +185,7 @@ function apply(id){
 				}
 			},
 			error : function() {
+				layer.closeAll();
 				alert("出错了,请联系技术人员!");
 			}
 		});
@@ -130,7 +195,7 @@ function apply(id){
 
 function renew(id){
 	
-	if(confirm("确认续签? 过程中nginx将被暂时关闭.")){
+	if(confirm("确认开始续签？申请时间较长，请耐心等待。")){
 		layer.load();
 		$.ajax({
 			type : 'POST',
@@ -142,8 +207,9 @@ function renew(id){
 			success : function(data) {
 				layer.closeAll();
 				if (data.success) {
+					alert("续签成功!");
 					location.reload();
-				}else{
+				} else {
 					layer.open({
 						  type: 0, 
 						  area : [ '810px', '400px' ],
@@ -152,6 +218,7 @@ function renew(id){
 				}
 			},
 			error : function() {
+				layer.closeAll();
 				alert("出错了,请联系技术人员!");
 			}
 		});

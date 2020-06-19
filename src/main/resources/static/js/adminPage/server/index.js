@@ -533,20 +533,24 @@ var wwwIndex;
 var uuid;
 function selectWww(id){
 	uuid = id;
-	wwwIndex = layer.open({
-		type : 1,
-		title : "选择静态网页",
-		area : [ '500px', '300px' ], // 宽高
-		content : $('#wwwDiv')
+//	wwwIndex = layer.open({
+//		type : 1,
+//		title : "选择静态网页",
+//		area : [ '500px', '300px' ], // 宽高
+//		content : $('#wwwDiv')
+//	});
+	
+	rootSelect.selectOne(function callBack(val){
+		$("#value_" + uuid).val(val);
 	});
 	
 }
 
-function selectWwwOver(){
-	var dir = $("#wwwId").val();
-	$("#value_" + uuid).val(dir);
-	layer.close(wwwIndex)
-}
+//function selectWwwOver(){
+//	var dir = $("#wwwId").val();
+//	$("#value_" + uuid).val(dir);
+//	layer.close(wwwIndex)
+//}
 
 
 function clone(id){

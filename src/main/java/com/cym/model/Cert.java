@@ -22,7 +22,43 @@ public class Cert extends BaseModel{
 	String keyStr;
 	
 	
+	String dnsType;
+	String dpId;
+	String dpKey;
+	String aliKey;
+	String aliSecret;
 	
+	
+	public String getDnsType() {
+		return dnsType;
+	}
+	public void setDnsType(String dnsType) {
+		this.dnsType = dnsType;
+	}
+	public String getDpId() {
+		return dpId;
+	}
+	public void setDpId(String dpId) {
+		this.dpId = dpId;
+	}
+	public String getDpKey() {
+		return dpKey;
+	}
+	public void setDpKey(String dpKey) {
+		this.dpKey = dpKey;
+	}
+	public String getAliKey() {
+		return aliKey;
+	}
+	public void setAliKey(String aliKey) {
+		this.aliKey = aliKey;
+	}
+	public String getAliSecret() {
+		return aliSecret;
+	}
+	public void setAliSecret(String aliSecret) {
+		this.aliSecret = aliSecret;
+	}
 	public String getPemStr() {
 		return pemStr;
 	}

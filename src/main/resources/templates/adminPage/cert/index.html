@@ -23,7 +23,7 @@
 							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加证书</button>
 						</div>
 						<div class="layui-inline">
-							<div class="layui-form-mid layui-word-aux proxyHttp">请确认已经把证书的域名指向本服务器，自动续签将在每天凌晨2点进行，超过60天的证书会被续签</div>
+							<div class="layui-form-mid layui-word-aux proxyHttp">自动续签将在凌晨2点进行，超过60天的证书会被续签</div>
 						</div>
 					</div>
 				</form>
@@ -32,6 +32,7 @@
 					<thead>
 						<tr>
 							<th>域名</th>
+							<th>DNS服务商</th>
 							<th>签发时间</th>
 							<th>证书路径</th>
 							<th>是否自动续签</th>
@@ -43,6 +44,14 @@
 						<#list certs as cert>
 						<tr>
 							<td>${cert.domain}</td>
+							<td>
+								<#if cert.dnsType == 'dp'>
+									腾讯DNSPod
+								</#if>
+								<#if cert.dnsType == 'ali'>
+									阿里万网
+								</#if>
+							</td>
 							<td>
 								<#if cert.makeTime!=null>
 								${cert.makeTime?number_to_datetime?string('yyyy-MM-dd HH:mm:ss')}
@@ -62,6 +71,7 @@
 								<button class="layui-btn layui-btn-sm" onclick="renew('${cert.id}')">续签</button>
 								</#if>
 								
+								<button class="layui-btn layui-btn-sm" onclick="edit('${cert.id}')">编辑</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">删除</button>
 							</td>
 						</tr>
@@ -81,7 +91,51 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label">域名</label>
 					<div class="layui-input-block">
-						<input type="text" name="domain" id="domain" class="layui-input">
+						<input type="text" name="domain" id="domain" class="layui-input" placeholder="支持*.domain.cn泛域名，支持多域名，用逗号隔开">
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">DNS服务商</label>
+					<div class="layui-input-block">
+						<select name="dnsType" id="dnsType" lay-filter='dnsType'>
+							<option value="ali">阿里万网</option>
+							<option value="dp">腾讯DNSPod</option>
+						</select>
+					</div>
+				</div>
+				
+				
+				<div id="ali">
+					<div class="layui-form-item">
+						<label class="layui-form-label">Ali_Key</label>
+						<div class="layui-input-block">
+							<input type="text" name="aliKey" id="aliKey" class="layui-input">
+						</div>
+					</div>
+					
+					<div class="layui-form-item">
+						<label class="layui-form-label">Ali_Secret</label>
+						<div class="layui-input-block">
+							<input type="text" name="aliSecret" id="aliSecret" class="layui-input">
+						</div>
+					</div>
+				</div>
+				
+				
+				<div id="dp">
+					<div class="layui-form-item">
+						<label class="layui-form-label">DP_Id</label>
+						<div class="layui-input-block">
+							<input type="text" name="dpId" id="dpId" class="layui-input">
+						</div>
+					</div>
+					
+					<div class="layui-form-item">
+						<label class="layui-form-label">DP_Key</label>
+						<div class="layui-input-block">
+							<input type="text" name="dpKey" id="dpKey" class="layui-input">
+						</div>
 					</div>
 				</div>
 

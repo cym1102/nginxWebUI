@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -45,6 +46,9 @@ public class LoginController extends BaseController {
 	@Autowired
 	VersionConfig versionConfig;
 	
+	@Value("${project.version}")
+	String currentVersion;
+	
 	@RequestMapping("map")
 	public ModelAndView map(ModelAndView modelAndView) {
 
@@ -73,6 +77,7 @@ public class LoginController extends BaseController {
 
 			httpSession.setAttribute("localType", "本地");
 			httpSession.setAttribute("isLogin", true);
+			httpSession.setAttribute("currentVersion", currentVersion);
 			
 			versionConfig.getNewVersion();
 			

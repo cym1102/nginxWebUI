@@ -37,7 +37,7 @@
 						<#list list as www>
 						<tr>
 							<td>${www.name}</td>
-							<td>${www.dir}</td>
+							<td>${www.dir} &nbsp;&nbsp; <a style="color: blue;" href="javascript:copy('${www.dir}')">复制</a></td>
 							<td>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${www.id}')">删除</button>
 							</td>

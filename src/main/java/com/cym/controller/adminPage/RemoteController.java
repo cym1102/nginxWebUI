@@ -33,16 +33,11 @@ import java.util.Map;
 @Controller
 @RequestMapping("/adminPage/remote")
 public class RemoteController extends BaseController {
-	final
-	RemoteService remoteService;
-	final
-	SettingService settingService;
-	final
-	ConfService confService;
-	final
-	GroupService groupService;
-	final
-	ConfController confController;
+	final RemoteService remoteService;
+	final SettingService settingService;
+	final ConfService confService;
+	final GroupService groupService;
+	final ConfController confController;
 
 	@Value("${project.version}")
 	String version;
@@ -82,7 +77,7 @@ public class RemoteController extends BaseController {
 				String json = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/remote/version?creditKey=" + remote.getCreditKey(), 500);
 				if (StrUtil.isNotEmpty(json)) {
 					Map<String, Object> map = JSONUtil.toBean(json, new TypeReference<Map<String, Object>>() {
-					}.getType(),false);
+					}.getType(), false);
 
 					remote.setStatus(1);
 					remote.setVersion((String) map.get("version"));
@@ -260,7 +255,7 @@ public class RemoteController extends BaseController {
 
 			}
 
-			if(jsonResult != null) {
+			if (jsonResult != null) {
 				if (jsonResult.isSuccess()) {
 					rs.append(jsonResult.getObj().toString());
 				} else {
@@ -298,8 +293,7 @@ public class RemoteController extends BaseController {
 				Remote remoteTo = sqlHelper.findById(remoteToId, Remote.class);
 				System.out.println("同步到" + remoteTo.getIp());
 				try {
-					String version = HttpUtil.get(remoteTo.getProtocol() + "://" + remoteTo.getIp() + ":" + remoteTo.getPort() + "/adminPage/remote/version?creditKey=" + remoteTo.getCreditKey(),
-							500);
+					String version = HttpUtil.get(remoteTo.getProtocol() + "://" + remoteTo.getIp() + ":" + remoteTo.getPort() + "/adminPage/remote/version?creditKey=" + remoteTo.getCreditKey(), 500);
 					if (StrUtil.isNotEmpty(version)) {
 						// 在线
 						Map<String, Object> map = new HashMap<>();

@@ -23,16 +23,11 @@ import java.nio.charset.StandardCharsets;
 @Controller
 @RequestMapping("/adminPage/conf")
 public class ConfController extends BaseController {
-	final
-	UpstreamController upstreamController;
-	final
-	UpstreamService upstreamService;
-	final
-	SettingService settingService;
-	final
-	ServerService serverService;
-	final
-	ConfService confService;
+	final UpstreamController upstreamController;
+	final UpstreamService upstreamService;
+	final SettingService settingService;
+	final ServerService serverService;
+	final ConfService confService;
 
 	public ConfController(UpstreamController upstreamController, UpstreamService upstreamService, SettingService settingService, ServerService serverService, ConfService confService) {
 		this.upstreamController = upstreamController;

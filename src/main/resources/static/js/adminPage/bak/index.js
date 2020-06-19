@@ -64,7 +64,7 @@ function del(path){
 
 
 function replace(path){
-	if(confirm("确认还原此版本?")){
+	if(confirm("确认还原此版本?当前配置文件将会被覆盖.")){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/bak/replace',

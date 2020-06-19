@@ -101,7 +101,7 @@ function loadConf() {
 				
 				$("#nginxContentOther").html(html);
 			
-				$("textarea").setTextareaCount();
+				$("#nginxContent").setTextareaCount();
 			} else {
 				layer.alert(data.msg);
 			}
@@ -136,7 +136,7 @@ function loadOrg() {
 				}
 				$("#orgOther").html(html);
 				
-				$("textarea").setTextareaCount();
+				$("#org").setTextareaCount();
 			} else {
 				layer.alert(data.msg);
 			}

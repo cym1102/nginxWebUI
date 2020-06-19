@@ -4,7 +4,7 @@ $(function() {
 		layer.open({
 			type : 1,
 			shade : false,
-			title : "nginx配置器",
+			title : "登陆nginxWebUI",
 			closeBtn : false,
 			area : [ '400px', '330px' ], //宽高
 			content : $('#windowDiv')

@@ -26,19 +26,13 @@ import java.util.concurrent.TimeUnit;
 @EnableScheduling // 2.开启定时任务
 public class ScheduleTask {
 
-	final
-	SqlHelper sqlHelper;
-	final
-	CertController certController;
-	final
-	SettingService settingService;
-	final
-	ConfController confController;
-	final
-	LogService logInfoService;
+	final SqlHelper sqlHelper;
+	final CertController certController;
+	final SettingService settingService;
+	final ConfController confController;
+	final LogService logInfoService;
 
-	public ScheduleTask(SqlHelper sqlHelper, CertController certController,
-						SettingService settingService, ConfController confController, LogService logInfoService) {
+	public ScheduleTask(SqlHelper sqlHelper, CertController certController, SettingService settingService, ConfController confController, LogService logInfoService) {
 		this.sqlHelper = sqlHelper;
 		this.certController = certController;
 		this.settingService = settingService;
@@ -86,15 +80,12 @@ public class ScheduleTask {
 		// 删掉7天前日志文件(zip)
 		long time = System.currentTimeMillis();
 		File dir = new File(InitConfig.home + "log/");
-		Optional.ofNullable(dir.listFiles()).ifPresent(fileList ->
-				Arrays.stream(fileList)
-						.filter(file -> file.getName().contains("access") && file.getName().endsWith(".zip"))
-						.forEach(file -> {
-							DateTime date = DateUtil.parse(file.getName().replace("access.", "").replace(".zip", ""), "yyyy-MM-dd_HH-mm-ss");
-							if (time - date.getTime() > TimeUnit.DAYS.toMillis(7)) {
-								FileUtil.del(file);
-							}
-						})
+		Optional.ofNullable(dir.listFiles()).ifPresent(fileList -> Arrays.stream(fileList).filter(file -> file.getName().contains("access") && file.getName().endsWith(".zip")).forEach(file -> {
+			DateTime date = DateUtil.parse(file.getName().replace("access.", "").replace(".zip", ""), "yyyy-MM-dd_HH-mm-ss");
+			if (time - date.getTime() > TimeUnit.DAYS.toMillis(7)) {
+				FileUtil.del(file);
+			}
+		})
 
 		);
 	}

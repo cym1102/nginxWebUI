@@ -2,6 +2,7 @@ package com.cym.controller.adminPage;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -22,6 +23,7 @@ import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RuntimeUtil;
 
 @Controller
@@ -29,11 +31,11 @@ import cn.hutool.core.util.RuntimeUtil;
 public class CertController extends BaseController {
 	@Autowired
 	SettingService settingService;
-	
+
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	Boolean isInApply = false;
-	
+
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
 		List<Cert> certs = sqlHelper.findAll(Cert.class);
@@ -68,11 +70,11 @@ public class CertController extends BaseController {
 	public JsonResult del(String id) {
 		Cert cert = sqlHelper.findById(id, Cert.class);
 		if (cert.getKey() != null) {
-			File file = new File(cert.getKey());
-
-			FileUtil.del(file.getParent());
+			FileUtil.del(cert.getKey());
 		}
-
+		if (cert.getPem() != null) {
+			FileUtil.del(cert.getPem());
+		}
 		sqlHelper.deleteById(id, Cert.class);
 		return renderSuccess();
 	}
@@ -83,50 +85,54 @@ public class CertController extends BaseController {
 		if (SystemTool.getSystem().equals("Windows")) {
 			return renderError("证书操作只能在linux下进行");
 		}
-		if (!SystemTool.hasNginx()) {
-			return renderError("系统中未安装nginx命令，如果是编译安装nginx，请尝试在系统中执行ln -s [nginx执行文件路径] /usr/bin建立命令链接");
-		}
-
-		String nginxPath = settingService.get("nginxPath");
-		if (!FileUtil.exist(nginxPath)) {
-			return renderError("未找到nginx配置文件:" + nginxPath + ", 请先在【生成conf】模块中设置并读取.");
-		}
 
 		Cert cert = sqlHelper.findById(id, Cert.class);
 		if (cert.getMakeTime() != null) {
 			return renderError("该证书已申请");
 		}
 
-		if(isInApply) {
+		if (cert.getDnsType() == null) {
+			return renderError("该证书还未设置DNS服务商信息");
+		}
+
+		if (isInApply) {
 			return renderError("另一个申请进程正在进行，请稍后再申请");
 		}
 		isInApply = true;
-		
-		// 替换nginx.conf并重启
-		replaceStartNginx(nginxPath, cert.getDomain());
+
 		String rs = "";
 		try {
+			// 设置dns账号
+			setEnv(cert);
+
 			// 申请
-			String cmd = InitConfig.acmeSh + " --issue --nginx -d " + cert.getDomain();
+			String cmd = InitConfig.acmeSh + " --issue --dns dns_ali -d " + cert.getDomain();
 			logger.info(cmd);
+
 			rs = RuntimeUtil.execForStr(cmd);
+
 			logger.info(rs);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			rs = e.getMessage();
 		}
+		
+		// 申请完后,马上备份.acme.sh,以便在升级docker后可用
+		FileUtil.del(InitConfig.home + ".acme.sh");
+		FileUtil.copy("/root/.acme.sh", InitConfig.home, true);
 
-		backupStartNginx(nginxPath);
-		if (rs.contains("Cert success")) {
-			String certDir = "/root/.acme.sh/" + cert.getDomain() + "/";
+		if (rs.contains("Your cert is in")) {
+			String domain = cert.getDomain().split(",")[0];
+			
+			String certDir = "/root/.acme.sh/" + domain + "/";
 
-			String dest = InitConfig.home + "cert/" + cert.getDomain() + ".cer";
-			FileUtil.copy(new File(certDir + cert.getDomain() + ".cer"), new File(dest), true);
+			String dest = InitConfig.home + "cert/" + domain + ".cer";
+			FileUtil.copy(new File(certDir + domain + ".cer"), new File(dest), true);
 			cert.setPem(dest);
 
-			dest = InitConfig.home + "cert/" + cert.getDomain() + ".key";
-			FileUtil.copy(new File(certDir + cert.getDomain() + ".key"), new File(dest), true);
+			dest = InitConfig.home + "cert/" + domain + ".key";
+			FileUtil.copy(new File(certDir + domain + ".key"), new File(dest), true);
 			cert.setKey(dest);
 
 			cert.setMakeTime(System.currentTimeMillis());
@@ -135,7 +141,7 @@ public class CertController extends BaseController {
 			isInApply = false;
 			return renderSuccess();
 		} else {
-			
+
 			isInApply = false;
 			return renderError(rs.replace("\n", "<br>"));
 		}
@@ -148,96 +154,86 @@ public class CertController extends BaseController {
 		if (SystemTool.isWindows()) {
 			return renderError("证书操作只能在linux下进行");
 		}
-		if (!SystemTool.hasNginx()) {
-			return renderError("系统中未安装nginx命令，如果是编译安装nginx，请尝试在系统中执行ln -s [nginx执行文件路径] /usr/bin建立命令链接");
-		}
-
-		String nginxPath = settingService.get("nginxPath");
-		if (!FileUtil.exist(nginxPath)) {
-			return renderError("未找到nginx配置文件:" + nginxPath + ", 请先在【生成conf】模块中设置并读取.");
-		}
 
 		Cert cert = sqlHelper.findById(id, Cert.class);
 		if (cert.getMakeTime() == null) {
 			return renderError("该证书还未申请");
 		}
+		if (cert.getDnsType() == null) {
+			return renderError("该证书还未设置DNS服务商信息");
+		}
 
-		if(isInApply) {
+		if (isInApply) {
 			return renderError("另一个申请进程正在进行，请稍后再申请");
 		}
 		isInApply = true;
-		
-		// 替换nginx.conf并重启
-		replaceStartNginx(nginxPath, cert.getDomain());
+
 		String rs = "";
 		try {
+			// 设置dns账号
+			setEnv(cert);
+			
+			// 续签,以第一个域名为证书名
+			String domain = cert.getDomain().split(",")[0];
+			
 			// 续签
-			String cmd = InitConfig.acmeSh + " --renew --force -d " + cert.getDomain();
+			String cmd = InitConfig.acmeSh + " --renew --force -d " + domain;
 			logger.info(cmd);
+
 			rs = RuntimeUtil.execForStr(cmd);
+
 			logger.info(rs);
 		} catch (Exception e) {
 			e.printStackTrace();
 			rs = e.getMessage();
 		}
 
-		backupStartNginx(nginxPath);
-		if (rs.contains("Cert success")) {
-			String certDir = "/root/.acme.sh/" + cert.getDomain() + "/";
+		// 申请完后,马上备份.acme.sh,以便在升级docker后可用
+		FileUtil.del(InitConfig.home + ".acme.sh");
+		FileUtil.copy("/root/.acme.sh", InitConfig.home, true);
+				
+		if (rs.contains("Your cert is in")) {
+			try {
+				String domain = cert.getDomain().split(",")[0];
+				
+				String certDir = "/root/.acme.sh/" + domain + "/";
 
-			String dest = InitConfig.home + "cert/" + cert.getDomain() + ".cer";
-			FileUtil.copy(new File(certDir + cert.getDomain() + ".cer"), new File(dest), true);
-			cert.setPem(dest);
+				String dest = InitConfig.home + "cert/" + domain + ".cer";
+				FileUtil.copy(new File(certDir + domain + ".cer"), new File(dest), true);
+				cert.setPem(dest);
 
-			dest = InitConfig.home + "cert/" + cert.getDomain() + ".key";
-			FileUtil.copy(new File(certDir + cert.getDomain() + ".key"), new File(dest), true);
-			cert.setKey(dest);
+				dest = InitConfig.home + "cert/" + domain + ".key";
+				FileUtil.copy(new File(certDir + domain + ".key"), new File(dest), true);
+				cert.setKey(dest);
 
-			cert.setMakeTime(System.currentTimeMillis());
-			sqlHelper.updateById(cert);
-
+				cert.setMakeTime(System.currentTimeMillis());
+				sqlHelper.updateById(cert);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			isInApply = false;
 			return renderSuccess();
 		} else {
-			
+
 			isInApply = false;
 			return renderError(rs.replace("\n", "<br>"));
 		}
 
 	}
 
-	// 替换nginx.conf并重启
-	private void replaceStartNginx(String nginxPath, String domain) {
-		logger.info("替换nginx.conf并重启");
-		String nginxContent = "worker_processes  auto; \n" //
-				+ "events {worker_connections  1024;} \n" //
-				+ "http { \n" //
-				+ "   server { \n" //
-				+ "	  server_name " + domain + "; \n" //
-				+ "	  listen 80; \n" //
-				+ "	  root /tmp/www/; \n" //
-				+ "   } \n" //
-				+ "}" //
-		;
+	private void setEnv(Cert cert) {
+		List<String> list = new ArrayList<>();
+		list.add("UPGRADE_HASH='" + UUID.randomUUID().toString().replace("-", "") + "'");
+		if (cert.getDnsType().equals("ali")) {
+			list.add("SAVED_Ali_Key='" + cert.getAliKey() + "'");
+			list.add("SAVED_Ali_Secret='" + cert.getAliSecret() + "'");
+		}
+		if (cert.getDnsType().equals("dp")) {
+			list.add("SAVED_DP_Id='" + cert.getDpId() + "'");
+			list.add("SAVED_DP_Key='" + cert.getDpKey() + "'");
+		}
+		list.add("USER_PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin'");
 
-		// 替换备份文件
-		FileUtil.copy(nginxPath, nginxPath + ".org", true);
-		FileUtil.writeString(nginxContent, nginxPath, Charset.forName("UTF-8"));
-
-		// 重启nginx
-		RuntimeUtil.exec("nginx -s reload");
+		FileUtil.writeLines(list, new File(InitConfig.acmeSh.replace("/acme.sh", "/account.conf")), Charset.defaultCharset());
 	}
-
-	// 还原nginx.conf并重启
-	private void backupStartNginx(String nginxPath) {
-		logger.info("还原nginx.conf并重启");
-		// 还原备份文件
-		FileUtil.copy(nginxPath + ".org", nginxPath, true);
-		FileUtil.del(nginxPath + ".org");
-
-		// 重启nginx
-		RuntimeUtil.exec("nginx -s reload");
-
-	}
-
 }
