@@ -1,14 +1,12 @@
 package com.cym.config;
 
 import java.net.URI;
-import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,8 +23,8 @@ public class FrontInterceptor implements HandlerInterceptor {
 	@Value("${project.version}")
 	String currentVersion;
 
-	@Autowired
-	Environment env;
+//	@Autowired
+//	Environment env;
 	
 	/*
 	 * 视图渲染之后的操作
@@ -51,10 +49,8 @@ public class FrontInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object obj) throws Exception {
 		String ctx = getIP(request.getRequestURL().toString());
 		request.setAttribute("ctx", ctx);
-		if (Arrays.toString(env.getActiveProfiles()).contains("prod"))
-			request.setAttribute("jsrandom", env.getProperty("project.version"));
-		else
-			request.setAttribute("jsrandom", System.currentTimeMillis());
+		
+		request.setAttribute("jsrandom", currentVersion);
 		request.setAttribute("projectName", projectName);
 
 		if (versionConfig.getVersion() != null) {

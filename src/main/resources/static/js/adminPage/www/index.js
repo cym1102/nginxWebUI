@@ -54,7 +54,7 @@ function showWindow(title){
 	layer.open({
 		type : 1,
 		title : title,
-		area : [ '500px', '300px' ], // 宽高
+		area : [ '550px', '300px' ], // 宽高
 		content : $('#windowDiv')
 	});
 }

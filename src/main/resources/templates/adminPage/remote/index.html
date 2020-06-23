@@ -2,7 +2,14 @@
 <html>
 <head>
 <#include "/adminPage/common.html"/>
-
+<style type="text/css">
+.layui-form-label{
+	width: 150px;
+}
+.layui-input-block{
+	margin-left: 180px;
+}
+</style>
 </head>
 <body class="layui-layout-body">
 	<div class="layui-layout layui-layout-admin">
@@ -117,28 +124,28 @@
 
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">ip</label>
+					<label class="layui-form-label">远端nginxWebUI的IP</label>
 					<div class="layui-input-block">
 						<input type="text" name="ip" id="ip" class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">端口</label>
+					<label class="layui-form-label">远端nginxWebUI端口</label>
 					<div class="layui-input-block">
 						<input type="number" name="port" id="port" class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">用户名</label>
+					<label class="layui-form-label">远端nginxWebUI用户</label>
 					<div class="layui-input-block">
 						<input type="text" name="name" id="name" class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">密码</label>
+					<label class="layui-form-label">远端nginxWebUI密码</label>
 					<div class="layui-input-block">
 						<input type="password" name="pass" id="pass" class="layui-input">
 					</div>

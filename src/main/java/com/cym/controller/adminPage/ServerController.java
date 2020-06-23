@@ -24,8 +24,6 @@ import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 
 import cn.craccd.sqlHelper.bean.Page;
-import cn.craccd.sqlHelper.bean.Sort;
-import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.hutool.core.util.StrUtil;
 
 @Controller
@@ -37,7 +35,6 @@ public class ServerController extends BaseController {
 	UpstreamService upstreamService;
 	@Autowired
 	ParamService paramService;
-
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String sort, String direction) {
 		page = serverService.search(page, sort, direction);

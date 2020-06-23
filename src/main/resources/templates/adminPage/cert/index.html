@@ -64,7 +64,7 @@
 							</td>
 							<td>
 								<#if cert.pem == null>
-								<button class="layui-btn layui-btn-sm" onclick="apply('${cert.id}')">申请</button>
+								<button class="layui-btn layui-btn-sm" onclick="issue('${cert.id}')">申请</button>
 								</#if>
 								
 								<#if cert.pem != null>

@@ -19,13 +19,12 @@ import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ZipUtil;
 
-
 @RequestMapping("/adminPage/www")
 @Controller
 public class WwwController extends BaseController {
 	@Autowired
 	WwwService wwwService;
-	
+
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
 
@@ -37,17 +36,24 @@ public class WwwController extends BaseController {
 	@RequestMapping("addOver")
 	@ResponseBody
 	public JsonResult addOver(Www www) {
-		if(wwwService.hasName(www.getName())) {
+		if (wwwService.hasName(www.getName())) {
 			return renderError("名称重复");
 		}
-		
-		String dir = InitConfig.home + "wwww/" + www.getName();
-		ZipUtil.unzip(www.getDir(), dir);
-		FileUtil.del(www.getDir());
-		www.setDir(dir);
-		
-		sqlHelper.insertOrUpdate(www);
-		return renderSuccess();
+
+		try {
+			String dir = InitConfig.home + "wwww/" + www.getName();
+			ZipUtil.unzip(www.getDir(), dir);
+			FileUtil.del(www.getDir());
+			www.setDir(dir);
+
+			sqlHelper.insertOrUpdate(www);
+			return renderSuccess();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return renderError("解压错误，请确认压缩包为zip格式");
 	}
 
 	@RequestMapping("del")

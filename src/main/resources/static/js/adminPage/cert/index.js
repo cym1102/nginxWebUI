@@ -160,7 +160,7 @@ function del(id){
 }
 
 
-function apply(id){
+function issue(id){
 	
 	if(confirm("确认开始申请？申请时间较长，请耐心等待。")){
 		layer.load();
@@ -168,7 +168,8 @@ function apply(id){
 			type : 'POST',
 			url : ctx + '/adminPage/cert/apply',
 			data : {
-				id : id
+				id : id,
+				type : "issue"
 			},
 			dataType : 'json',
 			success : function(data) {
@@ -199,9 +200,10 @@ function renew(id){
 		layer.load();
 		$.ajax({
 			type : 'POST',
-			url : ctx + '/adminPage/cert/renew',
+			url : ctx + '/adminPage/cert/apply',
 			data : {
-				id : id
+				id : id,
+				type : "renew"
 			},
 			dataType : 'json',
 			success : function(data) {

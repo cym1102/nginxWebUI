@@ -379,7 +379,7 @@ public class RemoteController extends BaseController {
 			String[] command = { "/bin/sh", "-c", "ps -ef|grep nginx" };
 			String rs = RuntimeUtil.execForStr(command);
 
-			if (rs.contains("nginx: master process")) {
+			if (rs.contains("nginx: master process") || rs.contains("nginx: worker process")) {
 				map.put("nginx", 1);
 			} else {
 				map.put("nginx", 0);

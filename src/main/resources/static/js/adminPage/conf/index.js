@@ -289,7 +289,9 @@ function start(){
 					});
 				}
 				
-				nginxStatus();
+				setTimeout(() => {
+					nginxStatus();
+				}, 1000);
 			},
 			error : function() {
 				layer.closeAll();
@@ -341,7 +343,10 @@ function stop(){
 					});
 				}
 				
-				nginxStatus();
+				setTimeout(() => {
+					nginxStatus();
+				}, 3000);
+				
 			},
 			error : function() {
 				layer.closeAll();

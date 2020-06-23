@@ -1,5 +1,7 @@
 package com.cym.config;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.context.annotation.Configuration;
 
 import com.cym.model.Version;
@@ -13,16 +15,18 @@ public class VersionConfig {
 
 	Version version;
 
+	@PostConstruct
 	public void getNewVersion() {
+		
 		try {
-			String json = HttpUtil.get("http://craccd.oss-cn-beijing.aliyuncs.com/version.json", 1000);
+			String json = HttpUtil.get("http://craccd.oss-cn-beijing.aliyuncs.com/version.json", 500);
 			if (StrUtil.isNotEmpty(json)) {
 				version = JSONUtil.toBean(json, Version.class);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
 	}
 
 	public Version getVersion() {

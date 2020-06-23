@@ -55,7 +55,7 @@ public class ScheduleTask {
 			if (cert.getMakeTime() != null && cert.getAutoRenew() == 1 && time - cert.getMakeTime() > TimeUnit.DAYS.toMillis(59)) {
 				System.out.println(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss") + " 开始续签证书:" + cert.getDomain());
 				// 大于60天的续签
-				certController.renew(cert.getId());
+				certController.apply(cert.getId(), "renew");
 			}
 		}
 	}

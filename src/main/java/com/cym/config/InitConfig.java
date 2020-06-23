@@ -88,17 +88,22 @@ public class InitConfig {
 				nginxPath = RuntimeTool.execForOne("find / -name nginx.conf");
 				if (StrUtil.isNotEmpty(nginxPath)) {
 					// 判断是否是容器中
-					String lines = FileUtil.readUtf8String(nginxPath);
-					if (StrUtil.isNotEmpty(lines) && lines.contains("include " + home)) {
-						nginxPath = home + "nginx.conf";
-
-						logger.info("----------------release nginx.conf--------------");
-						// 释放nginxOrg.conf
-						ClassPathResource resource = new ClassPathResource("nginxOrg.conf");
-						InputStream inputStream = resource.getInputStream();
-						FileUtil.writeFromStream(inputStream, nginxPath);
+					String lines = "";
+					try {
+						// 读取文件容易报异常
+						lines = FileUtil.readUtf8String(nginxPath);
+						if (StrUtil.isNotEmpty(lines) && lines.contains("include " + home)) {
+							nginxPath = home + "nginx.conf";
+							logger.info("----------------release nginx.conf--------------");
+							// 释放nginxOrg.conf
+							ClassPathResource resource = new ClassPathResource("nginxOrg.conf");
+							InputStream inputStream = resource.getInputStream();
+							FileUtil.writeFromStream(inputStream, nginxPath);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-
+					
 					settingService.set("nginxPath", nginxPath);
 				}
 			}
@@ -129,7 +134,7 @@ public class InitConfig {
 			if (nginxExe.equals("nginx")) {
 				String[] command = { "/bin/sh", "-c", "ps -ef|grep nginx" };
 				String rs = RuntimeUtil.execForStr(command);
-				if (!rs.contains("nginx: master process") && SystemTool.hasNginx()) {
+				if (!rs.contains("nginx: master process") && !rs.contains("nginx: worker process") && SystemTool.hasNginx()) {
 					try {
 						RuntimeUtil.exec("nginx");
 					} catch (Exception e) {
@@ -139,14 +144,14 @@ public class InitConfig {
 			}
 
 			// 查找nginx.pid文件
-			logger.info("----------------find nginx.pid--------------");
-			String nginxPid = settingService.get("nginxPid");
-			if (StrUtil.isEmpty(nginxPid)) {
-				nginxPid = RuntimeTool.execForOne("find / -name nginx.pid");
-				if (StrUtil.isNotEmpty(nginxPid)) {
-					settingService.set("nginxPid", nginxPid);
-				}
-			}
+//			logger.info("----------------find nginx.pid--------------");
+//			String nginxPid = settingService.get("nginxPid");
+//			if (StrUtil.isEmpty(nginxPid)) {
+//				nginxPid = RuntimeTool.execForOne("find / -name nginx.pid");
+//				if (StrUtil.isNotEmpty(nginxPid)) {
+//					settingService.set("nginxPid", nginxPid);
+//				}
+//			}
 		}
 	}
 }
