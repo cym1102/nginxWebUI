@@ -46,7 +46,7 @@ function add() {
 	$("#fileName").html(""); 
 	$("#dir").val(""); 
 	
-	showWindow("添加管理员");
+	showWindow("添加zip包");
 }
 
 

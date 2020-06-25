@@ -52,10 +52,24 @@ function replace() {
 		return;
 	}
 
+	var json = {};
+	json.nginxPath = $("#nginxPath").val();
+	json.nginxContent = $("#nginxContent").val();
+	json.subContent = [];
+	json.subName = [];
+	$("textarea[name='subContent']").each(function(){
+		json.subContent.push($(this).val());
+	})
+	$("input[name='subName']").each(function(){
+		json.subName.push($(this).val());
+	})
+	
 	$.ajax({
 		type : 'POST',
 		url : ctx + '/adminPage/conf/replace',
-		data :$("#addForm").serialize(),
+		data : { 
+			json: JSON.stringify(json) 
+		},
 		dataType : 'json',
 		success : function(data) {
 			if (data.success) {
@@ -94,14 +108,14 @@ function loadConf() {
 					var confFile = confExt.fileList[i];
 					
 					html += `<div class="title">${confFile.name}</div>
-							<textarea class="layui-textarea" name="subContent" style="height: 200px; resize: none;"  spellcheck="false">${confFile.conf}</textarea>
+							<textarea class="layui-textarea conf" name="subContent" style="height: 200px; resize: none;"  spellcheck="false">${confFile.conf}</textarea>
 							<input type="hidden" name="subName" value="${confFile.name}">
 					`;
 				}
 				
 				$("#nginxContentOther").html(html);
 			
-				$("#nginxContent").setTextareaCount();
+				$(".conf").setTextareaCount();
 			} else {
 				layer.alert(data.msg);
 			}
@@ -132,11 +146,11 @@ function loadOrg() {
 					var confFile = confExt.fileList[i];
 					
 					html += `<div class="title">${confFile.name}</div>
-					<textarea class="layui-textarea" style="height: 200px; resize: none; background-color: #ededed;" readonly="readonly" spellcheck="false">${confFile.conf}</textarea>`;
+					<textarea class="layui-textarea org" style="height: 200px; resize: none; background-color: #ededed;" readonly="readonly" spellcheck="false">${confFile.conf}</textarea>`;
 				}
 				$("#orgOther").html(html);
 				
-				$("#org").setTextareaCount();
+				$(".org").setTextareaCount();
 			} else {
 				layer.alert(data.msg);
 			}
@@ -251,6 +265,11 @@ function reload() {
 }
 
 function start(){
+	if ($("#nginxPath").val() == '') {
+		alert("conf配置文件路径为空");
+		return;
+	}
+	
 	if ($("#nginxExe").val() == '') {
 		alert("nginx执行文件路径为空");
 		return;
@@ -269,6 +288,7 @@ function start(){
 			type : 'POST',
 			url : ctx + '/adminPage/conf/start',
 			data : {
+				nginxPath : $("#nginxPath").val(),
 				nginxExe : $("#nginxExe").val(),
 				nginxDir : $("#nginxDir").val()
 			},

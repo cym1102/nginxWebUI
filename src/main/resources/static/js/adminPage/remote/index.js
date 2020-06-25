@@ -183,10 +183,10 @@ $(function(){
 		});
 })
 
-function search() {
+/*function search() {
 	$("input[name='curr']").val(1);
 	$("#searchForm").submit();
-}
+}*/
 
 function add() {
 	$("#id").val(""); 

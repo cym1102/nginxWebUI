@@ -80,15 +80,17 @@ public class ConfService {
 
 			// 获取http
 			List<Http> httpList = sqlHelper.findAll(new Sort("name", Direction.DESC), Http.class);
+			boolean hasHttp = false;
 			NgxBlock ngxBlockHttp = new NgxBlock();
 			ngxBlockHttp.addValue("http");
 			for (Http http : httpList) {
 				NgxParam ngxParam = new NgxParam();
 				ngxParam.addValue(http.getName() + " " + http.getValue());
 				ngxBlockHttp.addEntry(ngxParam);
+				
+				hasHttp = true;
 			}
 
-			boolean hasHttp = false;
 			// 添加upstream
 			NgxParam ngxParam;
 			List<Upstream> upstreams = upstreamService.getListByProxyType(0);
@@ -386,15 +388,10 @@ public class ConfService {
 
 			String conf = new NgxDumper(ngxConfig).dump();
 
-			// 经反复调试，是FileUtil.exist(module)引发的异常。
-			// todo 装载ngx_stream_module模块的功能经常报异常，暂时注释掉，FileUtil.exist(module)这句。
-			
 			// 装载ngx_stream_module模块
 			if (hasStream && SystemTool.isLinux()) {
 				String module = settingService.get("ngx_stream_module");
-//				if (StrUtil.isEmpty(module) || !FileUtil.exist(module)) {
-//					module = RuntimeTool.execForOne("find / -name ngx_stream_module.so");
-//				}
+				
 				// 不在生成conf的方法中查找ngx_stream_module, 放到InitConfig中查找, 只在项目启动时运行一次
 				if (StrUtil.isNotEmpty(module) /*&& FileUtil.exist(module)*/ ) {
 					settingService.set("ngx_stream_module", module);
@@ -454,7 +451,7 @@ public class ConfService {
 		return new NgxDumper(ngxConfig).dump();
 	}
 
-	public void replace(String nginxPath, String nginxContent, String[] subContent, String[] subName) {
+	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName) {
 		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
 		// 备份主文件
 		FileUtil.copy(nginxPath, nginxPath + date + ".bak", true);
@@ -472,9 +469,9 @@ public class ConfService {
 		if ("true".equals(decompose)) {
 			// 写入conf.d文件
 			if (subContent != null) {
-				for (int i = 0; i < subContent.length; i++) {
-					String tagert = nginxPath.replace("nginx.conf", "conf.d/" + subName[i]);
-					FileUtil.writeString(subContent[i], tagert, StandardCharsets.UTF_8); // 清空
+				for (int i = 0; i < subContent.size(); i++) {
+					String tagert = nginxPath.replace("nginx.conf", "conf.d/" + subName.get(i)); 
+					FileUtil.writeString(subContent.get(i), tagert, StandardCharsets.UTF_8); // 清空
 				}
 			}
 		} else {
@@ -588,7 +585,7 @@ public class ConfService {
 				subName.add(confFile.getName());
 			}
 
-			replace(nginxPath, confExt.getConf(), subContent.toArray(new String[0]), subName.toArray(new String[0]));
+			replace(nginxPath, confExt.getConf(), subContent, subName);
 		}
 	}
 

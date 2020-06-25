@@ -3,6 +3,9 @@ package com.cym.controller.adminPage;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
 import com.cym.service.ConfService;
@@ -19,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Controller
 @RequestMapping("/adminPage/conf")
@@ -80,7 +84,14 @@ public class ConfController extends BaseController {
 
 	@RequestMapping(value = "replace")
 	@ResponseBody
-	public JsonResult replace(String nginxPath, String nginxContent, String[] subContent, String[] subName) {
+	public JsonResult replace(String json) {
+		JSONObject jsonObject = JSONUtil.parseObj(json);
+		
+		String nginxPath = jsonObject.getStr("nginxPath");
+		String nginxContent = jsonObject.getStr("nginxContent");
+		List<String> subContent = jsonObject.getJSONArray("subContent").toList(String.class);
+		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
+		
 		if (nginxPath == null) {
 			nginxPath = settingService.get("nginxPath");
 		}
@@ -173,7 +184,7 @@ public class ConfController extends BaseController {
 				cmd = nginxExe + " -s reload -c " + nginxPath + " -p " + nginxDir;
 			} else {
 				cmd = nginxExe + " -s reload";
-				if (nginxExe.contains("/")) {
+				if (nginxExe.contains("/") && StrUtil.isNotEmpty(nginxPath) && StrUtil.isNotEmpty(nginxDir)) {
 					cmd = cmd + " -c " + nginxPath + " -p " + nginxDir;
 				}
 			}
@@ -200,7 +211,10 @@ public class ConfController extends BaseController {
 
 	@RequestMapping(value = "start")
 	@ResponseBody
-	public JsonResult start(String nginxExe, String nginxDir) {
+	public JsonResult start(String nginxPath, String nginxExe, String nginxDir) {
+		if (nginxPath == null) {
+			nginxPath = settingService.get("nginxPath");
+		}
 		if (nginxExe == null) {
 			nginxExe = settingService.get("nginxExe");
 		}
@@ -211,12 +225,12 @@ public class ConfController extends BaseController {
 			String rs = "";
 			String cmd;
 			if (SystemTool.isWindows()) {
-				cmd = "cmd /c start nginx.exe";
+				cmd = "cmd /c start nginx.exe" + " -c " + nginxPath + " -p " + nginxDir;
 				RuntimeUtil.exec(new String[] {}, new File(nginxDir), cmd);
 			} else {
 				cmd = nginxExe;
-				if (nginxExe.contains("/") && StrUtil.isNotEmpty(nginxDir)) {
-					cmd = cmd + " -p " + nginxDir;
+				if (nginxExe.contains("/") && StrUtil.isNotEmpty(nginxPath) && StrUtil.isNotEmpty(nginxDir)) {
+					cmd = cmd + " -c " + nginxPath + " -p " + nginxDir;
 				}
 				rs = RuntimeUtil.execForStr(cmd);
 			}
@@ -246,7 +260,7 @@ public class ConfController extends BaseController {
 			String rs;
 			String cmd;
 			if (SystemTool.isWindows()) {
-				cmd = nginxExe + " -s stop -p " + nginxDir;
+				cmd = "taskkill /im nginx.exe /f";
 			} else {
 				cmd = nginxExe + " -s stop";
 				if (nginxExe.contains("/") && StrUtil.isNotEmpty(nginxDir)) {
@@ -256,7 +270,7 @@ public class ConfController extends BaseController {
 			rs = RuntimeUtil.execForStr(cmd);
 
 			cmd = "<span class='blue'>" + cmd + "</span>";
-			if (StrUtil.isEmpty(rs) || rs.contains("signal process started")) {
+			if (StrUtil.isEmpty(rs) || rs.contains("已终止进程")) {
 				return renderSuccess(cmd + "<br>停止成功<br>" + rs.replace("\n", "<br>"));
 			} else {
 				return renderError(cmd + "<br>停止失败<br>" + rs.replace("\n", "<br>"));
