@@ -40,8 +40,7 @@
 							<div class="layui-form-mid layui-word-aux">注意：只能在相同操作系统之间进行同步，同版本之间才能切换服务器</div>
 						</div>
 						
-						<!-- <input type="hidden" id="version" value="${projectVersion}"> -->
-						<!-- <input type="hidden" name="curr" value="${page.curr}"> -->
+						<input type="hidden" id="projectVersion" value="${projectVersion}">
 					</div>
 				</form>
 
@@ -51,50 +50,7 @@
 				</table>
 
 
-				<table class="layui-table" style="display: none;">
-					<thead>
-						<tr>
-							<th>协议</th>
-							<th>ip</th>
-							<th>端口</th>
-							<th>版本</th>
-							<th>操作系统</th>
-							<th>别名</th>
-							<th>状态</th>
-							<th>操作</th>
-						</tr>
-					</thead>
-					<tbody>
-						<#list remoteList as remote>
-						<tr>
-							<td>${remote.protocol}</td>
-							<td>${remote.ip}</td>
-							<td>${remote.port}</td>
-							<td>${remote.version}</td>
-							<td>${remote.system}</td>
-							<td>${remote.descr}</td>
-							<td>
-								<#if remote.status==0> <span class="red">掉线</span></#if>
-								<#if remote.status==1> <span class="green">在线</span></#if>
-							</td>
-							<td>
-								<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="change('${remote.id}')">切换到此服务器</button>
-								<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="asyc('${remote.id}')">同步到其他服务器</button>
-								<#if remote.ip !='本地'>
-								<button class="layui-btn layui-btn-sm" onclick="content('${remote.id}')">查看conf</button>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${remote.id}')">编辑</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${remote.id}')">删除</button>
-								</#if>
-								<#if remote.ip=='本地'>
-								<button class="layui-btn layui-btn-sm" onclick="contentLocal()">查看conf</button>
-								</#if>
-
-
-							</td>
-						</tr>
-						</#list>
-					</tbody>
-				</table>
+				
 			</div>
 		</div>
 	</div>

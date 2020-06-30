@@ -1,5 +1,8 @@
 package com.cym.utils;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.SystemUtil;
@@ -21,9 +24,11 @@ public class SystemTool {
 	public static Boolean isWindows() {
 		return getSystem().equals("Windows");
 	}
+
 	public static Boolean isMacOS() {
 		return getSystem().equals("Mac OS");
 	}
+
 	public static Boolean isLinux() {
 		return getSystem().equals("Linux");
 	}
@@ -39,5 +44,6 @@ public class SystemTool {
 
 		return true;
 	}
+
 
 }

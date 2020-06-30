@@ -46,7 +46,7 @@ apt install nginx
 2.下载最新版发行包jar
 
 ```
-wget https://craccd.oss-cn-beijing.aliyuncs.com/nginxWebUI-1.3.9.jar
+wget https://craccd.oss-cn-beijing.aliyuncs.com/nginxWebUI-1.4.0.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -54,7 +54,7 @@ wget https://craccd.oss-cn-beijing.aliyuncs.com/nginxWebUI-1.3.9.jar
 3.启动程序
 
 ```
-nohup java -jar -Xmx64m nginxWebUI-1.3.9.jar --server.port=8080 ----project.home=/home/nginxWebUI/  &
+nohup java -jar -Xmx64m nginxWebUI-1.4.0.jar --server.port=8080 ----project.home=/home/nginxWebUI/  &
 ```
 
 参数说明(都是非必填)
@@ -80,13 +80,13 @@ apt install docker.io
 2.下载镜像: 
 
 ```
-docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.3.9
+docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.4.0
 ```
 
 3. 启动容器: 
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--变量名=变量值 --变量名2=变量值2" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.3.9 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--变量名=变量值 --变量名2=变量值2" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.4.0 /bin/bash
 ```
 
 注意: 
@@ -117,7 +117,7 @@ docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--变量�
 
 ![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/tcp.jpeg "tcp.jpg")
 
-在TCP参数配置中可以配置nginx的steam项目参数, 进行tcp转发.
+在TCP参数配置中可以配置nginx的steam项目参数, 大多数情况下可不配.
 
 ![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/server.jpeg "server.jpg")
 
@@ -172,7 +172,7 @@ sqlite3 /home/nginxWebUI/sqlite.db
 3. 查找admin表
 
 ```
-select * from admin
+select * from admin;
 ```
 
 4. 退出sqlite3

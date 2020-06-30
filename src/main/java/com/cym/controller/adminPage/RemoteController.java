@@ -40,7 +40,7 @@ public class RemoteController extends BaseController {
 	final ConfController confController;
 
 	@Value("${project.version}")
-	String version;
+	String projectVersion;
 	@Value("${server.port}")
 	Integer port;
 
@@ -56,7 +56,7 @@ public class RemoteController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> version() {
 		Map<String, Object> map = new HashMap<>();
-		map.put("version", version);
+		map.put("version", projectVersion);
 		map.put("nginx", 2);
 
 		if (SystemTool.isLinux()) {
@@ -76,7 +76,7 @@ public class RemoteController extends BaseController {
 	@RequestMapping("")
 	public ModelAndView index(ModelAndView modelAndView) {
 		modelAndView.setViewName("/adminPage/remote/index");
-
+		modelAndView.addObject("projectVersion", projectVersion);
 		return modelAndView;
 	}
 

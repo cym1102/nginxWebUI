@@ -148,7 +148,8 @@ $(function(){
 									
 									if(remote.type == 0){
 										// 服务器(同版本的才能切换)
-										if(remote.status == 1 && remote.version == $("#version").val()){
+										//console.log( remote.version + " : "  + $("#projectVersion").val());
+										if(remote.status == 1 && remote.version == $("#projectVersion").val()){
 											html += `<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="change('${remote.id}')">切换到此服务器</button>`;
 										}
 										
