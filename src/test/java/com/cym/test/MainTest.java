@@ -1,8 +1,5 @@
 package com.cym.test;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,10 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.cym.NginxWebUI;
+import com.cym.model.MonitorInfo;
+import com.cym.service.MonitorService;
 
 import cn.craccd.sqlHelper.utils.SqlHelper;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.RuntimeUtil;
 
 @SpringBootTest(classes = NginxWebUI.class)
 public class MainTest {
@@ -26,6 +23,8 @@ public class MainTest {
 	SqlHelper sqlHelper;
 	@Value("${project.version}")
 	String version;
+	@Autowired
+	MonitorService monitorService;
 
 	@BeforeAll
 	static void before() {
@@ -33,8 +32,17 @@ public class MainTest {
 	}
 
 	@Test
-	public void testStartUp() {
-		
+	public void testStartUp() throws InterruptedException {
+		for (int i = 0; i < 10; i++) {
+			Thread.sleep(1000);
+			
+			MonitorInfo monitorInfo = monitorService.getMonitorInfo();
+
+			System.out.println("cpu占有率=" + monitorInfo.getCpuRatio());
+			System.out.println("总的物理内存=" + monitorInfo.getTotalMemorySize());
+			System.out.println("已使用的物理内存=" + monitorInfo.getUsedMemory());
+			System.out.println("剩余物理内存=" + monitorInfo.getFreePhysicalMemorySize());
+		}
 	}
 
 	@AfterAll
@@ -42,8 +50,4 @@ public class MainTest {
 		System.out.println("--------------测试结束----------");
 	}
 
-	
-	public static void main(String[] args) {
-		FileUtil.copy("D:\\fileserver", "C:\\", true);
-	}
 }
