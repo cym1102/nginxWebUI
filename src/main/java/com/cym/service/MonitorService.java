@@ -1,7 +1,11 @@
 package com.cym.service;
 
-import java.io.DataOutput;
+import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -45,35 +49,21 @@ public class MonitorService {
 		Double freePhysicalMemorySize = osmxb.getFreePhysicalMemorySize() / gb;
 		// 已使用的物理内存
 		Double usedMemory = (osmxb.getTotalPhysicalMemorySize() - osmxb.getFreePhysicalMemorySize()) / gb;
-
-		double cpu = osmxb.getSystemCpuLoad();
-
+		
+		Double mem = usedMemory / totalMemorySize;
+		Double cpu = osmxb.getSystemCpuLoad();
+		
 		// 构造返回对象
 		MonitorInfo infoBean = new MonitorInfo();
-		infoBean.setFreePhysicalMemorySize(NumberUtil.decimalFormat("#.00GB", freePhysicalMemorySize)  );
-		infoBean.setTotalMemorySize(NumberUtil.decimalFormat("#.00GB", totalMemorySize));
-		infoBean.setUsedMemory(NumberUtil.decimalFormat("#.00GB", usedMemory));
+		infoBean.setFreePhysicalMemorySize(NumberUtil.decimalFormat("0.00GB", freePhysicalMemorySize));
+		infoBean.setTotalMemorySize(NumberUtil.decimalFormat("0.00GB", totalMemorySize));
+		infoBean.setUsedMemory(NumberUtil.decimalFormat("0.00GB", usedMemory));
 		infoBean.setCpuRatio(NumberUtil.decimalFormat("#.##%", cpu));
+		infoBean.setMemRatio(NumberUtil.decimalFormat("#.##%", mem));
+		infoBean.setCpuCount(osmxb.getAvailableProcessors());
+		
 		return infoBean;
 	}
+	
 
-	/** */
-	/**
-	 * 测试方法.
-	 * 
-	 * @param args
-	 * @throws Exception
-	 * @author amg * Creation date: 2008-4-30 - 下午04:47:29
-	 */
-	public static void main(String[] args) throws Exception {
-
-		MonitorService service = new MonitorService();
-		MonitorInfo monitorInfo = service.getMonitorInfo();
-
-		System.out.println("cpu占有率=" + monitorInfo.getCpuRatio());
-
-		System.out.println("总的物理内存=" + monitorInfo.getTotalMemorySize() + "gb");
-		System.out.println("已使用的物理内存=" + monitorInfo.getUsedMemory() + "gb");
-		System.out.println("剩余物理内存=" + monitorInfo.getFreePhysicalMemorySize() + "gb");
-	}
 }

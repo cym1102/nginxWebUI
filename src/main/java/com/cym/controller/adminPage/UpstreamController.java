@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.cym.ext.UpstreamExt;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
+import com.cym.service.ParamService;
 import com.cym.service.UpstreamService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
@@ -26,7 +27,8 @@ import cn.hutool.core.util.StrUtil;
 public class UpstreamController extends BaseController {
 	@Autowired
 	UpstreamService upstreamService;
-
+	@Autowired
+	ParamService paramService;
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String keywords) {
 		page = upstreamService.search(page, keywords);
@@ -69,7 +71,7 @@ public class UpstreamController extends BaseController {
 
 	@RequestMapping("addOver")
 	@ResponseBody
-	public JsonResult addOver(Upstream upstream, String[] server, Integer[] port, Integer[] weight, Integer[] maxFails, Integer[] failTimeout, String[] status) {
+	public JsonResult addOver(Upstream upstream, String[] server, Integer[] port, Integer[] weight, Integer[] maxFails, Integer[] failTimeout, String[] status, String upstreamParamJson) {
 
 		if (StrUtil.isEmpty( upstream.getId())) {
 			Long count = upstreamService.getCountByName(upstream.getName());
@@ -78,7 +80,7 @@ public class UpstreamController extends BaseController {
 			}
 		}
 
-		upstreamService.addOver(upstream, server, port, weight, maxFails, failTimeout, status);
+		upstreamService.addOver(upstream, server, port, weight, maxFails, failTimeout, status, upstreamParamJson);
 
 		return renderSuccess();
 	}
@@ -91,6 +93,8 @@ public class UpstreamController extends BaseController {
 		upstreamExt.setUpstream(sqlHelper.findById(id, Upstream.class));
 		upstreamExt.setUpstreamServerList(upstreamService.getUpstreamServers(id));
 
+		upstreamExt.setParamJson(paramService.getJsonByTypeId(upstreamExt.getUpstream().getId(), "upstream"));
+		
 		return renderSuccess(upstreamExt);
 	}
 

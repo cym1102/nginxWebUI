@@ -31,7 +31,7 @@ function login() {
 		dataType : 'json',
 		success : function(data) {
 			if (data.success) {
-				location.href = ctx + "adminPage/http";
+				location.href = ctx + "adminPage/monitor";
 			} else {
 				layer.msg(data.msg);
 			}

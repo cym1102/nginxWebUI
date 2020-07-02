@@ -5,7 +5,7 @@ nginx网页配置工具
 
 QQ技术交流群: 1106758598
 
-官网地址: https://nginxwebui.gitee.io
+官网地址: http://www.nginxwebui.cn
 
 #### 功能说明
 
@@ -46,7 +46,7 @@ apt install nginx
 2.下载最新版发行包jar
 
 ```
-wget https://craccd.oss-cn-beijing.aliyuncs.com/nginxWebUI-1.4.0.jar
+wget http://www.nginxwebui.cn/download/nginxWebUI-1.4.1.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -54,7 +54,7 @@ wget https://craccd.oss-cn-beijing.aliyuncs.com/nginxWebUI-1.4.0.jar
 3.启动程序
 
 ```
-nohup java -jar -Xmx64m nginxWebUI-1.4.0.jar --server.port=8080 ----project.home=/home/nginxWebUI/  &
+nohup java -jar -Xmx64m nginxWebUI-1.4.1.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /del/null &
 ```
 
 参数说明(都是非必填)
@@ -80,13 +80,13 @@ apt install docker.io
 2.下载镜像: 
 
 ```
-docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.4.0
+docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.4.1
 ```
 
 3. 启动容器: 
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--变量名=变量值 --变量名2=变量值2" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.4.0 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--变量名=变量值 --变量名2=变量值2" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.4.1 /bin/bash
 ```
 
 注意: 
@@ -103,51 +103,51 @@ docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--变量�
 
 打开 http://xxx.xxx.xxx.xxx:8080 进入主页
 
-![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/login.jpeg "login.jpg")
+![输入图片说明](http://www.nginxwebui.cn/img/login.jpeg "login.jpg")
 
 登录页面, 第一次打开会要求初始化管理员账号
 
-![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/admin.jpeg "admin.jpg")
+![输入图片说明](http://www.nginxwebui.cn/img/admin.jpeg "admin.jpg")
 
 进入系统后, 可在管理员管理里面添加修改管理员账号
 
-![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/http.jpeg "http.jpg")
+![输入图片说明](http://www.nginxwebui.cn/img/http.jpeg "http.jpg")
 
 在http参数配置中可以配置nginx的http项目,进行http转发, 默认会给出几个常用配置, 其他需要的配置可自由增删改查. 可以勾选开启日志跟踪, 生成日志跟踪配置项, 每天0点时刻可生成上一天的日志分析报告. 由于日志文件access.log文件过大, 默认只保留7天的log文件, 但分析报告可一直保留.
 
-![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/tcp.jpeg "tcp.jpg")
+![输入图片说明](http://www.nginxwebui.cn/img/tcp.jpeg "tcp.jpg")
 
 在TCP参数配置中可以配置nginx的steam项目参数, 大多数情况下可不配.
 
-![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/server.jpeg "server.jpg")
+![输入图片说明](http://www.nginxwebui.cn/img/server.jpeg "server.jpg")
 
 在反向代理中可配置nginx的反向代理即server项功能, 可开启ssl功能, 可以直接从网页上上传pem文件和key文件, 或者使用系统内申请的证书, 可以直接开启http转跳https功能，也可开启http2协议
 
-![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/upstream.jpeg "upstream.jpg")
+![输入图片说明](http://www.nginxwebui.cn/img/upstream.jpeg "upstream.jpg")
 
 在负载均衡中可配置nginx的负载均衡即upstream项功能, 在反向代理管理中可选择代理目标为配置好的负载均衡
 
-![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/html.jpeg "html.jpg")
+![输入图片说明](http://www.nginxwebui.cn/img/html.jpeg "html.jpg")
 
 在html静态文件上传中可直接上传html压缩包到指定路径,上传后可直接在反向代理中使用,省去在Linux中上传html文件的步骤
 
-![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/cert.jpeg "cert.jpg")
+![输入图片说明](http://www.nginxwebui.cn/img/cert.jpeg "cert.jpg")
 
 在证书管理中可添加证书, 并进行签发和续签, 开启定时续签后, 系统会自动续签即将过期的证书, 注意:证书的签发是用的acme.sh的dns模式, 需要配合阿里云的aliKey和aliSecret来使用. 请先申请好aliKey和aliSecret
 
-![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/bak.jpeg "bak.jpg")
+![输入图片说明](http://www.nginxwebui.cn/img/bak.jpeg "bak.jpg")
 
 备份文件管理, 这里可以看到nginx.cnf的备份历史版本, nginx出现错误时可以选择回滚到某一个历史版本
 
-![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/conf.jpeg "conf.jpg")
+![输入图片说明](http://www.nginxwebui.cn/img/conf.jpeg "conf.jpg")
 
 最终生成conf文件,可在此进行进一步手动修改,确认修改无误后,可覆盖本机conf文件,并进行效验和重启, 可以选择生成单一nginx.conf文件还是按域名将各个配置文件分开放在conf.d下
  
-![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/log.jpeg "log.jpg")
+![输入图片说明](http://www.nginxwebui.cn/img/log.jpeg "log.jpg")
 
 log管理, 在http配置中如果开启了log监控的话, 会每天在这里生成日志分析报告.
 
-![输入图片说明](http://craccd.oss-cn-beijing.aliyuncs.com/img/remote.jpeg "remote.jpg")
+![输入图片说明](http://www.nginxwebui.cn/img/remote.jpeg "remote.jpg")
 
 远程服务器管理, 如果有多台nginx服务器, 可以都部署上nginxWebUI, 然后登录其中一台, 在远程管理中添加其他服务器的ip和用户名密码, 就可以在一台机器上管理所有的nginx服务器了.
 

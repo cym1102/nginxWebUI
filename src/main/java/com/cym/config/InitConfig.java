@@ -143,15 +143,6 @@ public class InitConfig {
 				}
 			}
 
-			// 查找nginx.pid文件
-//			logger.info("----------------find nginx.pid--------------");
-//			String nginxPid = settingService.get("nginxPid");
-//			if (StrUtil.isEmpty(nginxPid)) {
-//				nginxPid = RuntimeTool.execForOne("find / -name nginx.pid");
-//				if (StrUtil.isNotEmpty(nginxPid)) {
-//					settingService.set("nginxPid", nginxPid);
-//				}
-//			}
 		}
 	}
 }

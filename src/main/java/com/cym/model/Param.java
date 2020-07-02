@@ -7,9 +7,18 @@ import cn.craccd.sqlHelper.config.Table;
 public class Param extends BaseModel {
 	String serverId;
 	String locationId;
-
+	String upstreamId;
 	String name;
 	String value;
+
+	
+	public String getUpstreamId() {
+		return upstreamId;
+	}
+
+	public void setUpstreamId(String upstreamId) {
+		this.upstreamId = upstreamId;
+	}
 
 	public String getServerId() {
 		return serverId;

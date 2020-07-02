@@ -1,7 +1,5 @@
 $(function(){
-//	form.on('select(proxyType)', function(data) {
-//		checkProxyType(data.value);
-//	});
+
 })
 
 
@@ -11,15 +9,6 @@ function search() {
 }
 
 
-//function checkProxyType(value){
-//	if (value == 0) {
-//		$(".proxyHttp").show();
-//	} 
-//	if (value == 1) {
-//		$(".proxyHttp").hide();
-//	} 
-//	
-//}
 
 function add() {
 	$("#id").val(""); 
@@ -28,7 +17,6 @@ function add() {
 	$("#itemList").html("");
 	$("#proxyType option:first").prop("selected", true);
 	
-//	checkProxyType(0);
 	form.render();
 	showWindow("添加负载均衡");
 }
@@ -107,7 +95,7 @@ function edit(id) {
 				$("#name").val(ext.upstream.name);
 				$("#tactics").val(ext.upstream.tactics);
 				$("#proxyType").val(ext.upstream.proxyType);
-				
+				$("#upstreamParamJson").val(ext.paramJson.replace(/,/g,"%2C"));
 				
 				var html = ``;
 				for(let i=0;i<list.length;i++){
@@ -131,7 +119,6 @@ function edit(id) {
 				}
 				$("#itemList").html(html);
 				
-//				checkProxyType(ext.upstream.proxyType);
 				
 				form.render();
 				showWindow("编辑负载均衡");
@@ -189,12 +176,88 @@ function addItem(){
 				</tr>`
 	$("#itemList").append(html);
 	
-//	checkProxyType($("#proxyType").val());
-	
 	form.render();
 }
 
 
 function delTr(id){
 	$("#" + id).remove();
+}
+
+
+function upstreamParam(){
+	var json = $("#upstreamParamJson").val();
+	$("#targertId").val("upstreamParamJson");
+	var params = json!=''?JSON.parse(json.replace(/%2C/g,",")):[];
+	fillTable(params);
+}
+
+var paramIndex;
+function fillTable(params){
+	var html = "";
+	for(var i=0;i<params.length;i++){
+		var param = params[i];
+		
+		var uuid = guid();
+		
+		html += `
+		<tr name="param" id=${uuid}>
+			<td>
+				<textarea  name="name" class="layui-textarea">${param.name}</textarea>
+			</td>
+			<td  style="width: 60%;">
+				<textarea  name="value" class="layui-textarea">${param.value}</textarea>
+			</td>
+			<td>
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+			</td>
+		</tr>
+		`;
+	}
+	
+	$("#paramList").html(html);
+	
+	paramIndex = layer.open({
+		type : 1,
+		title : "添加参数",
+		area : [ '800px', '600px' ], // 宽高
+		content : $('#paramJsonDiv')
+	});
+}
+
+function addParam(){
+	var uuid = guid();
+	
+	var html = `
+	<tr name="param" id="${uuid}">
+		<td>
+			<textarea  name="name" class="layui-textarea"></textarea>
+		</td>
+		<td  style="width: 60%;">
+			<textarea  name="value" class="layui-textarea"></textarea>
+		</td>
+		<td>
+			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+		</td>
+	</tr>
+	`;
+	
+	$("#paramList").append(html);
+	
+}
+
+
+function addParamOver(){
+	var targertId = $("#targertId").val();
+	var params = [];
+	$("tr[name='param']").each(function(){
+		var param = {};
+		param.name = $(this).find("textarea[name='name']").val();
+		param.value = $(this).find("textarea[name='value']").val();
+		
+		params.push(param);
+	})
+	$("#" + targertId).val(JSON.stringify(params).replace(/,/g,"%2C"));
+	
+	layer.close(paramIndex);
 }

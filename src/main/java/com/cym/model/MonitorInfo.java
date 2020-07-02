@@ -1,5 +1,8 @@
 package com.cym.model;
 
+import java.util.List;
+import java.util.Map;
+
 /** */
 /**
  * 监视信息的JavaBean类.
@@ -9,21 +12,37 @@ package com.cym.model;
  */
 public class MonitorInfo {
 
-	/** */
 	/** 总的物理内存. */
 	private String totalMemorySize;
 
-	/** */
 	/** 剩余的物理内存. */
 	private String freePhysicalMemorySize;
 
-	/** */
 	/** 已使用的物理内存. */
 	private String usedMemory;
 
-	/** */
 	/** cpu使用率. */
 	private String cpuRatio;
+	/** 内存使用率. */
+	private String memRatio;
+
+	private Integer cpuCount;
+
+	public Integer getCpuCount() {
+		return cpuCount;
+	}
+
+	public void setCpuCount(Integer cpuCount) {
+		this.cpuCount = cpuCount;
+	}
+
+	public String getMemRatio() {
+		return memRatio;
+	}
+
+	public void setMemRatio(String memRatio) {
+		this.memRatio = memRatio;
+	}
 
 	public String getTotalMemorySize() {
 		return totalMemorySize;
@@ -56,7 +75,5 @@ public class MonitorInfo {
 	public void setCpuRatio(String cpuRatio) {
 		this.cpuRatio = cpuRatio;
 	}
-
-	
 
 }

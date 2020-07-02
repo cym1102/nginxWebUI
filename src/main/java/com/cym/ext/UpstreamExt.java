@@ -9,8 +9,17 @@ public class UpstreamExt {
 	Upstream upstream;
 	List<UpstreamServer> upstreamServerList;
 	String serverStr;
+	String paramJson;
 	
 	
+	public String getParamJson() {
+		return paramJson;
+	}
+
+	public void setParamJson(String paramJson) {
+		this.paramJson = paramJson;
+	}
+
 	public String getServerStr() {
 		return serverStr;
 	}

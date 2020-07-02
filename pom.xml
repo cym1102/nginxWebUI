@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cym</groupId>
 	<artifactId>nginxWebUI</artifactId>
-	<version>1.4.0</version>
+	<version>1.4.2</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -34,21 +34,18 @@
 			<artifactId>spring-session-jdbc</artifactId>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.github.odiszapc/nginxparser -->
 		<dependency>
 			<groupId>com.github.odiszapc</groupId>
 			<artifactId>nginxparser</artifactId>
 			<version>0.9.6</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/cn.craccd/sqlHelper -->
 		<dependency>
 			<groupId>cn.craccd</groupId>
 			<artifactId>sqlHelper</artifactId>
-			<version>0.2.1</version>
+			<version>0.2.3</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
 		<dependency>
 			<groupId>cn.hutool</groupId>
 			<artifactId>hutool-all</artifactId>

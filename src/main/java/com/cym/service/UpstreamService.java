@@ -1,11 +1,13 @@
 package com.cym.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cym.model.Param;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
 
@@ -16,6 +18,7 @@ import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 
 @Service
 public class UpstreamService {
@@ -41,15 +44,25 @@ public class UpstreamService {
 	}
 
 	@Transactional
-	public void addOver(Upstream upstream, String[] servers, Integer[] ports, Integer[] weights, Integer[] maxFails, Integer[] failTimeout, String[] status) {
+	public void addOver(Upstream upstream, String[] servers, Integer[] ports, Integer[] weights, Integer[] maxFails, Integer[] failTimeout, String[] status, String upstreamParamJson) {
 		if (upstream.getProxyType() == 1 || upstream.getTactics() == null) {
 			upstream.setTactics("");
 		}
 
 		sqlHelper.insertOrUpdate(upstream);
+		
+		List<Param> paramList = new ArrayList<Param>();
+		if (StrUtil.isNotEmpty(upstreamParamJson) && JSONUtil.isJson(upstreamParamJson.replace("%2C", ","))) {
+			paramList = JSONUtil.toList(JSONUtil.parseArray(upstreamParamJson.replace("%2C", ",")), Param.class);
+		}
+		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("upstreamId", upstream.getId()), Param.class);
+		for (Param param : paramList) {
+			param.setUpstreamId(upstream.getId());
+			sqlHelper.insert(param);
+		}
+		
 
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("upstreamId", upstream.getId()), UpstreamServer.class);
-
 		if (servers != null) {
 			for (int i = 0; i < servers.length; i++) {
 				UpstreamServer upstreamServer = new UpstreamServer();

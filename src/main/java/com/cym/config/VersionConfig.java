@@ -19,7 +19,7 @@ public class VersionConfig {
 	public void getNewVersion() {
 		
 		try {
-			String json = HttpUtil.get("http://craccd.oss-cn-beijing.aliyuncs.com/version.json", 500);
+			String json = HttpUtil.get("http://www.nginxwebui.cn/download/version.json", 500);
 			if (StrUtil.isNotEmpty(json)) {
 				version = JSONUtil.toBean(json, Version.class);
 			}

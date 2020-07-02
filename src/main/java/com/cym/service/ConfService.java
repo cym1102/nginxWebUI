@@ -85,7 +85,7 @@ public class ConfService {
 			ngxBlockHttp.addValue("http");
 			for (Http http : httpList) {
 				NgxParam ngxParam = new NgxParam();
-				ngxParam.addValue(http.getName() + " " + http.getValue());
+				ngxParam.addValue(http.getName().trim() + " " + http.getValue().trim());
 				ngxBlockHttp.addEntry(ngxParam);
 				
 				hasHttp = true;
@@ -97,7 +97,7 @@ public class ConfService {
 
 			for (Upstream upstream : upstreams) {
 				NgxBlock ngxBlockServer = new NgxBlock();
-				ngxBlockServer.addValue("upstream " + upstream.getName());
+				ngxBlockServer.addValue("upstream " + upstream.getName().trim());
 
 				if (StrUtil.isNotEmpty(upstream.getTactics())) {
 					ngxParam = new NgxParam();
@@ -111,6 +111,13 @@ public class ConfService {
 					ngxParam.addValue("server " + upstreamController.buildStr(upstreamServer, upstream.getProxyType()));
 					ngxBlockServer.addEntry(ngxParam);
 				}
+				
+				// 自定义参数
+				List<Param> paramList = paramService.getListByTypeId(upstream.getId(), "upstream");
+				for (Param param : paramList) {
+					setSameParam(param, ngxBlockServer);
+				}
+
 				hasHttp = true;
 
 				if (decompose) {
@@ -317,6 +324,13 @@ public class ConfService {
 					ngxParam.addValue("server " + upstreamController.buildStr(upstreamServer, upstream.getProxyType()));
 					ngxBlockServer.addEntry(ngxParam);
 				}
+				
+				// 自定义参数
+				List<Param> paramList = paramService.getListByTypeId(upstream.getId(), "upstream");
+				for (Param param : paramList) {
+					setSameParam(param, ngxBlockServer);
+				}
+
 
 				if (decompose) {
 					addConfFile(confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
@@ -328,6 +342,7 @@ public class ConfService {
 					ngxBlockStream.addEntry(ngxBlockServer);
 				}
 
+				
 				hasStream = true;
 			}
 
@@ -386,7 +401,7 @@ public class ConfService {
 				ngxConfig.addEntry(ngxBlockStream);
 			}
 
-			String conf = new NgxDumper(ngxConfig).dump();
+			String conf = new NgxDumper(ngxConfig).dump().replace("};", "  }");
 
 			// 装载ngx_stream_module模块
 			if (hasStream && SystemTool.isLinux()) {
@@ -421,7 +436,7 @@ public class ConfService {
 		}
 
 		NgxParam ngxParam = new NgxParam();
-		ngxParam.addValue(param.getName() + " " + param.getValue());
+		ngxParam.addValue(param.getName().trim() + " " + param.getValue().trim());
 		ngxBlock.addEntry(ngxParam);
 
 	}
