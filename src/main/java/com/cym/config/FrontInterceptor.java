@@ -51,10 +51,11 @@ public class FrontInterceptor implements HandlerInterceptor {
 		request.setAttribute("ctx", ctx);
 		
 		request.setAttribute("jsrandom", currentVersion);
+		request.setAttribute("currentVersion", currentVersion);
 		request.setAttribute("projectName", projectName);
 
 		if (versionConfig.getVersion() != null) {
-			request.setAttribute("version", versionConfig.getVersion());
+			request.setAttribute("newVersion", versionConfig.getVersion());
 			
 			if(Integer.parseInt(currentVersion.replace(".", "").replace("v", "")) < Integer.parseInt(versionConfig.getVersion().getVersion().replace(".", "").replace("v", ""))) {
 				request.setAttribute("hasNewVersion", 1);

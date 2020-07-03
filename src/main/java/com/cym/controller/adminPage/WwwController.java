@@ -1,5 +1,7 @@
 package com.cym.controller.adminPage;
 
+import java.nio.charset.Charset;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,13 @@ public class WwwController extends BaseController {
 
 		try {
 			String dir = InitConfig.home + "wwww/" + www.getName();
-			ZipUtil.unzip(www.getDir(), dir);
+			try {
+				ZipUtil.unzip(www.getDir(), dir);
+			} catch (Exception e) {
+				// 默认UTF-8下不能解压中文字符, 尝试使用gbk
+				ZipUtil.unzip(www.getDir(), dir, Charset.forName("GBK"));
+			}
+			
 			FileUtil.del(www.getDir());
 			www.setDir(dir);
 

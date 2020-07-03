@@ -1,11 +1,18 @@
 package com.cym.controller.adminPage;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.cym.config.VersionConfig;
+import com.cym.controller.MainController;
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
 import com.cym.service.ConfService;
@@ -15,14 +22,12 @@ import com.cym.service.UpstreamService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 
 @Controller
 @RequestMapping("/adminPage/conf")
@@ -32,13 +37,21 @@ public class ConfController extends BaseController {
 	final SettingService settingService;
 	final ServerService serverService;
 	final ConfService confService;
+	final MainController mainController;
 
-	public ConfController(UpstreamController upstreamController, UpstreamService upstreamService, SettingService settingService, ServerService serverService, ConfService confService) {
+	@Autowired
+	VersionConfig versionConfig;
+	@Value("${project.version}")
+	String currentVersion;
+
+	public ConfController(UpstreamController upstreamController, UpstreamService upstreamService, SettingService settingService, ServerService serverService, ConfService confService,
+			MainController mainController) {
 		this.upstreamController = upstreamController;
 		this.upstreamService = upstreamService;
 		this.settingService = settingService;
 		this.serverService = serverService;
 		this.confService = confService;
+		this.mainController = mainController;
 	}
 
 	@RequestMapping("")
@@ -86,12 +99,12 @@ public class ConfController extends BaseController {
 	@ResponseBody
 	public JsonResult replace(String json) {
 		JSONObject jsonObject = JSONUtil.parseObj(json);
-		
+
 		String nginxPath = jsonObject.getStr("nginxPath");
 		String nginxContent = jsonObject.getStr("nginxContent");
 		List<String> subContent = jsonObject.getJSONArray("subContent").toList(String.class);
 		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
-		
+
 		if (nginxPath == null) {
 			nginxPath = settingService.get("nginxPath");
 		}
@@ -189,9 +202,6 @@ public class ConfController extends BaseController {
 				}
 			}
 			rs = RuntimeUtil.execForStr(cmd);
-
-			// 延时3秒
-//			Thread.sleep(3000L);
 
 			cmd = "<span class='blue'>" + cmd + "</span>";
 			if (StrUtil.isEmpty(rs) || rs.contains("signal process started")) {
@@ -322,6 +332,18 @@ public class ConfController extends BaseController {
 	public JsonResult decompose(String decompose) {
 		settingService.set("decompose", decompose);
 		return renderSuccess();
+	}
+
+	@RequestMapping(value = "update")
+	@ResponseBody
+	public JsonResult update() {
+		versionConfig.getNewVersion();
+		if (Integer.parseInt(currentVersion.replace(".", "").replace("v", "")) < Integer.parseInt(versionConfig.getVersion().getVersion().replace(".", "").replace("v", ""))) {
+			mainController.autoUpdate(versionConfig.getVersion().getUrl());
+			return renderSuccess("更新成功");
+		} else {
+			return renderSuccess("无需更新");
+		}
 	}
 
 }

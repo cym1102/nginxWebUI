@@ -2,8 +2,8 @@
 	<div class="layui-logo" >${projectName} ${currentVersion}</div>
 	<ul class="layui-nav layui-layout-right">
 		<li class="layui-nav-item">
-			<#if hasNewVersion == 1 && version != null>
-				<a href="javascript:showUpdate('${version.version}','${version.url}','${version.docker}','${version.update}')"  style="font-weight: bold;color: red;">有新版本发布 ${version.version}</a>
+			<#if hasNewVersion == 1 && newVersion != null>
+				<a href="javascript:showUpdate('${newVersion.version}','${newVersion.url}','${newVersion.docker}','${newVersion.update}')"  style="font-weight: bold;color: red;">有新版本发布 ${newVersion.version}</a>
 			</#if>
 		
 			<a href="${ctx}/welcome" >${admin.name}</a>

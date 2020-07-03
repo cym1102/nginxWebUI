@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -43,10 +44,10 @@ public class InitConfig {
 	public void setHome(String home) {
 		InitConfig.home = home;
 	}
-
+	
 	@PostConstruct
 	public void init() throws IOException {
-
+		
 		Long count = sqlHelper.findAllCount(Http.class);
 		if (count == 0) {
 			List<Http> https = new ArrayList<Http>();

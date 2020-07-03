@@ -167,8 +167,12 @@ function showUpdate(version, url, docker,update){
 	var str = `
 		<div style="font-size: 16px; font-weight: bolder;">有新版本发布 ${version}</div>
 		<div>更新内容: ${update}</div>
-		<div>jar下载地址: <a href='${url}' class='blue' target="_blank">${url}</a></div>
-		<div>docker地址: <span class='blue'>${docker}</span></div>
+		<div>jar下载地址: <span class='green'>${url}</span></div>
+		<div>docker地址: <span class='green'>${docker}</span></div>
+		<div>&nbsp;</div>
+		<div>
+			<button type="button" class="layui-btn layui-btn-sm" onclick="autoUpdate('${url}')">点击自动更新</button>
+		</div>
 	`;
 	
 	layer.open({
@@ -188,5 +192,41 @@ function form2JsonString(formId) {
 		jsonObj[this.name]=this.value;  
 	});  
 	return JSON.stringify(jsonObj);
+	
+}
+
+var loaded;
+function autoUpdate(url){
+	if(confirm("是否进行自动更新?")){
+		loaded =	layer.load();
+		$.ajax({
+			type : 'POST',
+			url : ctx + '/autoUpdate',
+			data:{
+				url : url
+			},
+			dataType : 'json',
+			success : function(data) {
+				if(!data.success){
+					layer.close(loaded);
+					alert(data.msg);
+					return;
+				}
+				
+				setTimeout(function(){
+					layer.close(loaded);
+					layer.alert("更新完成, 重新登录即可使用最新版本");
+				},10000)
+				
+				
+			},
+			error : function() {
+				setTimeout(function(){
+					layer.layer.close(loaded);
+					layer.alert("更新完成, 重新登录即可使用最新版本");
+				},10000)
+			}
+		});
+	}
 	
 }

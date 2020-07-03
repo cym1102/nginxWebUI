@@ -193,6 +193,7 @@
 					<label class="layui-form-label">命令</label>
 					<div class="layui-input-block">
 						<select name="cmd">
+							<option value="update">更新版本</option>
 							<option value="check">效验文件</option>
 							<option value="reload">重新装载</option>
 							<option value="start">启动nginx</option>
@@ -202,7 +203,7 @@
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="cmdOver()">同步</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="cmdOver()">执行</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
 				</div>
 			</form>

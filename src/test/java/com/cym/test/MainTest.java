@@ -33,16 +33,7 @@ public class MainTest {
 
 	@Test
 	public void testStartUp() throws InterruptedException {
-		for (int i = 0; i < 10; i++) {
-			Thread.sleep(1000);
-			
-			MonitorInfo monitorInfo = monitorService.getMonitorInfo();
-
-			System.out.println("cpu占有率=" + monitorInfo.getCpuRatio());
-			System.out.println("总的物理内存=" + monitorInfo.getTotalMemorySize());
-			System.out.println("已使用的物理内存=" + monitorInfo.getUsedMemory());
-			System.out.println("剩余物理内存=" + monitorInfo.getFreePhysicalMemorySize());
-		}
+		
 	}
 
 	@AfterAll

@@ -77,7 +77,7 @@ public class LoginController extends BaseController {
 
 			httpSession.setAttribute("localType", "本地");
 			httpSession.setAttribute("isLogin", true);
-			httpSession.setAttribute("currentVersion", currentVersion);
+			
 			// 检查更新
 			versionConfig.getNewVersion();
 			
