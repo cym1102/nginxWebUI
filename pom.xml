@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cym</groupId>
 	<artifactId>nginxWebUI</artifactId>
-	<version>1.4.2</version>
+	<version>1.4.3</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

@@ -74,6 +74,11 @@ $(function() {
 			alert("出错了,请联系技术人员!");
 		}
 	});
+	
+	// 判断屏幕分辨率, 给table加上lay-size="sm"
+	if(document.body.clientWidth  <= 1440){
+		$(".layui-table").attr("lay-size","sm");
+	}
 })
 
 // 关闭AJAX相应的缓存

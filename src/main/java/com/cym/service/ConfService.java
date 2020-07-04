@@ -370,13 +370,13 @@ public class ConfService {
 				}
 
 				// 其他一些参数
-				ngxParam = new NgxParam();
-				ngxParam.addValue("proxy_connect_timeout 1s");
-				ngxBlockServer.addEntry(ngxParam);
-
-				ngxParam = new NgxParam();
-				ngxParam.addValue("proxy_timeout 3s");
-				ngxBlockServer.addEntry(ngxParam);
+//				ngxParam = new NgxParam();
+//				ngxParam.addValue("proxy_connect_timeout 60s");
+//				ngxBlockServer.addEntry(ngxParam);
+//
+//				ngxParam = new NgxParam();
+//				ngxParam.addValue("proxy_timeout 60s");
+//				ngxBlockServer.addEntry(ngxParam);
 
 				// 自定义参数
 				List<Param> paramList = paramService.getListByTypeId(server.getId(), "server");

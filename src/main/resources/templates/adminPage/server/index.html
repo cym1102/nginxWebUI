@@ -13,10 +13,31 @@
 
 .path{
 	display: inline-block;
-	width: 120px;
+	margin-right:5px;
+	margin-bottom:5px;
+	padding-left:5px;
+	padding-right:5px;
+	background-color: #CFFFBF;
+	
+	max-width:80px;
+	
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	overflow:hidden;
 }
 .value{
 	display: inline-block;
+	margin-bottom:5px;
+	padding-left:5px;
+	padding-right:5px;
+	background-color: #BFDFFF;
+	
+	max-width:300px;
+	
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	
 }
 .liteBtn{
 	width: 90px;
@@ -80,7 +101,6 @@
 								<th>监听域名 <i class="layui-icon ${(direction=='desc'&&sort=='serverName')?string('layui-icon-down','layui-icon-up')} ${(sort=='serverName')?string('blue','')}" id="serverNameSort" onclick="sort('serverNameSort')"></i></th>
 								<th>开启ssl</th>
 								<th>ssl选项</th>
-								<th>ssl文件路径</th>
 								<th>代理目标</th>
 								<th>启用</th>
 								<th>操作</th>
@@ -111,13 +131,6 @@
 										<span class="blk">开启http2：</span>
 										<#if ext.server.http2==0>否</#if> 
 										<#if ext.server.http2==1>是</#if> 
-									</#if>
-								</td>
-								<td>
-									<#if ext.server.ssl==1> 
-										<span class="blk2">pem：</span>${ext.server.pem} 
-										<br>
-										<span class="blk2">key：</span>${ext.server.key}  
 									</#if>
 								</td>
 							
@@ -358,31 +371,10 @@
 
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="selectCertOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.close(wwwIndex)">关闭</button>
+					<button type="button" class="layui-btn" onclick="layer.close(certIndex)">关闭</button>
 				</div>
 			</div>
 		</div>
-		
-			
-		<!-- <div id="wwwDiv"  style="padding: 15px; display: none"> 
-			<div class="layui-form">
-				<div class="layui-form-item">
-					<label class="layui-form-label">静态网页</label>
-					<div class="layui-input-inline">
-						<select name="wwwId" id="wwwId">
-							<#list wwwList as www>
-								<option value="${www.dir}">${www.name}</option>
-							</#list>
-						</select>
-					</div>
-				</div>
-
-				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="selectWwwOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.close(wwwIndex)">关闭</button>
-				</div>
-			</div>
-		</div> -->
 	</div>
 
 	<#include '/adminPage/script.html'/>
