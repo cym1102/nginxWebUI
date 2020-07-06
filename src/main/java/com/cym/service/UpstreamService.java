@@ -1,6 +1,7 @@
 package com.cym.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class UpstreamService {
 	}
 
 	@Transactional
-	public void addOver(Upstream upstream, String[] servers, Integer[] ports, Integer[] weights, Integer[] maxFails, Integer[] failTimeout, String[] status, String upstreamParamJson) {
+	public void addOver(Upstream upstream,List<UpstreamServer> upstreamServers, String upstreamParamJson) {
 		if (upstream.getProxyType() == 1 || upstream.getTactics() == null) {
 			upstream.setTactics("");
 		}
@@ -63,18 +64,12 @@ public class UpstreamService {
 		
 
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("upstreamId", upstream.getId()), UpstreamServer.class);
-		if (servers != null) {
-			for (int i = 0; i < servers.length; i++) {
-				UpstreamServer upstreamServer = new UpstreamServer();
+		if (upstreamServers != null) {
+			 // 反向插入,保证列表与输入框对应
+			Collections.reverse(upstreamServers);
+			
+			for (UpstreamServer upstreamServer :upstreamServers) {
 				upstreamServer.setUpstreamId(upstream.getId());
-				upstreamServer.setServer(servers[i]);
-				upstreamServer.setPort(ports[i]);
-				upstreamServer.setWeight(weights[i]);
-
-				upstreamServer.setMaxFails(maxFails[i]);
-				upstreamServer.setFailTimeout(failTimeout[i]);
-				upstreamServer.setStatus(status[i]);
-
 				sqlHelper.insert(upstreamServer);
 			}
 		}

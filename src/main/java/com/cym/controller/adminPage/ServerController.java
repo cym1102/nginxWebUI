@@ -25,6 +25,7 @@ import com.cym.utils.JsonResult;
 
 import cn.craccd.sqlHelper.bean.Page;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 
 @Controller
 @RequestMapping("/adminPage/server")
@@ -35,6 +36,7 @@ public class ServerController extends BaseController {
 	UpstreamService upstreamService;
 	@Autowired
 	ParamService paramService;
+
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String sort, String direction) {
 		page = serverService.search(page, sort, direction);
@@ -42,10 +44,10 @@ public class ServerController extends BaseController {
 		List<ServerExt> exts = new ArrayList<ServerExt>();
 		for (Server server : page.getRecords(Server.class)) {
 			ServerExt serverExt = new ServerExt();
-			if(server.getEnable() == null) {
+			if (server.getEnable() == null) {
 				server.setEnable(false);
 			}
-			
+
 			serverExt.setServer(server);
 			if (server.getProxyType() == 0) {
 				serverExt.setLocationStr(buildLocationStr(server.getId()));
@@ -80,8 +82,10 @@ public class ServerController extends BaseController {
 		List<String> str = new ArrayList<String>();
 		List<Location> locations = serverService.getLocationByServerId(id);
 		for (Location location : locations) {
-			if (location.getType() == 0 || location.getType() == 1) {
+			if (location.getType() == 0) {
 				str.add("<span class='path'>" + location.getPath() + "</span><span class='value'>" + location.getValue() + "</span>");
+			} else if (location.getType() == 1) {
+				str.add("<span class='path'>" + location.getPath() + "</span><span class='value'>" + location.getRootPath() + "</span>");
 			} else if (location.getType() == 2) {
 				Upstream upstream = sqlHelper.findById(location.getUpstreamId(), Upstream.class);
 				if (upstream != null) {
@@ -96,10 +100,12 @@ public class ServerController extends BaseController {
 
 	@RequestMapping("addOver")
 	@ResponseBody
-	public JsonResult addOver(Server server, String serverParamJson, Integer type[], String[] path, String[] value, String[] upstreamId, String[] upstreamPath, String[] locationParamJson) {
-
+	public JsonResult addOver(String serverJson,String serverParamJson,String locationJson) {
+		Server server = JSONUtil.toBean(serverJson, Server.class);
+		List<Location> locations = JSONUtil.toList( JSONUtil.parseArray(locationJson), Location.class);
+		
 		if (server.getProxyType() == 0) {
-			serverService.addOver(server, serverParamJson, type, path, value, upstreamId, upstreamPath, locationParamJson);
+			serverService.addOver(server, serverParamJson, locations);
 		} else {
 			serverService.addOverTcp(server, serverParamJson);
 		}
@@ -147,7 +153,4 @@ public class ServerController extends BaseController {
 		return renderSuccess();
 	}
 
-	
-	
-	
 }

@@ -1,6 +1,5 @@
 package com.cym.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -12,17 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.system.ApplicationHome;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import com.cym.model.Http;
 import com.cym.service.SettingService;
-import com.cym.utils.RuntimeTool;
 import com.cym.utils.SystemTool;
 
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
@@ -44,10 +42,10 @@ public class InitConfig {
 	public void setHome(String home) {
 		InitConfig.home = home;
 	}
-	
+
 	@PostConstruct
 	public void init() throws IOException {
-		
+
 		Long count = sqlHelper.findAllCount(Http.class);
 		if (count == 0) {
 			List<Http> https = new ArrayList<Http>();
@@ -81,68 +79,46 @@ public class InitConfig {
 
 			}
 
-			// 找寻nginx配置文件
-			logger.info("----------------find nginx.conf--------------");
-			String nginxPath = settingService.get("nginxPath");
-			if (StrUtil.isEmpty(nginxPath)) {
-				// 查找nginx.conf
-				nginxPath = RuntimeTool.execForOne("find / -name nginx.conf");
-				if (StrUtil.isNotEmpty(nginxPath)) {
-					// 判断是否是容器中
-					String lines = "";
-					try {
-						// 读取文件容易报异常
-						lines = FileUtil.readUtf8String(nginxPath);
-						if (StrUtil.isNotEmpty(lines) && lines.contains("include " + home)) {
-							nginxPath = home + "nginx.conf";
-							logger.info("----------------release nginx.conf--------------");
-							// 释放nginxOrg.conf
-							ClassPathResource resource = new ClassPathResource("nginxOrg.conf");
-							InputStream inputStream = resource.getInputStream();
-							FileUtil.writeFromStream(inputStream, nginxPath);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					
-					settingService.set("nginxPath", nginxPath);
-				}
-			}
-
-			// 查找nginx执行文件
-			logger.info("----------------find nginx--------------");
-			String nginxExe = settingService.get("nginxExe");
-			if (StrUtil.isEmpty(nginxExe)) {
-				String rs = RuntimeTool.execForOne("which nginx");
-				if (StrUtil.isNotEmpty(rs)) {
-					nginxExe = "nginx";
-					settingService.set("nginxExe", nginxExe);
-				}
-			}
-
 			// 查找ngx_stream_module模块
 			logger.info("----------------find ngx_stream_module--------------");
 			String module = settingService.get("ngx_stream_module");
 			if (StrUtil.isEmpty(module)) {
-				module = RuntimeTool.execForOne("find / -name ngx_stream_module.so");
-				if (StrUtil.isNotEmpty(module)) {
-					settingService.set("ngx_stream_module", module);
-				}
-			}
+				List<String> list = RuntimeUtil.execForLines(CharsetUtil.systemCharset(), "find / -name ngx_stream_module.so");
 
-			// 尝试启动nginx
-			logger.info("----------------start nginx--------------");
-			if (nginxExe.equals("nginx")) {
-				String[] command = { "/bin/sh", "-c", "ps -ef|grep nginx" };
-				String rs = RuntimeUtil.execForStr(command);
-				if (!rs.contains("nginx: master process") && !rs.contains("nginx: worker process") && SystemTool.hasNginx()) {
-					try {
-						RuntimeUtil.exec("nginx");
-					} catch (Exception e) {
-						e.printStackTrace();
+				for (String path : list) {
+					if (path.contains("ngx_stream_module.so") && path.length() < 80) {
+						settingService.set("ngx_stream_module", path);
 					}
 				}
 			}
+
+			// 找寻nginx配置文件
+			logger.info("----------------find nginx.conf--------------");
+			String nginxPath = settingService.get("nginxPath");
+			
+			if (StrUtil.isEmpty(nginxPath)) {
+				try {
+					// 判断是否是容器中 
+					if (FileUtil.exist("/etc/nginx/nginx.conf") && FileUtil.readUtf8String("/etc/nginx/nginx.conf").contains("include " + home + "nginx.conf")) {
+						logger.info("----------------release nginx.conf--------------");
+						// 释放nginxOrg.conf
+						nginxPath = home + "nginx.conf";
+						ClassPathResource resource = new ClassPathResource("nginxOrg.conf");
+						InputStream inputStream = resource.getInputStream();
+						FileUtil.writeFromStream(inputStream, nginxPath);
+						settingService.set("nginxPath", nginxPath);
+						
+						// 设置nginx执行文件
+						settingService.set("nginxExe", "nginx");
+						
+						// 启动nginx
+						RuntimeUtil.exec("nginx");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
 
 		}
 	}

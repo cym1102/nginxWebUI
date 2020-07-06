@@ -59,10 +59,39 @@ function addOver() {
 		return;
 	}
 	
+	
+	
+	var upstream = {};
+	upstream.id = $("#id").val();
+	upstream.name = $("#name").val();
+	upstream.proxyType = $("#proxyType").val();
+	upstream.tactics = $("#tactics").val();
+
+	var upstreamParamJson =  $("#upstreamParamJson").val();
+	
+	var upstreamServers = [];
+	$(".itemList").children().each(function(){
+		
+		var upstreamServer = {};
+		upstreamServer.server = $(this).find("input[name='server']").val();
+		upstreamServer.port = $(this).find("input[name='port']").val();
+		upstreamServer.weight = $(this).find("input[name='weight']").val();
+		upstreamServer.maxFails = $(this).find("input[name='maxFails']").val();
+		upstreamServer.failTimeout = $(this).find("input[name='failTimeout']").val();
+		upstreamServer.status = $(this).find("select[name='status']").val();
+		
+		upstreamServers.push(upstreamServer);
+	})
+	
+	
 	$.ajax({
 		type : 'POST',
 		url : ctx + '/adminPage/upstream/addOver',
-		data : $('#addForm').serialize(),
+		data : {
+			upstreamJson : JSON.stringify(upstream),
+			upstreamParamJson : upstreamParamJson,
+			upstreamServerJson : JSON.stringify(upstreamServers),
+		},
 		dataType : 'json',
 		success : function(data) {
 			if (data.success) {

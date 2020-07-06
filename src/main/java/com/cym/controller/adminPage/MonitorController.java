@@ -16,21 +16,25 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.model.MonitorInfo;
 import com.cym.service.MonitorService;
+import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 
 @RequestMapping("/adminPage/monitor")
 @Controller
 public class MonitorController extends BaseController {
 	@Autowired
 	MonitorService monitorService;
+	@Autowired
+	SettingService settingService;
 
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
 		File[] roots = File.listRoots();// 获取磁盘分区列表
-		List<Map<String, String>> list = new ArrayList<>() ;
+		List<Map<String, String>> list = new ArrayList<>();
 		for (File file : roots) {
 			Map<String, String> map = new HashMap<String, String>();
 
@@ -48,6 +52,21 @@ public class MonitorController extends BaseController {
 		}
 
 		modelAndView.addObject("list", list);
+
+		String nginxPath = settingService.get("nginxPath");
+		String nginxExe = settingService.get("nginxExe");
+		String nginxDir = settingService.get("nginxDir");
+
+		Boolean isInit = StrUtil.isNotEmpty(nginxExe) || StrUtil.isNotEmpty(nginxPath);
+		if(StrUtil.isEmpty(nginxExe)) {
+			nginxExe = "nginx";
+		}
+		
+		modelAndView.addObject("nginxDir", nginxDir);
+		modelAndView.addObject("nginxExe", nginxExe);
+		modelAndView.addObject("nginxPath", nginxPath);
+
+		modelAndView.addObject("isInit", isInit.toString());
 		modelAndView.setViewName("/adminPage/monitor/index");
 		return modelAndView;
 	}
@@ -59,6 +78,17 @@ public class MonitorController extends BaseController {
 		MonitorInfo monitorInfo = monitorService.getMonitorInfo();
 		return renderSuccess(monitorInfo);
 	}
+
 	
+	@RequestMapping("addNginxGiudeOver")
+	@ResponseBody
+	public JsonResult addNginxGiudeOver(String nginxDir,String nginxExe,String nginxPath) {
+
+		settingService.set("nginxDir", nginxDir);
+		settingService.set("nginxExe", nginxExe);
+		settingService.set("nginxPath", nginxPath);
+		
+		return renderSuccess();
+	}
 
 }

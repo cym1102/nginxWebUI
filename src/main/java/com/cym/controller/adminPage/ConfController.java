@@ -21,6 +21,7 @@ import com.cym.service.SettingService;
 import com.cym.service.UpstreamService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
+import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
 
 import cn.hutool.core.io.FileUtil;
@@ -76,18 +77,7 @@ public class ConfController extends BaseController {
 	@RequestMapping(value = "nginxStatus")
 	@ResponseBody
 	public JsonResult nginxStatus() {
-		boolean isRun = false;
-		if (SystemTool.isWindows()) {
-			String[] command = { "tasklist" };
-			String rs = RuntimeUtil.execForStr(command);
-			isRun = rs.toLowerCase().contains("nginx.exe");
-		} else {
-			String[] command = { "/bin/sh", "-c", "ps -ef|grep nginx" };
-			String rs = RuntimeUtil.execForStr(command);
-			isRun = rs.contains("nginx: master process") || rs.contains("nginx: worker process");
-		}
-
-		if (isRun) {
+		if (NginxUtils.isRun()) {
 			return renderSuccess("nginx运行状态：<span class='green'>运行中</span>");
 		} else {
 			return renderSuccess("nginx运行状态：<span class='red'>未运行</span>");
@@ -307,7 +297,7 @@ public class ConfController extends BaseController {
 		String decompose = settingService.get("decompose");
 		ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"));
 
-		if (StrUtil.isNotEmpty(nginxPath) && FileUtil.exist(nginxPath)) {
+		if (StrUtil.isNotEmpty(nginxPath) && FileUtil.exist(nginxPath) && FileUtil.isFile(nginxPath)) {
 			String orgStr = FileUtil.readString(nginxPath, StandardCharsets.UTF_8);
 			confExt.setConf(orgStr);
 
@@ -322,7 +312,7 @@ public class ConfController extends BaseController {
 
 			return renderSuccess(confExt);
 		} else {
-			return renderError("文件不存在");
+			return renderError("nginx.conf文件不存在");
 		}
 
 	}

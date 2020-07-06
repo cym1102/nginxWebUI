@@ -32,11 +32,12 @@
 					<thead>
 						<tr>
 							<th>域名</th>
+							<th>获取方式</th>
 							<th>DNS服务商</th>
 							<th>签发时间</th>
 							<th>证书路径</th>
 							<th>是否自动续签</th>
-							
+
 							<th>操作</th>
 						</tr>
 					</thead>
@@ -45,35 +46,43 @@
 						<tr>
 							<td>${cert.domain}</td>
 							<td>
-								<#if cert.dnsType == 'dp'>
-									腾讯DNSPod
+								<#if cert.type == 1>
+									手动上传
 								</#if>
-								<#if cert.dnsType == 'ali'>
-									阿里万网
+								<#if cert.type == 0>
+									申请获得
+								</#if>
+							</td>
+							
+							<td>
+								<#if cert.type == 0>
+									<#if cert.dnsType=='dp'> 腾讯DNSPod </#if> 
+									<#if cert.dnsType=='ali'> 阿里万网 </#if>
+								</#if>
+							</td>
+							
+							
+							<td><#if cert.makeTime!=null> ${cert.makeTime?number_to_datetime?string('yyyy-MM-dd HH:mm:ss')} </#if></td>
+							<td>pem: ${cert.pem} <br> key: ${cert.key}
+							</td>
+							<td>
+								<#if cert.type == 0>
+									<input type="checkbox" name="switch" lay-filter="autoRenew" value="${cert.id}" lay-text="开启|关闭" lay-skin="switch" ${(cert.autoRenew==1)?string('checked','')}>
 								</#if>
 							</td>
 							<td>
-								<#if cert.makeTime!=null>
-								${cert.makeTime?number_to_datetime?string('yyyy-MM-dd HH:mm:ss')}
+								<#if cert.type == 0>
+									<#if cert.pem== null>
+									<button class="layui-btn layui-btn-sm" onclick="issue('${cert.id}')">申请</button>
+									</#if>
+									 
+									<#if cert.pem !=null>
+									<button class="layui-btn layui-btn-sm" onclick="renew('${cert.id}')">续签</button>
+									</#if>
 								</#if>
-							</td>
-							<td>pem: ${cert.pem} <br>
-								key: ${cert.key}</td>
-							<td>
-								 <input type="checkbox" name="switch" lay-filter="autoRenew" value="${cert.id}" lay-text="开启|关闭" lay-skin="switch" ${(cert.autoRenew==1)?string('checked','')}>
-							</td>
-							<td>
-								<#if cert.pem == null>
-								<button class="layui-btn layui-btn-sm" onclick="issue('${cert.id}')">申请</button>
-								</#if>
-								
-								<#if cert.pem != null>
-								<button class="layui-btn layui-btn-sm" onclick="renew('${cert.id}')">续签</button>
-								</#if>
-								
+
 								<button class="layui-btn layui-btn-sm" onclick="edit('${cert.id}')">编辑</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">删除</button>
-							</td>
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">删除</button></td>
 						</tr>
 						</#list>
 					</tbody>
@@ -94,47 +103,88 @@
 						<input type="text" name="domain" id="domain" class="layui-input" placeholder="支持*.domain.cn泛域名，支持多域名，用逗号隔开">
 					</div>
 				</div>
-				
+
+
 				<div class="layui-form-item">
-					<label class="layui-form-label">DNS服务商</label>
-					<div class="layui-input-block">
-						<select name="dnsType" id="dnsType" lay-filter='dnsType'>
-							<option value="ali">阿里万网</option>
-							<option value="dp">腾讯DNSPod</option>
+					<label class="layui-form-label">获取方式</label>
+					<div class="layui-input-inline">
+						<select name="type" id="type" lay-filter='type'>
+							<option value="0">申请获得</option>
+							<option value="1">手动上传</option>
 						</select>
 					</div>
 				</div>
-				
-				
-				<div id="ali">
+
+			
+
+				<div id="type0">
 					<div class="layui-form-item">
-						<label class="layui-form-label">Ali_Key</label>
-						<div class="layui-input-block">
-							<input type="text" name="aliKey" id="aliKey" class="layui-input">
+						<label class="layui-form-label">DNS服务商</label>
+						<div class="layui-input-inline">
+							<select name="dnsType" id="dnsType" lay-filter='dnsType'>
+								<option value="ali">阿里万网</option>
+								<option value="dp">腾讯DNSPod</option>
+							</select>
 						</div>
 					</div>
-					
-					<div class="layui-form-item">
-						<label class="layui-form-label">Ali_Secret</label>
-						<div class="layui-input-block">
-							<input type="text" name="aliSecret" id="aliSecret" class="layui-input">
+
+
+					<div id="ali">
+						<div class="layui-form-item">
+							<label class="layui-form-label">Ali_Key</label>
+							<div class="layui-input-inline">
+								<input type="text" name="aliKey" id="aliKey" class="layui-input">
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">Ali_Secret</label>
+							<div class="layui-input-inline">
+								<input type="text" name="aliSecret" id="aliSecret" class="layui-input">
+							</div>
+						</div>
+					</div>
+
+
+					<div id="dp">
+						<div class="layui-form-item">
+							<label class="layui-form-label">DP_Id</label>
+							<div class="layui-input-inline">
+								<input type="text" name="dpId" id="dpId" class="layui-input">
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">DP_Key</label>
+							<div class="layui-input-inline">
+								<input type="text" name="dpKey" id="dpKey" class="layui-input">
+							</div>
 						</div>
 					</div>
 				</div>
 				
-				
-				<div id="dp">
+				<div id="type1">
 					<div class="layui-form-item">
-						<label class="layui-form-label">DP_Id</label>
+						<label class="layui-form-label">pem文件</label>
 						<div class="layui-input-block">
-							<input type="text" name="dpId" id="dpId" class="layui-input">
+							<button type="button" class="layui-btn layui-btn-sm liteBtn" style="width: 90px;" id="pemBtn">上传pem文件</button>
+
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectPem()">选择系统路径</button>
+
+							<input type="hidden" name="pem" id="pem" class="layui-input">
+							<div class="layui-form-mid layui-word-aux" id="pemPath"></div>
+
 						</div>
 					</div>
-					
 					<div class="layui-form-item">
-						<label class="layui-form-label">DP_Key</label>
+						<label class="layui-form-label">key文件</label>
 						<div class="layui-input-block">
-							<input type="text" name="dpKey" id="dpKey" class="layui-input">
+							<button type="button" class="layui-btn layui-btn-sm liteBtn" style="width: 90px;" id="keyBtn">上传key文件</button>
+
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectKey()">选择系统路径</button>
+
+							<input type="hidden" name="key" id="key" class="layui-input">
+							<div class="layui-form-mid layui-word-aux" id="keyPath"></div>
 						</div>
 					</div>
 				</div>
@@ -149,6 +199,7 @@
 	</div>
 
 	<#include '/adminPage/script.html'/>
+	<#include '/adminPage/select_root.html'/>
 	<script src="${ctx}/js/adminPage/cert/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

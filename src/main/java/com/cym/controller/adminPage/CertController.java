@@ -25,6 +25,7 @@ import com.cym.utils.SystemTool;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Controller
 @RequestMapping("/adminPage/cert")
@@ -102,7 +103,7 @@ public class CertController extends BaseController {
 			setEnv(cert);
 			
 			String cmd = "";
-			if (type.equals("issue")) {
+			if (type.equals("issue") || StrUtil.isEmpty(cert.getPem())) {
 				// 申请
 				cmd = InitConfig.acmeSh + " --issue --dns dns_ali -d " + cert.getDomain();
 			} else if (type.equals("renew")) {

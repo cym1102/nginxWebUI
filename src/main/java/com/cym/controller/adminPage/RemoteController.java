@@ -19,6 +19,7 @@ import com.cym.service.RemoteService;
 import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
+import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +46,13 @@ public class RemoteController extends BaseController {
 	final ConfController confController;
 	final MainController mainController;
 
-	
 	@Value("${project.version}")
 	String projectVersion;
 	@Value("${server.port}")
 	Integer port;
 
-	public RemoteController(RemoteService remoteService, SettingService settingService, ConfService confService, GroupService groupService, ConfController confController,MainController mainController) {
+	public RemoteController(RemoteService remoteService, SettingService settingService, ConfService confService, GroupService groupService, ConfController confController,
+			MainController mainController) {
 		this.remoteService = remoteService;
 		this.settingService = settingService;
 		this.confService = confService;
@@ -65,17 +66,11 @@ public class RemoteController extends BaseController {
 	public Map<String, Object> version() {
 		Map<String, Object> map = new HashMap<>();
 		map.put("version", projectVersion);
-		map.put("nginx", 2);
 
-		if (SystemTool.isLinux()) {
-			String[] command = { "/bin/sh", "-c", "ps -ef|grep nginx" };
-			String rs = RuntimeUtil.execForStr(command);
-
-			if (rs.contains("nginx: master process") || rs.contains("nginx: worker process")) {
-				map.put("nginx", 1);
-			} else {
-				map.put("nginx", 0);
-			}
+		if (NginxUtils.isRun()) {
+			map.put("nginx", 1);
+		} else {
+			map.put("nginx", 0);
 		}
 
 		return map;
@@ -273,13 +268,13 @@ public class RemoteController extends BaseController {
 					jsonResult = confController.stop(null, null);
 				}
 				if (cmd.contentEquals("update")) {
-					jsonResult = renderError("不允许对本地进行远程更新"); 
+					jsonResult = renderError("不允许对本地进行远程更新");
 				}
 				rs.append("<span class='blue'>本地> </span>");
 			} else {
 				Remote remote = sqlHelper.findById(id, Remote.class);
 				rs.append("<span class='blue'>").append(remote.getIp()).append("> </span>");
-				
+
 				try {
 					String json = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/conf/" + cmd + "?creditKey=" + remote.getCreditKey());
 					System.out.println(json);
@@ -301,7 +296,7 @@ public class RemoteController extends BaseController {
 
 		return renderSuccess(rs.toString());
 	}
-	
+
 	@RequestMapping("asyc")
 	@ResponseBody
 	public JsonResult asyc(String fromId, String[] remoteId) {
@@ -327,7 +322,8 @@ public class RemoteController extends BaseController {
 				Remote remoteTo = sqlHelper.findById(remoteToId, Remote.class);
 				System.out.println("同步到" + remoteTo.getIp());
 				try {
-					String version = HttpUtil.get(remoteTo.getProtocol() + "://" + remoteTo.getIp() + ":" + remoteTo.getPort() + "/adminPage/remote/version?creditKey=" + remoteTo.getCreditKey(), 1000);
+					String version = HttpUtil.get(remoteTo.getProtocol() + "://" + remoteTo.getIp() + ":" + remoteTo.getPort() + "/adminPage/remote/version?creditKey=" + remoteTo.getCreditKey(),
+							1000);
 					if (StrUtil.isNotEmpty(version)) {
 						// 在线
 						Map<String, Object> map = new HashMap<>();

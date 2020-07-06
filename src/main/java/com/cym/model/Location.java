@@ -8,16 +8,35 @@ import cn.craccd.sqlHelper.config.Table;
 public class Location extends BaseModel {
 	String serverId;
 	
-	String path;
+	String path; // 监控路径
 	Integer type; // 0 http 1 root 2 负载均衡
 	
-	String value;
-	String upstreamId;
+	String value; // http代理
+	String upstreamId; // 负载均衡代理
 	String upstreamPath;
 	String locationParamJson;
 	
+	String rootPath; // 静态页面代理
+	String rootPage;
 	
 	
+
+	public String getRootPath() {
+		return rootPath;
+	}
+
+	public void setRootPath(String rootPath) {
+		this.rootPath = rootPath;
+	}
+
+	public String getRootPage() {
+		return rootPage;
+	}
+
+	public void setRootPage(String rootPage) {
+		this.rootPage = rootPage;
+	}
+
 	public String getUpstreamPath() {
 		return upstreamPath;
 	}

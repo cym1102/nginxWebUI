@@ -1,6 +1,7 @@
 package com.cym.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class ServerService {
 	}
 
 	@Transactional
-	public void addOver(Server server, String serverParamJson, Integer[] type, String[] path, String[] value, String[] upstreamId, String[] upstreamPath, String[] locationParamJson) {
+	public void addOver(Server server, String serverParamJson, List<Location> locations) {
 		sqlHelper.insertOrUpdate(server);
 		List<Param> paramList = new ArrayList<Param>();
 		if (StrUtil.isNotEmpty(serverParamJson) && JSONUtil.isJson(serverParamJson.replace("%2C", ","))) {
@@ -62,28 +63,18 @@ public class ServerService {
 
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
 
-		if (type != null) {
-			for (int i = 0; i < type.length; i++) {
-				Location location = new Location();
+		if (locations!=null) {
+			 // 反向插入,保证列表与输入框对应
+			Collections.reverse(locations);
+			
+			for (Location location:locations) {
 				location.setServerId(server.getId());
-				location.setType(type[i]);
-				location.setPath(path[i]);
-
-				if (location.getType() == 0 || location.getType() == 1) {
-					location.setValue(value[i]);
-				} else if (location.getType() == 2) {
-					location.setUpstreamId(upstreamId[i]);
-
-					if (!upstreamPath[i].equals("is_null")) {
-						location.setUpstreamPath(upstreamPath[i]);
-					}
-				}
 
 				sqlHelper.insert(location);
 
 				paramList = new ArrayList<Param>();
-				if (locationParamJson.length > 0 && StrUtil.isNotEmpty(locationParamJson[i]) && JSONUtil.isJson(locationParamJson[i].replace("%2C", ","))) {
-					paramList = JSONUtil.toList(JSONUtil.parseArray(locationParamJson[i].replace("%2C", ",")), Param.class);
+				if (StrUtil.isNotEmpty(location.getLocationParamJson()) && JSONUtil.isJson(location.getLocationParamJson().replace("%2C", ","))) {
+					paramList = JSONUtil.toList(JSONUtil.parseArray(location.getLocationParamJson().replace("%2C", ",")), Param.class);
 				}
 
 				for (Param param : paramList) {
@@ -131,15 +122,14 @@ public class ServerService {
 			param.setServerId(server.getId());
 			sqlHelper.insert(param);
 		}
-		
-		
+
 		for (Location location : locations) {
 			params = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("locationId", location.getId()), Param.class);
-			
+
 			location.setId(null);
 			location.setServerId(server.getId());
 			sqlHelper.insert(location);
-			
+
 			for (Param param : params) {
 				param.setId(null);
 				param.setLocationId(location.getId());
@@ -147,7 +137,6 @@ public class ServerService {
 			}
 		}
 
-		
 	}
 
 }

@@ -22,14 +22,54 @@ $(function(){
 		});
 	});   
 	
+	layui.use('upload', function() {
+		var upload = layui.upload;
+		upload.render({
+			elem : '#pemBtn',
+			url : '/upload/',
+			accept : 'file',
+			done : function(res) {
+				// 上传完毕回调
+				if (res.success) {
+					$("#pem").val(res.obj);
+					$("#pemPath").html(res.obj);
+				}
+
+			},
+			error : function() {
+				// 请求异常回调
+			}
+		});
+
+		upload.render({
+			elem : '#keyBtn',
+			url : '/upload/',
+			accept : 'file',
+			done : function(res) {
+				// 上传完毕回调
+				if (res.success) {
+					$("#key").val(res.obj);
+					$("#keyPath").html(res.obj);
+				}
+			},
+			error : function() {
+				// 请求异常回调
+			}
+		});
+	});
+	
 	form.on('select(dnsType)', function(data) {
+		checkDnsType(data.value);
+	});
+	
+	
+	form.on('select(type)', function(data) {
 		checkType(data.value);
 	});
 })
 
 
-function checkType(value){
-	
+function checkDnsType(value){
 	if (value == 'ali') {
 		$("#ali").show();
 		$("#dp").hide();
@@ -37,6 +77,17 @@ function checkType(value){
 	if (value == 'dp') {
 		$("#ali").hide();
 		$("#dp").show();
+	} 
+}
+
+function checkType(value){
+	if (value == 0) {
+		$("#type0").show();
+		$("#type1").hide();
+	} 
+	if (value == 1) {
+		$("#type0").hide();
+		$("#type1").show();
 	} 
 }
 
@@ -48,7 +99,9 @@ function add() {
 	$("#aliSecret").val(""); 
 	$("#dpId").val(""); 
 	$("#dpKey").val(""); 
-	checkType('ali');
+	checkType(0);
+	checkDnsType('ali');
+	
 	
 	showWindow("添加证书");
 }
@@ -69,12 +122,22 @@ function edit(id) {
 				
 				var cert = data.obj;
 				$("#domain").val(cert.domain); 
+				
+				$("#type").val(cert.type); 
 				$("#dnsType").val(cert.dnsType!=null?cert.dnsType:'ali');
 				$("#aliKey").val(cert.aliKey); 
 				$("#aliSecret").val(cert.aliSecret); 
 				$("#dpId").val(cert.dpId); 
-				$("#dpKey").val(cert.dpKey); 
-				checkType(cert.dnsType!=null?cert.dnsType:'ali');
+				$("#dpKey").val(cert.dpKey);
+				$("#pem").val(cert.pem);
+				$("#key").val(cert.key);
+				$("#pemPath").html(cert.pem);
+				$("#keyPath").html(cert.key);
+				
+				checkType(cert.type);
+				checkDnsType(cert.dnsType!=null?cert.dnsType:'ali');
+				
+				form.render();
 				
 				showWindow("编辑证书");
 				
@@ -92,7 +155,7 @@ function showWindow(title){
 	layer.open({
 		type : 1,
 		title : title,
-		area : [ '500px', '400px' ], // 宽高
+		area : [ '800px', '400px' ], // 宽高
 		content : $('#windowDiv')
 	});
 }
@@ -103,16 +166,18 @@ function addOver() {
 		return;
 	}
 	
-	if($("#dnsType").val() == 'ali'){
-		if($("#aliKey").val() == '' || $("#aliSecret").val() == ''){
-			layer.msg("填写不完整");
-			return;
+	if($("#type").val() == 0){
+		if($("#dnsType").val() == 'ali'){
+			if($("#aliKey").val() == '' || $("#aliSecret").val() == ''){
+				layer.msg("填写不完整");
+				return;
+			}
 		}
-	}
-	if($("#dnsType").val() == 'dp'){
-		if($("#dpId").val() == '' || $("#dpKey").val() == ''){
-			layer.msg("填写不完整");
-			return;
+		if($("#dnsType").val() == 'dp'){
+			if($("#dpId").val() == '' || $("#dpKey").val() == ''){
+				layer.msg("填写不完整");
+				return;
+			}
 		}
 	}
 	
@@ -225,4 +290,20 @@ function renew(id){
 			}
 		});
 	}
+}
+
+
+function selectPem(){
+	rootSelect.selectOne(function(rs){
+		$("#pem").val(rs);
+		$("#pemPath").html(rs);
+	})
+}
+
+
+function selectKey(){
+	rootSelect.selectOne(function(rs){
+		$("#key").val(rs);
+		$("#keyPath").html(rs);
+	})
 }

@@ -2,7 +2,17 @@
 <html>
 <head>
 <#include "/adminPage/common.html"/>
+<style type="text/css">
 
+.long{
+	width: 150px!important;
+}
+
+.short{
+	width: 50px!important;
+}
+
+</style>
 </head>
 <body class="layui-layout-body">
 	<div class="layui-layout layui-layout-admin">
@@ -15,6 +25,8 @@
 				<fieldset class="layui-elem-field layui-field-title">
 					<legend>系统运行状态</legend>
 				</fieldset>
+				
+				<input type="hidden" id="isInit" value="${isInit}"> 
 
 				<div style="padding: 20px; margin: 20px;border: 1px solid #bfbfbf;">
 					<div class="layui-row layui-col-space15">
@@ -54,8 +66,54 @@
 		</div>
 	</div>
 
+	<div style="height: 0px; width: 0px; overflow: hidden;">
+		<div class="layui-form" id="nginxGuideDiv" style="padding: 15px; display: none">
+			<form id="addForm">
+				<div class="layui-form-item">
+					<label class="layui-form-label long">nginx.conf路径</label>
+					<div class="layui-input-inline">
+						<input type="text" id="nginxPath" class="layui-input" value="${nginxPath}">
+					</div>
+					<div class="layui-input-inline short">
+						<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxPath')"></i>   
+					</div>
+					<div class="layui-form-mid layui-word-aux">nginx.conf路径</div>
+				</div>
+	
+				<div class="layui-form-item">
+					<label class="layui-form-label long">nginx执行命令</label>
+					<div class="layui-input-inline">
+						<input type="text" id="nginxExe" class="layui-input" value="${nginxExe}">
+					</div>
+					<div class="layui-input-inline short">
+						<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxExe')"></i>   
+					</div>
+					<div class="layui-form-mid layui-word-aux">如果是安装版nginx，请直接填写"nginx"</div>
+				</div>
+	
+				<div class="layui-form-item">
+					<label class="layui-form-label long">nginx目录</label>
+					<div class="layui-input-inline">
+						<input type="text" id="nginxDir" class="layui-input" value="${nginxDir}">
+					</div>
+					<div class="layui-input-inline short">
+						<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxDir')"></i>   
+					</div>
+					<div class="layui-form-mid layui-word-aux">如果是安装版nginx，可不填</div>
+				</div>
+	
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addNginxGiudeOver()">提交</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+				</div>
+			</form>
+		</div>
+	
+	</div>
+
 
 	<#include '/adminPage/script.html'/>
+	<#include '/adminPage/select_root.html'/>
 	<script src="${ctx}/js/adminPage/monitor/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

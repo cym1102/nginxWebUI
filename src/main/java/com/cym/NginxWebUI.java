@@ -21,13 +21,13 @@ public class NginxWebUI {
 
 		// 尝试杀掉旧版本
 		if (SystemTool.isLinux()) {
-			kill();
+			killSelf();
 		}
 
 		SpringApplication.run(NginxWebUI.class, args);
 	}
 
-	public static void kill() {
+	public static void killSelf() {
 		RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
 		String myPid = runtimeMXBean.getName().split("@")[0];
 		List<String> list = RuntimeUtil.execForLines("ps -ef");

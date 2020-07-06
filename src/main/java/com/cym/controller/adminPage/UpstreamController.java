@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.ext.UpstreamExt;
+import com.cym.model.Location;
+import com.cym.model.Server;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
 import com.cym.service.ParamService;
@@ -21,6 +23,7 @@ import com.cym.utils.JsonResult;
 
 import cn.craccd.sqlHelper.bean.Page;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 
 @Controller
 @RequestMapping("/adminPage/upstream")
@@ -29,6 +32,7 @@ public class UpstreamController extends BaseController {
 	UpstreamService upstreamService;
 	@Autowired
 	ParamService paramService;
+
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String keywords) {
 		page = upstreamService.search(page, keywords);
@@ -71,16 +75,19 @@ public class UpstreamController extends BaseController {
 
 	@RequestMapping("addOver")
 	@ResponseBody
-	public JsonResult addOver(Upstream upstream, String[] server, Integer[] port, Integer[] weight, Integer[] maxFails, Integer[] failTimeout, String[] status, String upstreamParamJson) {
-
-		if (StrUtil.isEmpty( upstream.getId())) {
+	public JsonResult addOver(String upstreamJson, String upstreamParamJson, String upstreamServerJson) {
+		Upstream upstream = JSONUtil.toBean(upstreamJson, Upstream.class);
+		List<UpstreamServer> upstreamServers = JSONUtil.toList( JSONUtil.parseArray(upstreamServerJson), UpstreamServer.class);
+		
+		
+		if (StrUtil.isEmpty(upstream.getId())) {
 			Long count = upstreamService.getCountByName(upstream.getName());
 			if (count > 0) {
 				return renderError("与已有负载均衡重名");
 			}
 		}
 
-		upstreamService.addOver(upstream, server, port, weight, maxFails, failTimeout, status, upstreamParamJson);
+		upstreamService.addOver(upstream, upstreamServers, upstreamParamJson);
 
 		return renderSuccess();
 	}
@@ -94,7 +101,7 @@ public class UpstreamController extends BaseController {
 		upstreamExt.setUpstreamServerList(upstreamService.getUpstreamServers(id));
 
 		upstreamExt.setParamJson(paramService.getJsonByTypeId(upstreamExt.getUpstream().getId(), "upstream"));
-		
+
 		return renderSuccess(upstreamExt);
 	}
 

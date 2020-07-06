@@ -106,7 +106,7 @@ function guide(){
 	layer.open({
 		type : 1,
 		title : "简易配置向导",
-		area : [ '800px', '600px' ], // 宽高
+		area : [ '800px', '610px' ], // 宽高
 		content : $('#guideDiv')
 	});
 	
@@ -138,7 +138,8 @@ function addGiudeOver(){
 		url : ctx + '/adminPage/http/addGiudeOver',
 		data : {
 			json : JSON.stringify(params),
-			logStatus : $("#logStatus").prop("checked")
+			logStatus : $("#logStatus").prop("checked"),
+			webSocket : $("#webSocket").prop("checked")
 		},
 		dataType : 'json',
 		success : function(data) {

@@ -67,13 +67,20 @@ $(function() {
 })
 
 function checkType(type,id){
-	if (type == 0 || type == 1) {
-		$("#" + id + " input[lang='value']").show();
-		$("#" + id + " span[name='upstreamSelect']").hide();
+	if (type == 0) {
+		$("#" + id + " span[name='valueSpan']").show();
+		$("#" + id + " span[name='rootPathSpan']").hide();
+		$("#" + id + " span[name='upstreamSelectSpan']").hide();
 	} 
+	if (type == 1) {
+		$("#" + id + " span[name='valueSpan']").hide();
+		$("#" + id + " span[name='rootPathSpan']").show();
+		$("#" + id + " span[name='upstreamSelectSpan']").hide();
+	}
 	if (type == 2) {
-		$("#" + id + " input[lang='value']").hide();
-		$("#" + id + " span[name='upstreamSelect']").show();
+		$("#" + id + " span[name='valueSpan']").hide();
+		$("#" + id + " span[name='rootPathSpan']").hide();
+		$("#" + id + " span[name='upstreamSelectSpan']").show();
 	} 
 }
 
@@ -131,7 +138,7 @@ function showWindow(title) {
 	layer.open({
 		type : 1,
 		title : title,
-		area : [ '1200px', '700px' ], // 宽高
+		area : [ '1210px', '700px' ], // 宽高
 		content : $('#windowDiv')
 	});
 }
@@ -158,6 +165,11 @@ function addOver() {
 			over = false;
 		}
 	})
+	$("input[name='rootPath']").each(function(){
+		if(!$(this).is(":hidden") && $(this).val().trim() == ''){
+			over = false;
+		}
+	})
 	$("select[name='upstreamId']").each(function(){
 		if(!$(this).parent().is(":hidden") && ($(this).val() == '' || $(this).val() == null)){
 			over = false;
@@ -173,17 +185,51 @@ function addOver() {
 		return;
 	}
 	
-	$("input[name='upstreamPath']").each(function(){
-		if($(this).val() == ''){
-			$(this).val("is_null");
-		}
-	})
+//	$("input[name='upstreamPath']").each(function(){
+//		if($(this).val() == ''){
+//			$(this).val("is_null");
+//		}
+//	})
 	
+	
+	var server = {};
+	server.id =  $("#id").val();
+	server.proxyType = $("#proxyType").val();
+	server.proxyUpstreamId = $("#proxyUpstreamId").val();
+	server.listen = $("#listen").val();
+	server.serverName = $("#serverName").val();
+	server.ssl = $("#ssl").val();
+	server.pem = $("#pem").val();
+	server.key = $("#key").val();
+	server.rewrite = $("#rewrite").val();
+	server.http2 = $("#http2").val();
+	
+	var serverParamJson =  $("#serverParamJson").val();
+
+	var locations = [];
+	
+	$(".itemList").children().each(function(){
+		var location = {};
+		location.path = $(this).find("input[name='path']").val();
+		location.type = $(this).find("select[name='type']").val();
+		location.value = $(this).find("input[name='value']").val();
+		location.upstreamId = $(this).find("select[name='upstreamId']").val();
+		location.upstreamPath = $(this).find("input[name='upstreamPath']").val();
+		location.rootPath = $(this).find("input[name='rootPath']").val();
+		location.rootPage = $(this).find("td input[name='rootPage']").val();
+		location.locationParamJson =  $(this).find("input[name='locationParamJson']").val();
+		
+		locations.push(location);
+	})
 	
 	$.ajax({
 		type : 'POST',
 		url : ctx + '/adminPage/server/addOver',
-		data : $('#addForm').serialize(),
+		data : {
+			serverJson : JSON.stringify(server),
+			serverParamJson : serverParamJson,
+			locationJson : JSON.stringify(locations),
+		},
 		dataType : 'json',
 		success : function(data) {
 			if (data.success) {
@@ -262,10 +308,23 @@ function edit(id) {
 								</td>
 								
 								<td>
-									<input type="text" lang="value" name="value" id="value_${uuid}" class="layui-input long" value=""  placeholder="例：http://127.0.0.1:8080 或 /root/www">
-									<i class="layui-icon layui-icon-export" lang="value" onclick="selectWww('${uuid}')"></i>  
+									<span name="valueSpan">
+										<input type="text" name="value" id="value_${uuid}" class="layui-input long" value=""  placeholder="例：http://127.0.0.1:8080">
+									</span>
 									
-									<span name="upstreamSelect">
+									<span name="rootPathSpan">
+										<div class="layui-inline" style="width: 150px;">
+											<input type="text" name="rootPath" id="rootPath_${uuid}" class="layui-input" placeholder="例：/root/www">
+										</div>
+											
+										<i class="layui-icon layui-icon-export" lang="value" onclick="selectWww('${uuid}')"></i> 
+											
+										<div class="layui-inline" style="width: 150px;">
+											<input type="text" name="rootPage" id="rootPage_${uuid}" class="layui-input" placeholder="默认页如 index.html">
+										</div>	
+									</span>
+									
+									<span name="upstreamSelectSpan">
 									${upstreamSelect}
 									</span>
 								</td> 
@@ -278,9 +337,14 @@ function edit(id) {
 						
 					$("#itemList").append(html);
 					
-					if(location.type == 0 || location.type == 1){
+					if(location.type == 0){
 						$("#" + uuid + " input[name='value']").val(location.value);
-					} else {
+					} 
+					if(location.type == 1){
+						$("#" + uuid + " input[name='rootPath']").val(location.rootPath);
+						$("#" + uuid + " input[name='rootPage']").val(location.rootPage);
+					} 
+					if(location.type == 2 ) {
 						$("#" + uuid + " select[name='upstreamId']").val(location.upstreamId);
 						$("#" + uuid + " input[name='upstreamPath']").val(location.upstreamPath);
 					}
@@ -334,7 +398,7 @@ function addItem(){
 						<td>
 							<input type="text" name="path" class="layui-input short" value="/">
 						</td>
-						<td style="width: 200px;">
+			<td style="width: 200px;">
 							<div class="layui-input-inline">
 							<select name="type" lang='${uuid}' lay-filter="type">
 								<option value="0">代理动态http</option>
@@ -345,11 +409,24 @@ function addItem(){
 						</td>
 						
 						<td>
-							<input type="text" lang="value" name="value" id="value_${uuid}" class="layui-input long" value=""  placeholder="例：http://127.0.0.1:8080 或 /root/www">
-							<i class="layui-icon layui-icon-export" lang="value" onclick="selectWww('${uuid}')"></i>  
+							<span name="valueSpan">
+								<input type="text" name="value" id="value_${uuid}" class="layui-input long" value=""  placeholder="例：http://127.0.0.1:8080">
+							</span>
 							
-							<span name="upstreamSelect">
-								${upstreamSelect}
+							<span name="rootPathSpan">
+								<div class="layui-inline" style="width: 150px;">
+									<input type="text" name="rootPath" id="rootPath_${uuid}" class="layui-input" placeholder="例：/root/www">
+								</div>
+									
+								<i class="layui-icon layui-icon-export" lang="value" onclick="selectWww('${uuid}')"></i> 
+									
+								<div class="layui-inline" style="width: 150px;">
+									<input type="text" name="rootPage" id="rootPage_${uuid}" class="layui-input" placeholder="默认页如 index.html">
+								</div>	
+							</span>
+							
+							<span name="upstreamSelectSpan">
+							${upstreamSelect}
 							</span>
 						</td> 
 						<td>
@@ -533,24 +610,10 @@ var wwwIndex;
 var uuid;
 function selectWww(id){
 	uuid = id;
-//	wwwIndex = layer.open({
-//		type : 1,
-//		title : "选择静态网页",
-//		area : [ '500px', '300px' ], // 宽高
-//		content : $('#wwwDiv')
-//	});
-	
 	rootSelect.selectOne(function callBack(val){
-		$("#value_" + uuid).val(val);
+		$("#rootPath_" + uuid).val(val);
 	});
-	
 }
-
-//function selectWwwOver(){
-//	var dir = $("#wwwId").val();
-//	$("#value_" + uuid).val(dir);
-//	layer.close(wwwIndex)
-//}
 
 
 function clone(id){

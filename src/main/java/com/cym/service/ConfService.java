@@ -14,7 +14,6 @@ import com.cym.controller.adminPage.UpstreamController;
 import com.cym.ext.AsycPack;
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
-import com.cym.model.Cert;
 import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Param;
@@ -22,7 +21,6 @@ import com.cym.model.Server;
 import com.cym.model.Stream;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
-import com.cym.utils.RuntimeTool;
 import com.cym.utils.SystemTool;
 import com.github.odiszapc.nginxparser.NgxBlock;
 import com.github.odiszapc.nginxparser.NgxConfig;
@@ -41,23 +39,16 @@ import cn.hutool.core.util.ZipUtil;
 
 @Service
 public class ConfService {
-	final
-	UpstreamController upstreamController;
-	final
-	UpstreamService upstreamService;
-	final
-	SettingService settingService;
-	final
-	ServerService serverService;
-	final
-	LocationService locationService;
-	final
-	ParamService paramService;
-	final
-	SqlHelper sqlHelper;
+	final UpstreamController upstreamController;
+	final UpstreamService upstreamService;
+	final SettingService settingService;
+	final ServerService serverService;
+	final LocationService locationService;
+	final ParamService paramService;
+	final SqlHelper sqlHelper;
 
-	public ConfService(UpstreamController upstreamController, UpstreamService upstreamService, SettingService settingService,
-					   ServerService serverService, LocationService locationService, ParamService paramService, SqlHelper sqlHelper) {
+	public ConfService(UpstreamController upstreamController, UpstreamService upstreamService, SettingService settingService, ServerService serverService, LocationService locationService,
+			ParamService paramService, SqlHelper sqlHelper) {
 		this.upstreamController = upstreamController;
 		this.upstreamService = upstreamService;
 		this.settingService = settingService;
@@ -87,7 +78,7 @@ public class ConfService {
 				NgxParam ngxParam = new NgxParam();
 				ngxParam.addValue(http.getName().trim() + " " + http.getValue().trim());
 				ngxBlockHttp.addEntry(ngxParam);
-				
+
 				hasHttp = true;
 			}
 
@@ -111,7 +102,7 @@ public class ConfService {
 					ngxParam.addValue("server " + upstreamController.buildStr(upstreamServer, upstream.getProxyType()));
 					ngxBlockServer.addEntry(ngxParam);
 				}
-				
+
 				// 自定义参数
 				List<Param> paramList = paramService.getListByTypeId(upstream.getId(), "upstream");
 				for (Param param : paramList) {
@@ -164,20 +155,19 @@ public class ConfService {
 
 				// ssl配置
 				if (server.getSsl() != null && server.getSsl() == 1) {
-					if(StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getKey())) {
+					if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getKey())) {
 						ngxParam = new NgxParam();
 						ngxParam.addValue("ssl_certificate " + server.getPem());
 						ngxBlockServer.addEntry(ngxParam);
-						
+
 						ngxParam = new NgxParam();
 						ngxParam.addValue("ssl_certificate_key " + server.getKey());
 						ngxBlockServer.addEntry(ngxParam);
-						
+
 						ngxParam = new NgxParam();
 						ngxParam.addValue("ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3");
 						ngxBlockServer.addEntry(ngxParam);
 					}
-					
 
 					// https添加80端口重写
 					if (server.getRewrite() == 1) {
@@ -203,10 +193,10 @@ public class ConfService {
 
 				List<Location> locationList = serverService.getLocationByServerId(server.getId());
 
-				// http参数配置
+				// location参数配置
 				for (Location location : locationList) {
 					NgxBlock ngxBlockLocation = new NgxBlock();
-					if (location.getType() == 0 || location.getType() == 2) { // http或负载均衡
+					if (location.getType() == 0 || location.getType() == 2) { // location或负载均衡
 						// 添加location
 						ngxBlockLocation.addValue("location");
 						ngxBlockLocation.addValue(location.getPath());
@@ -246,17 +236,20 @@ public class ConfService {
 
 						if (location.getPath().equals("/")) {
 							ngxParam = new NgxParam();
-							ngxParam.addValue("root " + location.getValue());
+							ngxParam.addValue("root " + location.getRootPath());
 							ngxBlockLocation.addEntry(ngxParam);
 						} else {
 							ngxParam = new NgxParam();
-							ngxParam.addValue("alias " + location.getValue());
+							ngxParam.addValue("alias " + location.getRootPath());
 							ngxBlockLocation.addEntry(ngxParam);
 						}
 
-						ngxParam = new NgxParam();
-						ngxParam.addValue("index index.html");
-						ngxBlockLocation.addEntry(ngxParam);
+						if(StrUtil.isNotEmpty(location.getRootPage())) {
+							ngxParam = new NgxParam();
+							ngxParam.addValue("index " + location.getRootPage());
+							ngxBlockLocation.addEntry(ngxParam);
+						}
+					
 					}
 
 					// 自定义参数
@@ -324,13 +317,12 @@ public class ConfService {
 					ngxParam.addValue("server " + upstreamController.buildStr(upstreamServer, upstream.getProxyType()));
 					ngxBlockServer.addEntry(ngxParam);
 				}
-				
+
 				// 自定义参数
 				List<Param> paramList = paramService.getListByTypeId(upstream.getId(), "upstream");
 				for (Param param : paramList) {
 					setSameParam(param, ngxBlockServer);
 				}
-
 
 				if (decompose) {
 					addConfFile(confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
@@ -342,7 +334,6 @@ public class ConfService {
 					ngxBlockStream.addEntry(ngxBlockServer);
 				}
 
-				
 				hasStream = true;
 			}
 
@@ -406,9 +397,9 @@ public class ConfService {
 			// 装载ngx_stream_module模块
 			if (hasStream && SystemTool.isLinux()) {
 				String module = settingService.get("ngx_stream_module");
-				
+
 				// 不在生成conf的方法中查找ngx_stream_module, 放到InitConfig中查找, 只在项目启动时运行一次
-				if (StrUtil.isNotEmpty(module) /*&& FileUtil.exist(module)*/ ) {
+				if (StrUtil.isNotEmpty(module) /* && FileUtil.exist(module) */ ) {
 					settingService.set("ngx_stream_module", module);
 					conf = "load_module " + module + ";\n" + conf;
 				}
@@ -426,7 +417,7 @@ public class ConfService {
 
 	private void setSameParam(Param param, NgxBlock ngxBlock) {
 		for (NgxEntry ngxEntry : ngxBlock.getEntries()) {
-			if(ngxEntry instanceof NgxParam) {
+			if (ngxEntry instanceof NgxParam) {
 				NgxParam ngxParam = (NgxParam) ngxEntry;
 				if (ngxParam.toString().startsWith(param.getName())) {
 					ngxBlock.remove(ngxParam);
@@ -485,7 +476,7 @@ public class ConfService {
 			// 写入conf.d文件
 			if (subContent != null) {
 				for (int i = 0; i < subContent.size(); i++) {
-					String tagert = nginxPath.replace("nginx.conf", "conf.d/" + subName.get(i)); 
+					String tagert = nginxPath.replace("nginx.conf", "conf.d/" + subName.get(i));
 					FileUtil.writeString(subContent.get(i), tagert, StandardCharsets.UTF_8); // 清空
 				}
 			}
@@ -499,20 +490,23 @@ public class ConfService {
 
 	public AsycPack getAsycPack() {
 		AsycPack asycPack = new AsycPack();
-		List<Cert> certList = sqlHelper.findAll(Cert.class);
-		for (Cert cert : certList) {
-			if (StrUtil.isNotEmpty(cert.getPem())) {
-				cert.setPemStr(FileUtil.readString(cert.getPem(), StandardCharsets.UTF_8));
-				cert.setKeyStr(FileUtil.readString(cert.getKey(), StandardCharsets.UTF_8));
-			}
-		}
+//		List<Cert> certList = sqlHelper.findAll(Cert.class);
+//		for (Cert cert : certList) {
+//			if (StrUtil.isNotEmpty(cert.getPem())) {
+//				cert.setPemStr(FileUtil.readString(cert.getPem(), StandardCharsets.UTF_8));
+//				cert.setKeyStr(FileUtil.readString(cert.getKey(), StandardCharsets.UTF_8));
+//			}
+//		}
 
-		asycPack.setCertList(certList);
+//		asycPack.setCertList(certList);
 		asycPack.setHttpList(sqlHelper.findAll(Http.class));
 		List<Server> serverList = sqlHelper.findAll(Server.class);
 		for (Server server : serverList) {
-			if (StrUtil.isNotEmpty(server.getPem())) {
+			if (StrUtil.isNotEmpty(server.getPem()) && FileUtil.exist(server.getPem())) {
 				server.setPemStr(FileUtil.readString(server.getPem(), StandardCharsets.UTF_8));
+			}
+
+			if (StrUtil.isNotEmpty(server.getKey()) && FileUtil.exist(server.getKey())) {
 				server.setKeyStr(FileUtil.readString(server.getKey(), StandardCharsets.UTF_8));
 			}
 		}
@@ -551,8 +545,8 @@ public class ConfService {
 
 	@Transactional
 	public void setAsycPack(AsycPack asycPack) {
-
-		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Cert.class);
+		// 不要同步Cert表
+//		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Cert.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Http.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Server.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Location.class);
@@ -561,7 +555,7 @@ public class ConfService {
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Stream.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Param.class);
 
-		sqlHelper.insertAll(asycPack.getCertList());
+//		sqlHelper.insertAll(asycPack.getCertList());
 		sqlHelper.insertAll(asycPack.getHttpList());
 		sqlHelper.insertAll(asycPack.getServerList());
 		sqlHelper.insertAll(asycPack.getLocationList());
@@ -570,16 +564,18 @@ public class ConfService {
 		sqlHelper.insertAll(asycPack.getStreamList());
 		sqlHelper.insertAll(asycPack.getParamList());
 
-		for (Cert cert : asycPack.getCertList()) {
-			if (StrUtil.isNotEmpty(cert.getPem())) {
-				FileUtil.writeString(cert.getPemStr(), cert.getPem(), StandardCharsets.UTF_8);
-				FileUtil.writeString(cert.getKeyStr(), cert.getKey(), StandardCharsets.UTF_8);
-			}
-		}
+//		for (Cert cert : asycPack.getCertList()) {
+//			if (StrUtil.isNotEmpty(cert.getPem())) {
+//				FileUtil.writeString(cert.getPemStr(), cert.getPem(), StandardCharsets.UTF_8);
+//				FileUtil.writeString(cert.getKeyStr(), cert.getKey(), StandardCharsets.UTF_8);
+//			}
+//		}
 
 		for (Server server : asycPack.getServerList()) {
-			if (StrUtil.isNotEmpty(server.getPem())) {
+			if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getPemStr())) {
 				FileUtil.writeString(server.getPemStr(), server.getPem(), StandardCharsets.UTF_8);
+			}
+			if (StrUtil.isNotEmpty(server.getKey()) && StrUtil.isNotEmpty(server.getKeyStr())) {
 				FileUtil.writeString(server.getKeyStr(), server.getKey(), StandardCharsets.UTF_8);
 			}
 		}

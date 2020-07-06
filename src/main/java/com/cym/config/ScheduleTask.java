@@ -82,7 +82,7 @@ public class ScheduleTask {
 		File dir = new File(InitConfig.home + "log/");
 		Optional.ofNullable(dir.listFiles()).ifPresent(fileList -> Arrays.stream(fileList).filter(file -> file.getName().contains("access") && file.getName().endsWith(".zip")).forEach(file -> {
 			DateTime date = DateUtil.parse(file.getName().replace("access.", "").replace(".zip", ""), "yyyy-MM-dd_HH-mm-ss");
-			if (time - date.getTime() > TimeUnit.DAYS.toMillis(7)) {
+			if (time - date.getTime() > TimeUnit.DAYS.toMillis(8)) {
 				FileUtil.del(file);
 			}
 		})

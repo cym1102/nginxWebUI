@@ -12,7 +12,7 @@ import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
 
 public class AsycPack {
-	List<Cert> certList;
+//	List<Cert> certList;
 	List<Http> httpList;
 	List<Server> serverList;
 	List<Location> locationList;
@@ -57,9 +57,9 @@ public class AsycPack {
 		this.streamList = streamList;
 	}
 
-	public List<Cert> getCertList() {
-		return certList;
-	}
+//	public List<Cert> getCertList() {
+//		return certList;
+//	}
 
 	public List<Location> getLocationList() {
 		return locationList;
@@ -69,9 +69,9 @@ public class AsycPack {
 		this.locationList = locationList;
 	}
 
-	public void setCertList(List<Cert> certList) {
-		this.certList = certList;
-	}
+//	public void setCertList(List<Cert> certList) {
+//		this.certList = certList;
+//	}
 
 	public List<Http> getHttpList() {
 		return httpList;
