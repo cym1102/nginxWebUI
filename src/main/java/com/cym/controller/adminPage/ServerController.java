@@ -56,6 +56,7 @@ public class ServerController extends BaseController {
 				serverExt.setLocationStr("负载均衡: " + (upstream != null ? upstream.getName() : ""));
 			}
 
+
 			exts.add(serverExt);
 		}
 		page.setRecords(exts);
@@ -100,10 +101,10 @@ public class ServerController extends BaseController {
 
 	@RequestMapping("addOver")
 	@ResponseBody
-	public JsonResult addOver(String serverJson,String serverParamJson,String locationJson) {
+	public JsonResult addOver(String serverJson, String serverParamJson, String locationJson) {
 		Server server = JSONUtil.toBean(serverJson, Server.class);
-		List<Location> locations = JSONUtil.toList( JSONUtil.parseArray(locationJson), Location.class);
-		
+		List<Location> locations = JSONUtil.toList(JSONUtil.parseArray(locationJson), Location.class);
+
 		if (server.getProxyType() == 0) {
 			serverService.addOver(server, serverParamJson, locations);
 		} else {

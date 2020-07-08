@@ -56,6 +56,9 @@ public class ServerService {
 		}
 		List<String> locationIds = sqlHelper.findIdsByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
 		sqlHelper.deleteByQuery(new ConditionOrWrapper().eq("serverId", server.getId()).in("locationId", locationIds), Param.class);
+		
+		 // 反向插入,保证列表与输入框对应
+		Collections.reverse(paramList);
 		for (Param param : paramList) {
 			param.setServerId(server.getId());
 			sqlHelper.insert(param);
@@ -76,7 +79,9 @@ public class ServerService {
 				if (StrUtil.isNotEmpty(location.getLocationParamJson()) && JSONUtil.isJson(location.getLocationParamJson().replace("%2C", ","))) {
 					paramList = JSONUtil.toList(JSONUtil.parseArray(location.getLocationParamJson().replace("%2C", ",")), Param.class);
 				}
-
+				
+				 // 反向插入,保证列表与输入框对应
+				Collections.reverse(paramList);
 				for (Param param : paramList) {
 					param.setLocationId(location.getId());
 					sqlHelper.insert(param);

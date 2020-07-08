@@ -106,9 +106,9 @@ function loadConf() {
 				var html = "";
 				for(var i=0;i<confExt.fileList.length;i++){
 					var confFile = confExt.fileList[i];
-					
-					html += `<div class="title">${confFile.name}</div>
-							<textarea class="layui-textarea conf" name="subContent" style="height: 200px; resize: none;"  spellcheck="false">${confFile.conf}</textarea>
+					var uuid = confFile.name.replace(/\./g, "-");
+					html += `<div class="title" onclick="showHide('${uuid}')">${confFile.name} ▼</div>
+							<textarea lang="${uuid}" class="layui-textarea conf sub" name="subContent" style="height: 200px; resize: none;"  spellcheck="false">${confFile.conf}</textarea>
 							<input type="hidden" name="subName" value="${confFile.name}">
 					`;
 				}
@@ -116,6 +116,7 @@ function loadConf() {
 				$("#nginxContentOther").html(html);
 			
 				$(".conf").setTextareaCount();
+				$(".sub").parent().hide();　
 			} else {
 				layer.alert(data.msg);
 			}
@@ -144,13 +145,14 @@ function loadOrg() {
 				var html = "";
 				for(var i=0;i<confExt.fileList.length;i++){
 					var confFile = confExt.fileList[i];
-					
-					html += `<div class="title">${confFile.name}</div>
-					<textarea class="layui-textarea org" style="height: 200px; resize: none; background-color: #ededed;" readonly="readonly" spellcheck="false">${confFile.conf}</textarea>`;
+					var uuid = confFile.name.replace(/\./g, "-");
+					html += `<div class="title" onclick="showHide('${uuid}')">${confFile.name} ▼</div>
+					<textarea lang="${uuid}" class="layui-textarea org sub" style="height: 200px; resize: none; background-color: #ededed;" readonly="readonly" spellcheck="false">${confFile.conf}</textarea>`;
 				}
 				$("#orgOther").html(html);
 				
 				$(".org").setTextareaCount();
+				$(".sub").parent().hide();　
 			} else {
 				layer.alert(data.msg);
 			}
@@ -159,6 +161,16 @@ function loadOrg() {
 			alert("出错了,请联系技术人员!");
 		}
 	});
+}
+
+function showHide(id){
+	
+	if($(`textarea[lang="${id}"]`).parent().is(':hidden')){
+		　$(`textarea[lang="${id}"]`).parent().show();　
+	} else {
+		 $(`textarea[lang="${id}"]`).parent().hide();　
+	}
+	
 }
 
 function check() {

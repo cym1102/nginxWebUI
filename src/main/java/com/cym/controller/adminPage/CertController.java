@@ -105,7 +105,13 @@ public class CertController extends BaseController {
 			String cmd = "";
 			if (type.equals("issue") || StrUtil.isEmpty(cert.getPem())) {
 				// 申请
-				cmd = InitConfig.acmeSh + " --issue --dns dns_ali -d " + cert.getDomain();
+				String dnsType = "";
+				if(cert.getDnsType().equals("ali")) {
+					dnsType = "dns_ali";
+				}else if(cert.getDnsType().equals("dp")) {
+					dnsType = "dns_dp";
+				}
+				cmd = InitConfig.acmeSh + " --issue --dns " + dnsType + " -d " + cert.getDomain();
 			} else if (type.equals("renew")) {
 				// 续签,以第一个域名为证书名
 				String domain = cert.getDomain().split(",")[0];
@@ -170,78 +176,7 @@ public class CertController extends BaseController {
 
 		FileUtil.writeLines(list, new File(InitConfig.acmeSh.replace("/acme.sh", "/account.conf")), Charset.defaultCharset());
 	}
-//	@RequestMapping("renew")
-//	@ResponseBody
-//	public JsonResult renew(String id) {
-//		if (SystemTool.isWindows()) {
-//			return renderError("证书操作只能在linux下进行");
-//		}
-//
-//		Cert cert = sqlHelper.findById(id, Cert.class);
-//		if (cert.getMakeTime() == null) {
-//			return renderError("该证书还未申请");
-//		}
-//		if (cert.getDnsType() == null) {
-//			return renderError("该证书还未设置DNS服务商信息");
-//		}
-//
-//		if (isInApply) {
-//			return renderError("另一个申请进程正在进行，请稍后再申请");
-//		}
-//		isInApply = true;
-//
-//		String rs = "";
-//		try {
-//			// 设置dns账号
-//			setEnv(cert);
-//
-//			// 续签,以第一个域名为证书名
-//			String domain = cert.getDomain().split(",")[0];
-//
-//			// 续签
-//			String cmd = InitConfig.acmeSh + " --renew --force -d " + domain;
-//			logger.info(cmd);
-//
-//			rs = RuntimeUtil.execForStr(cmd);
-//
-//			logger.info(rs);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			rs = e.getMessage();
-//		}
-//
-//		// 申请完后,马上备份.acme.sh,以便在升级docker后可用
-//		FileUtil.del(InitConfig.home + ".acme.sh");
-//		FileUtil.copy("/root/.acme.sh", InitConfig.home, true);
-//
-//		if (rs.contains("Your cert is in")) {
-//			try {
-//				String domain = cert.getDomain().split(",")[0];
-//
-//				String certDir = "/root/.acme.sh/" + domain + "/";
-//
-//				String dest = InitConfig.home + "cert/" + domain + ".cer";
-//				FileUtil.copy(new File(certDir + domain + ".cer"), new File(dest), true);
-//				cert.setPem(dest);
-//
-//				dest = InitConfig.home + "cert/" + domain + ".key";
-//				FileUtil.copy(new File(certDir + domain + ".key"), new File(dest), true);
-//				cert.setKey(dest);
-//
-//				cert.setMakeTime(System.currentTimeMillis());
-//				sqlHelper.updateById(cert);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//			isInApply = false;
-//			return renderSuccess();
-//		} else {
-//
-//			isInApply = false;
-//			return renderError(rs.replace("\n", "<br>"));
-//		}
-//
-//	}
+
 
 
 }

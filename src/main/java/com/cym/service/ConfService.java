@@ -234,13 +234,13 @@ public class ConfService {
 						ngxBlockLocation.addValue("location");
 						ngxBlockLocation.addValue(location.getPath());
 
-						if (location.getPath().equals("/")) {
+						if (location.getRootType().equals("alias")) {
 							ngxParam = new NgxParam();
-							ngxParam.addValue("root " + location.getRootPath());
+							ngxParam.addValue("alias " + location.getRootPath());
 							ngxBlockLocation.addEntry(ngxParam);
 						} else {
 							ngxParam = new NgxParam();
-							ngxParam.addValue("alias " + location.getRootPath());
+							ngxParam.addValue("root " + location.getRootPath());
 							ngxBlockLocation.addEntry(ngxParam);
 						}
 
@@ -360,14 +360,6 @@ public class ConfService {
 					ngxBlockServer.addEntry(ngxParam);
 				}
 
-				// 其他一些参数
-//				ngxParam = new NgxParam();
-//				ngxParam.addValue("proxy_connect_timeout 60s");
-//				ngxBlockServer.addEntry(ngxParam);
-//
-//				ngxParam = new NgxParam();
-//				ngxParam.addValue("proxy_timeout 60s");
-//				ngxBlockServer.addEntry(ngxParam);
 
 				// 自定义参数
 				List<Param> paramList = paramService.getListByTypeId(server.getId(), "server");
@@ -416,15 +408,16 @@ public class ConfService {
 	}
 
 	private void setSameParam(Param param, NgxBlock ngxBlock) {
-		for (NgxEntry ngxEntry : ngxBlock.getEntries()) {
-			if (ngxEntry instanceof NgxParam) {
-				NgxParam ngxParam = (NgxParam) ngxEntry;
-				if (ngxParam.toString().startsWith(param.getName())) {
-					ngxBlock.remove(ngxParam);
-					break;
-				}
-			}
-		}
+		// 不再删除相同名称的参数
+//		for (NgxEntry ngxEntry : ngxBlock.getEntries()) {
+//			if (ngxEntry instanceof NgxParam) {
+//				NgxParam ngxParam = (NgxParam) ngxEntry;
+//				if (ngxParam.toString().startsWith(param.getName()) && !param.getName().startsWith("deny") && !param.getName().startsWith("allow")) {
+//					ngxBlock.remove(ngxParam);
+//					break;
+//				}
+//			}
+//		}
 
 		NgxParam ngxParam = new NgxParam();
 		ngxParam.addValue(param.getName().trim() + " " + param.getValue().trim());
@@ -490,15 +483,6 @@ public class ConfService {
 
 	public AsycPack getAsycPack() {
 		AsycPack asycPack = new AsycPack();
-//		List<Cert> certList = sqlHelper.findAll(Cert.class);
-//		for (Cert cert : certList) {
-//			if (StrUtil.isNotEmpty(cert.getPem())) {
-//				cert.setPemStr(FileUtil.readString(cert.getPem(), StandardCharsets.UTF_8));
-//				cert.setKeyStr(FileUtil.readString(cert.getKey(), StandardCharsets.UTF_8));
-//			}
-//		}
-
-//		asycPack.setCertList(certList);
 		asycPack.setHttpList(sqlHelper.findAll(Http.class));
 		List<Server> serverList = sqlHelper.findAll(Server.class);
 		for (Server server : serverList) {
@@ -546,7 +530,6 @@ public class ConfService {
 	@Transactional
 	public void setAsycPack(AsycPack asycPack) {
 		// 不要同步Cert表
-//		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Cert.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Http.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Server.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Location.class);
@@ -555,7 +538,6 @@ public class ConfService {
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Stream.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Param.class);
 
-//		sqlHelper.insertAll(asycPack.getCertList());
 		sqlHelper.insertAll(asycPack.getHttpList());
 		sqlHelper.insertAll(asycPack.getServerList());
 		sqlHelper.insertAll(asycPack.getLocationList());
@@ -564,12 +546,6 @@ public class ConfService {
 		sqlHelper.insertAll(asycPack.getStreamList());
 		sqlHelper.insertAll(asycPack.getParamList());
 
-//		for (Cert cert : asycPack.getCertList()) {
-//			if (StrUtil.isNotEmpty(cert.getPem())) {
-//				FileUtil.writeString(cert.getPemStr(), cert.getPem(), StandardCharsets.UTF_8);
-//				FileUtil.writeString(cert.getKeyStr(), cert.getKey(), StandardCharsets.UTF_8);
-//			}
-//		}
 
 		for (Server server : asycPack.getServerList()) {
 			if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getPemStr())) {

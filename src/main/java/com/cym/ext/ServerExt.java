@@ -12,8 +12,7 @@ public class ServerExt {
 	String locationStr;
 	String paramJson;
 	
-	
-	
+
 	public String getParamJson() {
 		return paramJson;
 	}

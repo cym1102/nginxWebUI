@@ -248,7 +248,7 @@ function fillTable(params){
 	
 	paramIndex = layer.open({
 		type : 1,
-		title : "添加参数",
+		title : "设置额外参数",
 		area : [ '800px', '600px' ], // 宽高
 		content : $('#paramJsonDiv')
 	});

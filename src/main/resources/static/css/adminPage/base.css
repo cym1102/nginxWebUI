@@ -1,31 +1,38 @@
-.red{
+.red {
 	color: red;
 }
 
-.green{
+.green {
 	color: green;
 }
 
-.blue{
+.blue {
 	color: blue;
 }
-
 
 .layui-layout-admin .layui-body {
 	bottom: 0px;
 }
 
-.root{
+.root {
 	height: 38px;
 	width: 50px;
 }
 
-.layui-icon-export{
+.layui-icon-export {
 	font-size: 30px;
 	color: gray;
 	cursor: pointer;
 }
 
 textarea {
-	resize: none!important;
+	resize: none !important;
+}
+
+::-webkit-input-placeholder {
+	color: #bbbbbb;
+}
+
+:-moz-placeholder {
+	color: #bbbbbb;
 }

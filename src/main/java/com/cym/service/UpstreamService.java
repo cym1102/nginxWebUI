@@ -57,6 +57,8 @@ public class UpstreamService {
 			paramList = JSONUtil.toList(JSONUtil.parseArray(upstreamParamJson.replace("%2C", ",")), Param.class);
 		}
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("upstreamId", upstream.getId()), Param.class);
+		 // 反向插入,保证列表与输入框对应
+		Collections.reverse(paramList);
 		for (Param param : paramList) {
 			param.setUpstreamId(upstream.getId());
 			sqlHelper.insert(param);

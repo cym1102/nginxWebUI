@@ -1,25 +1,32 @@
 package com.cym.model;
 
 import cn.craccd.sqlHelper.bean.BaseModel;
-import cn.craccd.sqlHelper.config.InitValue;
 import cn.craccd.sqlHelper.config.Table;
 
 @Table
 public class Location extends BaseModel {
 	String serverId;
-	
+
 	String path; // 监控路径
 	Integer type; // 0 http 1 root 2 负载均衡
-	
+	String locationParamJson; // 额外参数
+
 	String value; // http代理
+
 	String upstreamId; // 负载均衡代理
 	String upstreamPath;
-	String locationParamJson;
-	
+
 	String rootPath; // 静态页面代理
 	String rootPage;
-	
-	
+	String rootType;
+
+	public String getRootType() {
+		return rootType;
+	}
+
+	public void setRootType(String rootType) {
+		this.rootType = rootType;
+	}
 
 	public String getRootPath() {
 		return rootPath;
@@ -92,7 +99,5 @@ public class Location extends BaseModel {
 	public void setValue(String value) {
 		this.value = value;
 	}
-
-
 
 }
