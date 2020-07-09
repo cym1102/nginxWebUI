@@ -38,8 +38,8 @@ public class ServerController extends BaseController {
 	ParamService paramService;
 
 	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String sort, String direction) {
-		page = serverService.search(page, sort, direction);
+	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String sort, String direction, String keywords) {
+		page = serverService.search(page, sort, direction, keywords);
 
 		List<ServerExt> exts = new ArrayList<ServerExt>();
 		for (Server server : page.getRecords(Server.class)) {
@@ -75,6 +75,8 @@ public class ServerController extends BaseController {
 		modelAndView.addObject("wwwList", sqlHelper.findAll(Www.class));
 		modelAndView.addObject("sort", sort);
 		modelAndView.addObject("direction", direction);
+		
+		modelAndView.addObject("keywords", keywords);
 		modelAndView.setViewName("/adminPage/server/index");
 		return modelAndView;
 	}
@@ -93,6 +95,8 @@ public class ServerController extends BaseController {
 					str.add("<span class='path'>" + location.getPath() + "</span><span class='value'>http://" + upstream.getName()
 							+ (location.getUpstreamPath() != null ? location.getUpstreamPath() : "") + "</span>");
 				}
+			} else if (location.getType() == 3) {
+				str.add("<span class='path'>" + location.getPath() + "</span>");
 			}
 
 		}
@@ -105,6 +109,10 @@ public class ServerController extends BaseController {
 		Server server = JSONUtil.toBean(serverJson, Server.class);
 		List<Location> locations = JSONUtil.toList(JSONUtil.parseArray(locationJson), Location.class);
 
+//		if(serverService.hasListen(server.getListen(), server.getId())){
+//			return renderError("该监听ip端口已存在");
+//		} 
+		
 		if (server.getProxyType() == 0) {
 			serverService.addOver(server, serverParamJson, locations);
 		} else {

@@ -71,16 +71,25 @@ function checkType(type,id){
 		$("#" + id + " span[name='valueSpan']").show();
 		$("#" + id + " span[name='rootPathSpan']").hide();
 		$("#" + id + " span[name='upstreamSelectSpan']").hide();
+		$("#" + id + " span[name='blankSpan']").hide();
 	} 
 	if (type == 1) {
 		$("#" + id + " span[name='valueSpan']").hide();
 		$("#" + id + " span[name='rootPathSpan']").show();
 		$("#" + id + " span[name='upstreamSelectSpan']").hide();
+		$("#" + id + " span[name='blankSpan']").hide();
 	}
 	if (type == 2) {
 		$("#" + id + " span[name='valueSpan']").hide();
 		$("#" + id + " span[name='rootPathSpan']").hide();
 		$("#" + id + " span[name='upstreamSelectSpan']").show();
+		$("#" + id + " span[name='blankSpan']").hide();
+	} 
+	if (type == 3) {
+		$("#" + id + " span[name='valueSpan']").hide();
+		$("#" + id + " span[name='rootPathSpan']").hide();
+		$("#" + id + " span[name='upstreamSelectSpan']").hide();
+		$("#" + id + " span[name='blankSpan']").show();
 	} 
 }
 
@@ -244,7 +253,7 @@ function addOver() {
 	});
 }
 
-function edit(id) {
+function edit(id,clone) {
 	$("#id").val(id);
 
 	$.ajax({
@@ -258,7 +267,12 @@ function edit(id) {
 			if (data.success) {
 				
 				var server = data.obj.server;
-				$("#id").val(server.id);
+				if(!clone){
+					$("#id").val(server.id);
+				}else{
+					$("#id").val("");
+				}
+				
 				if(server.listen.indexOf(":") > -1){
 					$("#ip").val(server.listen.split(":")[0]);
 					$("#listen").val(server.listen.split(":")[1]);
@@ -387,6 +401,7 @@ function buildHtml(uuid, location, upstreamSelect){
 							<option ${location.type=='0'?'selected':''} value="0">代理动态http</option>
 							<option ${location.type=='1'?'selected':''} value="1">代理静态html</option>
 							<option ${location.type=='2'?'selected':''} value="2">负载均衡</option>
+							<option ${location.type=='3'?'selected':''} value="3">空白location</option>
 						</select>
 					</div>
 				</td>
@@ -419,6 +434,10 @@ function buildHtml(uuid, location, upstreamSelect){
 					
 					<span name="upstreamSelectSpan">
 					${upstreamSelect}
+					</span>
+					
+					<span name="blankSpan">
+					
 					</span>
 				</td> 
 				<td>
@@ -463,7 +482,7 @@ function selectCertOver(){
 				$("#pem").val(cert.pem);
 				$("#pemPath").html(cert.pem);
 				$("#key").val(cert.key);
-				$("#keyPath").html(cert.pem);
+				$("#keyPath").html(cert.key);
 				
 				layer.close(certIndex);
 			} else {
@@ -608,7 +627,7 @@ function selectWww(id){
 
 function clone(id){
 	if(confirm("确认进行克隆?")){
-		$.ajax({
+		/*$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/server/clone',
 			data : {
@@ -625,7 +644,10 @@ function clone(id){
 			error : function() {
 				alert("出错了,请联系技术人员!");
 			}
-		});
+		});*/
+		
+		edit(id, true);
+		
 	}
 	
 }

@@ -234,7 +234,7 @@ public class ConfService {
 						ngxBlockLocation.addValue("location");
 						ngxBlockLocation.addValue(location.getPath());
 
-						if (location.getRootType().equals("alias")) {
+						if (location.getRootType() != null && location.getRootType().equals("alias")) {
 							ngxParam = new NgxParam();
 							ngxParam.addValue("alias " + location.getRootPath());
 							ngxBlockLocation.addEntry(ngxParam);
@@ -250,6 +250,11 @@ public class ConfService {
 							ngxBlockLocation.addEntry(ngxParam);
 						}
 					
+					} else if (location.getType() == 3) { // 空白location
+						
+						ngxBlockLocation.addValue("location");
+						ngxBlockLocation.addValue(location.getPath());
+						
 					}
 
 					// 自定义参数

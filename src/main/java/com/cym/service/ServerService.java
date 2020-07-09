@@ -26,13 +26,18 @@ public class ServerService {
 	@Autowired
 	SqlHelper sqlHelper;
 
-	public Page search(Page page, String sortColum, String direction) {
+	public Page search(Page page, String sortColum, String direction, String keywords) {
+		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper();
+		if(StrUtil.isNotEmpty(keywords)) {
+			conditionAndWrapper.and(new ConditionOrWrapper().like("serverName", keywords.trim()).like("listen", keywords.trim()));
+		}
+		
 		Sort sort = null;
 		if (StrUtil.isNotEmpty(sortColum)) {
 			sort = new Sort(sortColum, "asc".equalsIgnoreCase(direction) ? Direction.ASC : Direction.DESC);
 		}
-
-		page = sqlHelper.findPage(sort, page, Server.class);
+		
+		page = sqlHelper.findPage(conditionAndWrapper, sort, page, Server.class);
 
 		return page;
 	}
@@ -143,5 +148,13 @@ public class ServerService {
 		}
 
 	}
+
+//	public boolean hasListen(String listen, String serverId) {
+//		ConditionAndWrapper conditionAndWrapper =  new ConditionAndWrapper().eq("listen", listen);
+//		if(StrUtil.isNotEmpty(serverId)) {
+//			conditionAndWrapper.ne("id", serverId);
+//		}
+//		return sqlHelper.findCountByQuery(conditionAndWrapper, Server.class) > 0;
+//	}
 
 }
