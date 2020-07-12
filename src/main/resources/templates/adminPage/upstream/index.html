@@ -10,6 +10,18 @@
 .layui-input-block {
 	margin-left: 130px;
 }
+
+.server {
+	width: 600px;
+}
+
+.server tr:nth-child(even) {
+	background: #f1f1f1;
+}
+
+.server td {
+	padding: 5px;
+}
 </style>
 </head>
 <body class="layui-layout-body">
@@ -40,35 +52,34 @@
 
 						<button type="button" class="layui-btn" onclick="search()">搜索</button>
 
+						<button type="button" class="layui-btn layui-btn-normal" onclick="upstreamMonitor()">负载节点监控服务</button>
 						<input type="hidden" name="curr" value="${page.curr}">
 					</div>
 				</form>
 
-				<table class="layui-table">
+				<table class="layui-table layui-form">
 					<thead>
 						<tr>
 							<th>转发类型</th>
 							<th>名称</th>
 							<th>策略</th>
 							<th>负载</th>
+							<th>加入监控</th>
 							<th>操作</th>
 						</tr>
 					</thead>
 					<tbody>
 						<#list page.records as ext>
 						<tr>
-							<td>
-								<#if ext.upstream.proxyType==0>http</#if>
-								<#if ext.upstream.proxyType==1>TCP</#if>
-							</td>
+							<td><#if ext.upstream.proxyType==0>http</#if> <#if ext.upstream.proxyType==1>TCP</#if></td>
 							<td>${ext.upstream.name}</td>
+							<td><#if ext.upstream.tactics==""> 默认 </#if> <#if ext.upstream.tactics=="ip_hash"> ip绑定(ip_hash) </#if> <#if ext.upstream.tactics=="least_conn"> 最少连接(least_conn) </#if> <#if
+									ext.upstream.tactics=="least_time"> 最短时间(least_time) </#if></td>
 							<td>
-								<#if ext.upstream.tactics==""> 默认 </#if>
-								<#if ext.upstream.tactics=="ip_hash"> ip绑定(ip_hash) </#if>
-								<#if ext.upstream.tactics=="least_conn"> 最少连接(least_conn) </#if>
-								<#if ext.upstream.tactics=="least_time"> 最短时间(least_time) </#if>
+								<table class="server">${ext.serverStr}
+								</table>
 							</td>
-							<td>${ext.serverStr}</td>
+							<td><input type="checkbox" name="switch" lay-filter="monitor" value="${ext.upstream.id}" ${(ext.upstream.monitor==1)?string( 'checked','')}  lay-text="开启|关闭" lay-skin="switch"></td>
 							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.upstream.id}')">编辑</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.upstream.id}')">删除</button>
@@ -119,9 +130,9 @@
 
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addItem()">添加负载</button>
-					
+
 					<button type="button" class="layui-btn layui-btn-sm" onclick="upstreamParam()">设置额外参数</button>
-					<input type="hidden" id="upstreamParamJson" name="upstreamParamJson" value="">
+					<textarea style="display: none;" id="upstreamParamJson" name="upstreamParamJson"></textarea>
 				</div>
 
 				<div class="layui-form-item">
@@ -134,7 +145,7 @@
 								<th>权重</th>
 								<th>最大失败次数</th>
 								<th>失败等待时间(s)</th>
-								<th>状态</th>
+								<th>状态策略</th>
 								<th>操作</th>
 							</tr>
 						</thead>
@@ -151,13 +162,44 @@
 				</div>
 			</form>
 		</div>
-		
-		<div id="paramJsonDiv" style="display: none;padding: 15px;"> 
+
+		<div class="layui-form" id="monitorDiv" style="padding: 15px; display: none">
+			<div class="layui-form-item">
+				<label class="layui-form-label">通知发送邮箱</label>
+				<div class="layui-input-inline">
+					<input type="text" name="mail" id="mail" class="layui-input">
+				</div>
+				<div class="layui-input-inline" style="width: auto;">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="showSelectMail()">设置SMTP</button>
+				</div>
+				<div class="layui-input-inline" style="width: auto;">
+					<button type="button" class="layui-btn" onclick="testMail()">测试发送</button>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">负载节点监控</label>
+				<div class="layui-input-inline">
+					<select name="upstreamMonitor" id="upstreamMonitor">
+						<option value="false">关闭</option>
+						<option value="true">开启</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<button type="button" class="layui-btn layui-btn-normal" onclick="upstreamOver()">确定</button>
+				<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+			</div>
+		</div>
+
+
+		<div id="paramJsonDiv" style="display: none; padding: 15px;">
 			<div class="layui-form-item">
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">添加参数</button>
 			</div>
 			<div class="layui-form-item">
-				<input type="hidden" id="targertId" >
+				<input type="hidden" id="targertId">
 				<table class="layui-table">
 					<thead>
 						<tr>
@@ -180,6 +222,7 @@
 	</div>
 
 	<#include '/adminPage/script.html'/>
+	<#include '/adminPage/select_mail.html'/>
 	<script src="${ctx}/js/adminPage/upstream/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

@@ -13,6 +13,16 @@ public class Upstream extends BaseModel {
 	@InitValue("0")
 	Integer proxyType; //  0 http 1 tcp
 	
+	@InitValue("0")
+	Integer monitor;
+	
+	
+	public Integer getMonitor() {
+		return monitor;
+	}
+	public void setMonitor(Integer monitor) {
+		this.monitor = monitor;
+	}
 	public Integer getProxyType() {
 		return proxyType;
 	}

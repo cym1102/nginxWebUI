@@ -18,7 +18,6 @@ public class ParamService {
 	SqlHelper sqlHelper;
 
 	public String getJsonByTypeId(String id, String type) {
-
 		List<Param> list = sqlHelper.findListByQuery(new ConditionAndWrapper().eq(type + "Id", id), Param.class);
 
 		return JSONUtil.toJsonStr(list);
@@ -26,9 +25,10 @@ public class ParamService {
 
 	
 	public List<Param> getListByTypeId(String id, String type) {
-
 		List<Param> list = sqlHelper.findListByQuery(new ConditionAndWrapper().eq(type + "Id", id), Param.class);
 
 		return list;
 	}
+
+
 }

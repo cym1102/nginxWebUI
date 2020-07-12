@@ -1,5 +1,27 @@
 $(function(){
-
+	form.on('switch(monitor)', function(data){
+		  $.ajax({
+				type : 'POST',
+				url : ctx + '/adminPage/upstream/setMonitor',
+				data : {
+					id : data.value,
+					monitor : data.elem.checked?1:0
+				},
+				dataType : 'json',
+				success : function(data) {
+				
+					if (data.success) {
+						//location.reload();
+					} else {
+						layer.msg(data.msg);
+					}
+				},
+				error : function() {
+					alert("出错了,请联系技术人员!");
+				}
+		});
+	});   
+	
 })
 
 
@@ -124,7 +146,7 @@ function edit(id) {
 				$("#name").val(ext.upstream.name);
 				$("#tactics").val(ext.upstream.tactics);
 				$("#proxyType").val(ext.upstream.proxyType);
-				$("#upstreamParamJson").val(ext.paramJson.replace(/,/g,"%2C"));
+				$("#upstreamParamJson").val(ext.paramJson);
 				
 				var html = ``;
 				for(let i=0;i<list.length;i++){
@@ -217,7 +239,7 @@ function delTr(id){
 function upstreamParam(){
 	var json = $("#upstreamParamJson").val();
 	$("#targertId").val("upstreamParamJson");
-	var params = json!=''?JSON.parse(json.replace(/%2C/g,",")):[];
+	var params = json!=''?JSON.parse(json):[];
 	fillTable(params);
 }
 
@@ -286,7 +308,104 @@ function addParamOver(){
 		
 		params.push(param);
 	})
-	$("#" + targertId).val(JSON.stringify(params).replace(/,/g,"%2C"));
+	$("#" + targertId).val(JSON.stringify(params));
 	
 	layer.close(paramIndex);
+}
+
+
+
+function upstreamMonitor(){
+	
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/upstream/upstreamStatus',
+		dataType : 'json',
+		success : function(data) {
+			if (data.success) {
+				$("#mail").val(data.obj.mail);
+				$("#upstreamMonitor").val(data.obj.upstreamMonitor);
+				
+				form.render();
+				layer.open({
+					type : 1,
+					title : "负载节点监控服务",
+					area : [ '600px', '300px' ], // 宽高
+					content : $('#monitorDiv')
+				});
+			}else{
+				layer.msg(data.msg)
+			}
+		},
+		error : function() {
+			layer.closeAll();
+			alert("出错了,请联系技术人员!");
+		}
+	});
+}
+
+
+function upstreamOver(){
+		var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;                
+		if ($("#mail").val() == '' || !myreg.test($("#mail").val())) {                    
+			alert("邮箱格式不正确");               
+			return;                
+		}
+		loadIndex = layer.load();
+		$.ajax({
+			type : 'POST',
+			url : ctx + '/adminPage/upstream/upstreamOver',
+			data : {
+				mail : $("#mail").val(),
+				upstreamMonitor : $("#upstreamMonitor").val()
+			},
+			dataType : 'json',
+			success : function(data) {
+				layer.close(loadIndex);
+				if (data.success) {
+					location.reload();
+				}else{
+					layer.msg(data.msg)
+				}
+			},
+			error : function() {
+				layer.close(loadIndex);
+				alert("出错了,请联系技术人员!");
+			}
+		});
+}
+
+var loadIndex;
+function testMail(){
+	if(confirm("是否就行测试发送?")){
+		var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;                
+		if ($("#mail").val() == '' || !myreg.test($("#mail").val())) {                    
+			alert("邮箱格式不正确");               
+			return;                
+		}
+		
+		loadIndex = layer.load();
+		$.ajax({
+			type: 'POST',
+			url: ctx + 'adminPage/admin/testMail',
+			data: {
+				mail: $("#mail").val(),
+			},
+			dataType: 'json',
+			success: function(data) {
+				layer.close(loadIndex);
+				if (data.success) {
+					layer.msg("发送成功");
+				} else {
+					layer.msg(data.msg);
+				}
+			},
+			error: function() {
+				layer.close(loadIndex);
+				alert("出错了,请联系技术人员!");
+			}
+		});
+	}
+	
+	
 }

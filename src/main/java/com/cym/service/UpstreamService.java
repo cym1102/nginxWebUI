@@ -53,8 +53,8 @@ public class UpstreamService {
 		sqlHelper.insertOrUpdate(upstream);
 		
 		List<Param> paramList = new ArrayList<Param>();
-		if (StrUtil.isNotEmpty(upstreamParamJson) && JSONUtil.isJson(upstreamParamJson.replace("%2C", ","))) {
-			paramList = JSONUtil.toList(JSONUtil.parseArray(upstreamParamJson.replace("%2C", ",")), Param.class);
+		if (StrUtil.isNotEmpty(upstreamParamJson) && JSONUtil.isJson(upstreamParamJson)) {
+			paramList = JSONUtil.toList(JSONUtil.parseArray(upstreamParamJson), Param.class);
 		}
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("upstreamId", upstream.getId()), Param.class);
 		 // 反向插入,保证列表与输入框对应
@@ -95,6 +95,17 @@ public class UpstreamService {
 
 	public Long getCountByName(String name) {
 		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("name", name), Upstream.class);
+	}
+
+
+	public List<UpstreamServer> getServerListByMonitor(int monitor) {
+		List<String> upstreamIds = sqlHelper.findIdsByQuery(new ConditionAndWrapper().eq("monitor", monitor), Upstream.class);
+		
+		return sqlHelper.findListByQuery(new ConditionAndWrapper().in("upstreamId", upstreamIds), UpstreamServer.class);
+	}
+
+	public List<UpstreamServer> getAllServer() {
+		return sqlHelper.findAll(UpstreamServer.class);
 	}
 
 }

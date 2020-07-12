@@ -1,30 +1,11 @@
 $(function() {
 
-	// layui.use('upload', function() {
-	// var upload = layui.upload;
-	// upload.render({
-	// elem : '#dataImport',
-	// url : '/upload/',
-	// accept : 'file',
-	// done : function(res) {
-	// // 上传完毕回调
-	// if (res.success) {
-	// dataImport(res.obj)
-	// }
-	//
-	// },
-	// error : function() {
-	// // 请求异常回调
-	// }
-	// });
-	//
-	// });
 });
 
 function dExport() {
 	window.open(ctx + "/adminPage/export/dataExport")
-
 }
+
 
 function dImport() {
 	$("#file").click();
@@ -60,4 +41,8 @@ function dImportOver() {
 			});
 		}
 	}
+}
+
+function lExport(){
+	window.open(ctx + "/adminPage/export/logExport")
 }

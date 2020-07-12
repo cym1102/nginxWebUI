@@ -20,14 +20,18 @@
 				<form action="${ctx}/adminPage/admin" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" id="dataExport" class="layui-btn layui-btn-normal" onclick="dExport()">导出数据</button>
+							<button type="button" id="dataExport" class="layui-btn layui-btn-normal" onclick="dExport()">导出配置数据</button>
 						</div>
 						<div class="layui-inline">
-							<button type="button" id="dataImport" class="layui-btn" onclick="dImport()">导入数据</button>
+							<button type="button" id="dataImport" class="layui-btn" onclick="dImport()">导入配置数据</button>
 
 							<div style="display: none;">
 								<input type="file" id="file" onchange="dImportOver()">
 							</div>
+						</div>
+						
+						<div class="layui-inline">
+							<button type="button" id="logExport" class="layui-btn layui-btn-normal" onclick="lExport()">导出当日日志</button>
 						</div>
 					</div>
 				</form>

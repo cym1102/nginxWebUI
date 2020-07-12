@@ -17,12 +17,23 @@ public class Remote extends BaseModel{
 	String version;
 	String system;
 	String descr;
+	@InitValue("0")
+	Integer monitor;
 	
 	String parentId;
 	Integer type; //0 服务器 1分组
 	Integer nginx; //0未运行 1在运行 2未知
 	
 	
+	
+	public Integer getMonitor() {
+		return monitor;
+	}
+
+	public void setMonitor(Integer monitor) {
+		this.monitor = monitor;
+	}
+
 	public Integer getNginx() {
 		return nginx;
 	}

@@ -1,13 +1,21 @@
 package com.cym.controller.adminPage;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.TypeReference;
-import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpUtil;
-import cn.hutool.json.JSONUtil;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.cym.config.VersionConfig;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.cym.config.ScheduleTask;
 import com.cym.controller.MainController;
 import com.cym.ext.AsycPack;
 import com.cym.ext.Tree;
@@ -22,19 +30,12 @@ import com.cym.utils.JsonResult;
 import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpSession;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.TypeReference;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
 
 @Controller
 @RequestMapping("/adminPage/remote")
@@ -123,6 +124,7 @@ public class RemoteController extends BaseController {
 		remoteLocal.setPort(port);
 		remoteLocal.setStatus(1);
 		remoteLocal.setType(0);
+		remoteLocal.setMonitor(settingService.get("monitorLocal") != null ? Integer.parseInt(settingService.get("monitorLocal")) : 0);
 		remoteLocal.setSystem(SystemTool.getSystem());
 		remoteList.add(0, remoteLocal);
 
@@ -361,7 +363,12 @@ public class RemoteController extends BaseController {
 	@RequestMapping("addOver")
 	@ResponseBody
 	public JsonResult addOver(Remote remote) {
-
+		remote.setIp(remote.getIp().trim());
+		
+		if(remoteService.hasSame(remote)) {
+			return renderError("已存在相同ip端口");
+		}
+		
 		remoteService.getCreditKey(remote);
 
 		if (StrUtil.isNotEmpty(remote.getCreditKey())) {
@@ -427,4 +434,41 @@ public class RemoteController extends BaseController {
 
 		return renderSuccess();
 	}
+
+	@RequestMapping("nginxStatus")
+	@ResponseBody
+	public JsonResult nginxStatus(HttpSession httpSession) {
+		Map<String, String> map = new HashMap<>();
+		map.put("mail", settingService.get("mail"));
+
+		String nginxMonitor = settingService.get("nginxMonitor");
+		map.put("nginxMonitor", nginxMonitor != null ? nginxMonitor : "false");
+
+		return renderSuccess(map);
+	}
+
+	@RequestMapping("nginxOver")
+	@ResponseBody
+	public JsonResult nginxOver(String mail, String nginxMonitor) {
+		settingService.set("mail", mail);
+		settingService.set("nginxMonitor", nginxMonitor);
+
+		return renderSuccess();
+	}
+
+	@RequestMapping("setMonitor")
+	@ResponseBody
+	public JsonResult setMonitor(String id, Integer monitor) {
+		if (!"本地".equals(id)) {
+			Remote remote = new Remote();
+			remote.setId(id);
+			remote.setMonitor(monitor);
+			sqlHelper.updateById(remote);
+		} else {
+			settingService.set("monitorLocal", monitor.toString());
+		}
+
+		return renderSuccess();
+	}
+
 }

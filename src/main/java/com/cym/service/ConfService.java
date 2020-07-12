@@ -14,6 +14,7 @@ import com.cym.controller.adminPage.UpstreamController;
 import com.cym.ext.AsycPack;
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
+import com.cym.model.Basic;
 import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Param;
@@ -25,7 +26,6 @@ import com.cym.utils.SystemTool;
 import com.github.odiszapc.nginxparser.NgxBlock;
 import com.github.odiszapc.nginxparser.NgxConfig;
 import com.github.odiszapc.nginxparser.NgxDumper;
-import com.github.odiszapc.nginxparser.NgxEntry;
 import com.github.odiszapc.nginxparser.NgxParam;
 
 import cn.craccd.sqlHelper.bean.Sort;
@@ -64,11 +64,20 @@ public class ConfService {
 
 		String nginxPath = settingService.get("nginxPath");
 		try {
-			ClassPathResource resource = new ClassPathResource("nginxOrg.conf");
-			InputStream inputStream = resource.getInputStream();
+//			ClassPathResource resource = new ClassPathResource("nginxOrg.conf");
+//			InputStream inputStream = resource.getInputStream();
 
-			NgxConfig ngxConfig = NgxConfig.read(inputStream);
+			NgxConfig ngxConfig = new NgxConfig();
 
+			// 获取基本参数
+			List<Basic> basicList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Basic.class);
+			for (Basic basic : basicList) {
+				NgxParam ngxParam = new NgxParam();
+				ngxParam.addValue(basic.getName().trim() + " " + basic.getValue().trim());
+				ngxConfig.addEntry(ngxParam);
+			}
+						
+						
 			// 获取http
 			List<Http> httpList = sqlHelper.findAll(new Sort("name", Direction.DESC), Http.class);
 			boolean hasHttp = false;
@@ -165,7 +174,8 @@ public class ConfService {
 						ngxBlockServer.addEntry(ngxParam);
 
 						ngxParam = new NgxParam();
-						ngxParam.addValue("ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3");
+//						ngxParam.addValue("ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3");
+						ngxParam.addValue("ssl_protocols TLSv1 TLSv1.1 TLSv1.2");
 						ngxBlockServer.addEntry(ngxParam);
 					}
 
@@ -234,7 +244,7 @@ public class ConfService {
 						ngxBlockLocation.addValue("location");
 						ngxBlockLocation.addValue(location.getPath());
 
-						if (location.getRootType().equals("alias")) {
+						if (location.getRootType() != null && location.getRootType().equals("alias")) {
 							ngxParam = new NgxParam();
 							ngxParam.addValue("alias " + location.getRootPath());
 							ngxBlockLocation.addEntry(ngxParam);
@@ -250,6 +260,11 @@ public class ConfService {
 							ngxBlockLocation.addEntry(ngxParam);
 						}
 					
+					} else if (location.getType() == 3) { // 空白location
+						
+						ngxBlockLocation.addValue("location");
+						ngxBlockLocation.addValue(location.getPath());
+						
 					}
 
 					// 自定义参数
@@ -408,7 +423,7 @@ public class ConfService {
 	}
 
 	private void setSameParam(Param param, NgxBlock ngxBlock) {
-		// 不再删除相同名称的参数
+		//不再删除相同名称的参数
 //		for (NgxEntry ngxEntry : ngxBlock.getEntries()) {
 //			if (ngxEntry instanceof NgxParam) {
 //				NgxParam ngxParam = (NgxParam) ngxEntry;

@@ -16,9 +16,9 @@ public class StreamService {
 	@Autowired
 	SqlHelper sqlHelper;
 
-	public boolean hasName(String name) {
-		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("name", name), Stream.class) > 0;
-	}
+//	public boolean hasName(String name) {
+//		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("name", name), Stream.class) > 0;
+//	}
 	
 	
 }

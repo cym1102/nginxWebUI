@@ -6,29 +6,25 @@ import cn.craccd.sqlHelper.config.Table;
 
 @Table
 public class Http extends BaseModel {
-	@SingleIndex(unique = true)
 	String name;
 	String value;
 	String unit;
 
 	public Http() {
-		
-	}
-	
-	
-	public String getUnit() {
-		return unit;
-	}
 
-
-	public void setUnit(String unit) {
-		this.unit = unit;
 	}
-
 
 	public Http(String name, String value) {
 		this.name = name;
 		this.value = value;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
 	}
 
 	public String getName() {

@@ -8,7 +8,7 @@ public class Location extends BaseModel {
 	String serverId;
 
 	String path; // 监控路径
-	Integer type; // 0 http 1 root 2 负载均衡
+	Integer type; // 0 http 1 root 2 负载均衡 3 空白
 	String locationParamJson; // 额外参数
 
 	String value; // http代理

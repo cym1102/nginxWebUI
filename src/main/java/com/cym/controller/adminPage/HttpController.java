@@ -43,9 +43,6 @@ public class HttpController extends BaseController {
 	@RequestMapping("addOver")
 	@ResponseBody
 	public JsonResult addOver(Http http) {
-		if (StrUtil.isEmpty(http.getId()) && httpService.hasName(http.getName())) {
-			return renderError("名称已存在");
-		}
 		sqlHelper.insertOrUpdate(http);
 
 		return renderSuccess();

@@ -22,7 +22,7 @@ $(function() {
 		count : page.count, // 总记录数
 		curr : page.curr, // 起始页
 		limit : page.limit, // 每页记录数
-		layout : [ 'prev', 'page', 'next',  'skip' ],
+		layout : ['count', 'prev', 'page', 'next',  'skip' ,'limit'],
 		jump : function(obj, first) {
 			// 首次不执行
 			if (!first) {

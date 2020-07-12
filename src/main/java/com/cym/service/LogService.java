@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,8 @@ public class LogService {
 	JdbcTemplate jdbcTemplate;
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+
 	
 	@Transactional
 	public DataGroup buildDataGroup(String path) {
@@ -145,9 +149,7 @@ public class LogService {
 	private void saveLog(DataGroup dataGroup, String path) {
 		Log log = new Log();
 		File file = new File(path);
-		DateTime date = DateUtil.parse(file.getName().replace("access.", "").replace(".zip", ""), "yyyy-MM-dd_HH-mm-ss");
-
-		log.setDate(DateUtil.format(date, "yyyy-MM-dd"));
+		log.setDate(file.getName().replace("access.", "").replace(".zip", ""));
 		log.setJson(JSONUtil.toJsonStr(dataGroup));
 		log.setPath(path);
 		

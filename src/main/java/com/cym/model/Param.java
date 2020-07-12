@@ -1,6 +1,7 @@
 package com.cym.model;
 
 import cn.craccd.sqlHelper.bean.BaseModel;
+import cn.craccd.sqlHelper.config.InitValue;
 import cn.craccd.sqlHelper.config.Table;
 
 @Table
@@ -11,7 +12,7 @@ public class Param extends BaseModel {
 	String name;
 	String value;
 
-	
+
 	public String getUpstreamId() {
 		return upstreamId;
 	}

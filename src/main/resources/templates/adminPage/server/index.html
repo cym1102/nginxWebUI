@@ -19,7 +19,7 @@
 	padding-right:5px;
 	background-color: #CFFFBF;
 	
-	max-width:80px;
+	max-width:100px;
 	
 	white-space:nowrap;
 	text-overflow:ellipsis;
@@ -86,6 +86,20 @@
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加反向代理</button>
 						</div>
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-input-inline" onclick="openImport()">导入反向代理(beta)</button>
+						</div>
+						
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-normal" onclick="testPort()">检查端口占用</button>
+						</div>
+							
+						<div class="layui-inline">
+							<input type="text" name="keywords" class="layui-input" value="${keywords}">
+						</div>
+					
+						<button type="button" class="layui-btn" onclick="search()">搜索</button>
+						
 						
 						<input type="hidden" name="sort" id="sort" value="${sort}">
 						<input type="hidden" name="direction" id="direction" value="${direction}">
@@ -143,7 +157,7 @@
 									<input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="启用|停用" lay-skin="switch" ${(ext.server.enable)?string('checked','')}>
 								</td>
 								<td>
-									<button type="button" class="layui-btn layui-btn-sm" onclick="edit('${ext.server.id}')">编辑</button>
+									<button type="button" class="layui-btn layui-btn-sm" onclick="edit('${ext.server.id}', false)">编辑</button>
 									<button type="button" class="layui-btn layui-btn-sm" onclick="clone('${ext.server.id}')">克隆</button>
 									<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.server.id}')">删除</button>
 									
@@ -282,7 +296,7 @@
 
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-sm" style="margin-left: 195px;" onclick="serverParam()">设置额外参数</button>
-					<input type="hidden" id="serverParamJson" name="serverParamJson" value="">
+					<textarea style="display: none;" id="serverParamJson" name="serverParamJson"></textarea>
 				</div>
 					
 				<div class="layui-form-item">
@@ -374,6 +388,21 @@
 					<button type="button" class="layui-btn layui-btn-normal" onclick="selectCertOver()">提交</button>
 					<button type="button" class="layui-btn" onclick="layer.close(certIndex)">关闭</button>
 				</div>
+			</div>
+		</div>
+		<!-- 选择导入文件弹出框 -->
+		<div class="layui-form" id="importDiv" style="padding: 15px; display: none">
+			<div class="layui-form-item">
+				<div class="layui-input-inline">
+					<input type="text" id="nginxPath" name="nginxPath" class="layui-input" placeholder="文件路径" >
+				</div>
+				<div class="layui-input-inline">
+					<i class="layui-icon layui-icon-export" onclick="selectRootCustom('nginxPath')"></i>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<button type="button" class="layui-btn layui-btn-normal" onclick="importServer()">导入反向代理</button>
+				<button type="button" class="layui-btn" onclick="layer.close(importIndex)">关闭</button>
 			</div>
 		</div>
 	</div>

@@ -1,11 +1,15 @@
 package com.cym.controller.adminPage;
 
+import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import cn.hutool.core.io.FileUtil;
+import com.cym.service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,8 +26,10 @@ import com.cym.service.ServerService;
 import com.cym.service.UpstreamService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
+import com.cym.utils.TelnetUtils;
 
 import cn.craccd.sqlHelper.bean.Page;
+import cn.hutool.core.util.EscapeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
@@ -36,10 +42,14 @@ public class ServerController extends BaseController {
 	UpstreamService upstreamService;
 	@Autowired
 	ParamService paramService;
+	@Autowired
+	SettingService settingService;
+	@Autowired
+	private Environment env;
 
 	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String sort, String direction) {
-		page = serverService.search(page, sort, direction);
+	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String sort, String direction, String keywords) {
+		page = serverService.search(page, sort, direction, keywords);
 
 		List<ServerExt> exts = new ArrayList<ServerExt>();
 		for (Server server : page.getRecords(Server.class)) {
@@ -55,7 +65,6 @@ public class ServerController extends BaseController {
 				Upstream upstream = sqlHelper.findById(server.getProxyUpstreamId(), Upstream.class);
 				serverExt.setLocationStr("负载均衡: " + (upstream != null ? upstream.getName() : ""));
 			}
-
 
 			exts.add(serverExt);
 		}
@@ -75,6 +84,8 @@ public class ServerController extends BaseController {
 		modelAndView.addObject("wwwList", sqlHelper.findAll(Www.class));
 		modelAndView.addObject("sort", sort);
 		modelAndView.addObject("direction", direction);
+
+		modelAndView.addObject("keywords", keywords);
 		modelAndView.setViewName("/adminPage/server/index");
 		return modelAndView;
 	}
@@ -93,6 +104,8 @@ public class ServerController extends BaseController {
 					str.add("<span class='path'>" + location.getPath() + "</span><span class='value'>http://" + upstream.getName()
 							+ (location.getUpstreamPath() != null ? location.getUpstreamPath() : "") + "</span>");
 				}
+			} else if (location.getType() == 3) {
+				str.add("<span class='path'>" + location.getPath() + "</span>");
 			}
 
 		}
@@ -106,7 +119,11 @@ public class ServerController extends BaseController {
 		List<Location> locations = JSONUtil.toList(JSONUtil.parseArray(locationJson), Location.class);
 
 		if (server.getProxyType() == 0) {
-			serverService.addOver(server, serverParamJson, locations);
+			try {
+				serverService.addOver(server, serverParamJson, locations);
+			} catch (Exception e) {
+				return renderError(e.getMessage());
+			}
 		} else {
 			serverService.addOverTcp(server, serverParamJson);
 		}
@@ -130,10 +147,12 @@ public class ServerController extends BaseController {
 		serverExt.setServer(server);
 		List<Location> list = serverService.getLocationByServerId(id);
 		for (Location location : list) {
-			location.setLocationParamJson(paramService.getJsonByTypeId(location.getId(), "location"));
+			String json = paramService.getJsonByTypeId(location.getId(), "location");
+			location.setLocationParamJson(json != null ? json : null);
 		}
 		serverExt.setLocationList(list);
-		serverExt.setParamJson(paramService.getJsonByTypeId(server.getId(), "server"));
+		String json = paramService.getJsonByTypeId(server.getId(), "server");
+		serverExt.setParamJson(json != null ? json : null);
 
 		return renderSuccess(serverExt);
 	}
@@ -152,6 +171,61 @@ public class ServerController extends BaseController {
 		serverService.clone(id);
 
 		return renderSuccess();
+	}
+
+	@RequestMapping("importServer")
+	@ResponseBody
+	public JsonResult importServer(String nginxPath) {
+
+//		if ("dev".equals(env.getActiveProfiles()[0])) {
+//			nginxPath= "C:\\Users\\pain\\Desktop\\default";
+//		}
+//
+//		if (nginxPath == null) {
+//			nginxPath = settingService.get("nginxPath");
+//		}
+		if (!FileUtil.exist(nginxPath)) {
+			return renderError("目标文件不存在");
+		}
+
+		try {
+			serverService.importServer(nginxPath);
+			return renderSuccess("导入成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return renderError("导入失败：" + e.getMessage());
+		}
+	}
+
+	@RequestMapping("testPort")
+	@ResponseBody
+	public JsonResult testPort() {
+		List<Server> servers = sqlHelper.findAll(Server.class);
+
+		List<String> ips = new ArrayList<>();
+		for (Server server : servers) {
+			String ip = "";
+			String port = "";
+			if (server.getListen().contains(":")) {
+				ip = server.getListen().split(":")[0];
+				port = server.getListen().split(":")[1];
+			} else {
+				ip = "127.0.0.1";
+				port = server.getListen();
+			}
+
+			if (TelnetUtils.isRunning(ip, Integer.parseInt(port)) && !ips.contains(server.getListen())) {
+				ips.add(server.getListen());
+			}
+		}
+
+		if (ips.size() == 0) {
+			return renderSuccess();
+		} else {
+			return renderError("以下端口被占用: " + StrUtil.join(" , ", ips));
+		}
+
 	}
 
 }

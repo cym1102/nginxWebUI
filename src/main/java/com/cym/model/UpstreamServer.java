@@ -1,6 +1,7 @@
 package com.cym.model;
 
 import cn.craccd.sqlHelper.bean.BaseModel;
+import cn.craccd.sqlHelper.config.InitValue;
 import cn.craccd.sqlHelper.config.Table;
 
 @Table
@@ -13,10 +14,18 @@ public class UpstreamServer extends BaseModel {
 	Integer failTimeout; // 失败超时
 	Integer maxFails; // 失败次数
 	
-	String status; // 状态
+	String status; // 状态策略
+	
+	@InitValue("0")
+	Integer monitorStatus;// 监控状态 0 不通 1
 	
 	
-	
+	public Integer getMonitorStatus() {
+		return monitorStatus;
+	}
+	public void setMonitorStatus(Integer monitorStatus) {
+		this.monitorStatus = monitorStatus;
+	}
 	public Integer getFailTimeout() {
 		return failTimeout;
 	}

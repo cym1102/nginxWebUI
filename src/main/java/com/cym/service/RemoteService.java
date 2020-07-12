@@ -12,6 +12,7 @@ import com.cym.model.Remote;
 
 import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
+import cn.craccd.sqlHelper.utils.ConditionWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
@@ -57,6 +58,25 @@ public class RemoteService {
 		}
 
 		return sqlHelper.findListByQuery(conditionAndWrapper, Remote.class);
+	}
+
+	public List<Remote> getMonitorRemoteList() {
+		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq("monitor", 1), Remote.class);
+	}
+
+	public boolean hasSame(Remote remote) {
+		Long count = 0l;
+		if (StrUtil.isEmpty(remote.getId())) {
+			count = sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("ip", remote.getIp()).eq("port", remote.getPort()), Remote.class);
+		} else {
+			count = sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("ip", remote.getIp()).eq("port", remote.getPort()).ne("id", remote.getId()), Remote.class);
+		}
+		
+		if (count > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

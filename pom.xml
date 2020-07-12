@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cym</groupId>
 	<artifactId>nginxWebUI</artifactId>
-	<version>1.4.8</version>
+	<version>1.5.9</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -49,8 +49,15 @@
 		<dependency>
 			<groupId>cn.hutool</groupId>
 			<artifactId>hutool-all</artifactId>
-			<version>5.3.7</version>
+			<version>5.3.8</version>
 		</dependency>
+
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -85,22 +92,6 @@
 				</configuration>
 			</plugin>
 
-		<!-- 	<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifestEntries>
-							项目版本号
-							<Project-Version>${project.version}</Project-Version>
-							buildnumber插件提供的 SCM(git/svn等)版本号
-							<Scm-Version>${buildNumber}</Scm-Version>
-							时间戳
-							<Timestamp>${maven.build.timestamp}</Timestamp>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin> -->
 		</plugins>
 	</build>
 

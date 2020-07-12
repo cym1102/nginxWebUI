@@ -65,6 +65,29 @@ $(function(){
 		});
 	})
 	
+	form.on('switch(monitor)', function(data){
+		  $.ajax({
+				type : 'POST',
+				url : ctx + '/adminPage/remote/setMonitor',
+				data : {
+					id : data.value,
+					monitor : data.elem.checked?1:0
+				},
+				dataType : 'json',
+				success : function(data) {
+				
+					if (data.success) {
+						//location.reload();
+					} else {
+						layer.msg(data.msg);
+					}
+				},
+				error : function() {
+					alert("出错了,请联系技术人员!");
+				}
+		});
+	});   
+	
 	
 	layui.config({
 		base: ctx + 'lib/layui/exts/treeTable/'
@@ -97,16 +120,12 @@ $(function(){
 									}
 								}
 							},{
-								key: 'protocol',
-								title : '协议'
-							},{
-								key: 'ip',
-								title : 'ip'
-							},{
-								key: 'port',
-								title : '端口',
+								title : '地址',
 								template : function(remote) {
-									return remote.port != null?remote.port:"";
+									if(remote.type == 0 && remote.id!='本地'){
+										return remote.protocol + "://" + remote.ip + ":" + remote.port;
+									}
+									return "";
 								}
 							},{
 								key: 'version',
@@ -139,6 +158,15 @@ $(function(){
 										return `<span class="red">掉线</span>`
 									}
 									
+									return "";
+								}
+							},{	
+								title : '加入监控',
+								template : function(remote) {
+									if(remote.type == 0){
+										var checked = remote.monitor==1?'checked':'';
+										return `<input type="checkbox" name="switch" lay-filter="monitor" value="${remote.id}" lay-text="开启|关闭" lay-skin="switch" ${checked}>`;
+									}
 									return "";
 								}
 							},{
@@ -196,7 +224,7 @@ function add() {
 	$("#protocol").val("http"); 
 	$("#name").val(""); 
 	$("#pass").val(""); 
-	//$("#parentId option:first").prop("checked", true);
+	$("#monitor option:first").prop("checked", true);
 	parentId.setValue([""]);
 	
 	showWindow("添加远程服务器");
@@ -319,7 +347,7 @@ function edit(id) {
 				$("#port").val(remote.port); 
 				$("#protocol").val(remote.protocol); 
 				$("#descr").val(remote.descr); 
-				//$("#parentId").val(remote.parentId); 
+				$("#monitor").val(remote.monitor); 
 				parentId.setValue([remote.parentId]);
 				
 				form.render();
@@ -666,4 +694,97 @@ function delGroup(id){
 		});
 	}
 	
+}
+
+
+function nginxMonitor(){
+	
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/remote/nginxStatus',
+		dataType : 'json',
+		success : function(data) {
+			if (data.success) {
+				$("#mail").val(data.obj.mail);
+				$("#nginxMonitor").val(data.obj.nginxMonitor);
+				
+				form.render();
+				layer.open({
+					type : 1,
+					title : "nginx监控服务",
+					area : [ '650px', '300px' ], // 宽高
+					content : $('#nginxDiv')
+				});
+			}else{
+				layer.msg(data.msg)
+			}
+		},
+		error : function() {
+			layer.closeAll();
+			alert("出错了,请联系技术人员!");
+		}
+	});
+}
+
+function nginxOver(){
+		var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;                
+		if ($("#mail").val() == '' || !myreg.test($("#mail").val())) {                    
+			alert("邮箱格式不正确");               
+			return;                
+		}
+		
+		$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/remote/nginxOver',
+		data : {
+			mail : $("#mail").val(),
+			nginxMonitor : $("#nginxMonitor").val()
+		},
+		dataType : 'json',
+		success : function(data) {
+			if (data.success) {
+				location.reload();
+			}else{
+				layer.msg(data.msg)
+			}
+		},
+		error : function() {
+			layer.closeAll();
+			alert("出错了,请联系技术人员!");
+		}
+	});
+}
+
+
+
+var loadIndex;
+function testMail(){
+	if(confirm("是否就行测试发送?")){
+		var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;                
+		if ($("#mail").val() == '' || !myreg.test($("#mail").val())) {                    
+			alert("邮箱格式不正确");               
+			return;                
+		}
+		
+		loadIndex = layer.load();
+		$.ajax({
+			type: 'POST',
+			url: ctx + 'adminPage/admin/testMail',
+			data: {
+				mail: $("#mail").val(),
+			},
+			dataType: 'json',
+			success: function(data) {
+				layer.close(loadIndex);
+				if (data.success) {
+					layer.msg("发送成功");
+				} else {
+					layer.msg(data.msg);
+				}
+			},
+			error: function() {
+				alert("出错了,请联系技术人员!");
+			}
+		});
+	}
 }

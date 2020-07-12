@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import com.cym.model.Basic;
 import com.cym.model.Http;
 import com.cym.service.SettingService;
 import com.cym.utils.SystemTool;
@@ -45,8 +46,20 @@ public class InitConfig {
 
 	@PostConstruct
 	public void init() throws IOException {
+		// 初始化base值
+		Long count = sqlHelper.findAllCount(Basic.class);
+		if (count == 0) {
+			List<Basic> basics = new ArrayList<Basic>();
+			basics.add(new Basic("worker_processes", "auto", 0));
+			basics.add(new Basic("events", "{\r\n" + 
+					"    worker_connections  1024;\r\n" + 
+					"}", 1));
 
-		Long count = sqlHelper.findAllCount(Http.class);
+			sqlHelper.insertAll(basics);
+		}
+				
+		// 初始化http值
+		count = sqlHelper.findAllCount(Http.class);
 		if (count == 0) {
 			List<Http> https = new ArrayList<Http>();
 			https.add(new Http("include", "mime.types"));
@@ -95,11 +108,11 @@ public class InitConfig {
 			// 找寻nginx配置文件
 			logger.info("----------------find nginx.conf--------------");
 			String nginxPath = settingService.get("nginxPath");
-			
+
 			if (StrUtil.isEmpty(nginxPath)) {
 				try {
-					// 判断是否是容器中 
-					if (FileUtil.exist("/etc/nginx/nginx.conf") && FileUtil.readUtf8String("/etc/nginx/nginx.conf").contains("include " + home + "nginx.conf")) {
+					// 判断是否是容器中
+					if (inDocker()) {
 						logger.info("----------------release nginx.conf--------------");
 						// 释放nginxOrg.conf
 						nginxPath = home + "nginx.conf";
@@ -107,19 +120,29 @@ public class InitConfig {
 						InputStream inputStream = resource.getInputStream();
 						FileUtil.writeFromStream(inputStream, nginxPath);
 						settingService.set("nginxPath", nginxPath);
-						
+
 						// 设置nginx执行文件
 						settingService.set("nginxExe", "nginx");
-						
-						// 启动nginx
-						RuntimeUtil.exec("nginx");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 
-
+			// 在容器中,尝试启动nginx;
+			if (inDocker()) {
+				// 启动nginx
+				RuntimeUtil.exec("nginx");
+			}
 		}
 	}
+
+	/**
+	 * 是否在docker中
+	 * @return
+	 */
+	private Boolean inDocker() {
+		return FileUtil.exist("/etc/nginx/nginx.conf") && FileUtil.readUtf8String("/etc/nginx/nginx.conf").contains("include " + home + "nginx.conf");
+	}
+
 }

@@ -37,9 +37,6 @@ public class StreamController extends BaseController {
 	@RequestMapping("addOver")
 	@ResponseBody
 	public JsonResult addOver(Stream stream)  {
-		if(StrUtil.isEmpty(stream.getId()) && streamService.hasName(stream.getName())) {
-			return renderError("名称已存在");
-		}
 		sqlHelper.insertOrUpdate(stream);
 
 		return renderSuccess();

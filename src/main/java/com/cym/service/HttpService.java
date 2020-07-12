@@ -21,9 +21,9 @@ public class HttpService {
 	@Autowired
 	SqlHelper sqlHelper;
 
-	public boolean hasName(String name) {
-		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("name", name), Http.class) > 0;
-	}
+//	public boolean hasName(String name) {
+//		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("name", name), Http.class) > 0;
+//	}
 
 	public void setAll(List<Http> https) {
 		for (Http http : https) {

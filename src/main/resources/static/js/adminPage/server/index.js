@@ -71,16 +71,25 @@ function checkType(type,id){
 		$("#" + id + " span[name='valueSpan']").show();
 		$("#" + id + " span[name='rootPathSpan']").hide();
 		$("#" + id + " span[name='upstreamSelectSpan']").hide();
+		$("#" + id + " span[name='blankSpan']").hide();
 	} 
 	if (type == 1) {
 		$("#" + id + " span[name='valueSpan']").hide();
 		$("#" + id + " span[name='rootPathSpan']").show();
 		$("#" + id + " span[name='upstreamSelectSpan']").hide();
+		$("#" + id + " span[name='blankSpan']").hide();
 	}
 	if (type == 2) {
 		$("#" + id + " span[name='valueSpan']").hide();
 		$("#" + id + " span[name='rootPathSpan']").hide();
 		$("#" + id + " span[name='upstreamSelectSpan']").show();
+		$("#" + id + " span[name='blankSpan']").hide();
+	} 
+	if (type == 3) {
+		$("#" + id + " span[name='valueSpan']").hide();
+		$("#" + id + " span[name='rootPathSpan']").hide();
+		$("#" + id + " span[name='upstreamSelectSpan']").hide();
+		$("#" + id + " span[name='blankSpan']").show();
 	} 
 }
 
@@ -203,8 +212,8 @@ function addOver() {
 	server.rewrite = $("#rewrite").val();
 	server.http2 = $("#http2").val();
 	
-	var serverParamJson =  $("#serverParamJson").val();
-
+	var serverParamJson = $("#serverParamJson").val();
+	
 	var locations = [];
 	
 	$(".itemList").children().each(function(){
@@ -217,7 +226,7 @@ function addOver() {
 		location.rootPath = $(this).find("input[name='rootPath']").val();
 		location.rootPage = $(this).find("input[name='rootPage']").val();
 		location.rootType = $(this).find("select[name='rootType']").val();
-		location.locationParamJson =  $(this).find("input[name='locationParamJson']").val();
+		location.locationParamJson =  $(this).find("textarea[name='locationParamJson']").val();
 		
 		locations.push(location);
 	})
@@ -244,7 +253,7 @@ function addOver() {
 	});
 }
 
-function edit(id) {
+function edit(id,clone) {
 	$("#id").val(id);
 
 	$.ajax({
@@ -258,7 +267,12 @@ function edit(id) {
 			if (data.success) {
 				
 				var server = data.obj.server;
-				$("#id").val(server.id);
+				if(!clone){
+					$("#id").val(server.id);
+				}else{
+					$("#id").val("");
+				}
+				
 				if(server.listen.indexOf(":") > -1){
 					$("#ip").val(server.listen.split(":")[0]);
 					$("#listen").val(server.listen.split(":")[1]);
@@ -275,7 +289,7 @@ function edit(id) {
 				$("#keyPath").html(server.key);
 				$("#proxyType").val(server.proxyType);
 				$("#proxyUpstreamId").val(server.proxyUpstreamId);
-				$("#serverParamJson").val(data.obj.paramJson.replace(/,/g,"%2C"));
+				$("#serverParamJson").val(data.obj.paramJson);
 				
 				if(server.rewrite != null){
 					$("#rewrite").val(server.rewrite);
@@ -299,7 +313,7 @@ function edit(id) {
 					var location = list[i];
 					var uuid = guid();
 					
-					location.locationParamJson = location.locationParamJson.replace(/,/g,"%2C");
+					location.locationParamJson = location.locationParamJson;
 					var html = buildHtml(uuid, location, upstreamSelect);
 						
 					$("#itemList").append(html);
@@ -371,11 +385,12 @@ function addItem(){
 function buildHtml(uuid, location, upstreamSelect){
 	if(location == null){
 		location = {
-			path : "",
+			path : "/",
 			type : "0",
 			locationParamJson : ""
 		};
 	}
+	
 	
 	var str = `<tr id='${uuid}'>
 				<td>
@@ -387,6 +402,7 @@ function buildHtml(uuid, location, upstreamSelect){
 							<option ${location.type=='0'?'selected':''} value="0">代理动态http</option>
 							<option ${location.type=='1'?'selected':''} value="1">代理静态html</option>
 							<option ${location.type=='2'?'selected':''} value="2">负载均衡</option>
+							<option ${location.type=='3'?'selected':''} value="3">空白location</option>
 						</select>
 					</div>
 				</td>
@@ -420,9 +436,13 @@ function buildHtml(uuid, location, upstreamSelect){
 					<span name="upstreamSelectSpan">
 					${upstreamSelect}
 					</span>
+					
+					<span name="blankSpan">
+					
+					</span>
 				</td> 
 				<td>
-					<input type="hidden" id="locationParamJson_${uuid}" name="locationParamJson" value='${location.locationParamJson}'>
+					<textarea style="display: none;" id="locationParamJson_${uuid}" name="locationParamJson" >${location.locationParamJson}</textarea>
 					<button type="button" class="layui-btn layui-btn-sm" onclick="locationParam('${uuid}')">设置额外参数</button>
 					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
 				</td>
@@ -463,7 +483,7 @@ function selectCertOver(){
 				$("#pem").val(cert.pem);
 				$("#pemPath").html(cert.pem);
 				$("#key").val(cert.key);
-				$("#keyPath").html(cert.pem);
+				$("#keyPath").html(cert.key);
 				
 				layer.close(certIndex);
 			} else {
@@ -497,7 +517,7 @@ function selectKey(){
 function serverParam(){
 	var json = $("#serverParamJson").val();
 	$("#targertId").val("serverParamJson");
-	var params = json!=''?JSON.parse(json.replace(/%2C/g,",")):[];
+	var params = json!=''?JSON.parse(json):[];
 	fillTable(params);
 	
 }
@@ -505,7 +525,7 @@ function serverParam(){
 function locationParam(uuid){
 	var json = $("#locationParamJson_" + uuid).val();
 	$("#targertId").val("locationParamJson_" + uuid);
-	var params = json!=''?JSON.parse(json.replace(/%2C/g,",")):[];
+	var params = json!=''?JSON.parse(json):[];
 	fillTable(params);
 }
 
@@ -565,6 +585,7 @@ function addParam(){
 
 
 function addParamOver(){
+	
 	var targertId = $("#targertId").val();
 	var params = [];
 	$("tr[name='param']").each(function(){
@@ -574,7 +595,7 @@ function addParamOver(){
 		
 		params.push(param);
 	})
-	$("#" + targertId).val(JSON.stringify(params).replace(/,/g,"%2C"));
+	$("#" + targertId).val(JSON.stringify(params));
 	
 	layer.close(paramIndex);
 }
@@ -608,21 +629,69 @@ function selectWww(id){
 
 function clone(id){
 	if(confirm("确认进行克隆?")){
+		edit(id, true);
+	}
+}
+
+
+function importServer() {
+	var formData = new FormData();
+	formData.append("nginxPath", $("#nginxPath").val());
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/server/importServer',
+		data : formData,
+		dataType : 'json',
+		processData: false,
+		contentType: false,
+		success : function(data) {
+			if (data.success) {
+				location.reload();
+			} else {
+				layer.msg(data.msg);
+			}
+		},
+		error : function() {
+			alert("出错了,请联系技术人员!");
+		}
+	});
+}
+
+var importIndex;
+function openImport() {
+	importIndex = layer.open({
+		type : 1,
+		title : "导入conf",
+		area : [ '500px', '300px' ], // 宽高
+		content : $('#importDiv')
+	});
+}
+// 选择系统文件
+function selectRootCustom(inputId){
+	rootSelect.selectOne(function callBack(val){
+		$("#" + inputId).val(val);
+	});
+}
+
+function testPort(){
+	if(confirm("是否测试全部监听的端口?")){
+		layer.load();
 		$.ajax({
 			type : 'POST',
-			url : ctx + '/adminPage/server/clone',
-			data : {
-				id : id
-			},
+			url : ctx + '/adminPage/server/testPort',
 			dataType : 'json',
+			processData: false,
+			contentType: false,
 			success : function(data) {
+				layer.closeAll();
 				if (data.success) {
-					location.reload();
+					layer.msg("没有端口被占用");
 				} else {
-					layer.msg(data.msg)
+					layer.alert(data.msg);
 				}
 			},
 			error : function() {
+				layer.closeAll();
 				alert("出错了,请联系技术人员!");
 			}
 		});

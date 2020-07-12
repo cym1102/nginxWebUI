@@ -34,6 +34,8 @@
 							<button type="button" class="layui-btn" onclick="cmdGroup()">批量命令</button>
 							
 							<button type="button" class="layui-btn layui-btn-normal" onclick="asycSelect()">同步服务器配置</button>
+							
+							<button type="button" class="layui-btn layui-btn-normal" onclick="nginxMonitor()">nginx监控服务</button>
 						</div>
 						
 						<div class="layui-inline">
@@ -45,7 +47,7 @@
 				</form>
 
 
-				<table class="layui-table" id="tree-table">
+				<table class="layui-table layui-form" id="tree-table">
 
 				</table>
 
@@ -106,6 +108,7 @@
 						<input type="password" name="pass" id="pass" class="layui-input">
 					</div>
 				</div>
+				
 
 				<div class="layui-form-item">
 					<label class="layui-form-label">分组</label>
@@ -178,6 +181,38 @@
 				</div>
 			</form>
 		</div>
+		
+		
+		<div class="layui-form" id="nginxDiv" style="padding: 15px; display: none">
+			<div class="layui-form-item">
+				<label class="layui-form-label">通知发送邮箱</label>
+				<div class="layui-input-inline">
+					<input type="text" name="mail" id="mail" class="layui-input">
+				</div>
+				<div class="layui-input-inline" style="width: auto;">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="showSelectMail()">设置SMTP</button>
+				</div>
+				<div class="layui-input-inline" style="width: auto;">
+					<button type="button" class="layui-btn" onclick="testMail()">测试发送</button>
+				</div>
+			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label">nginx监控服务</label>
+				<div class="layui-input-inline">
+					<select name="nginxMonitor" id="nginxMonitor">
+						<option value="false">关闭</option>
+						<option value="true">开启</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<button type="button" class="layui-btn layui-btn-normal" onclick="nginxOver()">确定</button>
+				<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+			</div>
+		</div>
+		
 
 
 		<div class="layui-form" id="cmdDiv" style="padding: 15px; display: none">
@@ -211,7 +246,9 @@
 
 	</div>
 
+	
 	<#include '/adminPage/script.html'/>
+	<#include '/adminPage/select_mail.html'/>
 	<script src="${ctx}/lib/auto-line-number/auto-line-number.js" type="text/javascript"></script>
 	<script src="${ctx}/js/adminPage/remote/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
