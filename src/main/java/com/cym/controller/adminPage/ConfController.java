@@ -33,7 +33,6 @@ import cn.hutool.json.JSONUtil;
 @Controller
 @RequestMapping("/adminPage/conf")
 public class ConfController extends BaseController {
-	final UpstreamController upstreamController;
 	final UpstreamService upstreamService;
 	final SettingService settingService;
 	final ServerService serverService;
@@ -45,9 +44,8 @@ public class ConfController extends BaseController {
 	@Value("${project.version}")
 	String currentVersion;
 
-	public ConfController(UpstreamController upstreamController, UpstreamService upstreamService, SettingService settingService, ServerService serverService, ConfService confService,
+	public ConfController( UpstreamService upstreamService, SettingService settingService, ServerService serverService, ConfService confService,
 			MainController mainController) {
-		this.upstreamController = upstreamController;
 		this.upstreamService = upstreamService;
 		this.settingService = settingService;
 		this.serverService = serverService;
@@ -101,7 +99,10 @@ public class ConfController extends BaseController {
 		if (!FileUtil.exist(nginxPath)) {
 			return renderError("目标文件不存在");
 		}
-
+		if (FileUtil.isDirectory(nginxPath)) {
+			return renderError("目标文件是文件夹，请重新选择");
+		}
+		
 		try {
 			confService.replace(nginxPath, nginxContent, subContent, subName);
 			return renderSuccess("替换成功，原文件已备份");
@@ -293,7 +294,6 @@ public class ConfController extends BaseController {
 	@RequestMapping(value = "loadOrg")
 	@ResponseBody
 	public JsonResult loadOrg(String nginxPath) {
-
 		String decompose = settingService.get("decompose");
 		ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"));
 
@@ -312,6 +312,10 @@ public class ConfController extends BaseController {
 
 			return renderSuccess(confExt);
 		} else {
+			if (FileUtil.isDirectory(nginxPath)) {
+				return renderError("目标文件是文件夹，请重新选择");
+			}
+			
 			return renderError("nginx.conf文件不存在");
 		}
 

@@ -84,13 +84,24 @@ public class AdminInterceptor implements HandlerInterceptor {
 			String body = buldBody(request.getParameterMap(), remote);
 			try {
 				String rs = HttpUtil.post(url, body);
-
-				rs = rs.replace(remote.getIp(), request.getServerName()).replace(":" + remote.getPort().toString(), ":" + request.getServerPort());
+				rs = rs.replace("'//" + remote.getIp() + ":" + remote.getPort() + "/'", //
+						"'//" + request.getServerName() + ":" + request.getServerPort() + "/'")//
+						.replace("//" + remote.getIp() + ":" + remote.getPort() + "/adminPage", //
+								"//" + request.getServerName() + ":" + request.getServerPort() + "/adminPage")//
+						.replace("//" + remote.getIp() + ":" + remote.getPort() + "/lib", //
+								"//" + request.getServerName() + ":" + request.getServerPort() + "/lib")//
+						.replace("//" + remote.getIp() + ":" + remote.getPort() + "/js", //
+								"//" + request.getServerName() + ":" + request.getServerPort() + "/js")//
+						.replace("//" + remote.getIp() + ":" + remote.getPort() + "/css", //
+								"//" + request.getServerName() + ":" + request.getServerPort() + "/css")//
+						.replace("//" + remote.getIp() + ":" + remote.getPort() + "/img", //
+								"//" + request.getServerName() + ":" + request.getServerPort() + "/img")//
+				;
 
 				response.setCharacterEncoding("utf-8");
 				response.setContentType("text/html;charset=utf-8");
-				
-				if(JSONUtil.isJson(rs)) {
+
+				if (JSONUtil.isJson(rs)) {
 					String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
 					response.addHeader("Content-Type", "application/octet-stream");
 					response.setHeader("content-disposition", "attachment;filename=" + URLEncoder.encode(date + ".json", "UTF-8")); // 设置文件名
@@ -107,7 +118,6 @@ public class AdminInterceptor implements HandlerInterceptor {
 					PrintWriter out = response.getWriter();
 					out.append(rs);
 				}
-		
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -118,6 +128,11 @@ public class AdminInterceptor implements HandlerInterceptor {
 		}
 
 		return true;
+	}
+	
+	
+	public static void main(String[] args) {
+		System.out.println("'//52.82.87.82:8080/'".replace("'", ""));
 	}
 
 	private String buldBody(Map<String, String[]> parameterMap, Remote remote) {
@@ -140,11 +155,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 	private String buildUrl(String ctx, HttpServletRequest request, Remote remote) {
 		String url = request.getRequestURL().toString().replace(ctx, remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/");
 
-//		url += "?creditKey=" + remote.getCreditKey();
-//		if (StrUtil.isNotEmpty(request.getQueryString())) {
-//			url += "&" + request.getQueryString();
-//		}
-		return url;
+		return url + "?jsrandom=" + System.currentTimeMillis();
 	}
 
 	private static String getCtx(String url) {

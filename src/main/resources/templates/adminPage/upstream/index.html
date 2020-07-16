@@ -12,7 +12,7 @@
 }
 
 .server {
-	width: 600px;
+	width: 100%;
 }
 
 .server tr:nth-child(even) {
@@ -21,6 +21,9 @@
 
 .server td {
 	padding: 5px;
+	text-align: center;
+	width: 16.66%;
+	height: 38px;
 }
 </style>
 </head>
@@ -57,7 +60,7 @@
 					</div>
 				</form>
 
-				<table class="layui-table layui-form">
+				<table class="layui-table layui-form" >
 					<thead>
 						<tr>
 							<th>转发类型</th>
@@ -75,7 +78,7 @@
 							<td>${ext.upstream.name}</td>
 							<td><#if ext.upstream.tactics==""> 默认 </#if> <#if ext.upstream.tactics=="ip_hash"> ip绑定(ip_hash) </#if> <#if ext.upstream.tactics=="least_conn"> 最少连接(least_conn) </#if> <#if
 									ext.upstream.tactics=="least_time"> 最短时间(least_time) </#if></td>
-							<td>
+							<td style="padding: 0px;">
 								<table class="server">${ext.serverStr}
 								</table>
 							</td>

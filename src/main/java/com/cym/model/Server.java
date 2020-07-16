@@ -8,8 +8,11 @@ import cn.craccd.sqlHelper.config.Table;
 public class Server extends BaseModel {
 	String serverName;
 	String listen;
+	@InitValue("0")
 	Integer rewrite; // 0否 1是
+	@InitValue("0")
 	Integer ssl; // 0 否 1是
+	@InitValue("0")
 	Integer http2; // 0否 1是
 	String pem;
 	String key;

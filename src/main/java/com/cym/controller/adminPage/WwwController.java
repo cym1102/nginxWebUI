@@ -1,5 +1,6 @@
 package com.cym.controller.adminPage;
 
+import java.io.File;
 import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpSession;
@@ -19,6 +20,7 @@ import com.cym.utils.JsonResult;
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 
 @RequestMapping("/adminPage/www")
@@ -43,18 +45,26 @@ public class WwwController extends BaseController {
 		}
 
 		try {
-			String dir = InitConfig.home + "wwww/" + www.getName();
-			try {
-				ZipUtil.unzip(www.getDir(), dir);
-			} catch (Exception e) {
-				// 默认UTF-8下不能解压中文字符, 尝试使用gbk
-				ZipUtil.unzip(www.getDir(), dir, Charset.forName("GBK"));
-			}
-			
-			FileUtil.del(www.getDir());
-			www.setDir(dir);
+			if (StrUtil.isNotEmpty(www.getDir())) {
+				String dir = InitConfig.home + "wwww/" + www.getName();
+				try {
+					ZipUtil.unzip(www.getDir(), dir);
+				} catch (Exception e) {
+					// 默认UTF-8下不能解压中文字符, 尝试使用gbk
+					ZipUtil.unzip(www.getDir(), dir, Charset.forName("GBK"));
+				}
 
+				FileUtil.del(www.getDir());
+				www.setDir(dir);
+			} else {
+				// 修改名称, 也要修改文件夹名
+				Www wwwOrg = sqlHelper.findById(www.getId(), Www.class);
+				FileUtil.rename(new File(wwwOrg.getDir()),  InitConfig.home + "wwww/" + www.getName(), true);
+				
+				www.setDir( InitConfig.home + "wwww/" + www.getName());
+			}
 			sqlHelper.insertOrUpdate(www);
+			
 			return renderSuccess();
 
 		} catch (Exception e) {
@@ -69,9 +79,18 @@ public class WwwController extends BaseController {
 	public JsonResult del(String id) {
 		Www www = sqlHelper.findById(id, Www.class);
 		sqlHelper.deleteById(id, Www.class);
-		FileUtil.del(www.getDir());
+		if (StrUtil.isNotEmpty(www.getDir()) && www.getDir() != "/") {
+			FileUtil.del(www.getDir());
+		}
 
 		return renderSuccess();
 	}
 
+	@RequestMapping("detail")
+	@ResponseBody
+	public JsonResult detail(String id) {
+		Www www = sqlHelper.findById(id, Www.class);
+
+		return renderSuccess(www);
+	}
 }

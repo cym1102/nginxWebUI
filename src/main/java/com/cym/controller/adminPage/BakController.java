@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cym.config.InitConfig;
 import com.cym.config.ScheduleTask;
 import com.cym.model.Bak;
 import com.cym.service.SettingService;
@@ -53,16 +54,16 @@ public class BakController extends BaseController {
 	private List<Bak> getBakList() {
 		List<Bak> list = new ArrayList<Bak>();
 
-		String nginxPath = settingService.get("nginxPath");
-		if (StrUtil.isNotEmpty(nginxPath) && FileUtil.exist(nginxPath)) {
-			File dir = new File(nginxPath).getParentFile();
+		String bakPath = InitConfig.home + "/bak";
+		if (StrUtil.isNotEmpty(bakPath) && FileUtil.exist(bakPath)) {
+			File dir = new File(bakPath);
 
 			File[] fileList = dir.listFiles();
 			for (File file : fileList) {
 				if (file.getName().contains("nginx.conf") && file.getName().endsWith(".bak")) {
 					Bak bak = new Bak();
 					bak.setPath(file.getPath().replace("\\", "/"));
-					DateTime date = DateUtil.parse(file.getName().replace("nginx.conf", "").replace(".bak", ""), "yyyy-MM-dd_HH-mm-ss");
+					DateTime date = DateUtil.parse(file.getName().replace("nginx.conf.", "").replace(".bak", ""), "yyyy-MM-dd_HH-mm-ss");
 					bak.setTime(DateUtil.format(date, "yyyy-MM-dd HH:mm:ss"));
 
 					list.add(bak);
@@ -84,21 +85,13 @@ public class BakController extends BaseController {
 	@ResponseBody
 	public JsonResult replace(String path) {
 		String nginxPath = settingService.get("nginxPath");
-
-		String str = FileUtil.readString(path, Charset.forName("UTF-8"));
-
+		
 		if (StrUtil.isNotEmpty(nginxPath)) {
-			FileUtil.writeString(str, nginxPath, Charset.forName("UTF-8"));
-
-			if (FileUtil.exist(path.replace(".bak", ".zip"))) {
-				String confd = nginxPath.replace("nginx.conf", "conf.d/");
-				FileUtil.del(confd);
-				ZipUtil.unzip(path.replace(".bak", ".zip"));
-				if (FileUtil.exist(path.replace(".bak", ""))) {
-					FileUtil.rename(new File(path.replace(".bak", "")), confd, false, true);
-				}
-			}
-
+			File pathFile = new File(nginxPath);
+			
+			FileUtil.copy(path, nginxPath, true);
+			FileUtil.del(pathFile.getParent() + "/conf.d");
+			ZipUtil.unzip(path.replace(".bak", ".zip"), pathFile.getParent() + "/conf.d");
 			return renderSuccess();
 		} else {
 			return renderError("conf文件路径未配置");

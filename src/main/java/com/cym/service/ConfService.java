@@ -10,6 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cym.config.InitConfig;
 import com.cym.controller.adminPage.UpstreamController;
 import com.cym.ext.AsycPack;
 import com.cym.ext.ConfExt;
@@ -39,7 +40,6 @@ import cn.hutool.core.util.ZipUtil;
 
 @Service
 public class ConfService {
-	final UpstreamController upstreamController;
 	final UpstreamService upstreamService;
 	final SettingService settingService;
 	final ServerService serverService;
@@ -47,9 +47,8 @@ public class ConfService {
 	final ParamService paramService;
 	final SqlHelper sqlHelper;
 
-	public ConfService(UpstreamController upstreamController, UpstreamService upstreamService, SettingService settingService, ServerService serverService, LocationService locationService,
+	public ConfService(UpstreamService upstreamService, SettingService settingService, ServerService serverService, LocationService locationService,
 			ParamService paramService, SqlHelper sqlHelper) {
-		this.upstreamController = upstreamController;
 		this.upstreamService = upstreamService;
 		this.settingService = settingService;
 		this.serverService = serverService;
@@ -76,8 +75,7 @@ public class ConfService {
 				ngxParam.addValue(basic.getName().trim() + " " + basic.getValue().trim());
 				ngxConfig.addEntry(ngxParam);
 			}
-						
-						
+
 			// 获取http
 			List<Http> httpList = sqlHelper.findAll(new Sort("name", Direction.DESC), Http.class);
 			boolean hasHttp = false;
@@ -108,7 +106,7 @@ public class ConfService {
 				List<UpstreamServer> upstreamServers = upstreamService.getUpstreamServers(upstream.getId());
 				for (UpstreamServer upstreamServer : upstreamServers) {
 					ngxParam = new NgxParam();
-					ngxParam.addValue("server " + upstreamController.buildStr(upstreamServer, upstream.getProxyType()));
+					ngxParam.addValue("server " + buildNodeStr(upstreamServer, upstream.getProxyType()));
 					ngxBlockServer.addEntry(ngxParam);
 				}
 
@@ -254,17 +252,17 @@ public class ConfService {
 							ngxBlockLocation.addEntry(ngxParam);
 						}
 
-						if(StrUtil.isNotEmpty(location.getRootPage())) {
+						if (StrUtil.isNotEmpty(location.getRootPage())) {
 							ngxParam = new NgxParam();
 							ngxParam.addValue("index " + location.getRootPage());
 							ngxBlockLocation.addEntry(ngxParam);
 						}
-					
+
 					} else if (location.getType() == 3) { // 空白location
-						
+
 						ngxBlockLocation.addValue("location");
 						ngxBlockLocation.addValue(location.getPath());
-						
+
 					}
 
 					// 自定义参数
@@ -329,7 +327,7 @@ public class ConfService {
 				List<UpstreamServer> upstreamServers = upstreamService.getUpstreamServers(upstream.getId());
 				for (UpstreamServer upstreamServer : upstreamServers) {
 					ngxParam = new NgxParam();
-					ngxParam.addValue("server " + upstreamController.buildStr(upstreamServer, upstream.getProxyType()));
+					ngxParam.addValue("server " + buildNodeStr(upstreamServer, upstream.getProxyType()));
 					ngxBlockServer.addEntry(ngxParam);
 				}
 
@@ -374,7 +372,6 @@ public class ConfService {
 					ngxParam.addValue("proxy_pass " + upstream.getName());
 					ngxBlockServer.addEntry(ngxParam);
 				}
-
 
 				// 自定义参数
 				List<Param> paramList = paramService.getListByTypeId(server.getId(), "server");
@@ -422,18 +419,21 @@ public class ConfService {
 		return null;
 	}
 
-	private void setSameParam(Param param, NgxBlock ngxBlock) {
-		//不再删除相同名称的参数
-//		for (NgxEntry ngxEntry : ngxBlock.getEntries()) {
-//			if (ngxEntry instanceof NgxParam) {
-//				NgxParam ngxParam = (NgxParam) ngxEntry;
-//				if (ngxParam.toString().startsWith(param.getName()) && !param.getName().startsWith("deny") && !param.getName().startsWith("allow")) {
-//					ngxBlock.remove(ngxParam);
-//					break;
-//				}
-//			}
-//		}
+	public String buildNodeStr(UpstreamServer upstreamServer, Integer proxyType) {
+		String status = "";
+		if (!"none".equals(upstreamServer.getStatus())) {
+			status = upstreamServer.getStatus();
+		}
 
+		return upstreamServer.getServer() + ":" + upstreamServer.getPort() //
+				+ " weight=" + upstreamServer.getWeight() //
+				+ " fail_timeout=" + upstreamServer.getFailTimeout() + "s"//
+				+ " max_fails=" + upstreamServer.getMaxFails() //
+				+ " " + status;
+
+	}
+
+	private void setSameParam(Param param, NgxBlock ngxBlock) {
 		NgxParam ngxParam = new NgxParam();
 		ngxParam.addValue(param.getName().trim() + " " + param.getValue().trim());
 		ngxBlock.addEntry(ngxParam);
@@ -468,14 +468,15 @@ public class ConfService {
 	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName) {
 		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
 		// 备份主文件
-		FileUtil.copy(nginxPath, nginxPath + date + ".bak", true);
+		FileUtil.copy(nginxPath, InitConfig.home + "bak/nginx.conf."  + date + ".bak", true);
 		// 备份conf.d文件夹
 		String confd = nginxPath.replace("nginx.conf", "conf.d/");
 		if (!FileUtil.exist(confd)) {
 			FileUtil.mkdir(confd);
 		}
-		ZipUtil.zip(confd, nginxPath + date + ".zip");
+		ZipUtil.zip(confd, InitConfig.home + "bak/nginx.conf."  + date + ".zip");
 
+		
 		// 写入主文件
 		FileUtil.writeString(nginxContent, nginxPath, StandardCharsets.UTF_8);
 		String decompose = settingService.get("decompose");
@@ -560,7 +561,6 @@ public class ConfService {
 		sqlHelper.insertAll(asycPack.getUpstreamServerList());
 		sqlHelper.insertAll(asycPack.getStreamList());
 		sqlHelper.insertAll(asycPack.getParamList());
-
 
 		for (Server server : asycPack.getServerList()) {
 			if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getPemStr())) {

@@ -43,6 +43,12 @@ public class UpstreamController extends BaseController {
 
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String keywords) {
+		// 检测node
+		String upstreamMonitor = settingService.get("upstreamMonitor");
+		if ("true".equals(upstreamMonitor)) {
+			testNode();
+		}
+
 		page = upstreamService.search(page, keywords);
 
 		List<UpstreamExt> list = new ArrayList<UpstreamExt>();
@@ -60,7 +66,6 @@ public class UpstreamController extends BaseController {
 			list.add(upstreamExt);
 		}
 		page.setRecords(list);
-
 
 		modelAndView.addObject("page", page);
 		modelAndView.addObject("keywords", keywords);
@@ -86,7 +91,7 @@ public class UpstreamController extends BaseController {
 			}
 			monitorStatus += "</td>";
 		}
-		System.err.println(upstreamServer.getServer()+ ":" +upstreamServer.getMonitorStatus()); 
+		System.err.println(upstreamServer.getServer() + ":" + upstreamServer.getMonitorStatus());
 
 		return "<tr><td>" + upstreamServer.getServer() + ":" + upstreamServer.getPort() + "</td>"//
 				+ "<td>weight=" + upstreamServer.getWeight() + "</td>"//
@@ -105,6 +110,11 @@ public class UpstreamController extends BaseController {
 
 		if (StrUtil.isEmpty(upstream.getId())) {
 			Long count = upstreamService.getCountByName(upstream.getName());
+			if (count > 0) {
+				return renderError("与已有负载均衡重名");
+			}
+		}else {
+			Long count = upstreamService.getCountByNameWithOutId(upstream.getName(), upstream.getId());
 			if (count > 0) {
 				return renderError("与已有负载均衡重名");
 			}
@@ -166,19 +176,23 @@ public class UpstreamController extends BaseController {
 		settingService.set("mail", mail);
 		settingService.set("upstreamMonitor", upstreamMonitor);
 
-		if (upstreamMonitor.equals("true")) {
-			// 马上检测一次
-			List<UpstreamServer> upstreamServers = upstreamService.getAllServer();
-			for (UpstreamServer upstreamServer : upstreamServers) {
-				if (!TelnetUtils.isRunning(upstreamServer.getServer(), upstreamServer.getPort())) {
-					upstreamServer.setMonitorStatus(0);
-				} else {
-					upstreamServer.setMonitorStatus(1);
-				}
-
-				sqlHelper.updateById(upstreamServer);
-			}
-		}
 		return renderSuccess();
 	}
+
+	/**
+	 * 检测node
+	 */
+	private void testNode() {
+		List<UpstreamServer> upstreamServers = upstreamService.getAllServer();
+		for (UpstreamServer upstreamServer : upstreamServers) {
+			if (!TelnetUtils.isRunning(upstreamServer.getServer(), upstreamServer.getPort())) {
+				upstreamServer.setMonitorStatus(0);
+			} else {
+				upstreamServer.setMonitorStatus(1);
+			}
+
+			sqlHelper.updateById(upstreamServer);
+		}
+	}
+
 }

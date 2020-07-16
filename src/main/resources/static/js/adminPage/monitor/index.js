@@ -8,6 +8,7 @@ $(function(){
 	if($("#isInit").val() == 'false'){
 		layer.open({
 			type : 1,
+			closeBtn  :0,
 			title : "初始化nginx配置",
 			area : [ '750px', '400px' ], //宽高
 			content : $('#nginxGuideDiv')
