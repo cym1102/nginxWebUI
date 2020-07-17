@@ -16,7 +16,10 @@ import org.springframework.stereotype.Component;
 
 import com.cym.model.Basic;
 import com.cym.model.Http;
+import com.cym.model.Stream;
+import com.cym.service.HttpService;
 import com.cym.service.SettingService;
+import com.cym.service.StreamService;
 import com.cym.utils.SystemTool;
 
 import cn.craccd.sqlHelper.utils.SqlHelper;
@@ -35,6 +38,10 @@ public class InitConfig {
 
 	@Autowired
 	SettingService settingService;
+	@Autowired
+	HttpService httpService;
+	@Autowired
+	StreamService streamService;
 
 	@Autowired
 	SqlHelper sqlHelper;
@@ -50,20 +57,18 @@ public class InitConfig {
 		Long count = sqlHelper.findAllCount(Basic.class);
 		if (count == 0) {
 			List<Basic> basics = new ArrayList<Basic>();
-			basics.add(new Basic("worker_processes", "auto", 0));
-			basics.add(new Basic("events", "{\r\n" + 
-					"    worker_connections  1024;\r\n" + 
-					"}", 1));
+			basics.add(new Basic("worker_processes", "auto", 0l));
+			basics.add(new Basic("events", "{\r\n" + "    worker_connections  1024;\r\n" + "}", 1l));
 
 			sqlHelper.insertAll(basics);
 		}
-				
+
 		// 初始化http值
 		count = sqlHelper.findAllCount(Http.class);
 		if (count == 0) {
 			List<Http> https = new ArrayList<Http>();
-			https.add(new Http("include", "mime.types"));
-			https.add(new Http("default_type", "application/octet-stream"));
+			https.add(new Http("include", "mime.types", 0l));
+			https.add(new Http("default_type", "application/octet-stream", 1l));
 
 			sqlHelper.insertAll(https);
 		}
@@ -135,10 +140,29 @@ public class InitConfig {
 				RuntimeUtil.exec("nginx");
 			}
 		}
+
+		// 初始化http和stream的seq值
+		List<Http> https = sqlHelper.findAll(Http.class);
+		List<Stream> streams = sqlHelper.findAll(Stream.class);
+
+		for (Http http : https) {
+			if (http.getSeq() == null) {
+				http.setSeq(Long.parseLong(http.getId()));
+				sqlHelper.updateById(http);
+			}
+		}
+		for (Stream stream : streams) {
+			if (stream.getSeq() == null) {
+				stream.setSeq(Long.parseLong(stream.getId()));
+				sqlHelper.updateById(stream);
+			}
+		}
+
 	}
 
 	/**
 	 * 是否在docker中
+	 * 
 	 * @return
 	 */
 	private Boolean inDocker() {

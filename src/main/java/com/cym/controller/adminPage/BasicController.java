@@ -15,6 +15,7 @@ import com.cym.utils.JsonResult;
 
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
+import cn.hutool.core.util.StrUtil;
 
 @Controller
 @RequestMapping("/adminPage/basic")
@@ -34,8 +35,9 @@ public class BasicController extends BaseController {
 	@RequestMapping("addOver")
 	@ResponseBody
 	public JsonResult addOver(Basic base) {
-		base.setSeq(basicService.buildOrder());
-		
+		if (StrUtil.isEmpty(base.getId())) {
+			base.setSeq(basicService.buildOrder());
+		}
 		sqlHelper.insertOrUpdate(base);
 
 		return renderSuccess();

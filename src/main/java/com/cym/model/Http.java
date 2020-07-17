@@ -1,6 +1,7 @@
 package com.cym.model;
 
 import cn.craccd.sqlHelper.bean.BaseModel;
+import cn.craccd.sqlHelper.config.InitValue;
 import cn.craccd.sqlHelper.config.SingleIndex;
 import cn.craccd.sqlHelper.config.Table;
 
@@ -10,13 +11,24 @@ public class Http extends BaseModel {
 	String value;
 	String unit;
 
+	Long seq;
+
 	public Http() {
 
 	}
 
-	public Http(String name, String value) {
+	public Http(String name, String value, Long seq) {
 		this.name = name;
 		this.value = value;
+		this.seq = seq;
+	}
+
+	public Long getSeq() {
+		return seq;
+	}
+
+	public void setSeq(Long seq) {
+		this.seq = seq;
 	}
 
 	public String getUnit() {

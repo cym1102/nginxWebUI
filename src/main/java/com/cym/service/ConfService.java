@@ -77,7 +77,7 @@ public class ConfService {
 			}
 
 			// 获取http
-			List<Http> httpList = sqlHelper.findAll(new Sort("name", Direction.DESC), Http.class);
+			List<Http> httpList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Http.class);
 			boolean hasHttp = false;
 			NgxBlock ngxBlockHttp = new NgxBlock();
 			ngxBlockHttp.addValue("http");
@@ -300,7 +300,7 @@ public class ConfService {
 
 			// TCP转发
 			// 创建stream
-			List<Stream> streamList = sqlHelper.findAll(Stream.class);
+			List<Stream> streamList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
 			boolean hasStream = false;
 			NgxBlock ngxBlockStream = new NgxBlock();
 			ngxBlockStream.addValue("stream");
@@ -468,6 +468,7 @@ public class ConfService {
 	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName) {
 		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
 		// 备份主文件
+		FileUtil.mkdir(InitConfig.home + "bak");
 		FileUtil.copy(nginxPath, InitConfig.home + "bak/nginx.conf."  + date + ".bak", true);
 		// 备份conf.d文件夹
 		String confd = nginxPath.replace("nginx.conf", "conf.d/");

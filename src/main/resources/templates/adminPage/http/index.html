@@ -56,6 +56,9 @@ input[name='param']{
 							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${http.id}')">编辑</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${http.id}')">删除</button>
+								
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${http.id}', -1)">上移</button>
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${http.id}', 1)">下移</button>
 							</td>
 						</tr>
 						</#list>

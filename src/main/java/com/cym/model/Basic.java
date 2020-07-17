@@ -8,26 +8,25 @@ import cn.craccd.sqlHelper.config.Table;
 public class Basic extends BaseModel {
 	String name;
 	String value;
-	@InitValue("0")
-	Integer seq;
+	Long seq;
 
 
 	public Basic() {
 
 	}
 
-	public Basic(String name, String value, Integer seq) {
+	public Basic(String name, String value, Long seq) {
 		this.name = name;
 		this.value = value;
 		this.seq = seq;
 	}
 
 
-	public Integer getSeq() {
+	public Long getSeq() {
 		return seq;
 	}
 
-	public void setSeq(Integer seq) {
+	public void setSeq(Long seq) {
 		this.seq = seq;
 	}
 

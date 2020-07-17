@@ -24,10 +24,10 @@ import cn.hutool.core.util.StrUtil;
 public class StreamController extends BaseController {
 	@Autowired
 	StreamService streamService;
-	
+
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
-		List<Stream> streamList = sqlHelper.findAll(new Sort("name", Direction.ASC), Stream.class);
+		List<Stream> streamList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
 
 		modelAndView.addObject("streamList", streamList);
 		modelAndView.setViewName("/adminPage/stream/index");
@@ -36,7 +36,10 @@ public class StreamController extends BaseController {
 
 	@RequestMapping("addOver")
 	@ResponseBody
-	public JsonResult addOver(Stream stream)  {
+	public JsonResult addOver(Stream stream) {
+		if (StrUtil.isEmpty(stream.getId())) {
+			stream.setSeq(streamService.buildOrder());
+		}
 		sqlHelper.insertOrUpdate(stream);
 
 		return renderSuccess();
@@ -44,16 +47,23 @@ public class StreamController extends BaseController {
 
 	@RequestMapping("detail")
 	@ResponseBody
-	public JsonResult detail(String id)  {
+	public JsonResult detail(String id) {
 		return renderSuccess(sqlHelper.findById(id, Stream.class));
 	}
 
 	@RequestMapping("del")
 	@ResponseBody
-	public JsonResult del(String id)  {
+	public JsonResult del(String id) {
 		sqlHelper.deleteById(id, Stream.class);
-		
+
 		return renderSuccess();
 	}
 
+	@RequestMapping("setOrder")
+	@ResponseBody
+	public JsonResult setOrder(String id, Integer count) {
+		streamService.setSeq(id, count);
+
+		return renderSuccess();
+	}
 }
