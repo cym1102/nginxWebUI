@@ -17,14 +17,14 @@ public class BasicService {
 	@Autowired
 	SqlHelper sqlHelper;
 
-	public Integer buildOrder() {
+	public Long buildOrder() {
 
 		Basic basic = sqlHelper.findOneByQuery(new Sort("seq", Direction.DESC), Basic.class);
 		if (basic != null) {
 			return basic.getSeq() + 1;
 		}
 
-		return 0;
+		return 0l;
 	}
 
 	@Transactional
@@ -50,7 +50,7 @@ public class BasicService {
 
 			if (tagert != null) {
 				// 交换seq
-				Integer seq = tagert.getSeq();
+				Long seq = tagert.getSeq();
 				tagert.setSeq(basic.getSeq());
 				basic.setSeq(seq);
 

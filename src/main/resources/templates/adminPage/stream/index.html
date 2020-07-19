@@ -41,6 +41,9 @@
 							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${stream.id}')">编辑</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${stream.id}')">删除</button>
+								
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${stream.id}', -1)">上移</button>
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${stream.id}', 1)">下移</button>
 							</td>
 						</tr>
 						</#list>

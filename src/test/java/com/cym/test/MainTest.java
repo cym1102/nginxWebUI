@@ -1,5 +1,8 @@
 package com.cym.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -10,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.cym.NginxWebUI;
-import com.cym.model.MonitorInfo;
 import com.cym.service.MonitorService;
 
 import cn.craccd.sqlHelper.utils.SqlHelper;
@@ -33,12 +35,25 @@ public class MainTest {
 
 	@Test
 	public void testStartUp() throws InterruptedException {
-		
+
 	}
 
 	@AfterAll
 	static void after() {
 		System.out.println("--------------测试结束----------");
+	}
+
+	public static void main(String[] args) {
+		List<String> rs = new ArrayList<>();
+		rs.add("              total        used        free      shared  buff/cache   available");
+		rs.add("Mem:          32064        2662       21867           2        7535       28936");
+		rs.add("Swap:          8191           0        8191");
+
+		String[] lines = rs.get(1).replaceAll(" + ", " ").split(" ");
+
+		System.out.println(lines);
+		
+		
 	}
 
 }

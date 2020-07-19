@@ -74,9 +74,8 @@ public class ScheduleTask {
 		System.out.println("检查需要续签的证书");
 		long time = System.currentTimeMillis();
 		for (Cert cert : certList) {
-			if (cert.getMakeTime() != null && cert.getAutoRenew() == 1 && time - cert.getMakeTime() > TimeUnit.DAYS.toMillis(59)) {
-				System.out.println(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss") + " 开始续签证书:" + cert.getDomain());
-				// 大于60天的续签
+			// 大于50天的续签
+			if (cert.getMakeTime() != null && cert.getAutoRenew() == 1 && time - cert.getMakeTime() > TimeUnit.DAYS.toMillis(50)) {
 				certController.apply(cert.getId(), "renew");
 			}
 		}
@@ -120,7 +119,7 @@ public class ScheduleTask {
 	}
 
 	// 检查nginx运行
-	@Scheduled(cron = "0 0/2 * * * ?")
+	@Scheduled(cron = "0/30 * * * * ?")
 	public void nginxTasks() {
 		System.err.println("检查nginx运行");
 
@@ -163,7 +162,7 @@ public class ScheduleTask {
 	}
 
 	// 检查节点情况
-	@Scheduled(cron = "0 0/2 * * * ?")
+	@Scheduled(cron = "0/30 * * * * ?")
 	public void nodeTasks() {
 		System.err.println("检查节点情况");
 

@@ -13,7 +13,6 @@ $(function(){
 				layer.close(load);
 				// 上传完毕回调
 				if (res.success) {
-					debugger
 					var path = res.obj.split('/');
 					if(path[path.length-1].indexOf('.zip')==-1){
 						alert("只能上传zip文件");
@@ -45,6 +44,7 @@ function add() {
 	$("#name").val(""); 
 	$("#fileName").html(""); 
 	$("#dir").val(""); 
+	$("#zipDiv").show();
 	
 	showWindow("添加zip包");
 }
@@ -60,11 +60,10 @@ function showWindow(title){
 }
 
 function addOver() {
-	if($("#name").val() == '' || $("#dir").val() == ''){
+	if($("#id").val() == '' && ($("#name").val() == '' || $("#dir").val() == '')){
 		alert("未填写完整");
 		return;
 	}
-	
 	
 	$.ajax({
 		type : 'POST',
@@ -119,3 +118,32 @@ function copy(str){
     alert('复制成功');
 }
 
+function edit(id){
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/www/detail',
+		data : {
+			id : id
+		},
+		dataType : 'json',
+		success : function(data) {
+			if (data.success) {
+				var www = data.obj;
+				
+				$("#id").val(www.id); 
+				$("#name").val(www.name); 
+				$("#fileName").html(""); 
+				$("#dir").val(""); 
+				
+				$("#zipDiv").hide();
+				
+				showWindow("编辑");
+			}else{
+				layer.msg(data.msg)
+			}
+		},
+		error : function() {
+			alert("出错了,请联系技术人员!");
+		}
+	});
+}

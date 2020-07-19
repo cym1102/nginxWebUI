@@ -1,6 +1,7 @@
 package com.cym.service;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +29,7 @@ import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import org.springframework.util.StringUtils;
@@ -44,15 +46,15 @@ public class ServerService {
 
 	public Page search(Page page, String sortColum, String direction, String keywords) {
 		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper();
-		if(StrUtil.isNotEmpty(keywords)) {
+		if (StrUtil.isNotEmpty(keywords)) {
 			conditionAndWrapper.and(new ConditionOrWrapper().like("serverName", keywords.trim()).like("listen", keywords.trim()));
 		}
-		
+
 		Sort sort = null;
 		if (StrUtil.isNotEmpty(sortColum)) {
 			sort = new Sort(sortColum, "asc".equalsIgnoreCase(direction) ? Direction.ASC : Direction.DESC);
 		}
-		
+
 		page = sqlHelper.findPage(conditionAndWrapper, sort, page, Server.class);
 
 		return page;
@@ -70,30 +72,33 @@ public class ServerService {
 
 	@Transactional
 	public void addOver(Server server, String serverParamJson, List<Location> locations) throws Exception {
-		Server tmpServer = sqlHelper.findOneByQuery(new ConditionOrWrapper().eq("serverName", server.getServerName()), Server.class);
-		if (!StringUtils.isEmpty(server.getId())) {
-			if (tmpServer != null) {
-				if (!server.getId().equals(tmpServer.getId())) {
-					throw new Exception("serverName:" + tmpServer.getServerName() + " 已经存在");
-				}
-			}
-			// 修改操作
-			sqlHelper.insertOrUpdate(server);
-		} else {
-			// 新增
-			if (tmpServer != null) {
-				throw new Exception("serverName:" + tmpServer.getServerName() + " 已经存在");
-			}
-			sqlHelper.insertOrUpdate(server);
-		}
+//		Server tmpServer = sqlHelper.findOneByQuery(new ConditionOrWrapper().eq("serverName", server.getServerName()), Server.class);
+//		if (!StringUtils.isEmpty(server.getId())) {
+//			if (tmpServer != null) {
+//				if (!server.getId().equals(tmpServer.getId())) {
+//					throw new Exception("serverName:" + tmpServer.getServerName() + " 已经存在");
+//				}
+//			}
+//			// 修改操作
+//			sqlHelper.insertOrUpdate(server);
+//		} else {
+//			// 新增
+//			if (tmpServer != null) {
+//				throw new Exception("serverName:" + tmpServer.getServerName() + " 已经存在");
+//			}
+//			sqlHelper.insertOrUpdate(server);
+//		}
+
+		sqlHelper.insertOrUpdate(server);
+
 		List<Param> paramList = new ArrayList<Param>();
 		if (StrUtil.isNotEmpty(serverParamJson) && JSONUtil.isJson(serverParamJson)) {
 			paramList = JSONUtil.toList(JSONUtil.parseArray(serverParamJson), Param.class);
 		}
 		List<String> locationIds = sqlHelper.findIdsByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
 		sqlHelper.deleteByQuery(new ConditionOrWrapper().eq("serverId", server.getId()).in("locationId", locationIds), Param.class);
-		
-		 // 反向插入,保证列表与输入框对应
+
+		// 反向插入,保证列表与输入框对应
 		Collections.reverse(paramList);
 		for (Param param : paramList) {
 			param.setServerId(server.getId());
@@ -102,11 +107,11 @@ public class ServerService {
 
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
 
-		if (locations!=null) {
-			 // 反向插入,保证列表与输入框对应
+		if (locations != null) {
+			// 反向插入,保证列表与输入框对应
 			Collections.reverse(locations);
-			
-			for (Location location:locations) {
+
+			for (Location location : locations) {
 				location.setServerId(server.getId());
 
 				sqlHelper.insert(location);
@@ -115,8 +120,8 @@ public class ServerService {
 				if (StrUtil.isNotEmpty(location.getLocationParamJson()) && JSONUtil.isJson(location.getLocationParamJson())) {
 					paramList = JSONUtil.toList(JSONUtil.parseArray(location.getLocationParamJson()), Param.class);
 				}
-				
-				 // 反向插入,保证列表与输入框对应
+
+				// 反向插入,保证列表与输入框对应
 				Collections.reverse(paramList);
 				for (Param param : paramList) {
 					param.setLocationId(location.getId());
@@ -180,13 +185,6 @@ public class ServerService {
 
 	}
 
-//	public boolean hasListen(String listen, String serverId) {
-//		ConditionAndWrapper conditionAndWrapper =  new ConditionAndWrapper().eq("listen", listen);
-//		if(StrUtil.isNotEmpty(serverId)) {
-//			conditionAndWrapper.ne("id", serverId);
-//		}
-//		return sqlHelper.findCountByQuery(conditionAndWrapper, Server.class) > 0;
-//	}
 
 	public void importServer(String nginxPath) throws Exception {
 		String initNginxPath = initNginx(nginxPath);
@@ -197,18 +195,17 @@ public class ServerService {
 			e.printStackTrace();
 			throw new Exception("文件读取失败");
 		}
-		assert conf != null;
-		List<NgxEntry> servers;
-		if (nginxPath.contains("/etc/nginx/conf.d") || nginxPath.contains("/etc/nginx/sites-available") || nginxPath.contains("default")) {
-			servers = conf.findAll(NgxConfig.BLOCK, "server");
-		} else {
-			servers = conf.findAll(NgxConfig.BLOCK, "http", "server");
-		}
-		Server server;
+
+		List<NgxEntry> servers = conf.findAll(NgxConfig.BLOCK, "server");
+		servers.addAll(conf.findAll(NgxConfig.BLOCK, "http", "server"));
+
+		// 翻转一下,便于插入顺序和生成时一样
+		Collections.reverse(servers);
+		
 		for (NgxEntry ngxEntry : servers) {
 			NgxBlock serverNgx = (NgxBlock) ngxEntry;
 			NgxParam serverName = serverNgx.findParam("server_name");
-			server = new Server();
+			Server	server = new Server();
 			if (serverName == null) {
 				server.setServerName("");
 			} else {
@@ -217,28 +214,36 @@ public class ServerService {
 
 			server.setProxyType(0);
 
-			// 设置监听端口，先设置为80端口，再判断是否含有443 如果有，则给ssl相关信息赋值上
-			server.setListen("80");
-			server.setSsl(0);
+			// 设置server
 			List<NgxEntry> listens = serverNgx.findAll(NgxConfig.PARAM, "listen");
-			for (NgxEntry item: listens) {
+			for (NgxEntry item : listens) {
 				NgxParam param = (NgxParam) item;
-				if (param.getTokens().stream().anyMatch(item2 -> "443".equals(item2.getToken()))) {
-					server.setListen("443");
+
+//				System.err.println(param.getName());
+//				System.err.println(param.getValue());
+//				System.err.println(param.getTokens());
+//				System.err.println(param.getValues());
+
+				if (server.getListen() == null) {
+					server.setListen((String) param.getValues().toArray()[0]);
+				}
+
+				if (param.getTokens().stream().anyMatch(item2 -> "ssl".equals(item2.getToken()))) {
 					server.setSsl(1);
 					NgxParam key = serverNgx.findParam("ssl_certificate_key");
 					NgxParam perm = serverNgx.findParam("ssl_certificate");
 					server.setKey(key == null ? "" : key.getValue());
 					server.setPem(perm == null ? "" : perm.getValue());
-					break;
+				}
+
+				if (param.getTokens().stream().anyMatch(item2 -> "http2".equals(item2.getToken()))) {
+					server.setHttp2(1);
 				}
 			}
 
-			server.setHttp2(1);
-
 			long rewriteCount = serverNgx.getEntries().stream().filter(item -> {
 				if (item instanceof NgxBlock) {
-					NgxBlock itemNgx = (NgxBlock)item;
+					NgxBlock itemNgx = (NgxBlock) item;
 					if (itemNgx.getEntries().toString().contains("rewrite")) {
 						return true;
 					}
@@ -246,18 +251,20 @@ public class ServerService {
 				}
 				return false;
 			}).count();
+
 			if (rewriteCount > 0) {
 				server.setRewrite(1);
 			} else {
 				server.setRewrite(0);
 			}
 
+			// 设置location
 			List<Location> locations = new ArrayList<>();
 			List<NgxEntry> locationBlocks = serverNgx.findAll(NgxBlock.class, "location");
 			for (NgxEntry item : locationBlocks) {
 				Location location = new Location();
 				// 目前只支持http段的 proxy_pass
-				NgxParam proxyPassParam = ((NgxBlock)item).findParam("proxy_pass");
+				NgxParam proxyPassParam = ((NgxBlock) item).findParam("proxy_pass");
 
 				location.setPath(((NgxBlock) item).getValue());
 				// 如果没有proxy_pass type 0,说明可能是静态文件夹映射 type 1
@@ -265,27 +272,32 @@ public class ServerService {
 					location.setValue(proxyPassParam.getValue());
 					location.setType(0);
 				} else {
-					NgxParam rootParam = ((NgxBlock)item).findParam("root");
+					NgxParam rootParam = ((NgxBlock) item).findParam("root");
+					if (rootParam == null) {
+						rootParam = ((NgxBlock) item).findParam("alias");
+					}
 					if (rootParam == null) {
 						continue;
 					}
-					location.setValue(rootParam.getValue());
+					
+					location.setRootType(rootParam.getName());
+					location.setRootPath(rootParam.getValue());
+
+					NgxParam indexParam = ((NgxBlock) item).findParam("index");
+					if (indexParam != null) {
+						location.setRootPage(indexParam.getValue());
+					}
+					
 					location.setType(1);
 				}
 				location.setLocationParamJson(null);
 				locations.add(location);
 			}
 
-			try {
-				this.addOver(server, "", locations);
-			} catch (Exception e) {
-				if ("已经存在".equals(e.getMessage())) {
-					log.info("serverName为 {} 已经存在", server);
-				}
-			}
-
+			this.addOver(server, "", locations);
 		}
-		// 删除临时文件再
+		
+		// 删除临时文件
 		FileUtil.del(initNginxPath);
 	}
 
@@ -297,32 +309,18 @@ public class ServerService {
 	 * @author by yanglei 2020/7/5 21:17
 	 */
 	private String initNginx(String nginxPath) {
-		//删除一行内容（java本身没有删除的方法，本方法通过先读取文件的内容（需删除的行数除外），放到list中，在重新写入）
-		String initNginxPath = FileUtil.getTmpDirPath() + UUID.randomUUID().toString();
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(nginxPath));
-			BufferedWriter bw = new BufferedWriter(new FileWriter(initNginxPath));
-			String str = null;
-			int num = 0;
-			while ((str = br.readLine()) != null) {
-				num ++;
-				if (num == 686) {
-					log.info("111");
-				}
-				if (str.trim().indexOf("#") == 0) {
-					continue;
-				}
-				bw.write(str);
-				bw.newLine();
+		// 删除一行内容（java本身没有删除的方法，本方法通过先读取文件的内容（需删除的行数除外），放到list中，在重新写入）
+		List<String> lines = FileUtil.readLines(nginxPath, CharsetUtil.CHARSET_UTF_8);
+		List<String> rs = new ArrayList<>();
+		for (String str : lines) {
+			if (str.trim().indexOf("#") == 0) {
+				continue;
 			}
-			bw.flush();
-			bw.close();
-			log.info("读取行数{}", num);
-		} catch (IOException e) {
-			e.printStackTrace();
+			rs.add(str);
 		}
 
+		String initNginxPath = FileUtil.getTmpDirPath() + UUID.randomUUID().toString();
+		FileUtil.writeLines(rs, initNginxPath, CharsetUtil.CHARSET_UTF_8);
 		return initNginxPath;
 	}
 }

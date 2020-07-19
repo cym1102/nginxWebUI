@@ -39,6 +39,7 @@
 							<td>${www.name}</td>
 							<td>${www.dir} &nbsp;&nbsp; <a style="color: blue;" href="javascript:copy('${www.dir}')">复制</a></td>
 							<td>
+								<button class="layui-btn layui-btn-sm" onclick="edit('${www.id}')">编辑</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${www.id}')">删除</button>
 							</td>
 						</tr>
@@ -62,26 +63,29 @@
 					</div>
 				</div>
 				
-				
-				<div class="layui-form-item">
-					<label class="layui-form-label">上传zip包</label>
-					<div class="layui-input-inline">
-						<button type="button" class="layui-btn" id="upload">选择zip文件</button>
+				<div id="zipDiv">
+					<div class="layui-form-item">
+						<label class="layui-form-label">上传zip包</label>
+						<div class="layui-input-inline" style="width: auto;">
+							<button type="button" class="layui-btn" id="upload">选择zip文件</button>
+						</div>
+						<div class="layui-form-mid layui-word-aux" id="fileName"></div>
+						<input type="hidden" name="dir" id="dir" >
+						
 					</div>
-					<div class="layui-form-mid layui-word-aux" id="fileName"></div>
-					<input type="hidden" name="dir" id="dir" >
-					
+	
+					<div class="layui-form-item">
+						<label class="layui-form-label">&nbsp;</label>
+						<div class="layui-form-mid layui-word-aux">注意：请注意名称和zip请不要使用中文</div>
+					</div>
 				</div>
-
-				<div class="layui-form-item">
-					<label class="layui-form-label">&nbsp;</label>
-					<div class="layui-form-mid layui-word-aux">注意：请注意名称和zip请不要使用中文</div>
-				</div>
+				
 				
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
 				</div>
+				
 			</form>
 		</div>
 
