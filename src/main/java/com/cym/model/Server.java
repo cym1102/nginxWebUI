@@ -9,6 +9,9 @@ public class Server extends BaseModel {
 	String serverName;
 	String listen;
 	@InitValue("0")
+	Integer def; 
+	
+	@InitValue("0")
 	Integer rewrite; // 0否 1是
 	@InitValue("0")
 	Integer ssl; // 0 否 1是
@@ -28,6 +31,12 @@ public class Server extends BaseModel {
 	Boolean enable; // 是否启用
 	
 	
+	public Integer getDef() {
+		return def;
+	}
+	public void setDef(Integer def) {
+		this.def = def;
+	}
 	public Boolean getEnable() {
 		return enable;
 	}

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cym.config.ScheduleTask;
 import com.cym.model.Log;
 import com.cym.service.LogService;
 import com.cym.service.SettingService;
@@ -23,6 +24,9 @@ public class LogController extends BaseController {
 	SettingService settingService;
 	@Autowired
 	LogService logService;
+	@Autowired
+	ScheduleTask scheduleTask;
+	
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page) {
 		page = logService.search(page);
@@ -54,6 +58,14 @@ public class LogController extends BaseController {
 		
 	}
 	
+	
+	@RequestMapping("analysis")
+	@ResponseBody
+	public JsonResult analysis() {
+		scheduleTask.diviLog();
+		return renderSuccess();
+		
+	}
 	
 
 }

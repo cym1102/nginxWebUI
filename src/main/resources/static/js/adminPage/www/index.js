@@ -46,6 +46,8 @@ function add() {
 	$("#dir").val(""); 
 	$("#zipDiv").show();
 	
+	 $("#action").val("addOver");
+
 	showWindow("添加zip包");
 }
 
@@ -67,7 +69,7 @@ function addOver() {
 	
 	$.ajax({
 		type : 'POST',
-		url : ctx + '/adminPage/www/addOver',
+		url : ctx + '/adminPage/www/' + $("#action").val(),
 		data : $('#addForm').serialize(),
 		dataType : 'json',
 		success : function(data) {
@@ -135,9 +137,44 @@ function edit(id){
 				$("#fileName").html(""); 
 				$("#dir").val(""); 
 				
+				$("#nameDiv").show();
 				$("#zipDiv").hide();
 				
+				$("#action").val("rename");
 				showWindow("编辑");
+			}else{
+				layer.msg(data.msg)
+			}
+		},
+		error : function() {
+			alert("出错了,请联系技术人员!");
+		}
+	});
+}
+
+function update(id){
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/www/detail',
+		data : {
+			id : id
+		},
+		dataType : 'json',
+		success : function(data) {
+			if (data.success) {
+				var www = data.obj;
+				
+				$("#id").val(www.id); 
+				$("#name").val(www.name); 
+				$("#fileName").html(""); 
+				$("#dir").val(""); 
+				
+				$("#nameDiv").hide();
+				$("#zipDiv").show();
+				
+					
+				$("#action").val("update");
+				showWindow("更新");
 			}else{
 				layer.msg(data.msg)
 			}

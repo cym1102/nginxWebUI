@@ -1,6 +1,7 @@
 package com.cym.model;
 
 import cn.craccd.sqlHelper.bean.BaseModel;
+import cn.craccd.sqlHelper.config.InitValue;
 import cn.craccd.sqlHelper.config.Table;
 
 @Table
@@ -19,6 +20,18 @@ public class Location extends BaseModel {
 	String rootPath; // 静态页面代理
 	String rootPage;
 	String rootType;
+	
+	@InitValue("1")
+	Integer header; // 是否设置header参数
+	
+
+	public Integer getHeader() {
+		return header;
+	}
+
+	public void setHeader(Integer header) {
+		this.header = header;
+	}
 
 	public String getRootType() {
 		return rootType;

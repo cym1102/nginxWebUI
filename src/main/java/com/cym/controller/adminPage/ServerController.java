@@ -1,15 +1,11 @@
 package com.cym.controller.adminPage;
 
-import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import cn.hutool.core.io.FileUtil;
-import com.cym.service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,13 +19,14 @@ import com.cym.model.Upstream;
 import com.cym.model.Www;
 import com.cym.service.ParamService;
 import com.cym.service.ServerService;
+import com.cym.service.SettingService;
 import com.cym.service.UpstreamService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.TelnetUtils;
 
 import cn.craccd.sqlHelper.bean.Page;
-import cn.hutool.core.util.EscapeUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
@@ -44,8 +41,6 @@ public class ServerController extends BaseController {
 	ParamService paramService;
 	@Autowired
 	SettingService settingService;
-	@Autowired
-	private Environment env;
 
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String sort, String direction, String keywords) {

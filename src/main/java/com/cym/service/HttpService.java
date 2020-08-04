@@ -21,9 +21,6 @@ public class HttpService {
 	@Autowired
 	SqlHelper sqlHelper;
 
-//	public boolean hasName(String name) {
-//		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("name", name), Http.class) > 0;
-//	}
 
 	public void setAll(List<Http> https) {
 		for (Http http : https) {
@@ -31,10 +28,11 @@ public class HttpService {
 
 			if (httpOrg != null) {
 				http.setId(httpOrg.getId());
+			} else {
+				http.setSeq(buildOrder());
 			}
 
 			http.setValue(http.getValue() + http.getUnit());
-			
 
 			sqlHelper.insertOrUpdate(http);
 

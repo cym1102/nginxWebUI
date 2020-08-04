@@ -42,9 +42,7 @@ public class LogService {
 	JdbcTemplate jdbcTemplate;
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
 
-	
 	@Transactional
 	public DataGroup buildDataGroup(String path) {
 		if (!new File(path).exists()) {
@@ -63,13 +61,13 @@ public class LogService {
 				"	ORDER BY name " + //
 				") " + //
 				"GROUP BY name", new BeanPropertyRowMapper<KeyValue>(KeyValue.class)));
-		
+
 		// 状态
 		dataGroup.setStatus(jdbcTemplate.query("select status as name,count(1) as value FROM log_info group by status", new BeanPropertyRowMapper<KeyValue>(KeyValue.class)));
 
 		// 系统
 		dataGroup.setBrowser(new ArrayList<KeyValue>());
-		String[] browsers = new String[] { "Android", "iPhone", "Windows","Macintosh" };
+		String[] browsers = new String[] { "Android", "iPhone", "Windows", "Macintosh" };
 		Integer allCount = 0;
 		for (String browser : browsers) {
 			KeyValue keyValue = new KeyValue();
@@ -85,7 +83,8 @@ public class LogService {
 		dataGroup.getBrowser().add(keyValue);
 
 		// 域名
-		List<KeyValue> httpReferer = jdbcTemplate.query("select http_host as name,count(1) as value FROM log_info group by http_host order by value DESC limit 10", new BeanPropertyRowMapper<KeyValue>(KeyValue.class));
+		List<KeyValue> httpReferer = jdbcTemplate.query("select http_host as name,count(1) as value FROM log_info group by http_host order by value DESC limit 10",
+				new BeanPropertyRowMapper<KeyValue>(KeyValue.class));
 		Collections.reverse(httpReferer);
 		dataGroup.setHttpReferer(httpReferer);
 
@@ -103,7 +102,7 @@ public class LogService {
 			sqlHelper.deleteByQuery(new ConditionAndWrapper(), LogInfo.class);
 
 			Long count = 0l;
-			
+
 			reader = FileUtil.getReader(outFile, "UTF-8");
 			List<Object> list = new ArrayList<Object>();
 			while (true) {
@@ -112,7 +111,7 @@ public class LogService {
 					sqlHelper.insertAll(list);
 					count += list.size();
 					list.clear();
-					
+
 					break;
 				}
 
@@ -123,7 +122,7 @@ public class LogService {
 					logInfo.setHour(str[1]);
 					logInfo.setMinute(str[2]);
 					logInfo.setSecond(str[3].split(" ")[0]);
-					
+
 					list.add(logInfo);
 				} else {
 					System.err.println(json);
@@ -136,8 +135,8 @@ public class LogService {
 				}
 			}
 
-			logger.info("插入LogInfo:" + count + "条"); 
-			
+			logger.info("插入LogInfo:" + count + "条");
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -152,18 +151,47 @@ public class LogService {
 		log.setDate(file.getName().replace("access.", "").replace(".zip", ""));
 		log.setJson(JSONUtil.toJsonStr(dataGroup));
 		log.setPath(path);
-		
-		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("date", log.getDate()), Log.class);
-		
-		sqlHelper.insert(log);
+
+		Log logOrg = sqlHelper.findOneByQuery(new ConditionAndWrapper().eq("date", log.getDate()), Log.class);
+		if (logOrg != null) {
+			DataGroup dataGroupOrg = JSONUtil.toBean(logOrg.getJson(), DataGroup.class);
+			sum(dataGroupOrg, dataGroup);
+			logOrg.setJson(JSONUtil.toJsonStr(dataGroupOrg));
+
+			sqlHelper.updateById(logOrg);
+		} else {
+			sqlHelper.insert(log);
+		}
 	}
 
+	private void sum(DataGroup dataGroupOrg, DataGroup dataGroup) {
+		addSum(dataGroupOrg.getPv(), dataGroup.getPv());
+		addSum(dataGroupOrg.getUv(), dataGroup.getUv());
+		addSum(dataGroupOrg.getStatus(), dataGroup.getStatus());
+		addSum(dataGroupOrg.getBrowser(), dataGroup.getBrowser());
+		addSum(dataGroupOrg.getHttpReferer(), dataGroup.getHttpReferer());
+	}
+
+	private void addSum(List<KeyValue> keyValuesOrg, List<KeyValue> keyValues) {
+		for (KeyValue keyValue : keyValues) {
+			boolean hasSame = false;
+			for (KeyValue keyValueOrg : keyValuesOrg) {
+				if (keyValueOrg.getName().equals(keyValue.getName())) {
+					keyValueOrg.setValue(keyValueOrg.getValue() + keyValue.getValue());
+					hasSame = true;
+				}
+			}
+
+			if (!hasSame) {
+				keyValuesOrg.add(keyValue);
+			}
+		}
+	}
 
 	public Page search(Page page) {
 		page = sqlHelper.findPage(page, Log.class);
 
 		return page;
 	}
-
 
 }

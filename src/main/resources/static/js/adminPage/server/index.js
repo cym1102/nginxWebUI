@@ -72,24 +72,28 @@ function checkType(type,id){
 		$("#" + id + " span[name='rootPathSpan']").hide();
 		$("#" + id + " span[name='upstreamSelectSpan']").hide();
 		$("#" + id + " span[name='blankSpan']").hide();
+		$("#" + id + " span[name='headerSpan']").show();
 	} 
 	if (type == 1) {
 		$("#" + id + " span[name='valueSpan']").hide();
 		$("#" + id + " span[name='rootPathSpan']").show();
 		$("#" + id + " span[name='upstreamSelectSpan']").hide();
 		$("#" + id + " span[name='blankSpan']").hide();
+		$("#" + id + " span[name='headerSpan']").hide();
 	}
 	if (type == 2) {
 		$("#" + id + " span[name='valueSpan']").hide();
 		$("#" + id + " span[name='rootPathSpan']").hide();
 		$("#" + id + " span[name='upstreamSelectSpan']").show();
 		$("#" + id + " span[name='blankSpan']").hide();
+		$("#" + id + " span[name='headerSpan']").show();
 	} 
 	if (type == 3) {
 		$("#" + id + " span[name='valueSpan']").hide();
 		$("#" + id + " span[name='rootPathSpan']").hide();
 		$("#" + id + " span[name='upstreamSelectSpan']").hide();
 		$("#" + id + " span[name='blankSpan']").show();
+		$("#" + id + " span[name='headerSpan']").hide();
 	} 
 }
 
@@ -122,6 +126,7 @@ function search() {
 function add() {
 	$("#id").val("");
 	$("#listen").val("");
+	$("#def").prop("checked", false);
 	$("#ip").val("");
 	$("#serverName").val("");
 	$("#ssl option:first").prop("selected", true);
@@ -204,7 +209,7 @@ function addOver() {
 	if($("#ip").val() != ''){
 		server.listen = $("#ip").val() + ":" + $("#listen").val();
 	}
-	
+	server.def = $("#def").prop("checked")?"1":"0";
 	server.serverName = $("#serverName").val();
 	server.ssl = $("#ssl").val();
 	server.pem = $("#pem").val();
@@ -227,6 +232,7 @@ function addOver() {
 		location.rootPage = $(this).find("input[name='rootPage']").val();
 		location.rootType = $(this).find("select[name='rootType']").val();
 		location.locationParamJson =  $(this).find("textarea[name='locationParamJson']").val();
+		location.header =  $(this).find("input[name='header']").prop("checked")?1:0;
 		
 		locations.push(location);
 	})
@@ -281,6 +287,7 @@ function edit(id,clone) {
 					$("#listen").val(server.listen);
 				}
 				
+				$("#def").prop("checked", server.def == 1);
 				$("#serverName").val(server.serverName);
 				$("#ssl").val(server.ssl);
 				$("#pem").val(server.pem);
@@ -325,6 +332,12 @@ function edit(id,clone) {
 					$("#" + uuid + " select[name='rootType']").val(location.rootType);
 					$("#" + uuid + " select[name='upstreamId']").val(location.upstreamId);
 					$("#" + uuid + " input[name='upstreamPath']").val(location.upstreamPath);
+					
+					if(location.header == 1){
+						$("#" + uuid + " input[name='header']").prop("checked", true);
+					}else{
+						$("#" + uuid + " input[name='header']").prop("checked", false);
+					}
 					
 					checkType(location.type, uuid)
 				}
@@ -434,11 +447,17 @@ function buildHtml(uuid, location, upstreamSelect){
 					</span>
 					
 					<span name="upstreamSelectSpan">
-					${upstreamSelect}
+						${upstreamSelect}
 					</span>
 					
 					<span name="blankSpan">
 					
+					</span>
+					
+					<span  name="headerSpan">
+						<div class="layui-inline">
+							<input type="checkbox" name="header" title="header添加Host参数" lay-skin="primary" checked> 
+						</div>
 					</span>
 				</td> 
 				<td>
@@ -536,20 +555,23 @@ function fillTable(params){
 		var param = params[i];
 		
 		var uuid = guid();
-		
-		html += `
-		<tr name="param" id=${uuid}>
-			<td>
-				<textarea  name="name" class="layui-textarea">${param.name}</textarea>
-			</td>
-			<td  style="width: 60%;">
-				<textarea  name="value" class="layui-textarea">${param.value}</textarea>
-			</td>
-			<td>
-				<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
-			</td>
-		</tr>
-		`;
+		if(param.templateValue == null){
+			html += `
+			<tr name="param" id=${uuid}>
+				<td>
+					<textarea  name="name" class="layui-textarea">${param.name}</textarea>
+				</td>
+				<td  style="width: 60%;">
+					<textarea  name="value" class="layui-textarea">${param.value}</textarea>
+				</td>
+				<td>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+				</td>
+			</tr>
+			`;
+		} else {
+			html +=  buildTemplateParam(param);
+		}
 	}
 	
 	$("#paramList").html(html);
@@ -590,9 +612,13 @@ function addParamOver(){
 	var params = [];
 	$("tr[name='param']").each(function(){
 		var param = {};
-		param.name = $(this).find("textarea[name='name']").val();
-		param.value = $(this).find("textarea[name='value']").val();
-		
+		if ($(this).find("input[name='templateValue']").val() == null) {
+			param.name = $(this).find("textarea[name='name']").val();
+			param.value = $(this).find("textarea[name='value']").val();
+		} else {
+			param.templateValue = $(this).find("input[name='templateValue']").val();
+			param.templateName = $(this).find("input[name='templateName']").val();
+		}
 		params.push(param);
 	})
 	$("#" + targertId).val(JSON.stringify(params));

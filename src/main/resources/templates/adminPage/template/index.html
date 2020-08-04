@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<#include "/adminPage/common.html"/>
+<style type="text/css">
+
+.long{
+	width: 150px;
+}
+
+.short{
+	width: 110px!important;
+}
+
+input[name='param']{
+	width: 100px;
+}
+</style>
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+
+		<#include "/adminPage/header.html"/>
+		<#include "/adminPage/menu.html"/>
+
+		<div class="layui-body">
+			<!-- 内容主体区域 -->
+			<div style="padding: 15px">
+				<fieldset class="layui-elem-field layui-field-title">
+					<legend>参数模板</legend>
+				</fieldset>
+
+				<form action="${ctx}/adminPage/template" id="searchForm" method="post">
+					<div class="layui-form">
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加参数模板</button>
+						</div>
+					</div>
+				</form>
+
+				<table class="layui-table" style="table-layout:fixed; WORD-BREAK:break-all;">
+					<thead>
+						<tr>
+							<th>名称</th>
+							<th>参数数量</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list templateList as ext>
+						<tr>
+							<td>${ext.template.name}</td>
+							<td>${ext.count}</td>
+							<td>
+								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.template.id}')">编辑</button>
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.template.id}')">删除</button>
+							</td>
+						</tr>
+						</#list>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div style="height: 0px; width: 0px; overflow: hidden;">
+		<!-- 弹出框 -->
+		<div id="windowDiv" style="display: none;padding: 15px;"> 
+			<input type="hidden" id="id" name="id">
+		
+			<div class="layui-form-item">
+				<label class="layui-form-label">模板名称</label>
+				<div class="layui-input-inline">
+					<input type="text" name="name" id="name" class="layui-input">
+				</div>
+			</div>
+			
+			<div class="layui-form-item">
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">添加参数</button>
+			</div>
+			
+			
+			<div class="layui-form-item">
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>名称</th>
+							<th>值</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody id="paramList">
+
+					</tbody>
+				</table>
+			</div>
+
+			<div class="layui-form-item">
+				<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
+				<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+			</div>
+		</div>
+		
+	</div>
+
+	<#include '/adminPage/script.html'/>
+	<script src="${ctx}/js/adminPage/template/index.js?v=${jsrandom}" type="text/javascript"></script>
+</body>
+
+
+</html>

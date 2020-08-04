@@ -28,6 +28,7 @@ $(function() {
 			if (!first) {
 				// do something
 				$("input[name='curr']").val(obj.curr);
+				$("input[name='limit']").val(obj.limit);
 				$("#searchForm").submit();
 			}
 		}

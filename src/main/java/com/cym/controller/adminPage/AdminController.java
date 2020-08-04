@@ -43,7 +43,18 @@ public class AdminController extends BaseController {
 	@RequestMapping("addOver")
 	@ResponseBody
 	public JsonResult addOver(Admin admin) {
-
+		if (StrUtil.isEmpty(admin.getId())) {
+			Long count = adminService.getCountByName(admin.getName());
+			if (count > 0) {
+				return renderError("与已有用户重名");
+			}
+		}else {
+			Long count = adminService.getCountByNameWithOutId(admin.getName(), admin.getId());
+			if (count > 0) {
+				return renderError("与已有用户重名");
+			}
+		}
+		
 		sqlHelper.insertOrUpdate(admin);
 
 		return renderSuccess();
@@ -68,9 +79,6 @@ public class AdminController extends BaseController {
 	public JsonResult getMailSetting() {
 		Map<String, String> map = new HashMap<>();
 
-		if (settingService.get("mailType") == null) {
-			settingService.set("mailType", "sendCloud");
-		}
 
 		map.put("mail_host", settingService.get("mail_host"));
 		map.put("mail_port", settingService.get("mail_port"));

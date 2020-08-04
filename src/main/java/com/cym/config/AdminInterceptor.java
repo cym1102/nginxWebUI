@@ -59,7 +59,6 @@ public class AdminInterceptor implements HandlerInterceptor {
 	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object obj) throws Exception {
-//		System.err.println(request.getRequestURL());
 		String ctx = getCtx(request.getRequestURL().toString());
 
 		if (request.getRequestURL().toString().contains("adminPage/login")) {
@@ -131,9 +130,6 @@ public class AdminInterceptor implements HandlerInterceptor {
 	}
 	
 	
-	public static void main(String[] args) {
-		System.out.println("'//52.82.87.82:8080/'".replace("'", ""));
-	}
 
 	private String buldBody(Map<String, String[]> parameterMap, Remote remote) {
 		List<String> body = new ArrayList<>();

@@ -18,11 +18,6 @@ function showSelectMail() {
 				$("#mail_user").val(data.obj.mail_user)
 				$("#mail_pass").val(data.obj.mail_pass)
 
-				if (data.obj.mailType == 'sendCloud') {
-					$("#mailSmtp").hide();
-				} else {
-					$("#mailSmtp").show();
-				}
 
 				form.render();
 

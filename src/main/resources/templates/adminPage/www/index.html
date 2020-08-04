@@ -40,6 +40,7 @@
 							<td>${www.dir} &nbsp;&nbsp; <a style="color: blue;" href="javascript:copy('${www.dir}')">复制</a></td>
 							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${www.id}')">编辑</button>
+								<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="update('${www.id}')">更新</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${www.id}')">删除</button>
 							</td>
 						</tr>
@@ -53,13 +54,16 @@
 	<div style="height: 0px; width: 0px; overflow: hidden;">
 		<!-- 弹出框 -->
 		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none">
+			<input type="hidden" name="action" id="action">
+		
 			<form id="addForm">
 				<input type="hidden" name="id" id="id">
-				
-				<div class="layui-form-item">
-					<label class="layui-form-label">目录名称</label>
-					<div class="layui-input-inline">
-						<input type="text" name="name" id="name" class="layui-input">
+				<div id="nameDiv">
+					<div class="layui-form-item">
+						<label class="layui-form-label">目录名称</label>
+						<div class="layui-input-inline">
+							<input type="text" name="name" id="name" class="layui-input">
+						</div>
 					</div>
 				</div>
 				

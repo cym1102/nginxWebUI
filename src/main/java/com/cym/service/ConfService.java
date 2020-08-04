@@ -1,17 +1,14 @@
 package com.cym.service;
 
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cym.config.InitConfig;
-import com.cym.controller.adminPage.UpstreamController;
 import com.cym.ext.AsycPack;
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
@@ -23,7 +20,6 @@ import com.cym.model.Server;
 import com.cym.model.Stream;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
-import com.cym.utils.SystemTool;
 import com.github.odiszapc.nginxparser.NgxBlock;
 import com.github.odiszapc.nginxparser.NgxConfig;
 import com.github.odiszapc.nginxparser.NgxDumper;
@@ -46,15 +42,16 @@ public class ConfService {
 	final LocationService locationService;
 	final ParamService paramService;
 	final SqlHelper sqlHelper;
-
-	public ConfService(UpstreamService upstreamService, SettingService settingService, ServerService serverService, LocationService locationService,
-			ParamService paramService, SqlHelper sqlHelper) {
+	final TemplateService templateService;
+	
+	public ConfService(TemplateService templateService,UpstreamService upstreamService, SettingService settingService, ServerService serverService, LocationService locationService, ParamService paramService, SqlHelper sqlHelper) {
 		this.upstreamService = upstreamService;
 		this.settingService = settingService;
 		this.serverService = serverService;
 		this.locationService = locationService;
 		this.paramService = paramService;
 		this.sqlHelper = sqlHelper;
+		this.templateService = templateService;
 	}
 
 	public synchronized ConfExt buildConf(Boolean decompose) {
@@ -63,8 +60,6 @@ public class ConfService {
 
 		String nginxPath = settingService.get("nginxPath");
 		try {
-//			ClassPathResource resource = new ClassPathResource("nginxOrg.conf");
-//			InputStream inputStream = resource.getInputStream();
 
 			NgxConfig ngxConfig = new NgxConfig();
 
@@ -151,6 +146,10 @@ public class ConfService {
 				// 监听端口
 				ngxParam = new NgxParam();
 				String value = "listen " + server.getListen();
+				if(server.getDef() == 1) {
+					value += " default";
+				}
+				
 				if (server.getSsl() != null && server.getSsl() == 1) {
 					value += " ssl";
 					if (server.getHttp2() != null && server.getHttp2() == 1) {
@@ -161,7 +160,7 @@ public class ConfService {
 				ngxBlockServer.addEntry(ngxParam);
 
 				// ssl配置
-				if (server.getSsl() != null && server.getSsl() == 1) {
+				if (server.getSsl() == 1) {
 					if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getKey())) {
 						ngxParam = new NgxParam();
 						ngxParam.addValue("ssl_certificate " + server.getPem());
@@ -184,12 +183,14 @@ public class ConfService {
 						ngxBlockServer.addEntry(ngxParam);
 
 						NgxBlock ngxBlock = new NgxBlock();
-						ngxBlock.addValue("if ($server_port = 80)");
+						ngxBlock.addValue("if ($scheme = http)");
 						ngxParam = new NgxParam();
-						ngxParam.addValue("rewrite ^(.*) https://$server_name$1 permanent");
+//						ngxParam.addValue("rewrite ^(.*) https://$server_name$1 permanent");
+						ngxParam.addValue("return 301 https://$host$request_uri"); 
 						ngxBlock.addEntry(ngxParam);
 
 						ngxBlockServer.addEntry(ngxBlock);
+					
 					}
 				}
 
@@ -222,21 +223,29 @@ public class ConfService {
 							}
 						}
 
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header Host $host");
-						ngxBlockLocation.addEntry(ngxParam);
+						if (location.getHeader() == 1) { // 设置header
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_set_header Host $host:$server_port");
+							ngxBlockLocation.addEntry(ngxParam);
 
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header X-Real-IP $remote_addr");
-						ngxBlockLocation.addEntry(ngxParam);
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_set_header X-Real-IP $remote_addr");
+							ngxBlockLocation.addEntry(ngxParam);
 
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for");
-						ngxBlockLocation.addEntry(ngxParam);
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for");
+							ngxBlockLocation.addEntry(ngxParam);
 
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header X-Forwarded-Proto $scheme");
-						ngxBlockLocation.addEntry(ngxParam);
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_set_header X-Forwarded-Proto $scheme");
+							ngxBlockLocation.addEntry(ngxParam);
+						}
+						
+						if ( server.getSsl() == 1 && server.getRewrite() == 1) { // redirect http转https
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_redirect http:// https://");
+							ngxBlockLocation.addEntry(ngxParam);
+						}
 
 					} else if (location.getType() == 1) { // 静态html
 						ngxBlockLocation.addValue("location");
@@ -398,17 +407,6 @@ public class ConfService {
 
 			String conf = new NgxDumper(ngxConfig).dump().replace("};", "  }");
 
-			// 装载ngx_stream_module模块
-			if (hasStream && SystemTool.isLinux()) {
-				String module = settingService.get("ngx_stream_module");
-
-				// 不在生成conf的方法中查找ngx_stream_module, 放到InitConfig中查找, 只在项目启动时运行一次
-				if (StrUtil.isNotEmpty(module) /* && FileUtil.exist(module) */ ) {
-					settingService.set("ngx_stream_module", module);
-					conf = "load_module " + module + ";\n" + conf;
-				}
-			}
-
 			confExt.setConf(conf);
 
 			return confExt;
@@ -434,10 +432,18 @@ public class ConfService {
 	}
 
 	private void setSameParam(Param param, NgxBlock ngxBlock) {
-		NgxParam ngxParam = new NgxParam();
-		ngxParam.addValue(param.getName().trim() + " " + param.getValue().trim());
-		ngxBlock.addEntry(ngxParam);
-
+		if (StrUtil.isEmpty(param.getTemplateValue())) {
+			NgxParam ngxParam = new NgxParam();
+			ngxParam.addValue(param.getName().trim() + " " + param.getValue().trim());
+			ngxBlock.addEntry(ngxParam);
+		} else {
+			List<Param> params = templateService.getParamList(param.getTemplateValue());
+			for(Param paramSub:params) {
+				NgxParam ngxParam = new NgxParam();
+				ngxParam.addValue(paramSub.getName().trim() + " " + paramSub.getValue().trim());
+				ngxBlock.addEntry(ngxParam);
+			}
+		}
 	}
 
 	private void addConfFile(ConfExt confExt, String name, NgxBlock ngxBlockServer) {
@@ -462,22 +468,25 @@ public class ConfService {
 		NgxConfig ngxConfig = new NgxConfig();
 		ngxConfig.addEntry(ngxBlockServer);
 
-		return new NgxDumper(ngxConfig).dump();
+		return new NgxDumper(ngxConfig).dump().replace("};", "  }");
 	}
 
 	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName) {
 		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
 		// 备份主文件
 		FileUtil.mkdir(InitConfig.home + "bak");
-		FileUtil.copy(nginxPath, InitConfig.home + "bak/nginx.conf."  + date + ".bak", true);
+		FileUtil.copy(nginxPath, InitConfig.home + "bak/nginx.conf." + date + ".bak", true);
 		// 备份conf.d文件夹
 		String confd = nginxPath.replace("nginx.conf", "conf.d/");
 		if (!FileUtil.exist(confd)) {
 			FileUtil.mkdir(confd);
 		}
-		ZipUtil.zip(confd, InitConfig.home + "bak/nginx.conf."  + date + ".zip");
+		ZipUtil.zip(confd, InitConfig.home + "bak/nginx.conf." + date + ".zip");
 
-		
+		// 删除conf.d下全部文件
+		FileUtil.del(confd);
+		FileUtil.mkdir(confd);
+					
 		// 写入主文件
 		FileUtil.writeString(nginxContent, nginxPath, StandardCharsets.UTF_8);
 		String decompose = settingService.get("decompose");
@@ -490,10 +499,6 @@ public class ConfService {
 					FileUtil.writeString(subContent.get(i), tagert, StandardCharsets.UTF_8); // 清空
 				}
 			}
-		} else {
-			// 删除conf.d下全部文件
-			FileUtil.del(confd);
-			FileUtil.mkdir(confd);
 		}
 
 	}

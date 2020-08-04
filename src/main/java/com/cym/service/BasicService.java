@@ -10,6 +10,8 @@ import com.cym.model.Basic;
 
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
+import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 
 @Service
@@ -60,6 +62,10 @@ public class BasicService {
 
 		}
 
+	}
+
+	public boolean contain(String content) {
+		return sqlHelper.findCountByQuery(new ConditionOrWrapper().like("value", content).like("name", content), Basic.class) > 0;
 	}
 
 }

@@ -17,9 +17,8 @@ import org.springframework.stereotype.Component;
 import com.cym.model.Basic;
 import com.cym.model.Http;
 import com.cym.model.Stream;
-import com.cym.service.HttpService;
+import com.cym.service.BasicService;
 import com.cym.service.SettingService;
-import com.cym.service.StreamService;
 import com.cym.utils.SystemTool;
 
 import cn.craccd.sqlHelper.utils.SqlHelper;
@@ -39,9 +38,7 @@ public class InitConfig {
 	@Autowired
 	SettingService settingService;
 	@Autowired
-	HttpService httpService;
-	@Autowired
-	StreamService streamService;
+	BasicService basicService;
 
 	@Autowired
 	SqlHelper sqlHelper;
@@ -57,8 +54,9 @@ public class InitConfig {
 		Long count = sqlHelper.findAllCount(Basic.class);
 		if (count == 0) {
 			List<Basic> basics = new ArrayList<Basic>();
-			basics.add(new Basic("worker_processes", "auto", 0l));
-			basics.add(new Basic("events", "{\r\n" + "    worker_connections  1024;\r\n" + "}", 1l));
+
+			basics.add(new Basic("worker_processes", "auto", 1l));
+			basics.add(new Basic("events", "{\r\n" + "    worker_connections  1024;\r\n" + "}", 2l));
 
 			sqlHelper.insertAll(basics);
 		}
@@ -98,17 +96,17 @@ public class InitConfig {
 			}
 
 			// 查找ngx_stream_module模块
-			logger.info("----------------find ngx_stream_module--------------");
-			String module = settingService.get("ngx_stream_module");
-			if (StrUtil.isEmpty(module)) {
+			if(!basicService.contain("ngx_stream_module.so")) {
 				List<String> list = RuntimeUtil.execForLines(CharsetUtil.systemCharset(), "find / -name ngx_stream_module.so");
-
 				for (String path : list) {
 					if (path.contains("ngx_stream_module.so") && path.length() < 80) {
-						settingService.set("ngx_stream_module", path);
+						Basic basic = new Basic("load_module", path, -10l);
+						sqlHelper.insert(basic);
+						break;
 					}
 				}
 			}
+			
 
 			// 找寻nginx配置文件
 			logger.info("----------------find nginx.conf--------------");

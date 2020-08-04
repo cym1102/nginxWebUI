@@ -23,8 +23,6 @@ public class FrontInterceptor implements HandlerInterceptor {
 	@Value("${project.version}")
 	String currentVersion;
 
-//	@Autowired
-//	Environment env;
 	
 	/*
 	 * 视图渲染之后的操作

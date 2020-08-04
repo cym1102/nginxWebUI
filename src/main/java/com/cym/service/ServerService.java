@@ -72,22 +72,10 @@ public class ServerService {
 
 	@Transactional
 	public void addOver(Server server, String serverParamJson, List<Location> locations) throws Exception {
-//		Server tmpServer = sqlHelper.findOneByQuery(new ConditionOrWrapper().eq("serverName", server.getServerName()), Server.class);
-//		if (!StringUtils.isEmpty(server.getId())) {
-//			if (tmpServer != null) {
-//				if (!server.getId().equals(tmpServer.getId())) {
-//					throw new Exception("serverName:" + tmpServer.getServerName() + " 已经存在");
-//				}
-//			}
-//			// 修改操作
-//			sqlHelper.insertOrUpdate(server);
-//		} else {
-//			// 新增
-//			if (tmpServer != null) {
-//				throw new Exception("serverName:" + tmpServer.getServerName() + " 已经存在");
-//			}
-//			sqlHelper.insertOrUpdate(server);
-//		}
+
+		if (server.getDef() == 1) {
+			clearDef();
+		}
 
 		sqlHelper.insertOrUpdate(server);
 
@@ -128,6 +116,14 @@ public class ServerService {
 					sqlHelper.insert(param);
 				}
 			}
+		}
+	}
+
+	private void clearDef() {
+		List<Server> servers = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("def", 1), Server.class);
+		for (Server server : servers) {
+			server.setDef(0);
+			sqlHelper.updateById(server);
 		}
 	}
 
@@ -185,7 +181,6 @@ public class ServerService {
 
 	}
 
-
 	public void importServer(String nginxPath) throws Exception {
 		String initNginxPath = initNginx(nginxPath);
 		NgxConfig conf = null;
@@ -201,11 +196,11 @@ public class ServerService {
 
 		// 翻转一下,便于插入顺序和生成时一样
 		Collections.reverse(servers);
-		
+
 		for (NgxEntry ngxEntry : servers) {
 			NgxBlock serverNgx = (NgxBlock) ngxEntry;
 			NgxParam serverName = serverNgx.findParam("server_name");
-			Server	server = new Server();
+			Server server = new Server();
 			if (serverName == null) {
 				server.setServerName("");
 			} else {
@@ -279,7 +274,7 @@ public class ServerService {
 					if (rootParam == null) {
 						continue;
 					}
-					
+
 					location.setRootType(rootParam.getName());
 					location.setRootPath(rootParam.getValue());
 
@@ -287,7 +282,7 @@ public class ServerService {
 					if (indexParam != null) {
 						location.setRootPage(indexParam.getValue());
 					}
-					
+
 					location.setType(1);
 				}
 				location.setLocationParamJson(null);
@@ -296,7 +291,7 @@ public class ServerService {
 
 			this.addOver(server, "", locations);
 		}
-		
+
 		// 删除临时文件
 		FileUtil.del(initNginxPath);
 	}

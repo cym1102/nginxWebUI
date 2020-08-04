@@ -20,10 +20,21 @@
 }
 
 .server td {
-	padding: 5px;
 	text-align: center;
 	width: 16.66%;
-	height: 38px;
+	height: 30px;
+}
+
+.layui-table td{
+	padding: 5px 15px;
+}
+
+#paramList td{
+	padding-left: 5px!important;
+	padding-right: 5px!important;
+	padding-top:0px!important;
+	padding-bottom:0px!important; 
+	height: 110px;
 }
 </style>
 </head>
@@ -57,6 +68,7 @@
 
 						<button type="button" class="layui-btn layui-btn-normal" onclick="upstreamMonitor()">负载节点监控服务</button>
 						<input type="hidden" name="curr" value="${page.curr}">
+						<input type="hidden" name="limit" value="${page.limit}">
 					</div>
 				</form>
 
@@ -200,6 +212,8 @@
 		<div id="paramJsonDiv" style="display: none; padding: 15px;">
 			<div class="layui-form-item">
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">添加参数</button>
+				
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectTemplate('paramList')">添加模板</button>
 			</div>
 			<div class="layui-form-item">
 				<input type="hidden" id="targertId">
@@ -226,6 +240,7 @@
 
 	<#include '/adminPage/script.html'/>
 	<#include '/adminPage/select_mail.html'/>
+	<#include '/adminPage/select_template.html'/>
 	<script src="${ctx}/js/adminPage/upstream/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

@@ -25,9 +25,16 @@
 
 				<form action="${ctx}/adminPage/log" id="searchForm" method="post">
 					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-normal" onclick="delAll()">清空日志</button>
+						<button type="button" class="layui-btn layui-btn-danger" onclick="delAll()">清空日志</button>
+						
+						<button type="button" class="layui-btn" onclick="analysis()">立即解析今日日志</button>
+					</div>
+					
+					<div class="layui-inline">
+						<div class="layui-form-mid layui-word-aux">注意：系统会自动在每天23:55解析当天日志</div>
 					</div>
 					<input type="hidden" name="curr" value="${page.curr}">
+					<input type="hidden" name="limit" value="${page.limit}">
 				</form>
 
 				<table class="layui-table">

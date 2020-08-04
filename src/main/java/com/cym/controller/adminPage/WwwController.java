@@ -45,26 +45,19 @@ public class WwwController extends BaseController {
 		}
 
 		try {
-			if (StrUtil.isNotEmpty(www.getDir())) {
-				String dir = InitConfig.home + "wwww/" + www.getName();
-				try {
-					ZipUtil.unzip(www.getDir(), dir);
-				} catch (Exception e) {
-					// 默认UTF-8下不能解压中文字符, 尝试使用gbk
-					ZipUtil.unzip(www.getDir(), dir, Charset.forName("GBK"));
-				}
-
-				FileUtil.del(www.getDir());
-				www.setDir(dir);
-			} else {
-				// 修改名称, 也要修改文件夹名
-				Www wwwOrg = sqlHelper.findById(www.getId(), Www.class);
-				FileUtil.rename(new File(wwwOrg.getDir()),  InitConfig.home + "wwww/" + www.getName(), true);
-				
-				www.setDir( InitConfig.home + "wwww/" + www.getName());
+			String dir = InitConfig.home + "wwww/" + www.getName();
+			FileUtil.del(dir);
+			try {
+				ZipUtil.unzip(www.getDir(), dir);
+			} catch (Exception e) {
+				// 默认UTF-8下不能解压中文字符, 尝试使用gbk
+				ZipUtil.unzip(www.getDir(), dir, Charset.forName("GBK"));
 			}
+
+			FileUtil.del(www.getDir());
+			www.setDir(dir);
 			sqlHelper.insertOrUpdate(www);
-			
+
 			return renderSuccess();
 
 		} catch (Exception e) {
@@ -74,6 +67,53 @@ public class WwwController extends BaseController {
 		return renderError("解压错误，请确认压缩包为zip格式");
 	}
 
+	@RequestMapping("rename")
+	@ResponseBody
+	public JsonResult rename(Www www) {
+		if (wwwService.hasName(www.getName())) {
+			return renderError("名称重复");
+		}
+		
+		// 修改名称, 也要修改文件夹名
+		Www wwwOrg = sqlHelper.findById(www.getId(), Www.class);
+		FileUtil.rename(new File(wwwOrg.getDir()), InitConfig.home + "wwww/" + www.getName(), true);
+
+		www.setDir(InitConfig.home + "wwww/" + www.getName());
+		sqlHelper.insertOrUpdate(www);
+
+		return renderSuccess();
+
+	}
+
+
+	@RequestMapping("update")
+	@ResponseBody
+	public JsonResult update(Www www) {
+
+		try {
+			String dir = InitConfig.home + "wwww/" + www.getName();
+			FileUtil.del(dir);
+			try {
+				ZipUtil.unzip(www.getDir(), dir);
+			} catch (Exception e) {
+				// 默认UTF-8下不能解压中文字符, 尝试使用gbk
+				ZipUtil.unzip(www.getDir(), dir, Charset.forName("GBK"));
+			}
+
+			FileUtil.del(www.getDir());
+			www.setDir(dir);
+			sqlHelper.insertOrUpdate(www);
+
+			return renderSuccess();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return renderError("解压错误，请确认压缩包为zip格式");
+	}
+	
+	
 	@RequestMapping("del")
 	@ResponseBody
 	public JsonResult del(String id) {
