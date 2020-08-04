@@ -46,7 +46,7 @@ apt install nginx
 2.下载最新版发行包jar
 
 ```
-wget http://www.nginxwebui.cn/download/nginxWebUI-1.7.0.jar
+wget http://www.nginxwebui.cn/download/nginxWebUI-1.8.0.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -54,7 +54,7 @@ wget http://www.nginxwebui.cn/download/nginxWebUI-1.7.0.jar
 3.启动程序
 
 ```
-nohup java -jar -Xmx64m nginxWebUI-1.7.0.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+nohup java -jar -Xmx64m nginxWebUI-1.8.0.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
 ```
 
 参数说明(都是非必填)
@@ -80,13 +80,13 @@ apt install docker.io
 2.下载镜像: 
 
 ```
-docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.7.0
+docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.8.0
 ```
 
 3. 启动容器: 
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--变量名=变量值 --变量名2=变量值2" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.7.0 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.8.0 /bin/bash
 ```
 
 注意: 
@@ -95,7 +95,9 @@ docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--变量�
 
 2. 容器需要映射路径/home/nginxWebUI:/home/nginxWebUI, 此路径下存放项目所有数据文件, 包括数据库, nginx配置文件, 日志, 证书等, 升级镜像时, 此目录可保证项目数据不丢失. 请注意备份.
 
-3. -e BOOT_OPTIONS 参数可填充java启动参数, jar安装教程中的参数均可使用, 可以靠此项参数修改端口号等
+3. -e BOOT_OPTIONS 参数可填充java启动参数, 可以靠此项参数修改端口号
+
+--server.port 占用端口, 不填默认以8080端口启动
 
 4. 日志默认存放在/home/nginxWebUI/log/nginxWebUI.log
 
