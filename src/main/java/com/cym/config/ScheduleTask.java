@@ -100,6 +100,7 @@ public class ScheduleTask {
 			confController.reload(null, null, null);
 			// 马上解析分隔出来的日志
 			logInfoService.buildDataGroup(InitConfig.home + "log/access." + date + ".zip");
+			logInfoService.clearDb();
 		}
 
 		// 删掉7天前日志文件(zip)

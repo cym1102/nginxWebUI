@@ -6,32 +6,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cym.model.Http;
-import com.cym.model.Server;
-import com.cym.model.Stream;
 
-import cn.craccd.sqlHelper.bean.Page;
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
-import cn.hutool.core.util.StrUtil;
 
 @Service
 public class HttpService {
 	@Autowired
 	SqlHelper sqlHelper;
 
-
 	public void setAll(List<Http> https) {
+		Http logFormat = null;
+		Http accessLog = null;
+		for (Http http : https) {
+			if (http.getName().equals("log_format")) {
+				logFormat = http;
+			}
+			if (http.getName().equals("access_log")) {
+				accessLog = http;
+			}
+		}
+		if (logFormat != null) {
+			https.remove(logFormat);
+			https.add(logFormat);
+		}
+		if (accessLog != null) {
+			https.remove(accessLog);
+			https.add(accessLog);
+		}
+
 		for (Http http : https) {
 			Http httpOrg = sqlHelper.findOneByQuery(new ConditionAndWrapper().eq("name", http.getName()), Http.class);
 
 			if (httpOrg != null) {
 				http.setId(httpOrg.getId());
-			} else {
-				http.setSeq(buildOrder());
 			}
 
+			http.setSeq(buildOrder());
 			http.setValue(http.getValue() + http.getUnit());
 
 			sqlHelper.insertOrUpdate(http);

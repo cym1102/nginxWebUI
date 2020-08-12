@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cym.ext.DataGroup;
 import com.cym.ext.KeyValue;
-import com.cym.model.Admin;
 import com.cym.model.Log;
 import com.cym.model.LogInfo;
 
 import cn.craccd.sqlHelper.bean.Page;
 import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
@@ -91,13 +86,11 @@ public class LogService {
 		saveLog(dataGroup, path);
 		
 	
-		clearDb();
-		
 		
 		return dataGroup;
 	}
 
-	private void clearDb() {
+	public void clearDb() {
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), LogInfo.class);
 		jdbcTemplate.execute("vacuum;"); // 缩小sqlite.db大小
 	}
