@@ -113,11 +113,11 @@ public class RemoteController extends BaseController {
 		}
 
 		Remote remoteLocal = new Remote();
-		remoteLocal.setId("本地");
+		remoteLocal.setId("local");
 		remoteLocal.setIp("");
 		remoteLocal.setProtocol("");
 		remoteLocal.setParentId("");
-		remoteLocal.setDescr("本地");
+		remoteLocal.setDescr(m.get("remoteStr.local"));
 		Map<String, Object> map = version();
 		remoteLocal.setVersion((String) map.get("version"));
 		remoteLocal.setNginx((Integer) map.get("nginx"));
@@ -179,7 +179,7 @@ public class RemoteController extends BaseController {
 		fillTree(groups, treeList);
 
 		Tree tree = new Tree();
-		tree.setName("--无分组--");
+		tree.setName(m.get("remoteStr.noGroup"));
 		tree.setValue("");
 
 		treeList.add(0, tree);
@@ -213,8 +213,8 @@ public class RemoteController extends BaseController {
 		fillTreeRemote(groups, remotes, treeList);
 
 		Tree tree = new Tree();
-		tree.setName("本地");
-		tree.setValue("本地");
+		tree.setName(m.get("remoteStr.local"));
+		tree.setValue(m.get("remoteStr.local"));
 
 		treeList.add(0, tree);
 
@@ -256,7 +256,7 @@ public class RemoteController extends BaseController {
 		StringBuilder rs = new StringBuilder();
 		for (String id : remoteId) {
 			JsonResult jsonResult = null;
-			if (id.equals("本地")) {
+			if (id.equals("local")) {
 				if (cmd.contentEquals("check")) {
 					jsonResult = confController.check(null, null, null);
 				}
@@ -270,16 +270,15 @@ public class RemoteController extends BaseController {
 					jsonResult = confController.stop(null, null);
 				}
 				if (cmd.contentEquals("update")) {
-					jsonResult = renderError("不允许对本地进行远程更新");
+					jsonResult = renderError(m.get("remoteStr.notAllow"));
 				}
-				rs.append("<span class='blue'>本地> </span>");
+				rs.append("<span class='blue'>" + m.get("remoteStr.local") + "> </span>");
 			} else {
 				Remote remote = sqlHelper.findById(id, Remote.class);
 				rs.append("<span class='blue'>").append(remote.getIp()).append("> </span>");
 
 				try {
 					String json = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/conf/" + cmd + "?creditKey=" + remote.getCreditKey());
-					System.out.println(json);
 					jsonResult = JSONUtil.toBean(json, JsonResult.class);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -303,7 +302,7 @@ public class RemoteController extends BaseController {
 	@ResponseBody
 	public JsonResult asyc(String fromId, String[] remoteId) {
 		if (StrUtil.isEmpty(fromId) || remoteId == null || remoteId.length == 0) {
-			return renderSuccess("未选择服务器");
+			return renderSuccess(m.get("remoteStr.noChoice"));
 		}
 
 		Remote remoteFrom = sqlHelper.findById(fromId, Remote.class);
@@ -317,12 +316,10 @@ public class RemoteController extends BaseController {
 		}
 
 		for (String remoteToId : remoteId) {
-			if (remoteToId.equals("本地")) {
-				System.out.println("同步到本地");
+			if (remoteToId.equals("local")) {
 				setAsycPack(json);
 			} else {
 				Remote remoteTo = sqlHelper.findById(remoteToId, Remote.class);
-				System.out.println("同步到" + remoteTo.getIp());
 				try {
 					String version = HttpUtil.get(remoteTo.getProtocol() + "://" + remoteTo.getIp() + ":" + remoteTo.getPort() + "/adminPage/remote/version?creditKey=" + remoteTo.getCreditKey(),
 							1000);
@@ -352,7 +349,6 @@ public class RemoteController extends BaseController {
 	@RequestMapping("setAsycPack")
 	@ResponseBody
 	public JsonResult setAsycPack(String json) {
-		System.err.println("收到同步信息:" + json);
 		AsycPack asycPack = JSONUtil.toBean(json, AsycPack.class);
 
 		confService.setAsycPack(asycPack);
@@ -364,18 +360,18 @@ public class RemoteController extends BaseController {
 	@ResponseBody
 	public JsonResult addOver(Remote remote) {
 		remote.setIp(remote.getIp().trim());
-		
-		if(remoteService.hasSame(remote)) {
-			return renderError("已存在相同ip端口");
+
+		if (remoteService.hasSame(remote)) {
+			return renderError(m.get("remoteStr.sameIp"));
 		}
-		
+
 		remoteService.getCreditKey(remote);
 
 		if (StrUtil.isNotEmpty(remote.getCreditKey())) {
 			sqlHelper.insertOrUpdate(remote);
 			return renderSuccess();
 		} else {
-			return renderError("远程授权未通过,请检查");
+			return renderError(m.get("remoteStr.noAuth"));
 		}
 
 	}
@@ -414,7 +410,7 @@ public class RemoteController extends BaseController {
 		if (FileUtil.exist(nginxPath)) {
 			return FileUtil.readString(nginxPath, StandardCharsets.UTF_8);
 		} else {
-			return "文件不存在";
+			return m.get("remoteStr.noFile");
 		}
 
 	}
@@ -425,10 +421,10 @@ public class RemoteController extends BaseController {
 		Remote remote = sqlHelper.findById(id, Remote.class);
 
 		if (remote == null) {
-			httpSession.setAttribute("localType", "本地");
+			httpSession.setAttribute("localType", "local");
 			httpSession.removeAttribute("remote");
 		} else {
-			httpSession.setAttribute("localType", "远程");
+			httpSession.setAttribute("localType", "remote");
 			httpSession.setAttribute("remote", remote);
 		}
 
@@ -459,7 +455,7 @@ public class RemoteController extends BaseController {
 	@RequestMapping("setMonitor")
 	@ResponseBody
 	public JsonResult setMonitor(String id, Integer monitor) {
-		if (!"本地".equals(id)) {
+		if (!"local".equals(id)) {
 			Remote remote = new Remote();
 			remote.setId(id);
 			remote.setMonitor(monitor);

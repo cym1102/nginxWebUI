@@ -89,7 +89,17 @@ public class LogService {
 		dataGroup.setHttpReferer(httpReferer);
 
 		saveLog(dataGroup, path);
+		
+	
+		clearDb();
+		
+		
 		return dataGroup;
+	}
+
+	private void clearDb() {
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), LogInfo.class);
+		jdbcTemplate.execute("vacuum;"); // 缩小sqlite.db大小
 	}
 
 	private void insertIntoDb(String path) {

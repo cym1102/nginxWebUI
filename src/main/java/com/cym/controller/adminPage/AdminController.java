@@ -46,12 +46,12 @@ public class AdminController extends BaseController {
 		if (StrUtil.isEmpty(admin.getId())) {
 			Long count = adminService.getCountByName(admin.getName());
 			if (count > 0) {
-				return renderError("与已有用户重名");
+				return renderError(m.get("adminStr.nameRepetition"));
 			}
 		}else {
 			Long count = adminService.getCountByNameWithOutId(admin.getName(), admin.getId());
 			if (count > 0) {
-				return renderError("与已有用户重名");
+				return renderError(m.get("adminStr.nameRepetition"));
 			}
 		}
 		
@@ -107,10 +107,10 @@ public class AdminController extends BaseController {
 	@ResponseBody
 	public JsonResult testMail(String mail) {
 		if(StrUtil.isEmpty(mail)) {
-			return renderError("邮箱为空");
+			return renderError(m.get("adminStr.emailEmpty"));
 		}
 		try {
-			sendCloudUtils.sendMailSmtp(mail, "nginxWebUI测试邮件", "nginxWebUI测试邮件");
+			sendCloudUtils.sendMailSmtp(mail, m.get("adminStr.emailTest"), m.get("adminStr.emailTest"));
 			return renderSuccess();
 		} catch (Exception e) {
 			e.printStackTrace();

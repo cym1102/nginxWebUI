@@ -14,13 +14,13 @@
 			<!-- 内容主体区域 -->
 			<div style="padding: 15px">
 				<fieldset class="layui-elem-field layui-field-title">
-					<legend>TCP参数配置</legend>
+					<legend>${menuStr.stream}</legend>
 				</fieldset>
 
 				<form action="${ctx}/adminPage/stream" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加TCP参数配置</button> 
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${stream.add}</button> 
 						</div>
 					</div>
 				</form>
@@ -28,9 +28,9 @@
 				<table class="layui-table">
 					<thead>
 						<tr>
-							<th>名称</th>
-							<th>值</th>
-							<th>操作</th>
+							<th>${commonStr.name}</th>
+							<th>${commonStr.value}</th>
+							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -39,11 +39,11 @@
 							<td>${stream.name}</td>
 							<td style="width: 50%;">${stream.value}</td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${stream.id}')">编辑</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${stream.id}')">删除</button>
+								<button class="layui-btn layui-btn-sm" onclick="edit('${stream.id}')">${commonStr.edit}</button>
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${stream.id}')">${commonStr.del}</button>
 								
-								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${stream.id}', -1)">上移</button>
-								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${stream.id}', 1)">下移</button>
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${stream.id}', -1)">${commonStr.up}</button>
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${stream.id}', 1)">${commonStr.down}</button>
 							</td>
 						</tr>
 						</#list>
@@ -60,22 +60,22 @@
 				<input type="hidden" name="id" id="id">
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">名称</label>
+					<label class="layui-form-label">${commonStr.name}</label>
 					<div class="layui-input-block">
 						<input type="text" name="name" id="name" class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">值</label>
+					<label class="layui-form-label">${commonStr.value}</label>
 					<div class="layui-input-block">
 						<textarea  name="value" id="value" class="layui-textarea" ></textarea>
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
 		</div>

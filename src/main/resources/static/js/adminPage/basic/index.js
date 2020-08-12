@@ -8,7 +8,7 @@ function add() {
 	$("#name").val(""); 
 	$("#value").val(""); 
 	
-	showWindow("添加基本参数配置");
+	showWindow(basicStr.add);
 }
 
 
@@ -23,11 +23,11 @@ function showWindow(title){
 
 function addOver() {
 	if ($("#name").val() == "") {
-		layer.msg("名称为空");
+		layer.msg(basicStr.nameNotice);
 		return;
 	}
 	if ($("#value").val() == "") {
-		layer.msg("值为空");
+		layer.msg(basicStr.valueNotice);
 		return;
 	}
 	
@@ -45,7 +45,7 @@ function addOver() {
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -68,19 +68,19 @@ function edit(id) {
 				$("#name").val(http.name);
 				
 				form.render();
-				showWindow("编辑基本参数配置");
+				showWindow(basicStr.edit);
 			}else{
 				layer.msg(data.msg);
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
 function del(id){
-	if(confirm("确认删除?")){
+	if(confirm(commonStr.confirmDel)){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/basic/del',
@@ -96,7 +96,7 @@ function del(id){
 				}
 			},
 			error : function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -120,7 +120,7 @@ function setOrder(id, count){
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }

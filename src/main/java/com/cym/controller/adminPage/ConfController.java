@@ -44,8 +44,7 @@ public class ConfController extends BaseController {
 	@Value("${project.version}")
 	String currentVersion;
 
-	public ConfController( UpstreamService upstreamService, SettingService settingService, ServerService serverService, ConfService confService,
-			MainController mainController) {
+	public ConfController(UpstreamService upstreamService, SettingService settingService, ServerService serverService, ConfService confService, MainController mainController) {
 		this.upstreamService = upstreamService;
 		this.settingService = settingService;
 		this.serverService = serverService;
@@ -76,9 +75,9 @@ public class ConfController extends BaseController {
 	@ResponseBody
 	public JsonResult nginxStatus() {
 		if (NginxUtils.isRun()) {
-			return renderSuccess("nginx运行状态：<span class='green'>运行中</span>");
+			return renderSuccess(m.get("confStr.nginxStatus") + "：<span class='green'>" + m.get("confStr.running") + "</span>");
 		} else {
-			return renderSuccess("nginx运行状态：<span class='red'>未运行</span>");
+			return renderSuccess(m.get("confStr.nginxStatus") + "：<span class='red'>" + m.get("confStr.stopped") + "</span>");
 		}
 
 	}
@@ -97,19 +96,19 @@ public class ConfController extends BaseController {
 			nginxPath = settingService.get("nginxPath");
 		}
 		if (!FileUtil.exist(nginxPath)) {
-			return renderError("目标文件不存在");
+			return renderError(m.get("confStr.error1"));
 		}
 		if (FileUtil.isDirectory(nginxPath)) {
-			return renderError("目标文件是文件夹，请重新选择");
+			return renderError(m.get("confStr.error2"));
 		}
-		
+
 		try {
 			confService.replace(nginxPath, nginxContent, subContent, subName);
-			return renderSuccess("替换成功，原文件已备份");
+			return renderSuccess(m.get("confStr.replaceSuccess"));
 		} catch (Exception e) {
 			e.printStackTrace();
 
-			return renderError("替换失败:" + e.getMessage());
+			return renderError(m.get("confStr.error3") + ":" + e.getMessage());
 		}
 
 	}
@@ -146,9 +145,9 @@ public class ConfController extends BaseController {
 
 		cmd = "<span class='blue'>" + cmd + "</span>";
 		if (rs.contains("successful")) {
-			return renderSuccess(cmd + "<br>效验成功<br>" + rs.replace("\n", "<br>"));
+			return renderSuccess(cmd + "<br>" + m.get("confStr.verifySuccess") + "<br>" + rs.replace("\n", "<br>"));
 		} else {
-			return renderError(cmd + "<br>效验失败<br>" + rs.replace("\n", "<br>"));
+			return renderError(cmd + "<br>" + m.get("confStr.verifyFail") + "<br>" + rs.replace("\n", "<br>"));
 		}
 
 	}
@@ -196,17 +195,17 @@ public class ConfController extends BaseController {
 
 			cmd = "<span class='blue'>" + cmd + "</span>";
 			if (StrUtil.isEmpty(rs) || rs.contains("signal process started")) {
-				return renderSuccess(cmd + "<br>重新装载成功<br>" + rs.replace("\n", "<br>"));
+				return renderSuccess(cmd + "<br>" + m.get("confStr.reloadSuccess") + "<br>" + rs.replace("\n", "<br>"));
 			} else {
 				if (rs.contains("The system cannot find the file specified") || rs.contains("nginx.pid") || rs.contains("PID")) {
-					rs = rs + "可能nginx进程没有启动";
+					rs = rs + m.get("confStr.mayNotRun");
 				}
 
-				return renderError(cmd + "<br>重新装载失败<br>" + rs.replace("\n", "<br>"));
+				return renderError(cmd + "<br>" + m.get("confStr.reloadFail") + "<br>" + rs.replace("\n", "<br>"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return renderError("重新装载失败<br>" + e.getMessage().replace("\n", "<br>"));
+			return renderError(m.get("confStr.reloadFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
 		}
 	}
 
@@ -238,13 +237,13 @@ public class ConfController extends BaseController {
 
 			cmd = "<span class='blue'>" + cmd + "</span>";
 			if (StrUtil.isEmpty(rs) || rs.contains("signal process started")) {
-				return renderSuccess(cmd + "<br>启动成功<br>" + rs.replace("\n", "<br>"));
+				return renderSuccess(cmd + "<br>" + m.get("confStr.startSuccess") + "<br>" + rs.replace("\n", "<br>"));
 			} else {
-				return renderError(cmd + "<br>启动失败<br>" + rs.replace("\n", "<br>"));
+				return renderError(cmd + "<br>" + m.get("confStr.startFail") + "<br>" + rs.replace("\n", "<br>"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return renderError("启动失败");
+			return renderError(m.get("confStr.startFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
 		}
 	}
 
@@ -271,14 +270,14 @@ public class ConfController extends BaseController {
 			rs = RuntimeUtil.execForStr(cmd);
 
 			cmd = "<span class='blue'>" + cmd + "</span>";
-			if (StrUtil.isEmpty(rs) || rs.contains("已终止进程")) {
-				return renderSuccess(cmd + "<br>停止成功<br>" + rs.replace("\n", "<br>"));
+			if (StrUtil.isEmpty(rs) || rs.contains("已终止进程") || rs.toLowerCase().contains("terminated process")) {
+				return renderSuccess(cmd + "<br>" + m.get("confStr.stopSuccess") + "<br>" + rs.replace("\n", "<br>"));
 			} else {
-				return renderError(cmd + "<br>停止失败<br>" + rs.replace("\n", "<br>"));
+				return renderError(cmd + "<br>" + m.get("confStr.stopFail") + "<br>" + rs.replace("\n", "<br>"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return renderError("停止失败<br>" + e.getMessage().replace("\n", "<br>"));
+			return renderError(m.get("confStr.stopFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
 		}
 	}
 
@@ -313,10 +312,10 @@ public class ConfController extends BaseController {
 			return renderSuccess(confExt);
 		} else {
 			if (FileUtil.isDirectory(nginxPath)) {
-				return renderError("目标文件是文件夹，请重新选择");
+				return renderError(m.get("confStr.error2"));
 			}
-			
-			return renderError("nginx.conf文件不存在");
+
+			return renderError(m.get("confStr.notExist"));
 		}
 
 	}
@@ -334,9 +333,9 @@ public class ConfController extends BaseController {
 		versionConfig.getNewVersion();
 		if (Integer.parseInt(currentVersion.replace(".", "").replace("v", "")) < Integer.parseInt(versionConfig.getVersion().getVersion().replace(".", "").replace("v", ""))) {
 			mainController.autoUpdate(versionConfig.getVersion().getUrl());
-			return renderSuccess("更新成功");
+			return renderSuccess(m.get("confStr.updateSuccess"));
 		} else {
-			return renderSuccess("无需更新");
+			return renderSuccess(m.get("confStr.noNeedUpdate"));
 		}
 	}
 

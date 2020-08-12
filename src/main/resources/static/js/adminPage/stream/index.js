@@ -8,7 +8,7 @@ function add() {
 	$("#name").val(""); 
 	$("#value").val(""); 
 	
-	showWindow("添加TCP参数配置");
+	showWindow(stream.add);
 }
 
 
@@ -23,13 +23,13 @@ function showWindow(title){
 
 function addOver() {
 	if ($("#name").val() == "") {
-		layer.msg("名称为空");
+		layer.msg(stream.noname);
 		return;
 	}
-	if ($("#value").val() == "") {
-		layer.msg("值为空");
+	/*if ($("#value").val() == "") {
+		layer.msg(stream.novalue);
 		return;
-	}
+	}*/
 	
 	
 	$.ajax({
@@ -45,7 +45,7 @@ function addOver() {
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -68,19 +68,19 @@ function edit(id) {
 				$("#name").val(http.name);
 				
 				form.render();
-				showWindow("编辑TCP参数配置");
+				showWindow(stream.edit);
 			}else{
 				layer.msg(data.msg);
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
 function del(id){
-	if(confirm("确认删除?")){
+	if(confirm(commonStr.confirmDel)){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/stream/del',
@@ -96,7 +96,7 @@ function del(id){
 				}
 			},
 			error : function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -120,7 +120,7 @@ function setOrder(id, count){
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }

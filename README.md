@@ -5,6 +5,8 @@ nginx网页配置工具
 
 QQ技术交流群: 1106758598
 
+邮箱: cym1102@qq.com
+
 官网地址: http://www.nginxwebui.cn
 
 #### 功能说明
@@ -27,26 +29,24 @@ nginx本身功能复杂, 本项目并不能涵盖nginx所有功能, 只能配置
 
 本系统通过Let's encrypt申请证书, 使用acme.sh脚本进行自动化申请和续签, 开启续签的证书将在每天凌晨2点进行续签, 只有超过60天的证书才会进行续签. 只支持在linux下签发证书.
 
-因为申请证书必须要使用80端口, 因此在申请和续签的时候nginx将会短暂关闭，请注意。
-
 添加tcp/ip转发配置支持时, 一些低版本的nginx可能需要重新编译，通过添加–with-stream参数指定安装stream模块才能使用, 但在ubuntu 18.04下, 官方软件库中的nginx已经带有stream模块, 不需要重新编译. 本系统如果配置了tcp转发项的话, 会自动引入ngx_stream_module.so的配置项, 如果没有开启则不引入, 最大限度优化ngnix配置文件. 
 
 #### jar安装说明
-以Ubuntu操作系统为例, 以下命令请使用root账户权限执行  
+以Ubuntu操作系统为例,
 
  **注意：本项目需要在root用户下运行系统命令，极容易被黑客利用，请一定修改密码为复杂密码**
 
 1.安装java运行环境和nginx
 
 ```
-apt install openjdk-8-jdk
-apt install nginx
+sudo apt install openjdk-8-jdk
+sudo apt install nginx
 ```
 
 2.下载最新版发行包jar
 
 ```
-wget http://www.nginxwebui.cn/download/nginxWebUI-1.8.0.jar
+sudo wget http://www.nginxwebui.cn/download/nginxWebUI-1.8.2.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -54,7 +54,7 @@ wget http://www.nginxwebui.cn/download/nginxWebUI-1.8.0.jar
 3.启动程序
 
 ```
-nohup java -jar -Xmx64m nginxWebUI-1.8.0.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+sudo nohup java -jar -Xmx64m nginxWebUI-1.8.2.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
 ```
 
 参数说明(都是非必填)
@@ -80,13 +80,13 @@ apt install docker.io
 2.下载镜像: 
 
 ```
-docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.8.0
+docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.8.2
 ```
 
 3. 启动容器: 
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.8.0 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:1.8.2 /bin/bash
 ```
 
 注意: 

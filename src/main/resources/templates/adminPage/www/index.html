@@ -14,13 +14,13 @@
 			<!-- 内容主体区域 -->
 			<div style="padding: 15px">
 				<fieldset class="layui-elem-field layui-field-title">
-					<legend>静态网页上传</legend>
+					<legend>${menuStr.www}</legend>
 				</fieldset>
 
 				<form action="${ctx}/adminPage/www" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">上传静态网页包</button>
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${wwwStr.add}</button>
 						</div>
 					</div>
 				</form>
@@ -28,20 +28,20 @@
 				<table class="layui-table">
 					<thead>
 						<tr>
-							<th>名称</th>
-							<th>路径</th>
-							<th>操作</th>
+							<th>${commonStr.name}</th>
+							<th>${commonStr.path}</th>
+							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
 					<tbody>
 						<#list list as www>
 						<tr>
 							<td>${www.name}</td>
-							<td>${www.dir} &nbsp;&nbsp; <a style="color: blue;" href="javascript:copy('${www.dir}')">复制</a></td>
+							<td>${www.dir} &nbsp;&nbsp; <a style="color: blue;" href="javascript:copy('${www.dir}')">${commonStr.copy}</a></td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${www.id}')">编辑</button>
-								<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="update('${www.id}')">更新</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${www.id}')">删除</button>
+								<button class="layui-btn layui-btn-sm" onclick="edit('${www.id}')">${commonStr.edit}</button>
+								<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="update('${www.id}')">${commonStr.update}</button>
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${www.id}')">${commonStr.del}</button>
 							</td>
 						</tr>
 						</#list>
@@ -60,7 +60,7 @@
 				<input type="hidden" name="id" id="id">
 				<div id="nameDiv">
 					<div class="layui-form-item">
-						<label class="layui-form-label">目录名称</label>
+						<label class="layui-form-label">${wwwStr.dirName}</label>
 						<div class="layui-input-inline">
 							<input type="text" name="name" id="name" class="layui-input">
 						</div>
@@ -69,9 +69,9 @@
 				
 				<div id="zipDiv">
 					<div class="layui-form-item">
-						<label class="layui-form-label">上传zip包</label>
+						<label class="layui-form-label">${wwwStr.upload}</label>
 						<div class="layui-input-inline" style="width: auto;">
-							<button type="button" class="layui-btn" id="upload">选择zip文件</button>
+							<button type="button" class="layui-btn" id="upload">${wwwStr.select}</button>
 						</div>
 						<div class="layui-form-mid layui-word-aux" id="fileName"></div>
 						<input type="hidden" name="dir" id="dir" >
@@ -80,14 +80,14 @@
 	
 					<div class="layui-form-item">
 						<label class="layui-form-label">&nbsp;</label>
-						<div class="layui-form-mid layui-word-aux">注意：请注意名称和zip请不要使用中文</div>
+						<div class="layui-form-mid layui-word-aux">${wwwStr.tips}</div>
 					</div>
 				</div>
 				
 				
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 				
 			</form>

@@ -27,13 +27,13 @@ input[name='param']{
 			<!-- 内容主体区域 -->
 			<div style="padding: 15px">
 				<fieldset class="layui-elem-field layui-field-title">
-					<legend>参数模板</legend>
+					<legend>${menuStr.template}</legend>
 				</fieldset>
 
 				<form action="${ctx}/adminPage/template" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加参数模板</button>
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${templateStr.add}</button>
 						</div>
 					</div>
 				</form>
@@ -41,9 +41,9 @@ input[name='param']{
 				<table class="layui-table" style="table-layout:fixed; WORD-BREAK:break-all;">
 					<thead>
 						<tr>
-							<th>名称</th>
-							<th>参数数量</th>
-							<th>操作</th>
+							<th>${commonStr.name}</th>
+							<th>${templateStr.paramCount}</th>
+							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -52,8 +52,8 @@ input[name='param']{
 							<td>${ext.template.name}</td>
 							<td>${ext.count}</td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.template.id}')">编辑</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.template.id}')">删除</button>
+								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.template.id}')">${commonStr.edit}</button>
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.template.id}')">${commonStr.del}</button>
 							</td>
 						</tr>
 						</#list>
@@ -69,14 +69,14 @@ input[name='param']{
 			<input type="hidden" id="id" name="id">
 		
 			<div class="layui-form-item">
-				<label class="layui-form-label">模板名称</label>
+				<label class="layui-form-label">${templateStr.name}</label>
 				<div class="layui-input-inline">
 					<input type="text" name="name" id="name" class="layui-input">
 				</div>
 			</div>
 			
 			<div class="layui-form-item">
-				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">添加参数</button>
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">${templateStr.addParam}</button>
 			</div>
 			
 			
@@ -84,9 +84,9 @@ input[name='param']{
 				<table class="layui-table">
 					<thead>
 						<tr>
-							<th>名称</th>
-							<th>值</th>
-							<th>操作</th>
+							<th>${commonStr.name}</th>
+							<th>${commonStr.value}</th>
+							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
 					<tbody id="paramList">
@@ -96,8 +96,8 @@ input[name='param']{
 			</div>
 
 			<div class="layui-form-item">
-				<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
-				<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+				<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
+				<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 			</div>
 		</div>
 		

@@ -9,8 +9,8 @@ $(function(){
 		layer.open({
 			type : 1,
 			closeBtn  :0,
-			title : "初始化nginx配置",
-			area : [ '750px', '400px' ], //宽高
+			title : monitorStr.init,
+			area : [ '800px', '400px' ], //宽高
 			content : $('#nginxGuideDiv')
 		});
 	}
@@ -34,13 +34,13 @@ function load(){
 				element.progress('cpu', monitorInfo.cpuRatio);
 				element.progress('mem', monitorInfo.memRatio);
 				
-				$("#memContent").html("( 已用"+monitorInfo.usedMemory + " / 总共" + monitorInfo.totalMemorySize + " )");
-				$("#cpuCount").html("( 核心数:" + monitorInfo.cpuCount + " )");
+				$("#memContent").html("( " + monitorStr.used + ":" + monitorInfo.usedMemory + " / "+ monitorStr.total + ":" + monitorInfo.totalMemorySize + " )");
+				$("#cpuCount").html("( " + monitorStr.coreCount + ":" + monitorInfo.cpuCount + " )");
 				
 			}
 		},
 		error : function() {
-			//alert("出错了,请联系技术人员!");
+			//layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -48,10 +48,10 @@ function load(){
 
 function addNginxGiudeOver(){
 	if($("#nginxPath").val() == ''){
-		alert("nginx.conf路径未填写");
+		layer.alert(monitorStr.pathAlert);
 	}
 	if($("#nginxExe").val() == ''){
-		alert("nginx执行命令未填写");
+		layer.alert(monitorStr.exeAlert);
 	}
 	
 	
@@ -68,11 +68,11 @@ function addNginxGiudeOver(){
 			if (data.success) {
 				location.reload();
 			}else{
-				alert(obj.msg);
+				layer.alert(obj.msg);
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }

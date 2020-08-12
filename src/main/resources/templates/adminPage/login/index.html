@@ -5,32 +5,36 @@
 
 </head>
 <body style="background-image: url('${ctx}/img/background.svg'); background-size: cover;">
+	<div style="position: fixed;top: 10px;right: 10px;font-size: 18px;">
+		<a href="javascript:changeLang()">${langType}</a>
+	</div>
+
 	<div style="height: 0px; width: 0px; overflow: hidden;">
 		<!-- 弹出框 -->
 		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none;">
 			<form id="loginForm">
 				<input type="hidden" name="id" id="id">
 				<div class="layui-form-item">
-					<label class="layui-form-label">用户名</label>
+					<label class="layui-form-label">${loginStr.name}</label>
 					<div class="layui-input-block">
 						<input type="text" name="name" id="name" class="layui-input" value="">
 					</div>
 				</div>
 				<div class="layui-form-item">
-					<label class="layui-form-label">密码</label>
+					<label class="layui-form-label">${loginStr.pass}</label>
 					<div class="layui-input-block">
 						<input type="password" name="pass" id="pass" class="layui-input" value="" onkeyup="getKey()">
 					</div>
 				</div>
 				<div class="layui-form-item">
-					<label class="layui-form-label">验证码</label>
+					<label class="layui-form-label">${loginStr.code}</label>
 					<div class="layui-input-inline" style="width: 240px;">
 						<input type="text" name="code" class="layui-input" style="width: 100px;display: inline-block;" onkeyup="getKey()">
 						<img src="${ctx}/adminPage/login/getCode?t=${jsrandom}" id="codeImg" onclick="refreshCode('codeImg')">
 					</div>
 				</div>
 				<div class="layui-form-item" style="text-align: center;">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="login()">登录</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="login()">${loginStr.login}</button>
 				</div>
 			</form>
 		</div>
@@ -39,26 +43,26 @@
 		<div class="layui-form" id="addUserDiv" style="padding: 15px; display: none;">
 			<form id="adminForm">
 				<div class="layui-form-item">
-					<label class="layui-form-label">用户名</label>
+					<label class="layui-form-label">${loginStr.name}</label>
 					<div class="layui-input-block">
 						<input type="text" name="name" id="adminName" class="layui-input" value="">
 					</div>
 				</div>
 				<div class="layui-form-item">
-					<label class="layui-form-label">密码</label>
+					<label class="layui-form-label">${loginStr.pass}</label>
 					<div class="layui-input-block">
 						<input type="password" name="pass" id="adminPass" class="layui-input" value="" >
 					</div>
 				</div>
 				<div class="layui-form-item">
-					<label class="layui-form-label">再次输入</label>
+					<label class="layui-form-label">${loginStr.repeatPass}</label>
 					<div class="layui-input-block">
 						<input type="password" id="repeatPass" class="layui-input" value="" >
-						<div class="layui-form-mid layui-word-aux">密码至少8位,包含大写小写和数字</div>
+						<div class="layui-form-mid layui-word-aux">${loginStr.tips}</div>
 					</div>
 				</div>
 				<div class="layui-form-item" style="text-align: center;">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="addAdmin()">添加</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addAdmin()">${loginStr.add}</button>
 
 				</div>
 			</form>

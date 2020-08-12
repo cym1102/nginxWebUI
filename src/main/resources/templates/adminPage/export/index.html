@@ -14,16 +14,16 @@
 			<!-- 内容主体区域 -->
 			<div style="padding: 15px">
 				<fieldset class="layui-elem-field layui-field-title">
-					<legend>数据导入导出</legend>
+					<legend>${menuStr.export}</legend>
 				</fieldset>
 
 				<form action="${ctx}/adminPage/admin" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" id="dataExport" class="layui-btn layui-btn-normal" onclick="dExport()">导出配置数据</button>
+							<button type="button" id="dataExport" class="layui-btn layui-btn-normal" onclick="dExport()">${exportStr.dExport}</button>
 						</div>
 						<div class="layui-inline">
-							<button type="button" id="dataImport" class="layui-btn" onclick="dImport()">导入配置数据</button>
+							<button type="button" id="dataImport" class="layui-btn" onclick="dImport()">${exportStr.dImport}</button>
 
 							<div style="display: none;">
 								<input type="file" id="file" onchange="dImportOver()">
@@ -31,7 +31,7 @@
 						</div>
 						
 						<div class="layui-inline">
-							<button type="button" id="logExport" class="layui-btn layui-btn-normal" onclick="lExport()">导出当日日志</button>
+							<button type="button" id="logExport" class="layui-btn layui-btn-normal" onclick="lExport()">${exportStr.lExport}</button>
 						</div>
 					</div>
 				</form>

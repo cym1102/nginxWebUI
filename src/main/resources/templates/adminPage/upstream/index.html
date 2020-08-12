@@ -48,25 +48,25 @@
 			<!-- 内容主体区域 -->
 			<div style="padding: 15px">
 				<fieldset class="layui-elem-field layui-field-title">
-					<legend>负载均衡</legend>
+					<legend>${menuStr.upstream}</legend>
 				</fieldset>
 
 				<form action="${ctx}/adminPage/upstream" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加负载均衡</button>
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${upstreamStr.add}</button>
 						</div>
 
 						<div class="layui-inline">
-							<label class="layui-form-label">关键字</label>
+							<label class="layui-form-label">${upstreamStr.keywords}</label>
 						</div>
 						<div class="layui-input-inline">
 							<input type="text" name="keywords" class="layui-input" value="${keywords}">
 						</div>
 
-						<button type="button" class="layui-btn" onclick="search()">搜索</button>
+						<button type="button" class="layui-btn" onclick="search()">${commonStr.search}</button>
 
-						<button type="button" class="layui-btn layui-btn-normal" onclick="upstreamMonitor()">负载节点监控服务</button>
+						<button type="button" class="layui-btn layui-btn-normal" onclick="upstreamMonitor()">${upstreamStr.upstreamMonitor}</button>
 						<input type="hidden" name="curr" value="${page.curr}">
 						<input type="hidden" name="limit" value="${page.limit}">
 					</div>
@@ -75,29 +75,35 @@
 				<table class="layui-table layui-form" >
 					<thead>
 						<tr>
-							<th>转发类型</th>
-							<th>名称</th>
-							<th>策略</th>
-							<th>负载</th>
-							<th>加入监控</th>
-							<th>操作</th>
+							<th>${upstreamStr.proxyType}</th>
+							<th>${commonStr.name}</th>
+							<th>${upstreamStr.strategy}</th>
+							<th>${upstreamStr.server}</th>
+							<th>${upstreamStr.joinMonitor}</th>
+							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
 					<tbody>
 						<#list page.records as ext>
 						<tr>
-							<td><#if ext.upstream.proxyType==0>http</#if> <#if ext.upstream.proxyType==1>TCP</#if></td>
+							<td><#if ext.upstream.proxyType==0>http</#if> 
+								<#if ext.upstream.proxyType==1>TCP</#if>
+							</td>
 							<td>${ext.upstream.name}</td>
-							<td><#if ext.upstream.tactics==""> 默认 </#if> <#if ext.upstream.tactics=="ip_hash"> ip绑定(ip_hash) </#if> <#if ext.upstream.tactics=="least_conn"> 最少连接(least_conn) </#if> <#if
-									ext.upstream.tactics=="least_time"> 最短时间(least_time) </#if></td>
+							<td>
+								<#if ext.upstream.tactics==""> ${upstreamStr.default} </#if> 
+								<#if ext.upstream.tactics=="ip_hash"> ${upstreamStr.ipHash} </#if> 
+								<#if ext.upstream.tactics=="least_conn"> ${upstreamStr.leastConn} </#if> 
+								<#if ext.upstream.tactics=="least_time"> ${upstreamStr.leastTime} </#if>
+							</td>
 							<td style="padding: 0px;">
 								<table class="server">${ext.serverStr}
 								</table>
 							</td>
-							<td><input type="checkbox" name="switch" lay-filter="monitor" value="${ext.upstream.id}" ${(ext.upstream.monitor==1)?string( 'checked','')}  lay-text="开启|关闭" lay-skin="switch"></td>
+							<td><input type="checkbox" name="switch" lay-filter="monitor" value="${ext.upstream.id}" ${(ext.upstream.monitor==1)?string( 'checked','')}  lay-text="ON|OFF" lay-skin="switch"></td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.upstream.id}')">编辑</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.upstream.id}')">删除</button>
+								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.upstream.id}')">${commonStr.edit}</button>
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.upstream.id}')">${commonStr.del}</button>
 							</td>
 						</tr>
 						</#list>
@@ -115,7 +121,7 @@
 				<input type="hidden" name="id" id="id">
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">转发类型</label>
+					<label class="layui-form-label">${upstreamStr.proxyType}</label>
 					<div class="layui-input-inline">
 						<select name="proxyType" id="proxyType">
 							<option value="0">http</option>
@@ -125,28 +131,28 @@
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">名称<span class="red">*</span></label>
+					<label class="layui-form-label">${commonStr.name}<span class="red">*</span></label>
 					<div class="layui-input-inline">
 						<input type="text" name="name" id="name" class="layui-input">
 					</div>
 
-					<label class="layui-form-label">负载策略</label>
+					<label class="layui-form-label">${upstreamStr.loadTactics}</label>
 					<div class="layui-input-inline">
 						<select name="tactics" id="tactics">
-							<option value="">默认</option>
-							<option value="ip_hash">ip绑定(ip_hash)</option>
-							<option value="least_conn">最少连接(least_conn)</option>
-							<option value="least_time">最短时间(least_time)</option>
+							<option value="">${upstreamStr.default}</option>
+							<option value="ip_hash">${upstreamStr.ipHash}</option>
+							<option value="least_conn">${upstreamStr.leastConn}</option>
+							<option value="least_time">${upstreamStr.leastTime}</option>
 						</select>
 					</div>
-					<div class="layui-form-mid layui-word-aux proxyHttp">如果负载状态包含备用或停用,负载策略只能选择默认</div>
+					<div class="layui-form-mid layui-word-aux proxyHttp">${upstreamStr.proxyTips}</div>
 
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addItem()">添加负载</button>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addItem()">${upstreamStr.addServer}</button>
 
-					<button type="button" class="layui-btn layui-btn-sm" onclick="upstreamParam()">设置额外参数</button>
+					<button type="button" class="layui-btn layui-btn-sm" onclick="upstreamParam()">${upstreamStr.extParam}</button>
 					<textarea style="display: none;" id="upstreamParamJson" name="upstreamParamJson"></textarea>
 				</div>
 
@@ -156,12 +162,12 @@
 						<thead>
 							<tr>
 								<th>ip</th>
-								<th>端口</th>
-								<th>权重</th>
-								<th>最大失败次数</th>
-								<th>失败等待时间(s)</th>
-								<th>状态策略</th>
-								<th>操作</th>
+								<th>${upstreamStr.port}</th>
+								<th>${upstreamStr.weight}</th>
+								<th>${upstreamStr.maxFail}</th>
+								<th>${upstreamStr.failWait}</th>
+								<th>${upstreamStr.status}</th>
+								<th>${commonStr.operation}</th>
 							</tr>
 						</thead>
 						<tbody id="itemList" class="itemList">
@@ -172,57 +178,57 @@
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
 		</div>
 
 		<div class="layui-form" id="monitorDiv" style="padding: 15px; display: none">
 			<div class="layui-form-item">
-				<label class="layui-form-label">通知发送邮箱</label>
+				<label class="layui-form-label">${remoteStr.email}</label>
 				<div class="layui-input-inline">
 					<input type="text" name="mail" id="mail" class="layui-input">
 				</div>
 				<div class="layui-input-inline" style="width: auto;">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="showSelectMail()">设置SMTP</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="showSelectMail()">${remoteStr.setSmtp}</button>
 				</div>
 				<div class="layui-input-inline" style="width: auto;">
-					<button type="button" class="layui-btn" onclick="testMail()">测试发送</button>
+					<button type="button" class="layui-btn" onclick="testMail()">${remoteStr.testMail}</button>
 				</div>
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label">负载节点监控</label>
+				<label class="layui-form-label">${upstreamStr.upstreamMonitor}</label>
 				<div class="layui-input-inline">
 					<select name="upstreamMonitor" id="upstreamMonitor">
-						<option value="false">关闭</option>
-						<option value="true">开启</option>
+						<option value="false">${commonStr.close}</option>
+						<option value="true">${commonStr.open}</option>
 					</select>
 				</div>
 			</div>
 
 			<div class="layui-form-item">
-				<button type="button" class="layui-btn layui-btn-normal" onclick="upstreamOver()">确定</button>
-				<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+				<button type="button" class="layui-btn layui-btn-normal" onclick="upstreamOver()">${commonStr.ok}</button>
+				<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 			</div>
 		</div>
 
 
 		<div id="paramJsonDiv" style="display: none; padding: 15px;">
 			<div class="layui-form-item">
-				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">添加参数</button>
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">${upstreamStr.addParam}</button>
 				
-				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectTemplate('paramList')">添加模板</button>
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectTemplate('paramList')">${upstreamStr.selectTemplate}</button>
 			</div>
 			<div class="layui-form-item">
 				<input type="hidden" id="targertId">
 				<table class="layui-table">
 					<thead>
 						<tr>
-							<th>名称</th>
-							<th>值</th>
-							<th>操作</th>
+							<th>${commonStr.name}</th>
+							<th>${commonStr.value}</th>
+							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
 					<tbody id="paramList">
@@ -232,8 +238,8 @@
 			</div>
 
 			<div class="layui-form-item">
-				<button type="button" class="layui-btn layui-btn-normal" onclick="addParamOver()">提交</button>
-				<button type="button" class="layui-btn" onclick="layer.close(paramIndex)">关闭</button>
+				<button type="button" class="layui-btn layui-btn-normal" onclick="addParamOver()">${commonStr.submit}</button>
+				<button type="button" class="layui-btn" onclick="layer.close(paramIndex)">${commonStr.close}</button>
 			</div>
 		</div>
 	</div>

@@ -84,16 +84,16 @@ public class CertController extends BaseController {
 	@ResponseBody
 	public JsonResult apply(String id, String type) {
 		if (!SystemTool.isLinux()) {
-			return renderError("证书操作只能在linux下进行");
+			return renderError(m.get("certStr.error2"));
 		}
 
 		Cert cert = sqlHelper.findById(id, Cert.class);
 		if (cert.getDnsType() == null) {
-			return renderError("该证书还未设置DNS服务商信息");
+			return renderError(m.get("certStr.error3"));
 		}
 
 		if (isInApply) {
-			return renderError("另一个申请进程正在进行，请稍后再申请");
+			return renderError(m.get("certStr.error4"));
 		}
 		isInApply = true;
 

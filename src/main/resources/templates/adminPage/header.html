@@ -2,13 +2,17 @@
 	<div class="layui-logo" >${projectName} ${currentVersion}</div>
 	<ul class="layui-nav layui-layout-right">
 		<li class="layui-nav-item">
+			<a href="javascript:changeLang()">${langType}</a>
+		</li>
+		
+		<li class="layui-nav-item">
 			<#if hasNewVersion == 1 && newVersion != null>
-				<a href="javascript:showUpdate('${newVersion.version}','${newVersion.url}','${newVersion.docker}','${newVersion.update}')"  style="font-weight: bold;color: red;">有新版本发布 ${newVersion.version}</a>
+				<a href="javascript:showUpdate('${newVersion.version}','${newVersion.url}','${newVersion.docker}','${newVersion.update}')"  style="font-weight: bold;color: red;">${commonStr.newVersion} ${newVersion.version}</a>
 			</#if>
 		
 		</li>
 		<li class="layui-nav-item">
-			<a href="javascript:loginOut();">退出</a>
+			<a href="javascript:loginOut();">${commonStr.exit}</a>
 		</li>
 	</ul>
 </div>

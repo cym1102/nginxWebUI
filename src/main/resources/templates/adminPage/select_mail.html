@@ -7,52 +7,52 @@
 
 
 		<div class="layui-form-item">
-			<label class="layui-form-label">发送服务器</label>
+			<label class="layui-form-label">${mailStr.host}</label>
 			<div class="layui-input-block">
 				<input type="text" name="mail_host" id="mail_host" class="layui-input">
 			</div>
 		</div>
 
 		<div class="layui-form-item">
-			<label class="layui-form-label">端口号</label>
+			<label class="layui-form-label">${mailStr.port}</label>
 			<div class="layui-input-block">
 				<input type="text" name="mail_port" id="mail_port" class="layui-input">
 			</div>
 		</div>
 
 		<div class="layui-form-item">
-			<label class="layui-form-label">发送邮箱</label>
+			<label class="layui-form-label">${mailStr.from}</label>
 			<div class="layui-input-block">
 				<input type="text" name="mail_from" id="mail_from" class="layui-input">
 			</div>
 		</div>
 
 		<div class="layui-form-item">
-			<label class="layui-form-label">ssl状态</label>
+			<label class="layui-form-label">${mailStr.ssl}</label>
 			<div class="layui-input-block">
 				<select name="mail_ssl" id="mail_ssl">
-					<option value="true">开启</option>
-					<option value="false">关闭</option>
+					<option value="true">${commonStr.open}</option>
+					<option value="false">${commonStr.close}</option>
 				</select>
 			</div>
 		</div>
 
 		<div class="layui-form-item">
-			<label class="layui-form-label">用户名</label>
+			<label class="layui-form-label">${mailStr.user}</label>
 			<div class="layui-input-block">
 				<input type="text" name="mail_user" id="mail_user" class="layui-input">
 			</div>
 		</div>
 
 		<div class="layui-form-item">
-			<label class="layui-form-label">密码</label>
+			<label class="layui-form-label">${mailStr.pass}</label>
 			<div class="layui-input-block">
 				<input type="text" name="mail_pass" id="mail_pass" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item" style="text-align: center; margin-top: 20px;">
-			<button type="button" class="layui-btn layui-btn-sm" onclick="selectMailOver()">确定</button>
-			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="layer.close(mailIndex)">关闭</button>
+			<button type="button" class="layui-btn layui-btn-sm" onclick="selectMailOver()">${commonStr.ok}</button>
+			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="layer.close(mailIndex)">${commonStr.close}</button>
 		</div>
 	</div>
 </div>

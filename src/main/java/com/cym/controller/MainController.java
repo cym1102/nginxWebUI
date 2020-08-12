@@ -57,7 +57,7 @@ public class MainController extends BaseController {
 			FileUtil.move(temp, dest, true);
 
 			String localType = (String) httpSession.getAttribute("localType");
-			if ("远程".equals(localType)) {
+			if ("remote".equals(localType)) {
 				Remote remote = (Remote) httpSession.getAttribute("remote");
 
 				HashMap<String, Object> paramMap = new HashMap<>();
@@ -81,7 +81,7 @@ public class MainController extends BaseController {
 	@RequestMapping("/autoUpdate")
 	public JsonResult autoUpdate(String url) {
 		if (!SystemTool.isLinux()) {
-			return renderError("只有运行在Linux才能进行自动更新");
+			return renderError(m.get("commonStr.updateTips"));
 		}
 
 		ApplicationHome home = new ApplicationHome(getClass());
@@ -89,9 +89,7 @@ public class MainController extends BaseController {
 		String path = jar.getParent() + "/nginxWebUI.jar.update";
 		LOG.info("download:" + path);
 		HttpUtil.downloadFile(url, path);
-		System.out.println(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
 		asyncUtils.run(path);
-		System.out.println(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
 		return renderSuccess();
 	}
 

@@ -60,7 +60,7 @@ $(function(){
 				}
 			},
 			error : function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	})
@@ -83,7 +83,7 @@ $(function(){
 					}
 				},
 				error : function() {
-					alert("出错了,请联系技术人员!");
+					layer.alert(commonStr.errorInfo);
 				}
 		});
 	});   
@@ -110,7 +110,7 @@ $(function(){
 					},
 					cols : [{
 								key : 'descr',
-								title : '别名',
+								title :remoteStr.alias,
 								template : function(remote) {
 									if(remote.type == 0){
 										return `<span class="black">${remote.descr}</span>`
@@ -120,57 +120,57 @@ $(function(){
 									}
 								}
 							},{
-								title : '地址',
+								title : remoteStr.addr,
 								template : function(remote) {
-									if(remote.type == 0 && remote.id!='本地'){
+									if(remote.type == 0 && remote.id!='local'){
 										return remote.protocol + "://" + remote.ip + ":" + remote.port;
 									}
 									return "";
 								}
 							},{
 								key: 'version',
-								title : '版本'
+								title :remoteStr.version
 							},{
 								key: 'system',
-								title : '操作系统'
+								title : remoteStr.system
 							},{	
 								title : 'nginx',
 								template : function(remote) {
 									if(remote.nginx == 2){
-										return `<span class="black">未知</span>`
+										return `<span class="black">${remoteStr.unknown}</span>`
 									}
 									if(remote.nginx == 1){
-										return `<span class="green">运行中</span>`
+										return `<span class="green">${remoteStr.running}</span>`
 									}
 									if(remote.nginx == 0){
-										return `<span class="red">未运行</span>`
+										return `<span class="red">${remoteStr.stopped}</span>`
 									}
 									
 									return "";
 								}
 							},{	
-								title : '状态',
+								title : commonStr.status,
 								template : function(remote) {
 									if(remote.status == 1){
-										return `<span class="green">在线</span>`
+										return `<span class="green">${remoteStr.online}</span>`
 									}
 									if(remote.status == 0){
-										return `<span class="red">掉线</span>`
+										return `<span class="red">${remoteStr.offline}</span>`
 									}
 									
 									return "";
 								}
 							},{	
-								title : '加入监控',
+								title : remoteStr.addToMonitor,
 								template : function(remote) {
 									if(remote.type == 0){
 										var checked = remote.monitor==1?'checked':'';
-										return `<input type="checkbox" name="switch" lay-filter="monitor" value="${remote.id}" lay-text="开启|关闭" lay-skin="switch" ${checked}>`;
+										return `<input type="checkbox" name="switch" lay-filter="monitor" value="${remote.id}" lay-text="ON|OFF" lay-skin="switch" ${checked}>`;
 									}
 									return "";
 								}
 							},{
-								title : '操作',
+								title :commonStr.operation,
 								template : function(remote) {
 									var html = "";
 									
@@ -178,31 +178,31 @@ $(function(){
 										// 服务器(同版本的才能切换)
 										//console.log( remote.version + " : "  + $("#projectVersion").val());
 										if(remote.status == 1 && remote.version == $("#projectVersion").val()){
-											html += `<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="change('${remote.id}')">切换到此服务器</button>`;
+											html += `<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="change('${remote.id}')">${remoteStr.changeTo}</button>`;
 										}
 										
-										if(remote.id != '本地'){
+										if(remote.id != 'local'){
 											// 本地
 											if(remote.status == 1){
-												html += `<button class="layui-btn layui-btn-sm" onclick="content('${remote.id}')">查看conf</button>`;
+												html += `<button class="layui-btn layui-btn-sm" onclick="content('${remote.id}')">${remoteStr.see} conf</button>`;
 											}
 											
 											html += `
-												<button class="layui-btn layui-btn-sm" onclick="edit('${remote.id}')">编辑</button>
-												<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${remote.id}')">删除</button>
+												<button class="layui-btn layui-btn-sm" onclick="edit('${remote.id}')">${commonStr.edit}</button>
+												<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${remote.id}')">${commonStr.del}</button>
 											`;
 										} else {
 											// 远程
 											if(remote.status == 1){
-												html += `<button class="layui-btn layui-btn-sm" onclick="contentLocal()">查看conf</button>`;
+												html += `<button class="layui-btn layui-btn-sm" onclick="contentLocal()">${remoteStr.see} conf</button>`;
 											}
 										}
 										
 									} else {
 										// 分组
 										html += `
-										<button class="layui-btn layui-btn-sm" onclick="editGroup('${remote.id}')">编辑</button>
-										<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="delGroup('${remote.id}')">删除</button>
+										<button class="layui-btn layui-btn-sm" onclick="editGroup('${remote.id}')">${commonStr.edit}</button>
+										<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="delGroup('${remote.id}')">${commonStr.del}</button>
 										`;
 									}
 									return html;
@@ -212,10 +212,7 @@ $(function(){
 		});
 })
 
-/*function search() {
-	$("input[name='curr']").val(1);
-	$("#searchForm").submit();
-}*/
+
 
 function add() {
 	$("#id").val(""); 
@@ -227,7 +224,7 @@ function add() {
 	$("#monitor option:first").prop("checked", true);
 	parentId.setValue([""]);
 	
-	showWindow("添加远程服务器");
+	showWindow(remoteStr.add);
 }
 
 
@@ -253,7 +250,7 @@ function contentLocal(){
 				
 				layer.open({
 					type : 1,
-					title : "内容",
+					title :remoteStr.content,
 					area : [ '1200px', '745px' ], // 宽高
 					content : $('#contentDiv')
 				});
@@ -262,7 +259,7 @@ function contentLocal(){
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -284,7 +281,7 @@ function content(id) {
 				
 				layer.open({
 					type : 1,
-					title : "内容",
+					title :remoteStr.content,
 					area : [ '1200px', '745px' ], // 宽高
 					content : $('#contentDiv')
 				});
@@ -293,7 +290,7 @@ function content(id) {
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -301,7 +298,7 @@ function content(id) {
 var load;
 function addOver() {
 	if($("#ip").val().trim() == '' || $("#port").val().trim() == '' || $("#name").val().trim() == '' || $("#pass").val().trim() == ''){
-		layer.msg("未填写完成");
+		layer.msg(remoteStr.notFill);
 		return;
 	}
 	
@@ -322,7 +319,7 @@ function addOver() {
 		},
 		error : function() {
 			layer.close(load);
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -351,19 +348,19 @@ function edit(id) {
 				parentId.setValue([remote.parentId]);
 				
 				form.render();
-				showWindow("编辑远程服务器");
+				showWindow(remoteStr.edit);
 			}else{
 				layer.msg(data.msg);
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
 function del(id){
-	if(confirm("确认删除?")){
+	if(confirm(commonStr.confirmDel)){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/remote/del',
@@ -379,7 +376,7 @@ function del(id){
 				}
 			},
 			error : function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -388,7 +385,7 @@ function del(id){
 
 
 function change(id){
-	if(confirm("确认切换到此服务器?")){
+	if(confirm(remoteStr.confirmChange)){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/remote/change',
@@ -404,7 +401,7 @@ function change(id){
 				}
 			},
 			error : function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -474,7 +471,7 @@ function asycSelect(){
 				
 				layer.open({
 					type : 1,
-					title : "同步服务器",
+					title : remoteStr.asycSelect,
 					area : [ '600px', '500px' ], // 宽高
 					content : $('#selectDiv')
 				});
@@ -484,7 +481,7 @@ function asycSelect(){
 		},
 		error : function() {
 			layer.closeAll();
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 	
@@ -502,14 +499,14 @@ function asycOver(){
 		success : function(data) {
 			layer.closeAll();
 			if (data.success) {
-				layer.msg("同步成功")
+				layer.msg(remoteStr.asycSuccess)
 			}else{
 				layer.msg(data.msg)
 			}
 		},
 		error : function() {
 			layer.closeAll();
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -554,7 +551,7 @@ function cmdGroup(){
 				
 				layer.open({
 					type : 1,
-					title : "执行命令",
+					title : remoteStr.cmdOver,
 					area : [ '600px', '500px' ], // 宽高
 					content : $('#cmdDiv')
 				});
@@ -564,7 +561,7 @@ function cmdGroup(){
 		},
 		error : function() {
 			layer.closeAll();
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 	
@@ -594,7 +591,7 @@ function cmdOver(){
 		},
 		error : function() {
 			layer.closeAll();
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -607,7 +604,7 @@ function addGroup(){
 	
 	layer.open({
 		type : 1,
-		title : "添加分组",
+		title :remoteStr.addGroup,
 		area : [ '400px', '500px' ], // 宽高
 		content : $('#groupDiv')
 	});
@@ -633,7 +630,7 @@ function editGroup(id) {
 				groupParentId.setValue([group.parentId]);
 				layer.open({
 					type : 1,
-					title : "编辑分组",
+					title :remoteStr.editGroup,
 					area : [ '400px', '500px' ], // 宽高
 					content : $('#groupDiv')
 				});
@@ -644,7 +641,7 @@ function editGroup(id) {
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -665,14 +662,14 @@ function addGroupOver(){
 		},
 		error : function() {
 			layer.closeAll();
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
 
 function delGroup(id){
-	if(confirm("确认删除?")){
+	if(confirm(commonStr.confirmDel)){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/remote/delGroup',
@@ -689,7 +686,7 @@ function delGroup(id){
 			},
 			error : function() {
 				layer.closeAll();
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -711,7 +708,7 @@ function nginxMonitor(){
 				form.render();
 				layer.open({
 					type : 1,
-					title : "nginx监控服务",
+					title : remoteStr.nginxMonitor,
 					area : [ '650px', '300px' ], // 宽高
 					content : $('#nginxDiv')
 				});
@@ -721,7 +718,7 @@ function nginxMonitor(){
 		},
 		error : function() {
 			layer.closeAll();
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -729,7 +726,7 @@ function nginxMonitor(){
 function nginxOver(){
 		var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;                
 		if ($("#mail").val() == '' || !myreg.test($("#mail").val())) {                    
-			alert("邮箱格式不正确");               
+			layer.alert(remoteStr.emailTips);               
 			return;                
 		}
 		
@@ -750,7 +747,7 @@ function nginxOver(){
 		},
 		error : function() {
 			layer.closeAll();
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -759,10 +756,10 @@ function nginxOver(){
 
 var loadIndex;
 function testMail(){
-	if(confirm("是否就行测试发送?")){
+	if(confirm(remoteStr.testSend)){
 		var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;                
 		if ($("#mail").val() == '' || !myreg.test($("#mail").val())) {                    
-			alert("邮箱格式不正确");               
+			layer.alert(remoteStr.emailTips);               
 			return;                
 		}
 		
@@ -777,13 +774,13 @@ function testMail(){
 			success: function(data) {
 				layer.close(loadIndex);
 				if (data.success) {
-					layer.msg("发送成功");
+					layer.msg(remoteStr.sendSuccess);
 				} else {
 					layer.msg(data.msg);
 				}
 			},
 			error: function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}

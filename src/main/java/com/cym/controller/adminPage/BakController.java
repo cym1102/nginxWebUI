@@ -96,7 +96,7 @@ public class BakController extends BaseController {
 			ZipUtil.unzip(path.replace(".bak", ".zip"), pathFile.getParent() + "/conf.d");
 			return renderSuccess();
 		} else {
-			return renderError("conf文件路径未配置");
+			return renderError(m.get("bakStr.pathNotice"));
 		}
 
 	}

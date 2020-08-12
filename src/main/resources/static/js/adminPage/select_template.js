@@ -21,7 +21,7 @@ $(function(){
 				}
 			},
 			error : function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 })
@@ -34,7 +34,7 @@ function selectTemplate(id){
 	
 	templateIndex = layer.open({
 		type: 1,
-		title: "选择参数模板",
+		title: templateStr.select,
 		area: ['450px', '350px'], // 宽高
 		content: $('#templateSelectDiv')
 	});
@@ -43,7 +43,7 @@ function selectTemplate(id){
 function selectTemplateOver(){
 	var templateId = 	$("#selectTemplateId").val();
 	if(templateId == null){
-		layer.msg("未选中项");
+		layer.msg(templateStr.noSelect);
 		return;
 	}
 	$.ajax({
@@ -61,7 +61,7 @@ function selectTemplateOver(){
 				var html = `
 					<tr name="param" id="${uuid}">
 						<td>
-							模板
+							${templateStr.template}
 						</td>
 						<td  style="width: 60%;">
 							${ext.template.name}
@@ -69,7 +69,7 @@ function selectTemplateOver(){
 							<input type="hidden" name="templateName" value="${ext.template.name}">
 						</td>
 						<td>
-							<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
 						</td>
 					</tr>
 				`;
@@ -82,7 +82,7 @@ function selectTemplateOver(){
 			}
 		},
 		error: function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -92,7 +92,7 @@ function buildTemplateParam(param){
 	return `
 			<tr name="param" id="${uuid}">
 				<td>
-					模板
+					${templateStr.template}
 				</td>
 				<td  style="width: 60%;">
 					${param.templateName}
@@ -100,7 +100,7 @@ function buildTemplateParam(param){
 					<input type="hidden" name="templateName" value="${param.templateName}">
 				</td>
 				<td>
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
 				</td>
 			</tr>
 			`;

@@ -55,12 +55,12 @@ public class TemplateController extends BaseController {
 		if (StrUtil.isEmpty(template.getId())) {
 			Long count = templateService.getCountByName(template.getName());
 			if (count > 0) {
-				return renderError("与已有参数模板重名");
+				return renderError(m.get("templateStr.sameName"));
 			}
 		}else {
 			Long count = templateService.getCountByNameWithOutId(template.getName(), template.getId());
 			if (count > 0) {
-				return renderError("与已有参数模板重名");
+				return renderError(m.get("templateStr.sameName"));
 			}
 		}
 		

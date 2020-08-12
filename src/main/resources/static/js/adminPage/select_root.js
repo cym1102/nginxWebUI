@@ -27,7 +27,7 @@ var rootSelect = {
 		
 		this.index = layer.open({
 			type : 1,
-			title : "选择文件",
+			title : commonStr.selectFile,
 			area : [ '400px', '600px' ], // 宽高
 			content : $('#rootSelectDiv')
 		});

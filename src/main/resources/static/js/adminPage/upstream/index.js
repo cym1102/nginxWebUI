@@ -17,7 +17,7 @@ $(function() {
 				}
 			},
 			error: function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	});
@@ -40,7 +40,7 @@ function add() {
 	$("#proxyType option:first").prop("selected", true);
 
 	form.render();
-	showWindow("添加负载均衡");
+	showWindow(upstreamStr.add);
 }
 
 
@@ -55,7 +55,7 @@ function showWindow(title) {
 
 function addOver() {
 	if ($("#name").val() == "") {
-		layer.msg("名称为空");
+		layer.msg(upstreamStr.noName);
 		return;
 	}
 
@@ -77,7 +77,7 @@ function addOver() {
 	})
 
 	if (!over) {
-		layer.msg("填写不完整");
+		layer.msg(upstreamStr.noFill);
 		return;
 	}
 
@@ -123,7 +123,7 @@ function addOver() {
 			}
 		},
 		error: function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -160,25 +160,25 @@ function edit(id) {
 									<td><input type="number" name="failTimeout" class="layui-input" value="${upstreamServer.failTimeout}"></td>
 									<td>
 										<select name="status">
-											<option ${upstreamServer.status == 'none' ? 'selected' : ''} value="none">无</option>
-											<option ${upstreamServer.status == 'down' ? 'selected' : ''} value="down">停用(down)</option>
-											<option ${upstreamServer.status == 'backup' ? 'selected' : ''} value="backup">备用(backup)</option>
+											<option ${upstreamServer.status == 'none' ? 'selected' : ''} value="none">${upstreamStr.none}</option>
+											<option ${upstreamServer.status == 'down' ? 'selected' : ''} value="down">${upstreamStr.down}</option>
+											<option ${upstreamServer.status == 'backup' ? 'selected' : ''} value="backup">${upstreamStr.backup}</option>
 										</select>
 									</td>
-									<td><button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button></td>
+									<td><button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button></td>
 							</tr>`
 				}
 				$("#itemList").html(html);
 
 
 				form.render();
-				showWindow("编辑负载均衡");
+				showWindow(upstreamStr.edit);
 			} else {
 				layer.msg(data.msg);
 			}
 		},
 		error: function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 
@@ -186,7 +186,7 @@ function edit(id) {
 }
 
 function del(id) {
-	if (confirm("确认删除?")) {
+	if (confirm(commonStr.confirmDel)) {
 		$.ajax({
 			type: 'POST',
 			url: ctx + '/adminPage/upstream/del',
@@ -202,7 +202,7 @@ function del(id) {
 				}
 			},
 			error: function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -218,12 +218,12 @@ function addItem() {
 						<td><input type="number" name="failTimeout" class="layui-input" value="10"></td>
 						<td>
 							<select name="status">
-								<option value="none">无</option>
-								<option value="down">停用(down)</option>
-								<option value="backup">备用(backup)</option>
+								<option value="none">${upstreamStr.none}</option>
+								<option value="down">${upstreamStr.down}</option>
+								<option value="backup">${upstreamStr.backup}</option>
 							</select>
 						</td>
-						<td><button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button></td>
+						<td><button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button></td>
 				</tr>`
 	$("#itemList").append(html);
 
@@ -261,7 +261,7 @@ function fillTable(params) {
 					<textarea  name="value" class="layui-textarea">${param.value}</textarea>
 				</td>
 				<td>
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
 				</td>
 			</tr>
 			`;
@@ -275,7 +275,7 @@ function fillTable(params) {
 
 	paramIndex = layer.open({
 		type: 1,
-		title: "设置额外参数",
+		title: upstreamStr.extParam,
 		area: ['800px', '600px'], // 宽高
 		content: $('#paramJsonDiv')
 	});
@@ -293,7 +293,7 @@ function addParam() {
 			<textarea  name="value" class="layui-textarea"></textarea>
 		</td>
 		<td>
-			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
 		</td>
 	</tr>
 	`;
@@ -339,7 +339,7 @@ function upstreamMonitor() {
 				form.render();
 				layer.open({
 					type: 1,
-					title: "负载节点监控服务",
+					title: upstreamStr.upstreamMonitor,
 					area: ['600px', '300px'], // 宽高
 					content: $('#monitorDiv')
 				});
@@ -349,7 +349,7 @@ function upstreamMonitor() {
 		},
 		error: function() {
 			layer.closeAll();
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -358,7 +358,7 @@ function upstreamMonitor() {
 function upstreamOver() {
 	var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
 	if ($("#mail").val() == '' || !myreg.test($("#mail").val())) {
-		alert("邮箱格式不正确");
+		layer.alert(remoteStr.emailTips);
 		return;
 	}
 	loadIndex = layer.load();
@@ -380,17 +380,17 @@ function upstreamOver() {
 		},
 		error: function() {
 			layer.close(loadIndex);
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
 var loadIndex;
 function testMail() {
-	if (confirm("是否就行测试发送?")) {
+	if (confirm(remoteStr.testSend)) {
 		var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
 		if ($("#mail").val() == '' || !myreg.test($("#mail").val())) {
-			alert("邮箱格式不正确");
+			layer.alert(remoteStr.emailTips);
 			return;
 		}
 
@@ -405,14 +405,14 @@ function testMail() {
 			success: function(data) {
 				layer.close(loadIndex);
 				if (data.success) {
-					layer.msg("发送成功");
+					layer.msg(remoteStr.sendSuccess);
 				} else {
 					layer.msg(data.msg);
 				}
 			},
 			error: function() {
 				layer.close(loadIndex);
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}

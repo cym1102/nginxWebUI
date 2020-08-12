@@ -6,7 +6,7 @@
 	<div class="layui-form" id="templateSelectDiv" style="padding: 15px; display: none">
 
 		<div class="layui-form-item">
-			<label class="layui-form-label">选择模板</label>
+			<label class="layui-form-label">${commonStr.selectTemplate}</label>
 			<div class="layui-input-inline">
 				<select name="selectTemplateId" id="selectTemplateId">
 				
@@ -15,8 +15,8 @@
 		</div>
 
 		<div class="layui-form-item" style="text-align: center; margin-top: 20px;">
-			<button type="button" class="layui-btn layui-btn-sm" onclick="selectTemplateOver()">确定</button>
-			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="layer.close(templateIndex)">关闭</button>
+			<button type="button" class="layui-btn layui-btn-sm" onclick="selectTemplateOver()">${commonStr.ok}</button>
+			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="layer.close(templateIndex)">${commonStr.close}</button>
 		</div>
 	</div>
 </div>

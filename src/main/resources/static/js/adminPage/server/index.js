@@ -13,7 +13,7 @@ $(function() {
 					
 				},
 				error : function() {
-					alert("出错了,请联系技术人员!");
+					layer.alert(commonStr.errorInfo);
 				}
 		});
 	});   
@@ -146,7 +146,7 @@ function add() {
 	checkProxyType(0);
 	
 	form.render();
-	showWindow("添加反向代理");
+	showWindow(serverStr.add);
 }
 
 function showWindow(title) {
@@ -160,12 +160,12 @@ function showWindow(title) {
 
 function addOver() {
 	if($("#listen").val().trim() == ''){
-		layer.msg("端口未填写");
+		layer.msg(serverStr.noPort);
 		return;
 	}
 	
 	if($("#ssl").val() == 1 && $("#serverName").val() == ''){
-		layer.msg("开启ssl必须填写域名");
+		layer.msg(serverStr.sslTips);
 		return;
 	}
 	
@@ -196,7 +196,7 @@ function addOver() {
 		}
 	})
 	if(!over){
-		layer.msg("填写不完整");
+		layer.msg(serverStr.noFill);
 		return;
 	}
 	
@@ -254,7 +254,7 @@ function addOver() {
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -343,20 +343,20 @@ function edit(id,clone) {
 				}
 				
 				form.render();
-				showWindow("编辑反向代理");
+				showWindow(serverStr.edit);
 			} else {
 				layer.msg(data.msg);
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
 
 function del(id) {
-	if (confirm("确认删除?")) {
+	if (confirm(commonStr.del)) {
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/server/del',
@@ -372,7 +372,7 @@ function del(id) {
 				}
 			},
 			error : function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -412,10 +412,10 @@ function buildHtml(uuid, location, upstreamSelect){
 				<td>
 					<div class="layui-input-inline" style="width: 130px;">
 						<select name="type" lang='${uuid}' lay-filter="type">
-							<option ${location.type=='0'?'selected':''} value="0">代理动态http</option>
-							<option ${location.type=='1'?'selected':''} value="1">代理静态html</option>
-							<option ${location.type=='2'?'selected':''} value="2">负载均衡</option>
-							<option ${location.type=='3'?'selected':''} value="3">空白location</option>
+							<option ${location.type=='0'?'selected':''} value="0">${serverStr.serverType0}</option>
+							<option ${location.type=='1'?'selected':''} value="1">${serverStr.serverType1}</option>
+							<option ${location.type=='2'?'selected':''} value="2">${serverStr.serverType2}</option>
+							<option ${location.type=='3'?'selected':''} value="3">${serverStr.serverType3}</option>
 						</select>
 					</div>
 				</td>
@@ -423,26 +423,26 @@ function buildHtml(uuid, location, upstreamSelect){
 				<td>
 					<span name="valueSpan">
 						<div class="layui-inline">
-							<input type="text"  style="width: 315px;" name="value" id="value_${uuid}" class="layui-input long" value=""  placeholder="例：http://127.0.0.1:8080">
+							<input type="text"  style="width: 315px;" name="value" id="value_${uuid}" class="layui-input long" value=""  placeholder="${serverStr.example}：http://127.0.0.1:8080">
 						</div>
 					</span>
 					
 					<span name="rootPathSpan">
-						<div class="layui-inline" style="width: 100px;">
+						<div class="layui-inline" style="width: 150px;">
 							<select name="rootType" >
-								<option value="root">root模式</option>
-								<option value="alias">alias模式</option>
+								<option value="root">${serverStr.rootModel}</option>
+								<option value="alias">${serverStr.aliasModel}</option>
 							</select>
 						</div>
 						
 						<div class="layui-inline" style="width: 150px;">
-							<input type="text" name="rootPath" id="rootPath_${uuid}" class="layui-input" placeholder="例：/root/www">
+							<input type="text" name="rootPath" id="rootPath_${uuid}" class="layui-input" placeholder="${serverStr.example}：/root/www">
 						</div>
 							
 						<i class="layui-icon layui-icon-export" lang="value" onclick="selectWww('${uuid}')"></i> 
 							
-						<div class="layui-inline" style="width: 150px;">
-							<input type="text" name="rootPage" id="rootPage_${uuid}" class="layui-input" placeholder="默认页如 index.html">
+						<div class="layui-inline" style="width: 120px;">
+							<input type="text" name="rootPage" id="rootPage_${uuid}" class="layui-input" placeholder="${serverStr.defaultPage}">
 						</div>	
 					</span>
 					
@@ -456,14 +456,14 @@ function buildHtml(uuid, location, upstreamSelect){
 					
 					<span  name="headerSpan">
 						<div class="layui-inline">
-							<input type="checkbox" name="header" title="header添加Host参数" lay-skin="primary" checked> 
+							<input type="checkbox" name="header" title="${serverStr.headerAddHost}" lay-skin="primary" checked> 
 						</div>
 					</span>
 				</td> 
 				<td>
 					<textarea style="display: none;" id="locationParamJson_${uuid}" name="locationParamJson" >${location.locationParamJson}</textarea>
-					<button type="button" class="layui-btn layui-btn-sm" onclick="locationParam('${uuid}')">设置额外参数</button>
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+					<button type="button" class="layui-btn layui-btn-sm" onclick="locationParam('${uuid}')">${serverStr.extParm}</button>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
 				</td>
 			</tr>`
 		
@@ -479,7 +479,7 @@ var certIndex;
 function selectCert(){
 	certIndex = layer.open({
 		type : 1,
-		title : "选择内置证书",
+		title : serverStr.selectCert,
 		area : [ '500px', '300px' ], // 宽高
 		content : $('#certDiv')
 	});
@@ -510,7 +510,7 @@ function selectCertOver(){
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -565,7 +565,7 @@ function fillTable(params){
 					<textarea  name="value" class="layui-textarea">${param.value}</textarea>
 				</td>
 				<td>
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
 				</td>
 			</tr>
 			`;
@@ -578,7 +578,7 @@ function fillTable(params){
 	
 	paramIndex = layer.open({
 		type : 1,
-		title : "设置额外参数",
+		title : serverStr.extParm,
 		area : [ '800px', '600px' ], // 宽高
 		content : $('#paramJsonDiv')
 	});
@@ -596,7 +596,7 @@ function addParam(){
 			<textarea  name="value" class="layui-textarea"></textarea>
 		</td>
 		<td>
-			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
 		</td>
 	</tr>
 	`;
@@ -654,7 +654,7 @@ function selectWww(id){
 
 
 function clone(id){
-	if(confirm("确认进行克隆?")){
+	if(confirm(serverStr.confirmClone)){
 		edit(id, true);
 	}
 }
@@ -678,7 +678,7 @@ function importServer() {
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -687,7 +687,7 @@ var importIndex;
 function openImport() {
 	importIndex = layer.open({
 		type : 1,
-		title : "导入conf",
+		title : serverStr.importServer,
 		area : [ '500px', '300px' ], // 宽高
 		content : $('#importDiv')
 	});
@@ -700,7 +700,7 @@ function selectRootCustom(inputId){
 }
 
 function testPort(){
-	if(confirm("是否测试全部监听的端口?")){
+	if(confirm(serverStr.testAllPort)){
 		layer.load();
 		$.ajax({
 			type : 'POST',
@@ -711,14 +711,14 @@ function testPort(){
 			success : function(data) {
 				layer.closeAll();
 				if (data.success) {
-					layer.msg("没有端口被占用");
+					layer.msg(serverStr.noPortUsed);
 				} else {
 					layer.alert(data.msg);
 				}
 			},
 			error : function() {
 				layer.closeAll();
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}

@@ -1,6 +1,7 @@
 package com.cym.controller.adminPage;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpSession;
@@ -16,6 +17,7 @@ import com.cym.model.Www;
 import com.cym.service.WwwService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
+import com.cym.utils.SystemTool;
 
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
@@ -41,7 +43,7 @@ public class WwwController extends BaseController {
 	@ResponseBody
 	public JsonResult addOver(Www www) {
 		if (wwwService.hasName(www.getName())) {
-			return renderError("名称重复");
+			return renderError(m.get("wwwStr.sameName"));
 		}
 
 		try {
@@ -55,7 +57,13 @@ public class WwwController extends BaseController {
 			}
 
 			FileUtil.del(www.getDir());
-			www.setDir(dir);
+			if (!SystemTool.isWindows()) {
+				www.setDir(dir);
+			} else {
+				String classPath = getClassPath();
+				www.setDir(classPath.split(":")[0] + ":" + dir);
+			}
+
 			sqlHelper.insertOrUpdate(www);
 
 			return renderSuccess();
@@ -64,16 +72,16 @@ public class WwwController extends BaseController {
 			e.printStackTrace();
 		}
 
-		return renderError("解压错误，请确认压缩包为zip格式");
+		return renderError(m.get("wwwStr.zipError"));
 	}
 
 	@RequestMapping("rename")
 	@ResponseBody
 	public JsonResult rename(Www www) {
 		if (wwwService.hasName(www.getName())) {
-			return renderError("名称重复");
+			return renderError(m.get("wwwStr.sameName"));
 		}
-		
+
 		// 修改名称, 也要修改文件夹名
 		Www wwwOrg = sqlHelper.findById(www.getId(), Www.class);
 		FileUtil.rename(new File(wwwOrg.getDir()), InitConfig.home + "wwww/" + www.getName(), true);
@@ -84,7 +92,6 @@ public class WwwController extends BaseController {
 		return renderSuccess();
 
 	}
-
 
 	@RequestMapping("update")
 	@ResponseBody
@@ -101,7 +108,12 @@ public class WwwController extends BaseController {
 			}
 
 			FileUtil.del(www.getDir());
-			www.setDir(dir);
+			if (!SystemTool.isWindows()) {
+				www.setDir(dir);
+			} else {
+				String classPath = getClassPath();
+				www.setDir(classPath.split(":")[0] + ":" + dir);
+			}
 			sqlHelper.insertOrUpdate(www);
 
 			return renderSuccess();
@@ -110,10 +122,9 @@ public class WwwController extends BaseController {
 			e.printStackTrace();
 		}
 
-		return renderError("解压错误，请确认压缩包为zip格式");
+		return renderError(m.get("wwwStr.zipError"));
 	}
-	
-	
+
 	@RequestMapping("del")
 	@ResponseBody
 	public JsonResult del(String id) {
@@ -132,5 +143,31 @@ public class WwwController extends BaseController {
 		Www www = sqlHelper.findById(id, Www.class);
 
 		return renderSuccess(www);
+	}
+
+	public String getClassPath() throws Exception {
+		try {
+			String strClassName = getClass().getName();
+			String strPackageName = "";
+			if (getClass().getPackage() != null) {
+				strPackageName = getClass().getPackage().getName();
+			}
+			String strClassFileName = "";
+			if (!"".equals(strPackageName)) {
+				strClassFileName = strClassName.substring(strPackageName.length() + 1, strClassName.length());
+			} else {
+				strClassFileName = strClassName;
+			}
+			URL url = null;
+			url = getClass().getResource(strClassFileName + ".class");
+			String strURL = url.toString();
+			strURL = strURL.substring(strURL.indexOf('/') + 1, strURL.lastIndexOf('/'));
+			// 返回当前类的路径，并且处理路径中的空格，因为在路径中出现的空格如果不处理的话，
+			// 在访问时就会从空格处断开，那么也就取不到完整的信息了，这个问题在web开发中尤其要注意
+			return strURL.replaceAll("%20", " ");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw ex;
+		}
 	}
 }

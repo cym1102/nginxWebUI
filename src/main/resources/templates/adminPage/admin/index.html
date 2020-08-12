@@ -14,13 +14,13 @@
 			<!-- 内容主体区域 -->
 			<div style="padding: 15px">
 				<fieldset class="layui-elem-field layui-field-title">
-					<legend>管理员管理</legend>
+					<legend>${menuStr.admin}</legend>
 				</fieldset>
 
 				<form action="${ctx}/adminPage/admin" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加管理员</button>
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${adminStr.add}</button>
 						</div>
 
 						<input type="hidden" name="curr" value="${page.curr}">
@@ -31,9 +31,9 @@
 				<table class="layui-table">
 					<thead>
 						<tr>
-							<th>用户名</th>
+							<th>${adminStr.name}</th>
 
-							<th>操作</th>
+							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -41,8 +41,8 @@
 						<tr>
 							<td>${admin.name}</td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${admin.id}')">编辑</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${admin.id}')">删除</button>
+								<button class="layui-btn layui-btn-sm" onclick="edit('${admin.id}')">${commonStr.edit}</button>
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${admin.id}')">${commonStr.del}</button>
 							</td>
 						</tr>
 						</#list>
@@ -60,22 +60,22 @@
 				<input type="hidden" name="id" id="id">
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">用户名</label>
+					<label class="layui-form-label">${adminStr.name}</label>
 					<div class="layui-input-block">
 						<input type="text" name="name" id="name" class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">密码</label>
+					<label class="layui-form-label">${adminStr.pass}</label>
 					<div class="layui-input-block">
 						<input type="password" name="pass" id="pass" class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
 		</div>

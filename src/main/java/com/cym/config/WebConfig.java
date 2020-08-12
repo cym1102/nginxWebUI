@@ -2,9 +2,11 @@ package com.cym.config;
 
 import javax.annotation.Resource;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.LocaleResolver;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -29,6 +31,12 @@ public class WebConfig implements WebMvcConfigurer {
 				.excludePathPatterns("/js/**")//
 				.excludePathPatterns("/img/**")//
 				.excludePathPatterns("/css/**");
+
+//		registry.addInterceptor(new LocaleInterceptor()).addPathPatterns("/**");
 	}
 
+	@Bean
+	public LocaleResolver localeResolver(MyLocaleResolver myLocaleResolver) {
+		return myLocaleResolver;
+	}
 }

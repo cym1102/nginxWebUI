@@ -7,7 +7,7 @@ $(function() {
 })
 
 function delAll() {
-	if (confirm("是否清空日志?")) {
+	if (confirm(logStr.clearAll)) {
 		$.ajax({
 			type: 'GET',
 			url: ctx + '/adminPage/log/delAll',
@@ -22,7 +22,7 @@ function delAll() {
 			},
 			error: function() {
 				layer.closeAll();
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -46,14 +46,14 @@ function detail(id) {
 		},
 		error: function() {
 			layer.closeAll();
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
 
 function del(id) {
-	if (confirm("确认删除?")) {
+	if (confirm(commonStr.confirmDel)) {
 		$.ajax({
 			type: 'GET',
 			url: ctx + '/adminPage/log/del',
@@ -70,7 +70,7 @@ function del(id) {
 			},
 			error: function() {
 				layer.closeAll();
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -81,14 +81,14 @@ function showContent(dataGroup) {
 	// 请求状态占比
 	var option = {
 		title: {
-			text: '请求状态占比',
+			text: logStr.status,
 			left: 'center'
 		},
 		tooltip: {
 			trigger: 'item',
 			formatter(params) {
 				const item = params.data;
-				return item.name + "状态: " + item.value;
+				return item.name + commonStr.status + ": " + item.value;
 			},
 		},
 		series: [{
@@ -96,7 +96,7 @@ function showContent(dataGroup) {
 			radius: '55%',
 			data: dataGroup.status,
 			label: {
-				formatter: '{b}状态 : {c} ({d}%)'
+				formatter: '{b}' + commonStr.status + ' : {c} ({d}%)'
 			}
 		}]
 	};
@@ -105,7 +105,7 @@ function showContent(dataGroup) {
 	// 系统占比
 	option = {
 		title: {
-			text: '系统占比',
+			text: logStr.browser,
 			left: 'center'
 		},
 		tooltip: {
@@ -155,7 +155,7 @@ function showContent(dataGroup) {
 
 	option = {
 		title: {
-			text: '访问统计',
+			text: logStr.pvuv,
 			left: 'center'
 		},
 		tooltip: {
@@ -169,7 +169,7 @@ function showContent(dataGroup) {
 			},
 		},
 		xAxis: {
-			name: '时',
+			name: logStr.hour,
 			type: 'category',
 			data: hour
 		},
@@ -210,7 +210,7 @@ function showContent(dataGroup) {
 
 	option = {
 		title: {
-			text: '域名统计',
+			text: logStr.httpReferer,
 			left: 'center'
 		},
 		tooltip: {
@@ -244,7 +244,7 @@ function showContent(dataGroup) {
 	// 弹出框
 	layer.open({
 		type: 1,
-		title: "统计",
+		title: logStr.statistics,
 		area: ['1150px', '700px'], // 宽高
 		content: $('#windowDiv')
 	});
@@ -252,7 +252,7 @@ function showContent(dataGroup) {
 
 
 function analysis() {
-	if (confirm("开始解析当日日志?")) {
+	if (confirm(logStr.analysisStart)) {
 		layer.load();
 		$.ajax({
 			type: 'GET',
@@ -267,7 +267,7 @@ function analysis() {
 			},
 			error: function() {
 				layer.closeAll();
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}

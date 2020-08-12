@@ -20,7 +20,7 @@ $(function() {
 					}
 				},
 				error : function() {
-					alert("出错了,请联系技术人员!");
+					layer.alert(commonStr.errorInfo);
 				}
 		});
 	});   
@@ -48,7 +48,7 @@ function nginxStatus() {
 
 function replace() {
 	if ($("#nginxPath").val() == '') {
-		alert("nginx配置文件路径为空");
+		layer.msg(confStr.jserror2);
 		return;
 	}
 
@@ -82,7 +82,7 @@ function replace() {
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -123,7 +123,7 @@ function loadConf() {
 		},
 		error : function() {
 			//layer.closeAll();
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -158,7 +158,7 @@ function loadOrg() {
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -175,18 +175,18 @@ function showHide(id){
 
 function check() {
 	if ($("#nginxPath").val() == '') {
-		alert("conf配置文件路径为空");
+		layer.msg(confStr.jserror2);
 		return;
 	}
 	
 	if ($("#nginxExe").val() == '') {
-		alert("nginx执行文件路径为空");
+		layer.msg(confStr.jserror3);
 		return;
 	}
 	
 	if($("#nginxExe").val().indexOf('/') > -1 || $("#nginxExe").val().indexOf('\\') > -1){
 		if ($("#nginxDir").val() == '') {
-			alert("你使用了绝对路径执行命令，请填写nginx目录");
+			layer.msg(confStr.jserror4);
 			return;
 		}
 	}
@@ -219,25 +219,25 @@ function check() {
 		},
 		error : function() {
 			layer.closeAll();
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
 function reload() {
 	if ($("#nginxPath").val() == '') {
-		alert("conf配置文件路径为空");
+		layer.msg(confStr.jserror2);
 		return;
 	}
 	
 	if ($("#nginxExe").val() == '') {
-		alert("nginx执行文件路径为空");
+		layer.msg(confStr.jserror3);
 		return;
 	}
 	
 	if($("#nginxExe").val().indexOf('/') > -1 || $("#nginxExe").val().indexOf('\\') > -1){
 		if ($("#nginxDir").val() == '') {
-			alert("你使用了绝对路径执行命令，请填写nginx目录");
+			layer.msg(confStr.jserror4);
 			return;
 		}
 	}
@@ -270,7 +270,7 @@ function reload() {
 		},
 		error : function() {
 			layer.closeAll();
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 
@@ -278,23 +278,23 @@ function reload() {
 
 function start(){
 	if ($("#nginxPath").val() == '') {
-		alert("conf配置文件路径为空");
+		layer.msg(confStr.jserror2);
 		return;
 	}
 	
 	if ($("#nginxExe").val() == '') {
-		alert("nginx执行文件路径为空");
+		layer.msg(confStr.jserror3);
 		return;
 	}
 	
 	if($("#nginxExe").val().indexOf('/') > -1 || $("#nginxExe").val().indexOf('\\') > -1){
 		if ($("#nginxDir").val() == '') {
-			alert("你使用了绝对路径执行命令，请填写nginx目录");
+			layer.msg(confStr.jserror4);
 			return;
 		}
 	}
 	
-	if(confirm("确认启动?")){
+	if(confirm(confStr.confirmStart)){
 		layer.load();
 		$.ajax({
 			type : 'POST',
@@ -327,7 +327,7 @@ function start(){
 			},
 			error : function() {
 				layer.closeAll();
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -337,19 +337,19 @@ function start(){
 
 function stop(){
 	if ($("#nginxExe").val() == '') {
-		alert("nginx执行文件路径为空");
+		layer.msg(confStr.jserror3);
 		return;
 	}
 	
 	if($("#nginxExe").val().indexOf('/') > -1 || $("#nginxExe").val().indexOf('\\') > -1){
 		if ($("#nginxDir").val() == '') {
-			alert("你使用了绝对路径执行命令，请填写nginx目录");
+			layer.msg(confStr.jserror4);
 			return;
 		}
 	}
 	
 	
-	if(confirm("确认停止?")){
+	if(confirm(confStr.confirmStop)){
 		layer.load();
 		$.ajax({
 			type : 'POST',
@@ -382,7 +382,7 @@ function stop(){
 			},
 			error : function() {
 				layer.closeAll();
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}

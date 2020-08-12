@@ -40,11 +40,11 @@
 	
 }
 .liteBtn{
-	width: 90px;
+	width: 100px;
 }
 .blk{
 	display: inline-block;
-	width: 85px;
+	width: 100px;
 }
 .blk2{
 	display: inline-block;
@@ -86,27 +86,27 @@
 			<!-- 内容主体区域 -->
 			<div style="padding: 15px">
 				<fieldset class="layui-elem-field layui-field-title">
-					<legend>反向代理</legend>
+					<legend>${menuStr.server}</legend>
 				</fieldset>
 
 				<form action="${ctx}/adminPage/server" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加反向代理</button>
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${serverStr.add}</button>
 						</div>
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-input-inline" onclick="openImport()">导入反向代理</button>
+							<button type="button" class="layui-btn layui-input-inline" onclick="openImport()">${serverStr.importServer}</button>
 						</div>
 						
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="testPort()">检查端口占用</button>
+							<button type="button" class="layui-btn layui-btn-normal" onclick="testPort()">${serverStr.testPort}</button>
 						</div>
 							
 						<div class="layui-inline">
 							<input type="text" name="keywords" class="layui-input" value="${keywords}">
 						</div>
 					
-						<button type="button" class="layui-btn" onclick="search()">搜索</button>
+						<button type="button" class="layui-btn" onclick="search()">${commonStr.search}</button>
 						
 						
 						<input type="hidden" name="sort" id="sort" value="${sort}">
@@ -119,14 +119,14 @@
 					<table class="layui-table layui-form" >
 						<thead>
 							<tr>
-								<th>转发类型 <i class="layui-icon ${(direction=='desc'&&sort=='proxyType')?string('layui-icon-down','layui-icon-up')} ${(sort=='proxyType')?string('blue','')}" id="proxyTypeSort"  onclick="sort('proxyTypeSort')"></i></th>
-								<th>监听ip端口 <i class="layui-icon ${(direction=='desc'&&sort=='listen')?string('layui-icon-down','layui-icon-up')} ${(sort=='listen')?string('blue','')}" id="listenSort"  onclick="sort('listenSort')"></i></th>
-								<th>监听域名 <i class="layui-icon ${(direction=='desc'&&sort=='serverName')?string('layui-icon-down','layui-icon-up')} ${(sort=='serverName')?string('blue','')}" id="serverNameSort" onclick="sort('serverNameSort')"></i></th>
-								<th>开启ssl</th>
-								<th>ssl选项</th>
-								<th>代理目标</th>
-								<th>启用</th>
-								<th>操作</th>
+								<th>${serverStr.transpondType} <i class="layui-icon ${(direction=='desc'&&sort=='proxyType')?string('layui-icon-down','layui-icon-up')} ${(sort=='proxyType')?string('blue','')}" id="proxyTypeSort"  onclick="sort('proxyTypeSort')"></i></th>
+								<th>${serverStr.listen} <i class="layui-icon ${(direction=='desc'&&sort=='listen')?string('layui-icon-down','layui-icon-up')} ${(sort=='listen')?string('blue','')}" id="listenSort"  onclick="sort('listenSort')"></i></th>
+								<th>${serverStr.serverName} <i class="layui-icon ${(direction=='desc'&&sort=='serverName')?string('layui-icon-down','layui-icon-up')} ${(sort=='serverName')?string('blue','')}" id="serverNameSort" onclick="sort('serverNameSort')"></i></th>
+								<th>${serverStr.ssl}</th>
+								<th>${serverStr.sslOption}</th>
+								<th>${serverStr.proxyTargetsssss}</th>
+								<th>${serverStr.status}</th>
+								<th>${commonStr.operation}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -138,22 +138,22 @@
 								</td>
 								<td>${ext.server.listen} <#if ext.server.def == 1>default</#if></td>
 								<td>
-									<#if ext.server.serverName==''>全部</#if>
+									<#if ext.server.serverName==''>${serverStr.all}</#if>
 									<#if ext.server.serverName!=''>${ext.server.serverName}</#if>
 								</td>
 								<td>
-									<#if ext.server.ssl==0>否</#if>
-									<#if ext.server.ssl==1>是</#if>
+									<#if ext.server.ssl==0>${commonStr.no}</#if>
+									<#if ext.server.ssl==1>${commonStr.yes}</#if>
 								</td>
 								<td>
 									<#if ext.server.ssl==1> 
-										<span class="blk">80转跳443：</span>
-										<#if ext.server.rewrite==0>否</#if> 
-										<#if ext.server.rewrite==1>是</#if> 
+										<span class="blk">${serverStr.httpToHttps}：</span>
+										<#if ext.server.rewrite==0>${commonStr.no}</#if> 
+										<#if ext.server.rewrite==1>${commonStr.yes}</#if> 
 										<br>
-										<span class="blk">开启http2：</span>
-										<#if ext.server.http2==0>否</#if> 
-										<#if ext.server.http2==1>是</#if> 
+										<span class="blk">${serverStr.http2}：</span>
+										<#if ext.server.http2==0>${commonStr.no}</#if> 
+										<#if ext.server.http2==1>${commonStr.yes}</#if> 
 									</#if>
 								</td>
 							
@@ -163,12 +163,12 @@
 								</td>
 	
 								<td>
-									<input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="启用|停用" lay-skin="switch" ${(ext.server.enable)?string('checked','')}>
+									<input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="ON|OFF" lay-skin="switch" ${(ext.server.enable)?string('checked','')}>
 								</td>
 								<td>
-									<button type="button" class="layui-btn layui-btn-sm" onclick="edit('${ext.server.id}', false)">编辑</button>
-									<button type="button" class="layui-btn layui-btn-sm" onclick="clone('${ext.server.id}')">克隆</button>
-									<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.server.id}')">删除</button>
+									<button type="button" class="layui-btn layui-btn-sm" onclick="edit('${ext.server.id}', false)">${commonStr.edit}</button>
+									<button type="button" class="layui-btn layui-btn-sm" onclick="clone('${ext.server.id}')">${commonStr.clone}</button>
+									<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.server.id}')">${commonStr.del}</button>
 									
 								</td>
 							</tr>
@@ -188,7 +188,7 @@
 				<input type="hidden" id="id" name="id">
 				
 				<div class="layui-form-item" style="padding: 0 15px;">
-					<label class="layui-form-label">转发类型</label>
+					<label class="layui-form-label">${serverStr.transpondType}</label>
 					<div class="layui-input-inline">
 						<select name="proxyType" id="proxyType" lay-filter="proxyType">
 							<option value="0">http</option>
@@ -197,7 +197,7 @@
 					</div>
 					
 					<div class="proxyTcp">
-						<label class="layui-form-label">指向负载均衡</label>
+						<label class="layui-form-label">${serverStr.toUpstream}</label>
 						<div class="layui-input-inline">
 							<select name="proxyUpstreamId" id="proxyUpstreamId">
 								<#list upstreamTcpList as upstream>
@@ -205,7 +205,7 @@
 								</#list>
 								
 								<#if upstreamTcpSize == 0>
-								<option value="">--无可用负载均衡--</option>
+								<option value="">${serverStr.noUpstream}</option>
 								</#if>
 							</select>
 						</div>
@@ -216,7 +216,7 @@
 						<div class="proxyHttp">
 							<label class="layui-form-label">&nbsp;</label>
 							<div class="layui-input-block">
-								<button style="margin-left: 5px;" type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectCert()">选择内置证书</button>
+								<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectCert()">${serverStr.selectCert}</button>
 								<div class="layui-form-mid layui-word-aux"></div>
 							</div>
 						</div>
@@ -229,29 +229,29 @@
 					<div class="layui-row">
 						<div class="layui-col-md4">
 							<div class="layui-form-item">
-								<label class="layui-form-label">监听ip端口<span class="red">*</span></label> 
+								<label class="layui-form-label">${serverStr.listen}<span class="red">*</span></label> 
 								<div class="layui-input-inline">
-									<input type="text" name="ip" id="ip" class="layui-input" style="width: 125px;display: inline-block;" placeholder="ip 默认为空">
-									<input type="text" name="listen" id="listen" style="width: 60px;display: inline-block;" class="layui-input" placeholder="端口">
+									<input type="text" name="ip" id="ip" class="layui-input" style="width: 125px;display: inline-block;" placeholder="${serverStr.ipDefault}">
+									<input type="text" name="listen" id="listen" style="width: 60px;display: inline-block;" class="layui-input" placeholder="${serverStr.port}">
 									
-									<input type="checkbox" name="def" id="def" title="默认匹配" lay-skin="primary"> 
+									<input type="checkbox" name="def" id="def" title="${serverStr.default}" lay-skin="primary"> 
 								</div>
 							</div>
 							
 							<div class="proxyHttp">
 								<div class="layui-form-item">
-									<label class="layui-form-label">监听域名</label>
+									<label class="layui-form-label">${serverStr.serverName}</label>
 									<div class="layui-input-inline">
-										<input type="text" name="serverName" id="serverName" class="layui-input" placeholder="例: www.baidu.com">
+										<input type="text" name="serverName" id="serverName" class="layui-input" placeholder="${serverStr.example}: www.baidu.com">
 									</div>
 								</div>
 	
 								<div class="layui-form-item">
-									<label class="layui-form-label">开启ssl</label>
+									<label class="layui-form-label">${serverStr.ssl}</label>
 									<div class="layui-input-inline">
 										<select name="ssl" id="ssl" lay-filter="ssl">
-											<option value="0">否</option>
-											<option value="1">是</option>
+											<option value="0">${commonStr.no}</option>
+											<option value="1">${commonStr.yes}</option>
 										</select>
 									</div>
 								</div>
@@ -260,11 +260,11 @@
 						<div class="layui-col-md8 proxyHttp">
 							<div class="pemDiv"  style="display: none;">
 								<div class="layui-form-item">
-									<label class="layui-form-label">pem文件路径</label>
+									<label class="layui-form-label">${serverStr.pemPath}</label>
 									<div class="layui-input-block">
-										<button type="button" class="layui-btn layui-btn-sm liteBtn" id="pemBtn">上传pem文件</button>
+										<button type="button" class="layui-btn layui-btn-sm liteBtn" id="pemBtn">${serverStr.uploadPem}</button>
 										
-										<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectPem()">选择系统路径</button>
+										<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectPem()">${commonStr.selectPath}</button>
 										
 										<input type="hidden" name="pem" id="pem" class="layui-input">
 										<div class="layui-form-mid layui-word-aux" id="pemPath"></div>
@@ -272,11 +272,11 @@
 									</div>
 								</div>
 								<div class="layui-form-item">
-									<label class="layui-form-label">key文件路径</label>
+									<label class="layui-form-label">${serverStr.keyPath}</label>
 									<div class="layui-input-block">
-										<button type="button" class="layui-btn layui-btn-sm liteBtn" id="keyBtn">上传key文件</button>
+										<button type="button" class="layui-btn layui-btn-sm liteBtn" id="keyBtn">${serverStr.uploadKey}</button>
 										
-										<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectKey()">选择系统路径</button>
+										<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectKey()">${commonStr.selectPath}</button>
 										
 										<input type="hidden" name="key" id="key" class="layui-input">
 										<div class="layui-form-mid layui-word-aux" id="keyPath"></div>
@@ -284,19 +284,19 @@
 								</div>
 
 								<div class="layui-form-item">
-									<label class="layui-form-label">http自动跳转https</label>
+									<label class="layui-form-label">${serverStr.httpToHttps}</label>
 									<div class="layui-input-inline" style="width: 100px;">
 										<select name="rewrite" id="rewrite">
-											<option value="1">是</option>
-											<option value="0">否</option>
+											<option value="1">${commonStr.yes}</option>
+											<option value="0">${commonStr.no}</option>
 										</select>
 									</div>
 									
 									<label class="layui-form-label" style="width: 80px;">开启http2</label>
 									<div class="layui-input-inline" style="width: 100px;">
 										<select name="http2" id="http2">
-											<option value="1">是</option>
-											<option value="0">否</option>
+											<option value="1">${commonStr.yes}</option>
+											<option value="0">${commonStr.no}</option>
 										</select>
 									</div>
 								</div>
@@ -306,22 +306,22 @@
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-sm" style="margin-left: 195px;" onclick="serverParam()">设置额外参数</button>
+					<button type="button" class="layui-btn layui-btn-sm" style="margin-left: 195px;" onclick="serverParam()">${serverStr.extParm}</button>
 					<textarea style="display: none;" id="serverParamJson" name="serverParamJson"></textarea>
 				</div>
 					
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal proxyHttp" onclick="addItem()">添加代理目标 (Location)</button>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal proxyHttp" onclick="addItem()">${serverStr.addLocation}</button>
 				</div>
 
 				<div class="layui-form-item proxyHttp">
 					<table class="layui-table">
 						<thead>
 							<tr>
-								<th>监控路径</th>
-								<th>代理类型</th>
-								<th>代理目标</th>
-								<th>操作</th>
+								<th>${serverStr.listenPath}</th>
+								<th>${serverStr.proxyType}</th>
+								<th>${serverStr.proxyTarget}</th>
+								<th>${commonStr.operation}</th>
 							</tr>
 						</thead>
 						<tbody id="itemList" class="itemList">
@@ -332,26 +332,26 @@
 
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
 		</div>
 		
 		<div id="paramJsonDiv" style="display: none;padding: 15px;"> 
 			<div class="layui-form-item">
-				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">添加参数</button>
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">${serverStr.addParm}</button>
 				
-				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectTemplate('paramList')">添加模板</button>
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectTemplate('paramList')">${serverStr.addTemplate}</button>
 			</div>
 			<div class="layui-form-item">
 				<input type="hidden" id="targertId" >
 				<table class="layui-table">
 					<thead>
 						<tr>
-							<th>名称</th>
-							<th>值</th>
-							<th>操作</th>
+							<th>${commonStr.name}</th>
+							<th>${commonStr.value}</th>
+							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
 					<tbody id="paramList">
@@ -361,8 +361,8 @@
 			</div>
 
 			<div class="layui-form-item">
-				<button type="button" class="layui-btn layui-btn-normal" onclick="addParamOver()">提交</button>
-				<button type="button" class="layui-btn" onclick="layer.close(paramIndex)">关闭</button>
+				<button type="button" class="layui-btn layui-btn-normal" onclick="addParamOver()">${commonStr.submit}</button>
+				<button type="button" class="layui-btn" onclick="layer.close(paramIndex)">${commonStr.close}</button>
 			</div>
 		</div>
 
@@ -375,19 +375,19 @@
 					</#list>
 					
 					<#if upstreamSize == 0>
-					<option value="">--无可用负载均衡--</option>
+					<option value="">${serverStr.noUpstream}</option>
 					</#if>
 				</select>
 			</div>
 			<div class="layui-inline" style="width: 150px;">
-				<input type="text" name="upstreamPath" class="layui-input" placeholder="额外路径，默认为空">
+				<input type="text" name="upstreamPath" class="layui-input" placeholder="${serverStr.extPathTips}">
 			</div>
 		</div>
 		
 		<div id="certDiv"  style="padding: 15px; display: none"> 
 			<div class="layui-form">
 				<div class="layui-form-item">
-					<label class="layui-form-label">内置证书</label>
+					<label class="layui-form-label">${serverStr.selectCert}</label>
 					<div class="layui-input-inline">
 						<select name="certId" id="certId">
 							<#list certList as cert>
@@ -398,8 +398,8 @@
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="selectCertOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.close(certIndex)">关闭</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="selectCertOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.close(certIndex)">${commonStr.close}</button>
 				</div>
 			</div>
 		</div>
@@ -407,15 +407,15 @@
 		<div class="layui-form" id="importDiv" style="padding: 15px; display: none">
 			<div class="layui-form-item">
 				<div class="layui-input-inline">
-					<input type="text" id="nginxPath" name="nginxPath" class="layui-input" placeholder="文件路径" >
+					<input type="text" id="nginxPath" name="nginxPath" class="layui-input" placeholder="${commonStr.filePath}" >
 				</div>
 				<div class="layui-input-inline">
 					<i class="layui-icon layui-icon-export" onclick="selectRootCustom('nginxPath')"></i>
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<button type="button" class="layui-btn layui-btn-normal" onclick="importServer()">导入反向代理</button>
-				<button type="button" class="layui-btn" onclick="layer.close(importIndex)">关闭</button>
+				<button type="button" class="layui-btn layui-btn-normal" onclick="importServer()">${serverStr.importServer}</button>
+				<button type="button" class="layui-btn" onclick="layer.close(importIndex)">${commonStr.close}</button>
 			</div>
 		</div>
 	</div>

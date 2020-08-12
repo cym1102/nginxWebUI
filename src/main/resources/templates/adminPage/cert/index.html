@@ -14,16 +14,16 @@
 			<!-- 内容主体区域 -->
 			<div style="padding: 15px">
 				<fieldset class="layui-elem-field layui-field-title">
-					<legend>证书管理</legend>
+					<legend>${menuStr.cert}</legend>
 				</fieldset>
 
 				<form action="${ctx}/adminPage/cert" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加证书</button>
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${certStr.add}</button>
 						</div>
 						<div class="layui-inline">
-							<div class="layui-form-mid layui-word-aux proxyHttp">自动续签将在凌晨2点进行，超过60天的证书会被续签</div>
+							<div class="layui-form-mid layui-word-aux proxyHttp">${certStr.tips}</div>
 						</div>
 					</div>
 				</form>
@@ -31,14 +31,14 @@
 				<table class="layui-table layui-form">
 					<thead>
 						<tr>
-							<th>域名</th>
-							<th>获取方式</th>
-							<th>DNS服务商</th>
-							<th>签发时间</th>
-							<th>证书路径</th>
-							<th>是否自动续签</th>
+							<th>${certStr.domain}</th>
+							<th>${certStr.getWay}</th>
+							<th>${certStr.dnsProvider}</th>
+							<th>${certStr.signTime}</th>
+							<th>${certStr.certPath}</th>
+							<th>${certStr.isAuto}</th>
 
-							<th>操作</th>
+							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -47,17 +47,17 @@
 							<td>${cert.domain}</td>
 							<td>
 								<#if cert.type == 1>
-									手动上传
+									${certStr.manualUp}
 								</#if>
 								<#if cert.type == 0>
-									申请获得
+									${certStr.byApply}
 								</#if>
 							</td>
 							
 							<td>
 								<#if cert.type == 0>
-									<#if cert.dnsType=='dp'> 腾讯DNSPod </#if> 
-									<#if cert.dnsType=='ali'> 阿里万网 </#if>
+									<#if cert.dnsType=='dp'> ${certStr.dnsPod} </#if> 
+									<#if cert.dnsType=='ali'> ${certStr.aliDns} </#if>
 								</#if>
 							</td>
 							
@@ -67,22 +67,22 @@
 							</td>
 							<td>
 								<#if cert.type == 0>
-									<input type="checkbox" name="switch" lay-filter="autoRenew" value="${cert.id}" lay-text="开启|关闭" lay-skin="switch" ${(cert.autoRenew==1)?string('checked','')}>
+									<input type="checkbox" name="switch" lay-filter="autoRenew" value="${cert.id}" lay-text="ON|OFF" lay-skin="switch" ${(cert.autoRenew==1)?string('checked','')}>
 								</#if>
 							</td>
 							<td>
 								<#if cert.type == 0>
 									<#if cert.pem== null>
-									<button class="layui-btn layui-btn-sm" onclick="issue('${cert.id}')">申请</button>
+									<button class="layui-btn layui-btn-sm" onclick="issue('${cert.id}')">${commonStr.apply}</button>
 									</#if>
 									 
 									<#if cert.pem !=null>
-									<button class="layui-btn layui-btn-sm" onclick="renew('${cert.id}')">续签</button>
+									<button class="layui-btn layui-btn-sm" onclick="renew('${cert.id}')">${certStr.renew}</button>
 									</#if>
 								</#if>
 
-								<button class="layui-btn layui-btn-sm" onclick="edit('${cert.id}')">编辑</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">删除</button></td>
+								<button class="layui-btn layui-btn-sm" onclick="edit('${cert.id}')">${commonStr.edit}</button>
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">${commonStr.del}</button></td>
 						</tr>
 						</#list>
 					</tbody>
@@ -98,7 +98,7 @@
 				<input type="hidden" name="id" id="id">
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">域名</label>
+					<label class="layui-form-label">${certStr.domain}</label>
 					<div class="layui-input-block">
 						<input type="text" name="domain" id="domain" class="layui-input" placeholder="支持*.domain.cn泛域名，支持多域名，用逗号隔开">
 					</div>
@@ -106,11 +106,11 @@
 
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">获取方式</label>
+					<label class="layui-form-label">${certStr.getWay}</label>
 					<div class="layui-input-inline">
 						<select name="type" id="type" lay-filter='type'>
-							<option value="0">申请获得</option>
-							<option value="1">手动上传</option>
+							<option value="0">${certStr.byApply}</option>
+							<option value="1">${certStr.manualUp}</option>
 						</select>
 					</div>
 				</div>
@@ -119,11 +119,11 @@
 
 				<div id="type0">
 					<div class="layui-form-item">
-						<label class="layui-form-label">DNS服务商</label>
+						<label class="layui-form-label">${certStr.dnsProvider}</label>
 						<div class="layui-input-inline">
 							<select name="dnsType" id="dnsType" lay-filter='dnsType'>
-								<option value="ali">阿里万网</option>
-								<option value="dp">腾讯DNSPod</option>
+								<option value="ali">${certStr.aliDns}</option>
+								<option value="dp">${certStr.dnsPod}</option>
 							</select>
 						</div>
 					</div>
@@ -165,11 +165,11 @@
 				
 				<div id="type1">
 					<div class="layui-form-item">
-						<label class="layui-form-label">pem文件</label>
+						<label class="layui-form-label">pem ${commonStr.file}</label>
 						<div class="layui-input-block">
-							<button type="button" class="layui-btn layui-btn-sm liteBtn" style="width: 90px;" id="pemBtn">上传pem文件</button>
+							<button type="button" class="layui-btn layui-btn-sm liteBtn" style="width: 90px;" id="pemBtn">${commonStr.upload} pem</button>
 
-							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectPem()">选择系统路径</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectPem()">${commonStr.selectPath}</button>
 
 							<input type="hidden" name="pem" id="pem" class="layui-input">
 							<div class="layui-form-mid layui-word-aux" id="pemPath"></div>
@@ -177,11 +177,11 @@
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label">key文件</label>
+						<label class="layui-form-label">key ${commonStr.file}</label>
 						<div class="layui-input-block">
-							<button type="button" class="layui-btn layui-btn-sm liteBtn" style="width: 90px;" id="keyBtn">上传key文件</button>
+							<button type="button" class="layui-btn layui-btn-sm liteBtn" style="width: 90px;" id="keyBtn">${commonStr.upload} key</button>
 
-							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectKey()">选择系统路径</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectKey()">${commonStr.selectPath}</button>
 
 							<input type="hidden" name="key" id="key" class="layui-input">
 							<div class="layui-form-mid layui-word-aux" id="keyPath"></div>
@@ -190,8 +190,8 @@
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
 		</div>

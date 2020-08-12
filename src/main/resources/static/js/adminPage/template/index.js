@@ -4,7 +4,7 @@ function add() {
 	$("#paramList").html("");
 
 	form.render();
-	showWindow("添加参数模板");
+	showWindow(templateStr.add);
 }
 
 
@@ -19,7 +19,7 @@ function showWindow(title) {
 
 function addOver() {
 	if ($("#name").val() == "") {
-		layer.msg("名称为空");
+		layer.msg(templateStr.noname);
 		return;
 	}
 
@@ -51,7 +51,7 @@ function addOver() {
 			}
 		},
 		error: function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -85,7 +85,7 @@ function edit(id) {
 									<textarea  name="value" class="layui-textarea">${param.value}</textarea>
 								</td>
 								<td>
-									<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+									<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
 								</td>
 							</tr>`
 				}
@@ -93,13 +93,13 @@ function edit(id) {
 
 
 				form.render();
-				showWindow("编辑参数模板");
+				showWindow(templateStr.edit);
 			} else {
 				layer.msg(data.msg);
 			}
 		},
 		error: function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 
@@ -107,7 +107,7 @@ function edit(id) {
 }
 
 function del(id) {
-	if (confirm("确认删除?")) {
+	if (confirm(commonStr.confirmDel)) {
 		$.ajax({
 			type: 'POST',
 			url: ctx + '/adminPage/template/del',
@@ -123,7 +123,7 @@ function del(id) {
 				}
 			},
 			error: function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -139,7 +139,7 @@ function addParam() {
 					<textarea  name="value" class="layui-textarea"></textarea>
 				</td>
 				<td>
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">删除</button>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
 				</td>
 			</tr>`
 	$("#paramList").append(html);

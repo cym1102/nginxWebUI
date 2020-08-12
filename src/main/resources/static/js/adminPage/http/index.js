@@ -8,7 +8,7 @@ function add() {
 	$("#name").val(""); 
 	$("#value").val(""); 
 	
-	showWindow("添加http参数配置");
+	showWindow(httpStr.add);
 }
 
 
@@ -23,13 +23,13 @@ function showWindow(title){
 
 function addOver() {
 	if ($("#name").val() == "") {
-		layer.msg("名称为空");
+		layer.msg(httpStr.noname);
 		return;
 	}
-	if ($("#value").val() == "") {
-		layer.msg("值为空");
+	/*if ($("#value").val() == "") {
+		layer.msg(httpStr.novalue);
 		return;
-	}
+	}*/
 	
 	$.ajax({
 		type : 'POST',
@@ -44,7 +44,7 @@ function addOver() {
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -67,19 +67,19 @@ function edit(id) {
 				$("#name").val(http.name);
 				
 				form.render();
-				showWindow("编辑http参数配置");
+				showWindow(httpStr.edit);
 			}else{
 				layer.msg(data.msg);
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
 function del(id){
-	if(confirm("确认删除?")){
+	if(confirm(commonStr.confirmDel)){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/http/del',
@@ -95,7 +95,7 @@ function del(id){
 				}
 			},
 			error : function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -105,7 +105,7 @@ function guide(){
 	
 	layer.open({
 		type : 1,
-		title : "简易配置向导",
+		title : httpStr.guide,
 		area : [ '800px', '610px' ], // 宽高
 		content : $('#guideDiv')
 	});
@@ -150,7 +150,7 @@ function addGiudeOver(){
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -173,7 +173,7 @@ function setOrder(id, count){
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }

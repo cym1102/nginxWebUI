@@ -19,6 +19,7 @@ import com.cym.model.Admin;
 import com.cym.model.Remote;
 import com.cym.service.AdminService;
 import com.cym.service.CreditService;
+import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.PwdCheckUtil;
@@ -45,20 +46,23 @@ public class LoginController extends BaseController {
 	CreditService creditService;
 	@Autowired
 	VersionConfig versionConfig;
-	
+
 	@Value("${project.version}")
 	String currentVersion;
-	
+
+	@Autowired
+	SettingService settingService;
+
 	@RequestMapping("map")
 	public ModelAndView map(ModelAndView modelAndView) {
 
 		modelAndView.setViewName("/adminPage/login/map");
 		return modelAndView;
 	}
-	
-	
+
 	@RequestMapping("")
 	public ModelAndView admin(ModelAndView modelAndView) {
+
 
 		modelAndView.addObject("adminCount", sqlHelper.findCountByQuery(new ConditionAndWrapper(), Admin.class));
 		modelAndView.setViewName("/adminPage/login/index");
@@ -67,23 +71,23 @@ public class LoginController extends BaseController {
 
 	@RequestMapping("login")
 	@ResponseBody
-	public JsonResult submitLogin(String name, String pass,String code, HttpSession httpSession) {
+	public JsonResult submitLogin(String name, String pass, String code, HttpSession httpSession) {
 		String imgCode = (String) httpSession.getAttribute("imgCode");
 		if (StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
-			return renderError("验证码不正确");
+			return renderError(m.get("loginStr.backError1"));
 		}
 
 		if (adminService.login(name, pass)) {
 
-			httpSession.setAttribute("localType", "本地");
+			httpSession.setAttribute("localType", "local");
 			httpSession.setAttribute("isLogin", true);
-			
+
 			// 检查更新
 			versionConfig.getNewVersion();
-			
+
 			return renderSuccess();
 		} else {
-			return renderError("用户名密码错误");
+			return renderError(m.get("loginStr.backError2"));
 		}
 	}
 
@@ -108,7 +112,7 @@ public class LoginController extends BaseController {
 			map.put("system", SystemTool.getSystem());
 			return renderSuccess(map);
 		} else {
-			return renderError("授权失败");
+			return renderError(m.get("loginStr.backError3"));
 		}
 
 	}
@@ -118,8 +122,8 @@ public class LoginController extends BaseController {
 	public JsonResult getLocalType(HttpSession httpSession) {
 		String localType = (String) httpSession.getAttribute("localType");
 		if (StrUtil.isNotEmpty(localType)) {
-			if ("本地".equals(localType)) {
-				return renderSuccess("本地");
+			if ("local".equals(localType)) {
+				return renderSuccess("local");
 			} else {
 				Remote remote = (Remote) httpSession.getAttribute("remote");
 				if (StrUtil.isNotEmpty(remote.getDescr())) {
@@ -133,19 +137,30 @@ public class LoginController extends BaseController {
 		return renderSuccess("");
 	}
 
+	@ResponseBody
+	@RequestMapping("changeLang")
+	public JsonResult changeLang() {
+		if (settingService.get("lang") != null && settingService.get("lang").equals("en_US")) {
+			settingService.set("lang", "");
+		} else {
+			settingService.set("lang", "en_US");
+		}
+
+		return renderSuccess();
+	}
+
 	@RequestMapping("addAdmin")
 	@ResponseBody
 	public JsonResult addAdmin(String name, String pass) {
 
 		Long adminCount = sqlHelper.findCountByQuery(new ConditionAndWrapper(), Admin.class);
 		if (adminCount > 0) {
-			return renderError("管理员已初始化, 不能再次初始化");
+			return renderError(m.get("loginStr.backError4"));
 		}
 
 		if (!(PwdCheckUtil.checkContainUpperCase(pass) && PwdCheckUtil.checkContainLowerCase(pass) && PwdCheckUtil.checkContainDigit(pass) && PwdCheckUtil.checkPasswordLength(pass, "8", "100"))) {
-			return renderError("密码复杂度太低");
+			return renderError(m.get("loginStr.tips"));
 		}
-		
 
 		Admin admin = new Admin();
 		admin.setName(name);
@@ -160,10 +175,10 @@ public class LoginController extends BaseController {
 	public void getCode(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 		ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(100, 40);
 		captcha.setGenerator(new RandomGenerator("0123456789", 4));
-		
+
 		String createText = captcha.getCode();
 		httpServletRequest.getSession().setAttribute("imgCode", createText);
-		
+
 		captcha.write(httpServletResponse.getOutputStream());
 	}
 }

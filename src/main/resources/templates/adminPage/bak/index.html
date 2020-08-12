@@ -14,21 +14,21 @@
 			<!-- 内容主体区域 -->
 			<div style="padding: 15px">
 				<fieldset class="layui-elem-field layui-field-title">
-					<legend>备份文件管理</legend>
+					<legend>${menuStr.bak}</legend>
 				</fieldset>
 
 				<form action="${ctx}/adminPage/bak" id="searchForm" method="post">
 					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-danger" onclick="delAll()">清空备份</button>
+						<button type="button" class="layui-btn layui-btn-danger" onclick="delAll()">${bakStr.clear}</button>
 					</div>
 				</form>
 
 				<table class="layui-table">
 					<thead>
 						<tr>
-							<th>路径</th>
-							<th>创建时间</th>
-							<th>操作</th>
+							<th>${bakStr.path}</th>
+							<th>${commonStr.createTime}</th>
+							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -37,9 +37,9 @@
 							<td>${bak.path}</td>
 							<td>${bak.time}</td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="content('${bak.path}')">查看内容</button>
-								<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="replace('${bak.path}')">还原</button>
-								<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="del('${bak.path}')">删除</button>
+								<button class="layui-btn layui-btn-sm" onclick="content('${bak.path}')">${bakStr.content}</button>
+								<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="replace('${bak.path}')">${bakStr.restore}</button>
+								<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="del('${bak.path}')">${commonStr.del}</button>
 							</td>
 						</tr>
 						</#list>

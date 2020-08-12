@@ -74,7 +74,7 @@ public class UpstreamController extends BaseController {
 	}
 
 	public String buildStr(UpstreamServer upstreamServer, Integer proxyType) {
-		String status = "无策略";
+		String status = m.get("upstreamStr.noStatus");
 		if (!"none".equals(upstreamServer.getStatus())) {
 			status = upstreamServer.getStatus();
 		}
@@ -85,9 +85,9 @@ public class UpstreamController extends BaseController {
 		if ("true".equals(upstreamMonitor)) {
 			monitorStatus += "<td>";
 			if (upstreamServer.getMonitorStatus() == 1) {
-				monitorStatus += "<span class='green'>正常</span>";
+				monitorStatus += "<span class='green'>" + m.get("upstreamStr.green") + "</span>";
 			} else {
-				monitorStatus += "<span class='red'>异常</span>";
+				monitorStatus += "<span class='red'>" + m.get("upstreamStr.red") + "</span>";
 			}
 			monitorStatus += "</td>";
 		}
@@ -111,12 +111,12 @@ public class UpstreamController extends BaseController {
 		if (StrUtil.isEmpty(upstream.getId())) {
 			Long count = upstreamService.getCountByName(upstream.getName());
 			if (count > 0) {
-				return renderError("与已有负载均衡重名");
+				return renderError(m.get("upstreamStr.sameName"));
 			}
-		}else {
+		} else {
 			Long count = upstreamService.getCountByNameWithOutId(upstream.getName(), upstream.getId());
 			if (count > 0) {
-				return renderError("与已有负载均衡重名");
+				return renderError(m.get("upstreamStr.sameName"));
 			}
 		}
 

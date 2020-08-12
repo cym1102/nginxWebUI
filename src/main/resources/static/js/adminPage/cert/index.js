@@ -17,7 +17,7 @@ $(function(){
 					}
 				},
 				error : function() {
-					alert("出错了,请联系技术人员!");
+					layer.alert(commonStr.errorInfo);
 				}
 		});
 	});   
@@ -103,7 +103,7 @@ function add() {
 	checkDnsType('ali');
 	
 	
-	showWindow("添加证书");
+	showWindow(certStr.add);
 }
 
 
@@ -139,14 +139,14 @@ function edit(id) {
 				
 				form.render();
 				
-				showWindow("编辑证书");
+				showWindow(certStr.edit);
 				
 			} else {
 				layer.msg(data.msg);
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -155,27 +155,27 @@ function showWindow(title){
 	layer.open({
 		type : 1,
 		title : title,
-		area : [ '700px', '400px' ], // 宽高
+		area : [ '700px', '450px' ], // 宽高
 		content : $('#windowDiv')
 	});
 }
 
 function addOver() {
 	if ($("#domain").val() == "") {
-		layer.msg("域名为空");
+		layer.msg(certStr.error1);
 		return;
 	}
 	
 	if($("#type").val() == 0){
 		if($("#dnsType").val() == 'ali'){
 			if($("#aliKey").val() == '' || $("#aliSecret").val() == ''){
-				layer.msg("填写不完整");
+				layer.msg(commonStr.IncompleteEntry);
 				return;
 			}
 		}
 		if($("#dnsType").val() == 'dp'){
 			if($("#dpId").val() == '' || $("#dpKey").val() == ''){
-				layer.msg("填写不完整");
+				layer.msg(commonStr.IncompleteEntry);
 				return;
 			}
 		}
@@ -195,14 +195,14 @@ function addOver() {
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
 
 function del(id){
-	if(confirm("确认删除?")){
+	if(confirm(commonStr.confirmDel)){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/cert/del',
@@ -218,7 +218,7 @@ function del(id){
 				}
 			},
 			error : function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -227,7 +227,7 @@ function del(id){
 
 function issue(id){
 	
-	if(confirm("确认开始申请？申请时间较长，请耐心等待。")){
+	if(confirm(certStr.confirm1)){
 		layer.load();
 		$.ajax({
 			type : 'POST',
@@ -240,7 +240,7 @@ function issue(id){
 			success : function(data) {
 				layer.closeAll();
 				if (data.success) {
-					alert("申请成功!");
+					layer.alert(certStr.applySuccess);
 					location.reload();
 				} else {
 					layer.open({
@@ -252,7 +252,7 @@ function issue(id){
 			},
 			error : function() {
 				layer.closeAll();
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -261,7 +261,7 @@ function issue(id){
 
 function renew(id){
 	
-	if(confirm("确认开始续签？申请时间较长，请耐心等待。")){
+	if(confirm(certStr.confirm2)){
 		layer.load();
 		$.ajax({
 			type : 'POST',
@@ -274,7 +274,7 @@ function renew(id){
 			success : function(data) {
 				layer.closeAll();
 				if (data.success) {
-					alert("续签成功!");
+					layer.alert(certStr.renewSuccess);
 					location.reload();
 				} else {
 					layer.open({
@@ -286,7 +286,7 @@ function renew(id){
 			},
 			error : function() {
 				layer.closeAll();
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}

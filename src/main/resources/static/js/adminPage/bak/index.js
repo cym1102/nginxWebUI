@@ -27,19 +27,19 @@ function content(path) {
 				
 				form.render();
 				
-				showWindow("内容");
+				showWindow(bakStr.content);
 			}else{
 				layer.msg(data.msg);
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
 function del(path){
-	if(confirm("确认删除?")){
+	if(confirm(commonStr.confirmDel)){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/bak/del',
@@ -55,7 +55,7 @@ function del(path){
 				}
 			},
 			error : function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -64,7 +64,7 @@ function del(path){
 
 
 function replace(path){
-	if(confirm("确认还原此版本?当前配置文件将会被覆盖.")){
+	if(confirm(bakStr.restoreNotice)){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/bak/replace',
@@ -74,20 +74,20 @@ function replace(path){
 			dataType : 'json',
 			success : function(data) {
 				if (data.success) {
-					layer.msg("还原成功")
+					layer.msg(bakStr.operationSuccess)
 				}else{
 					layer.msg(data.msg)
 				}
 			},
 			error : function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
 }
 
 function delAll(){
-	if(confirm("是否清空备份?")){
+	if(confirm(bakStr.clearNotice)){
 		$.ajax({
 			type : 'GET',
 			url : ctx + '/adminPage/bak/delAll',
@@ -102,7 +102,7 @@ function delAll(){
 			},
 			error : function() {
 				layer.closeAll();
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}

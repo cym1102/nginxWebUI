@@ -21,25 +21,25 @@
 			<!-- 内容主体区域 -->
 			<div style="padding: 15px">
 				<fieldset class="layui-elem-field layui-field-title">
-					<legend>远程服务器管理</legend>
+					<legend>${menuStr.remote}</legend>
 				</fieldset>
 
 				<form action="${ctx}/adminPage/remote" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加远程服务器</button>
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${remoteStr.add}</button>
 
-							<button type="button" class="layui-btn" onclick="addGroup()">添加分组</button>
+							<button type="button" class="layui-btn" onclick="addGroup()">${remoteStr.addGroup}</button>
 
-							<button type="button" class="layui-btn" onclick="cmdGroup()">批量命令</button>
+							<button type="button" class="layui-btn" onclick="cmdGroup()">${remoteStr.cmdGroup}</button>
 							
-							<button type="button" class="layui-btn layui-btn-normal" onclick="asycSelect()">同步服务器配置</button>
+							<button type="button" class="layui-btn layui-btn-normal" onclick="asycSelect()">${remoteStr.asycSelect}</button>
 							
-							<button type="button" class="layui-btn layui-btn-normal" onclick="nginxMonitor()">nginx监控服务</button>
+							<button type="button" class="layui-btn layui-btn-normal" onclick="nginxMonitor()">${remoteStr.nginxMonitor}</button>
 						</div>
 						
 						<div class="layui-inline">
-							<div class="layui-form-mid layui-word-aux">注意：只能在相同操作系统之间进行同步，同版本之间才能切换服务器</div>
+							<div class="layui-form-mid layui-word-aux">${remoteStr.tips}</div>
 						</div>
 						
 						<input type="hidden" id="projectVersion" value="${projectVersion}">
@@ -64,14 +64,14 @@
 				<input type="hidden" name="id" id="id">
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">别名</label>
+					<label class="layui-form-label">${remoteStr.alias}</label>
 					<div class="layui-input-block">
 						<input type="text" name="descr" id="descr" class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">协议</label>
+					<label class="layui-form-label">${remoteStr.protocol}</label>
 					<div class="layui-input-block">
 						<select id="protocol" name="protocol">
 							<option>http</option>
@@ -82,28 +82,28 @@
 
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">远端nginxWebUI的IP</label>
+					<label class="layui-form-label">${remoteStr.ip}</label>
 					<div class="layui-input-block">
 						<input type="text" name="ip" id="ip" class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">远端nginxWebUI端口</label>
+					<label class="layui-form-label">${remoteStr.port}</label>
 					<div class="layui-input-block">
 						<input type="number" name="port" id="port" class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">远端nginxWebUI用户</label>
+					<label class="layui-form-label">${remoteStr.name}</label>
 					<div class="layui-input-block">
 						<input type="text" name="name" id="name" class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">远端nginxWebUI密码</label>
+					<label class="layui-form-label">${remoteStr.pass}</label>
 					<div class="layui-input-block">
 						<input type="password" name="pass" id="pass" class="layui-input">
 					</div>
@@ -111,7 +111,7 @@
 				
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">分组</label>
+					<label class="layui-form-label">${remoteStr.group}</label>
 					<div class="layui-input-block">
 
 
@@ -120,8 +120,8 @@
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
 		</div>
@@ -131,14 +131,14 @@
 				<input type="hidden" name="id" id="groupId">
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">名称</label>
+					<label class="layui-form-label">${commonStr.name}</label>
 					<div class="layui-input-block">
 						<input type="text" name="name" id="groupName" class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">上级分组</label>
+					<label class="layui-form-label">${remoteStr.groupParent}</label>
 					<div class="layui-input-block">
 						<div id="groupParentId"></div>
 					</div>
@@ -146,8 +146,8 @@
 
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="addGroupOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addGroupOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
 		</div>
@@ -162,22 +162,22 @@
 		<div class="layui-form" id="selectDiv" style="padding: 15px; display: none">
 			<form id="asycForm">
 				<div class="layui-form-item">
-					<label class="layui-form-label">从服务器</label>
+					<label class="layui-form-label">${remoteStr.serverFrom}</label>
 					<div class="layui-input-block">
 						<div id="remoteFromId"></div>
 					</div>
 				</div>
 				
 				<div class="layui-form-item">
-					<label class="layui-form-label">到服务器</label>
+					<label class="layui-form-label">${remoteStr.serverSelect}</label>
 					<div class="layui-input-block">
 						<div id="remoteSelectId"></div>
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="asycOver()">同步</button>
-					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="asycOver()">${remoteStr.asyc}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
 		</div>
@@ -185,31 +185,31 @@
 		
 		<div class="layui-form" id="nginxDiv" style="padding: 15px; display: none">
 			<div class="layui-form-item">
-				<label class="layui-form-label">通知发送邮箱</label>
+				<label class="layui-form-label">${remoteStr.email}</label>
 				<div class="layui-input-inline">
 					<input type="text" name="mail" id="mail" class="layui-input">
 				</div>
 				<div class="layui-input-inline" style="width: auto;">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="showSelectMail()">设置SMTP</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="showSelectMail()">${remoteStr.setSmtp}</button>
 				</div>
 				<div class="layui-input-inline" style="width: auto;">
-					<button type="button" class="layui-btn" onclick="testMail()">测试发送</button>
+					<button type="button" class="layui-btn" onclick="testMail()">${remoteStr.testMail}</button>
 				</div>
 			</div>
 			
 			<div class="layui-form-item">
-				<label class="layui-form-label">nginx监控服务</label>
+				<label class="layui-form-label">${remoteStr.nginxMonitor}</label>
 				<div class="layui-input-inline">
 					<select name="nginxMonitor" id="nginxMonitor">
-						<option value="false">关闭</option>
-						<option value="true">开启</option>
+						<option value="false">${commonStr.close}</option>
+						<option value="true">${commonStr.open}</option>
 					</select>
 				</div>
 			</div>
 
 			<div class="layui-form-item">
-				<button type="button" class="layui-btn layui-btn-normal" onclick="nginxOver()">确定</button>
-				<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+				<button type="button" class="layui-btn layui-btn-normal" onclick="nginxOver()">${commonStr.ok}</button>
+				<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 			</div>
 		</div>
 		
@@ -218,28 +218,28 @@
 		<div class="layui-form" id="cmdDiv" style="padding: 15px; display: none">
 			<form id="cmdForm">
 				<div class="layui-form-item">
-					<label class="layui-form-label">服务器</label>
+					<label class="layui-form-label">${remoteStr.server}</label>
 					<div class="layui-input-block">
 						<div id="remoteCmdSelectId"></div>
 					</div>
 				</div>
 
 				<div class="layui-form-item" id="cmdDiv">
-					<label class="layui-form-label">命令</label>
+					<label class="layui-form-label">${remoteStr.cmd}</label>
 					<div class="layui-input-block">
 						<select name="cmd">
-							<option value="update">更新版本</option>
-							<option value="check">效验文件</option>
-							<option value="reload">重新装载</option>
-							<option value="start">启动nginx</option>
-							<option value="stop">停止nginx</option>
+							<option value="update">${remoteStr.update}</option>
+							<option value="check">${remoteStr.check}</option>
+							<option value="reload">${remoteStr.reload}</option>
+							<option value="start">${remoteStr.start}</option>
+							<option value="stop">${remoteStr.stop}</option>
 						</select>
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="cmdOver()">执行</button>
-					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="cmdOver()">${remoteStr.execute}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
 		</div>

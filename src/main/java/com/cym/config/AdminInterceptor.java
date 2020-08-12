@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.model.Remote;
 import com.cym.service.CreditService;
+import com.cym.utils.MessageUtils;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
@@ -37,7 +38,8 @@ public class AdminInterceptor implements HandlerInterceptor {
 
 	@Autowired
 	CreditService creditService;
-
+	@Autowired
+	MessageUtils m;
 	/*
 	 * 视图渲染之后的操作
 	 */
@@ -75,7 +77,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 		}
 
 		String localType = (String) request.getSession().getAttribute("localType");
-		if (localType != null && localType.equals("远程") && !request.getRequestURL().toString().contains("adminPage/remote")) {
+		if (localType != null && localType.equals("remote") && !request.getRequestURL().toString().contains("adminPage/remote")) {
 			// 转发到远程服务器
 			Remote remote = (Remote) request.getSession().getAttribute("remote");
 

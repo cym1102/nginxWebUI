@@ -12,6 +12,7 @@ import com.cym.model.Basic;
 import com.cym.service.BasicService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
+import com.cym.utils.MessageUtils;
 
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
@@ -22,7 +23,7 @@ import cn.hutool.core.util.StrUtil;
 public class BasicController extends BaseController {
 	@Autowired
 	BasicService basicService;
-
+	
 	@RequestMapping("")
 	public ModelAndView index(ModelAndView modelAndView) {
 		List<Basic> basicList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Basic.class);

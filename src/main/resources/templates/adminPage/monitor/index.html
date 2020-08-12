@@ -23,7 +23,7 @@
 		<div class="layui-body">
 			<div style="padding: 15px">
 				<fieldset class="layui-elem-field layui-field-title">
-					<legend>系统运行状态</legend>
+					<legend>${menuStr.monitor}</legend>
 				</fieldset>
 				
 				<input type="hidden" id="isInit" value="${isInit}"> 
@@ -34,7 +34,7 @@
 						<div class="layui-col-md6">
 							<div class="layui-card">
 								<fieldset class="layui-elem-field layui-field-title">
-									<legend>cpu利用率&nbsp;&nbsp;<span id="cpuCount" style="color: teal;"></span></legend>
+									<legend>${monitorStr.cpuRatio}&nbsp;&nbsp;<span id="cpuCount" style="color: teal;"></span></legend>
 								</fieldset>
 
 								<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="cpu">
@@ -42,7 +42,7 @@
 								</div>
 
 								<fieldset class="layui-elem-field layui-field-title" style="margin-top: 40px;">
-									<legend>内存使用&nbsp;&nbsp;<span id="memContent" style="color: teal;"></span></legend>
+									<legend>${monitorStr.memUse}&nbsp;&nbsp;<span id="memContent" style="color: teal;"></span></legend>
 								</fieldset>
 
 								<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="mem">
@@ -50,7 +50,7 @@
 								</div>
 								
 								<fieldset class="layui-elem-field layui-field-title" style="margin-top: 40px;">
-									<legend>磁盘使用&nbsp;&nbsp;<span id="memContent" style="color: teal;"></span></legend>
+									<legend>${monitorStr.diskUse}&nbsp;&nbsp;<span id="memContent" style="color: teal;"></span></legend>
 								</fieldset>
 								
 								<#list list as disk>
@@ -77,41 +77,40 @@
 		<div class="layui-form" id="nginxGuideDiv" style="padding: 15px; display: none">
 			<form id="addForm">
 				<div class="layui-form-item">
-					<label class="layui-form-label long">nginx.conf路径</label>
+					<label class="layui-form-label long">nginx.conf ${commonStr.path}</label>
 					<div class="layui-input-inline">
 						<input type="text" id="nginxPath" class="layui-input" value="${nginxPath}">
 					</div>
 					<div class="layui-input-inline short">
 						<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxPath')"></i>   
 					</div>
-					<div class="layui-form-mid layui-word-aux">nginx.conf路径</div>
+					<div class="layui-form-mid layui-word-aux">nginx.conf ${commonStr.path}</div>
 				</div>
 	
 				<div class="layui-form-item">
-					<label class="layui-form-label long">nginx执行命令</label>
+					<label class="layui-form-label long">nginx ${monitorStr.exe}</label>
 					<div class="layui-input-inline">
 						<input type="text" id="nginxExe" class="layui-input" value="${nginxExe}">
 					</div>
 					<div class="layui-input-inline short">
 						<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxExe')"></i>   
 					</div>
-					<div class="layui-form-mid layui-word-aux">如果是安装版nginx，请直接填写"nginx"</div>
+					<div class="layui-form-mid layui-word-aux">${monitorStr.exeTips}</div>
 				</div>
 	
 				<div class="layui-form-item">
-					<label class="layui-form-label long">nginx目录</label>
+					<label class="layui-form-label long">nginx ${commonStr.dir}</label>
 					<div class="layui-input-inline">
 						<input type="text" id="nginxDir" class="layui-input" value="${nginxDir}">
 					</div>
 					<div class="layui-input-inline short">
 						<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxDir')"></i>   
 					</div>
-					<div class="layui-form-mid layui-word-aux">如果是安装版nginx，可不填</div>
+					<div class="layui-form-mid layui-word-aux">${monitorStr.dirTips}</div>
 				</div>
 	
 				<div class="layui-form-item" style="text-align: center;">
-					<button type="button" class="layui-btn layui-btn-normal" style="width: 100px;" onclick="addNginxGiudeOver()">提交</button>
-					<!-- <button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button> -->
+					<button type="button" class="layui-btn layui-btn-normal" style="width: 100px;" onclick="addNginxGiudeOver()">${commonStr.submit}</button>
 				</div>
 			</form>
 		</div>

@@ -15,7 +15,7 @@ $(function(){
 				if (res.success) {
 					var path = res.obj.split('/');
 					if(path[path.length-1].indexOf('.zip')==-1){
-						alert("只能上传zip文件");
+						layer.alert("只能上传zip文件");
 						return;
 					}
 						
@@ -48,7 +48,7 @@ function add() {
 	
 	 $("#action").val("addOver");
 
-	showWindow("添加zip包");
+	showWindow(wwwStr.add);
 }
 
 
@@ -56,14 +56,14 @@ function showWindow(title){
 	layer.open({
 		type : 1,
 		title : title,
-		area : [ '550px', '300px' ], // 宽高
+		area : [ '550px', '350px' ], // 宽高
 		content : $('#windowDiv')
 	});
 }
 
 function addOver() {
 	if($("#id").val() == '' && ($("#name").val() == '' || $("#dir").val() == '')){
-		alert("未填写完整");
+		layer.alert(wwwStr.noFile);
 		return;
 	}
 	
@@ -80,14 +80,14 @@ function addOver() {
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
 
 function del(id){
-	if(confirm("确认删除?")){
+	if(confirm(commonStr.confirmDel)){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/www/del',
@@ -103,7 +103,7 @@ function del(id){
 				}
 			},
 			error : function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
@@ -117,7 +117,7 @@ function copy(str){
     document.execCommand("Copy"); // 执行浏览器复制命令
     oInput.className = 'oInput';
     oInput.style.display='none';
-    alert('复制成功');
+    layer.msg(wwwStr.cpoySuccess);
 }
 
 function edit(id){
@@ -141,13 +141,13 @@ function edit(id){
 				$("#zipDiv").hide();
 				
 				$("#action").val("rename");
-				showWindow("编辑");
+				showWindow(commonStr.edit);
 			}else{
 				layer.msg(data.msg)
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -174,13 +174,13 @@ function update(id){
 				
 					
 				$("#action").val("update");
-				showWindow("更新");
+				showWindow(commonStr.update);
 			}else{
 				layer.msg(data.msg)
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }

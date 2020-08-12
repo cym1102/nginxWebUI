@@ -27,15 +27,15 @@ input[name='param']{
 			<!-- 内容主体区域 -->
 			<div style="padding: 15px">
 				<fieldset class="layui-elem-field layui-field-title">
-					<legend>http参数配置</legend>
+					<legend>${menuStr.http}</legend>
 				</fieldset>
 
 				<form action="${ctx}/adminPage/http" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加http参数配置</button>
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${httpStr.add}</button>
 							
-							<button type="button" class="layui-btn" onclick="guide()">简易配置向导</button>
+							<button type="button" class="layui-btn" onclick="guide()">${httpStr.guide}</button>
 						</div>
 					</div>
 				</form>
@@ -43,9 +43,9 @@ input[name='param']{
 				<table class="layui-table" style="table-layout:fixed; WORD-BREAK:break-all;">
 					<thead>
 						<tr>
-							<th>名称</th>
-							<th>值</th>
-							<th>操作</th>
+							<th>${commonStr.name}</th>
+							<th>${commonStr.value}</th>
+							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -54,11 +54,11 @@ input[name='param']{
 							<td>${http.name}</td>
 							<td>${http.value}</td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${http.id}')">编辑</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${http.id}')">删除</button>
+								<button class="layui-btn layui-btn-sm" onclick="edit('${http.id}')">${commonStr.edit}</button>
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${http.id}')">${commonStr.del}</button>
 								
-								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${http.id}', -1)">上移</button>
-								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${http.id}', 1)">下移</button>
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${http.id}', -1)">${commonStr.up}</button>
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${http.id}', 1)">${commonStr.down}</button>
 							</td>
 						</tr>
 						</#list>
@@ -75,22 +75,22 @@ input[name='param']{
 				<input type="hidden" name="id" id="id">
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">名称</label>
+					<label class="layui-form-label">${commonStr.name}</label>
 					<div class="layui-input-block">
 						<input type="text" name="name" id="name" class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">值</label>
+					<label class="layui-form-label">${commonStr.value}</label>
 					<div class="layui-input-block">
 						<textarea  name="value" id="value" class="layui-textarea" ></textarea>
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
 		</div>
@@ -102,7 +102,7 @@ input[name='param']{
 					<div class="layui-input-inline short">
 						<input type="text" name="param" id="keepalive_timeout" class="layui-input" value="75" lang="s">
 					</div>
-					<div class="layui-form-mid layui-word-aux">秒，连接超时时间</div>
+					<div class="layui-form-mid layui-word-aux">${httpStr.second}，${httpStr.timeout}</div>
 				</div>
 
 				<div class="layui-form-item">
@@ -110,7 +110,7 @@ input[name='param']{
 					<div class="layui-input-inline short">
 						<input type="checkbox" name="param" id="gzip" lay-skin="primary" checked lang="">
 					</div>
-					<div class="layui-form-mid layui-word-aux">是否开启压缩传输</div>
+					<div class="layui-form-mid layui-word-aux">${httpStr.gzip}</div>
 				</div>
 				
 				<div class="layui-form-item">
@@ -118,7 +118,7 @@ input[name='param']{
 					<div class="layui-input-inline short">
 						<input type="text" name="param" id="gzip_min_length" class="layui-input" value="8" lang="k">
 					</div>
-					<div class="layui-form-mid layui-word-aux">KB，最小压缩文件</div>
+					<div class="layui-form-mid layui-word-aux">KB，${httpStr.gzipMinLength}</div>
 				</div>
 				
 				<div class="layui-form-item">
@@ -126,7 +126,7 @@ input[name='param']{
 					<div class="layui-input-inline short">
 						<input type="text" name="param" id="gzip_comp_level" class="layui-input" value="2" lang="">
 					</div>
-					<div class="layui-form-mid layui-word-aux">压缩率</div>
+					<div class="layui-form-mid layui-word-aux">${httpStr.gzipCompLevel}</div>
 				</div>
 				
 				<div class="layui-form-item">
@@ -134,7 +134,7 @@ input[name='param']{
 					<div class="layui-input-inline short">
 						<input type="text" name="param" id="client_max_body_size" class="layui-input" value="1024" lang="m">
 					</div>
-					<div class="layui-form-mid layui-word-aux">MB，最大上传限制</div>
+					<div class="layui-form-mid layui-word-aux">MB，${httpStr.maxBodySize}</div>
 				</div>
 				
 				<div class="layui-form-item">
@@ -142,7 +142,7 @@ input[name='param']{
 					<div class="layui-input-inline short">
 						<input type="text" name="param" id="client_header_buffer_size" class="layui-input" value="32" lang="k">
 					</div>
-					<div class="layui-form-mid layui-word-aux">KB，客户端请求头buffer大小</div>
+					<div class="layui-form-mid layui-word-aux">KB，${httpStr.headerBufferSize}</div>
 				</div>
 				
 				<div class="layui-form-item">
@@ -150,29 +150,29 @@ input[name='param']{
 					<div class="layui-input-inline short">
 						<input type="text" name="param" id="client_body_buffer_size" class="layui-input" value="8" lang="m">
 					</div>
-					<div class="layui-form-mid layui-word-aux">MB，请求主体缓冲区</div>
+					<div class="layui-form-mid layui-word-aux">MB，${httpStr.bodyBufferSize}</div>
 				</div>
 				
 				
 				<div class="layui-form-item">
-					<label class="layui-form-label long">开启日志跟踪</label>
+					<label class="layui-form-label long">${httpStr.logStatus}</label>
 					<div class="layui-input-inline short">
 						<input type="checkbox" name="logStatus" id="logStatus" value="on" lay-skin="primary" >
 					</div>
-					<div class="layui-form-mid layui-word-aux">开启日志跟踪后,可在日志分析中进行分析</div>
+					<div class="layui-form-mid layui-word-aux">${httpStr.logStatusTips}</div>
 				</div>
 				
 				<div class="layui-form-item">
-					<label class="layui-form-label long">开启WebSocket支持</label>
+					<label class="layui-form-label long">${httpStr.webSocket}</label>
 					<div class="layui-input-inline short">
 						<input type="checkbox" name="webSocket" id="webSocket" value="on" lay-skin="primary" >
 					</div>
-					<div class="layui-form-mid layui-word-aux">开启WebSocket支持</div>
+					<div class="layui-form-mid layui-word-aux">${httpStr.webSocketTips}</div>
 				</div>
 				
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="addGiudeOver()">提交</button>
-					<button type="button" class="layui-btn" onclick="layer.closeAll()">关闭</button>
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addGiudeOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
 		</div>

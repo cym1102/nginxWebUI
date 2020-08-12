@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -23,6 +24,7 @@ import com.cym.service.LogService;
 import com.cym.service.RemoteService;
 import com.cym.service.SettingService;
 import com.cym.service.UpstreamService;
+import com.cym.utils.MessageUtils;
 import com.cym.utils.SendMailUtils;
 import com.cym.utils.TelnetUtils;
 
@@ -52,8 +54,9 @@ public class ScheduleTask {
 	final UpstreamService upstreamService;
 	final LogService logInfoService;
 	final SendMailUtils sendMailUtils;
+	final MessageUtils m;
 
-	public ScheduleTask(UpstreamService upstreamService, RemoteService remoteService, SendMailUtils sendMailUtils, RemoteController remoteController, SqlHelper sqlHelper,
+	public ScheduleTask(MessageUtils m, UpstreamService upstreamService, RemoteService remoteService, SendMailUtils sendMailUtils, RemoteController remoteController, SqlHelper sqlHelper,
 			CertController certController, SettingService settingService, ConfController confController, LogService logInfoService) {
 		this.sqlHelper = sqlHelper;
 		this.upstreamService = upstreamService;
@@ -64,6 +67,7 @@ public class ScheduleTask {
 		this.logInfoService = logInfoService;
 		this.remoteController = remoteController;
 		this.sendMailUtils = sendMailUtils;
+		this.m = m;
 	}
 
 	// 使用TimeUnit.DAYS.toMillis()进行时间粒度转换。Modified by Sai on 2020-6-17.
@@ -121,7 +125,7 @@ public class ScheduleTask {
 	// 检查nginx运行
 	@Scheduled(cron = "0/30 * * * * ?")
 	public void nginxTasks() {
-		System.err.println("检查nginx运行");
+		//System.err.println("检查nginx运行");
 
 		String lastNginxSend = settingService.get("lastNginxSend");
 		String mail = settingService.get("mail");
@@ -149,12 +153,12 @@ public class ScheduleTask {
 			if ("1".equals(settingService.get("monitorLocal"))) {
 				Map<String, Object> map = remoteController.version();
 				if ((Integer) map.get("nginx") == 0) {
-					names.add(0, "本地[127.0.0.1:" + port + "]");
+					names.add(0, m.get("remoteStr.local") + "[127.0.0.1:" + port + "]");
 				}
 			}
 
 			if (names.size() > 0) {
-				sendMailUtils.sendMailSmtp(mail, "nginx或nginxWebUI出现异常", "以下nginx服务器出现异常请检查: " + StrUtil.join(" ", names));
+				sendMailUtils.sendMailSmtp(mail, m.get("mailStr.nginxFail"), m.get("mailStr.nginxTips") + StrUtil.join(" ", names));
 				settingService.set("lastNginxSend", String.valueOf(System.currentTimeMillis()));
 			}
 		}
@@ -164,7 +168,7 @@ public class ScheduleTask {
 	// 检查节点情况
 	@Scheduled(cron = "0/30 * * * * ?")
 	public void nodeTasks() {
-		System.err.println("检查节点情况");
+		//System.err.println("检查节点情况");
 
 		String lastUpstreamSend = settingService.get("lastUpstreamSend");
 		String mail = settingService.get("mail");
@@ -177,7 +181,8 @@ public class ScheduleTask {
 			for (UpstreamServer upstreamServer : upstreamServers) {
 				if (!TelnetUtils.isRunning(upstreamServer.getServer(), upstreamServer.getPort())) {
 					Upstream upstream = sqlHelper.findById(upstreamServer.getUpstreamId(), Upstream.class);
-					if (upstream.getMonitor() == 1 && StrUtil.isNotEmpty(mail) && (StrUtil.isEmpty(lastUpstreamSend) || System.currentTimeMillis() - Long.parseLong(lastUpstreamSend) > TimeUnit.MINUTES.toMillis(30))) {
+					if (upstream.getMonitor() == 1 && StrUtil.isNotEmpty(mail)
+							&& (StrUtil.isEmpty(lastUpstreamSend) || System.currentTimeMillis() - Long.parseLong(lastUpstreamSend) > TimeUnit.MINUTES.toMillis(30))) {
 						ips.add(upstreamServer.getServer() + ":" + upstreamServer.getPort());
 					}
 					upstreamServer.setMonitorStatus(0);
@@ -189,7 +194,7 @@ public class ScheduleTask {
 			}
 
 			if (ips.size() > 0) {
-				sendMailUtils.sendMailSmtp(mail, "负载节点出现异常", "以下负载节点出现异常请检查: " + StrUtil.join(" ", ips));
+				sendMailUtils.sendMailSmtp(mail, m.get("mailStr.upstreamFail"), m.get("mailStr.upstreamTips") + StrUtil.join(" ", ips));
 				settingService.set("lastUpstreamSend", String.valueOf(System.currentTimeMillis()));
 			}
 		}

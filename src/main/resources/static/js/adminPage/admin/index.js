@@ -8,7 +8,7 @@ function add() {
 	$("#name").val(""); 
 	$("#pass").val(""); 
 	
-	showWindow("添加管理员");
+	showWindow(adminStr.add);
 }
 
 
@@ -35,7 +35,7 @@ function addOver() {
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
@@ -58,19 +58,19 @@ function edit(id) {
 				$("#name").val(admin.name);
 				
 				form.render();
-				showWindow("编辑admin");
+				showWindow(commonStr.edit);
 			}else{
 				layer.msg(data.msg);
 			}
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
 function del(id){
-	if(confirm("确认删除?")){
+	if(confirm(commonStr.confirmDel)){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/admin/del',
@@ -86,7 +86,7 @@ function del(id){
 				}
 			},
 			error : function() {
-				alert("出错了,请联系技术人员!");
+				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}

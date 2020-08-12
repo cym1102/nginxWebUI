@@ -20,7 +20,7 @@ $(function() {
 	laypage.render({
 		elem : 'pageInfo', // 渲染节点
 		count : page.count, // 总记录数
-		curr : page.curr, // 起始页
+		curr : page.current, // 起始页
 		limit : page.limit, // 每页记录数
 		layout : ['count', 'prev', 'page', 'next',  'skip' ,'limit'],
 		jump : function(obj, first) {
@@ -72,7 +72,7 @@ $(function() {
 			} 
 		},
 		error : function() {
-			alert("出错了,请联系技术人员!");
+			layer.alert(commonStr.errorInfo);
 		}
 	});
 	
@@ -95,7 +95,7 @@ function gohref(url) {
 
 // 退出登录
 function loginOut() {
-	if (confirm("是否退出登录?")) {
+	if (confirm(baseStr.exit)) {
 		location.href = ctx + "/adminPage/login/loginOut";
 	}
 }
@@ -171,18 +171,23 @@ function downloadFile(url, name) {
 
 function showUpdate(version, url, docker,update){
 	var str = `
-		<div style="font-size: 16px; font-weight: bolder;">有新版本发布 ${version}</div>
-		<div>更新内容: ${update}</div>
-		<div>jar下载地址: <span class='green'>${url}</span></div>
-		<div>docker地址: <span class='green'>${docker}</span></div>
+		<div style="font-size: 16px; font-weight: bolder;">${commonStr.newVersion} ${version}</div>
+		<div>${baseStr.updateContent}: ${update}</div>
+		<div>${baseStr.jar}: <span class='green'>${url}</span></div>
+		<div>${baseStr.docker}: <span class='green'>${docker}</span></div>
 		<div>&nbsp;</div>
 		<div>
-			<button type="button" class="layui-btn layui-btn-sm" onclick="autoUpdate('${url}')">点击自动更新</button>
+			<button type="button" class="layui-btn layui-btn-sm" onclick="autoUpdate('${url}')">${baseStr.click}</button>
 		</div>
 	`;
 	
 	layer.open({
 		  type: 0, 
+		  title : commonStr.update,
+		  btn: [commonStr.close],
+		  yes: function(index, layero){
+		       layer.closeAll();
+		  },
 		  area : [ '600px', '400px' ],
 		  content: str
 	});
@@ -203,7 +208,7 @@ function form2JsonString(formId) {
 
 var loaded;
 function autoUpdate(url){
-	if(confirm("是否进行自动更新?")){
+	if(confirm(baseStr.confirmUpdate)){
 		loaded =	layer.load();
 		$.ajax({
 			type : 'POST',
@@ -215,13 +220,13 @@ function autoUpdate(url){
 			success : function(data) {
 				if(!data.success){
 					layer.close(loaded);
-					alert(data.msg);
+					layer.alert(data.msg);
 					return;
 				}
 				
 				setTimeout(function(){
 					layer.close(loaded);
-					layer.alert("更新完成, 重新登录即可使用最新版本");
+					layer.alert(baseStr.updateOver);
 				},10000)
 				
 				
@@ -229,10 +234,30 @@ function autoUpdate(url){
 			error : function() {
 				setTimeout(function(){
 					layer.layer.close(loaded);
-					layer.alert("更新完成, 重新登录即可使用最新版本");
+					layer.alert(baseStr.updateOver);
 				},10000)
 			}
 		});
 	}
 	
+}
+
+
+function changeLang() {
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/login/changeLang',
+		data: $("#adminForm").serialize(),
+		dataType: 'json',
+		success: function(data) {
+			if (data.success) {
+				location.reload();
+			} else {
+				layer.msg(data.msg);
+			}
+		},
+		error: function() {
+			layer.alert(commonStr.errorInfo);
+		}
+	});
 }

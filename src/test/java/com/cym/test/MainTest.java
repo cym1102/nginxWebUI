@@ -11,10 +11,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.cym.NginxWebUI;
+import com.cym.model.LogInfo;
 import com.cym.service.MonitorService;
 
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 
 @SpringBootTest(classes = NginxWebUI.class)
@@ -27,7 +30,9 @@ public class MainTest {
 	String version;
 	@Autowired
 	MonitorService monitorService;
-
+	@Autowired
+	JdbcTemplate jdbcTemplate;
+	
 	@BeforeAll
 	static void before() {
 		System.out.println("--------------测试开始----------");
@@ -35,7 +40,15 @@ public class MainTest {
 
 	@Test
 	public void testStartUp() throws InterruptedException {
-
+//		for(int i=0;i<100;i++) {
+//			LogInfo logInfo = new LogInfo();
+//			logInfo.setRemoteAddr("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+//		
+//			sqlHelper.insert(logInfo);
+//		}
+		
+//		sqlHelper.deleteByQuery(new ConditionAndWrapper(), LogInfo.class);
+//		jdbcTemplate.execute("vacuum;");
 	}
 
 	@AfterAll
@@ -43,17 +56,6 @@ public class MainTest {
 		System.out.println("--------------测试结束----------");
 	}
 
-	public static void main(String[] args) {
-		List<String> rs = new ArrayList<>();
-		rs.add("              total        used        free      shared  buff/cache   available");
-		rs.add("Mem:          32064        2662       21867           2        7535       28936");
-		rs.add("Swap:          8191           0        8191");
 
-		String[] lines = rs.get(1).replaceAll(" + ", " ").split(" ");
-
-		System.out.println(lines);
-		
-		
-	}
 
 }

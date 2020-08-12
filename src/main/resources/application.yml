@@ -10,8 +10,9 @@ server:
 spring:
   application:
     name: nginxWebUI
-  #profiles:
-    #active: prod
+  messages:
+    basename: messages #相对路径 开头请勿添加斜杠
+    encoding: UTF-8
   session:
     store-type: jdbc
     jdbc:
