@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.model.Message;
 import com.cym.service.SettingService;
+import com.cym.utils.MessageUtils;
 import com.cym.utils.PropertiesUtils;
 
 import cn.hutool.core.util.StrUtil;
@@ -41,7 +42,8 @@ public class FrontInterceptor implements HandlerInterceptor {
 
 	@Autowired
 	SettingService settingService;
-
+	@Autowired
+	MessageUtils m;
 	/*
 	 * 视图渲染之后的操作
 	 */
@@ -84,10 +86,10 @@ public class FrontInterceptor implements HandlerInterceptor {
 		String l = request.getParameter("l");
 		if (StrUtil.isNotEmpty(l) && l.equals("en_US") || settingService.get("lang") != null && settingService.get("lang").equals("en_US")) {
 			settingService.set("lang", "en_US");
-			properties = propertiesUtils.getPropertis("messages_en_US.properties");
+			properties = m.getPropertiesEN();
 		} else {
 			settingService.set("lang", "");
-			properties = propertiesUtils.getPropertis("messages.properties");
+			properties = m.getProperties();
 		}
 
 		// js国际化

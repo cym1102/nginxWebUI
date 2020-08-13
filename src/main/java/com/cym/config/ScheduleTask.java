@@ -75,7 +75,7 @@ public class ScheduleTask {
 	public void certTasks() {
 		List<Cert> certList = sqlHelper.findAll(Cert.class);
 
-		System.out.println("检查需要续签的证书");
+		//检查需要续签的证书
 		long time = System.currentTimeMillis();
 		for (Cert cert : certList) {
 			// 大于50天的续签

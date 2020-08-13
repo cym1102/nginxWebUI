@@ -68,7 +68,7 @@ $(function() {
 		dataType : 'json',
 		success : function(data) {
 			if (data.success) {
-				$("#localType").html(data.obj)
+				$("#localType").html(data.obj);
 			} 
 		},
 		error : function() {

@@ -1,8 +1,5 @@
 package com.cym.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,11 +11,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.cym.NginxWebUI;
-import com.cym.model.LogInfo;
 import com.cym.service.MonitorService;
+import com.cym.service.SettingService;
+import com.cym.utils.MessageUtils;
+import com.cym.utils.SendMailUtils;
 
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
+import cn.hutool.core.util.StrUtil;
 
 @SpringBootTest(classes = NginxWebUI.class)
 public class MainTest {
@@ -32,6 +31,12 @@ public class MainTest {
 	MonitorService monitorService;
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+	@Autowired
+	SendMailUtils sendMailUtils;
+	@Autowired
+	SettingService settingService;
+	@Autowired
+	MessageUtils m;
 	
 	@BeforeAll
 	static void before() {
@@ -49,6 +54,9 @@ public class MainTest {
 		
 //		sqlHelper.deleteByQuery(new ConditionAndWrapper(), LogInfo.class);
 //		jdbcTemplate.execute("vacuum;");
+		
+		String mail = settingService.get("mail");
+		sendMailUtils.sendMailSmtp(mail, m.get("mailStr.upstreamFail"), m.get("mailStr.upstreamFail") + StrUtil.join(" ", "127.0.0.1"));
 	}
 
 	@AfterAll
