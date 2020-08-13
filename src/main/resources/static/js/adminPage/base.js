@@ -27,7 +27,7 @@ $(function() {
 			// 首次不执行
 			if (!first) {
 				// do something
-				$("input[name='curr']").val(obj.curr);
+				$("input[name='current']").val(obj.curr);
 				$("input[name='limit']").val(obj.limit);
 				$("#searchForm").submit();
 			}
