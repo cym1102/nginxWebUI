@@ -419,3 +419,45 @@ function testMail() {
 
 
 }
+
+var batchIndex;
+function addBatch(){
+	$("#batchIp").val("");
+	batchIndex = layer.open({
+		type: 1,
+		title: upstreamStr.addServerBatch,
+		area: ['800px', '500px'], // 宽高
+		content: $('#batchDiv')
+	});
+}
+
+function addBatchOver(){
+	var batchIp = $("#batchIp").val();
+	
+	var list = batchIp.split(",");
+	
+	var html = ``;
+	for (let i = 0; i < list.length; i++) {
+		var ip = list[i].split(":")[0];
+		var port = list[i].split(":")[1];
+		var uuid = guid();
+		html += `<tr id='${uuid}'>
+						<td><input type="text" name="server" class="layui-input" value="${ip}"></td>
+						<td><input type="number" name="port" class="layui-input" value="${port}"></td>
+						<td><input type="number" name="weight" class="layui-input" value="1"></td>
+						<td><input type="number" name="maxFails" class="layui-input" value="1"></td>
+						<td><input type="number" name="failTimeout" class="layui-input" value="10"></td>
+						<td>
+							<select name="status">
+								<option value="none">${upstreamStr.none}</option>
+								<option value="down">${upstreamStr.down}</option>
+								<option value="backup">${upstreamStr.backup}</option>
+							</select>
+						</td>
+						<td><button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button></td>
+				</tr>`
+	}
+	$("#itemList").html(html);
+	form.render();
+	layer.close(batchIndex);
+}

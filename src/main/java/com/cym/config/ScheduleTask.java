@@ -75,7 +75,7 @@ public class ScheduleTask {
 	public void certTasks() {
 		List<Cert> certList = sqlHelper.findAll(Cert.class);
 
-		//检查需要续签的证书
+		// 检查需要续签的证书
 		long time = System.currentTimeMillis();
 		for (Cert cert : certList) {
 			// 大于50天的续签
@@ -123,34 +123,36 @@ public class ScheduleTask {
 		}
 	}
 
-	// 检查nginx运行
+	// 检查远程服务器
 	@Scheduled(cron = "0/30 * * * * ?")
 	public void nginxTasks() {
-		//System.err.println("检查nginx运行");
+		// System.err.println("检查nginx运行");
 
 		String lastNginxSend = settingService.get("lastNginxSend");
 		String mail = settingService.get("mail");
 		String nginxMonitor = settingService.get("nginxMonitor");
 		if ("true".equals(nginxMonitor) && StrUtil.isNotEmpty(mail) && (StrUtil.isEmpty(lastNginxSend) || System.currentTimeMillis() - Long.parseLong(lastNginxSend) > TimeUnit.MINUTES.toMillis(30))) {
-
-			List<Remote> remoteList = remoteService.getMonitorRemoteList();
-
 			List<String> names = new ArrayList<>();
+
+			// 测试远程
+			List<Remote> remoteList = remoteService.getMonitorRemoteList();
 			for (Remote remote : remoteList) {
 				try {
 					String json = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/remote/version?creditKey=" + remote.getCreditKey(), 1000);
 					Map<String, Object> map = JSONUtil.toBean(json, new TypeReference<Map<String, Object>>() {
 					}.getType(), false);
 
-					if ((Integer) map.get("nginx") == 0) {
+					if ((Integer) map.get("nginx") == 0 && remote.getMonitor() == 1) {
 						names.add(remote.getDescr() + "[" + remote.getIp() + ":" + remote.getPort() + "]");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
+					
+					names.add(remote.getDescr() + "[" + remote.getIp() + ":" + remote.getPort() + "]");
 				}
 			}
 
-			// 监控本地
+			// 测试本地
 			if ("1".equals(settingService.get("monitorLocal"))) {
 				Map<String, Object> map = remoteController.version();
 				if ((Integer) map.get("nginx") == 0) {
@@ -169,7 +171,7 @@ public class ScheduleTask {
 	// 检查节点情况
 	@Scheduled(cron = "0/30 * * * * ?")
 	public void nodeTasks() {
-		//System.err.println("检查节点情况");
+		// System.err.println("检查节点情况");
 
 		String lastUpstreamSend = settingService.get("lastUpstreamSend");
 		String mail = settingService.get("mail");

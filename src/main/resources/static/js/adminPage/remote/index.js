@@ -161,7 +161,7 @@ $(function(){
 									return "";
 								}
 							},{	
-								title : remoteStr.addToMonitor,
+								title : remoteStr.mailNotice,
 								template : function(remote) {
 									if(remote.type == 0){
 										var checked = remote.monitor==1?'checked':'';

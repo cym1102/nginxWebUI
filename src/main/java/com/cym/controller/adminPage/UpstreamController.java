@@ -44,10 +44,10 @@ public class UpstreamController extends BaseController {
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String keywords) {
 		// 检测node
-		String upstreamMonitor = settingService.get("upstreamMonitor");
-		if ("true".equals(upstreamMonitor)) {
-			testNode();
-		}
+//		String upstreamMonitor = settingService.get("upstreamMonitor");
+//		if ("true".equals(upstreamMonitor)) {
+//			testNode();
+//		}
 
 		page = upstreamService.search(page, keywords);
 
@@ -182,17 +182,17 @@ public class UpstreamController extends BaseController {
 	/**
 	 * 检测node
 	 */
-	private void testNode() {
-		List<UpstreamServer> upstreamServers = upstreamService.getAllServer();
-		for (UpstreamServer upstreamServer : upstreamServers) {
-			if (!TelnetUtils.isRunning(upstreamServer.getServer(), upstreamServer.getPort())) {
-				upstreamServer.setMonitorStatus(0);
-			} else {
-				upstreamServer.setMonitorStatus(1);
-			}
-
-			sqlHelper.updateById(upstreamServer);
-		}
-	}
+//	private void testNode() {
+//		List<UpstreamServer> upstreamServers = upstreamService.getAllServer();
+//		for (UpstreamServer upstreamServer : upstreamServers) {
+//			if (!TelnetUtils.isRunning(upstreamServer.getServer(), upstreamServer.getPort())) {
+//				upstreamServer.setMonitorStatus(0);
+//			} else {
+//				upstreamServer.setMonitorStatus(1);
+//			}
+//
+//			sqlHelper.updateById(upstreamServer);
+//		}
+//	}
 
 }
