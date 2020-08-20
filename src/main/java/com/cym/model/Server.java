@@ -19,9 +19,8 @@ public class Server extends BaseModel {
 	Integer http2; // 0否 1是
 	String pem;
 	String key;
-	// 代理类型
 	@InitValue("0")
-	Integer proxyType; //  0 http 1 tcp
+	Integer proxyType; // 代理类型 0 http 1 tcp
 	String proxyUpstreamId;
 	
 	String pemStr;
@@ -30,7 +29,15 @@ public class Server extends BaseModel {
 	@InitValue("true")
 	Boolean enable; // 是否启用
 	
+	String descr; // 描述
 	
+	
+	public String getDescr() {
+		return descr;
+	}
+	public void setDescr(String descr) {
+		this.descr = descr;
+	}
 	public Integer getDef() {
 		return def;
 	}

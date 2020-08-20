@@ -1,24 +1,24 @@
 $(function() {
-	form.on('switch(enable)', function(data){
-		  
-		  $.ajax({
-				type : 'POST',
-				url : ctx + '/adminPage/server/setEnable',
-				data : {
-					enable : data.elem.checked?1:0,
-					id : data.elem.value
-				},
-				dataType : 'json',
-				success : function(data) {			
-					
-				},
-				error : function() {
-					layer.alert(commonStr.errorInfo);
-				}
+	form.on('switch(enable)', function(data) {
+
+		$.ajax({
+			type: 'POST',
+			url: ctx + '/adminPage/server/setEnable',
+			data: {
+				enable: data.elem.checked ? 1 : 0,
+				id: data.elem.value
+			},
+			dataType: 'json',
+			success: function(data) {
+
+			},
+			error: function() {
+				layer.alert(commonStr.errorInfo);
+			}
 		});
-	});   
-	
-	
+	});
+
+
 	form.on('select(type)', function(data) {
 		checkType(data.value, $(data.elem).attr("lang"));
 	});
@@ -28,14 +28,14 @@ $(function() {
 	form.on('select(proxyType)', function(data) {
 		checkProxyType(data.value);
 	});
-	
+
 	layui.use('upload', function() {
 		var upload = layui.upload;
 		upload.render({
-			elem : '#pemBtn',
-			url : '/upload/',
-			accept : 'file',
-			done : function(res) {
+			elem: '#pemBtn',
+			url: '/upload/',
+			accept: 'file',
+			done: function(res) {
 				// 上传完毕回调
 				if (res.success) {
 					$("#pem").val(res.obj);
@@ -43,37 +43,37 @@ $(function() {
 				}
 
 			},
-			error : function() {
+			error: function() {
 				// 请求异常回调
 			}
 		});
 
 		upload.render({
-			elem : '#keyBtn',
-			url : '/upload/',
-			accept : 'file',
-			done : function(res) {
+			elem: '#keyBtn',
+			url: '/upload/',
+			accept: 'file',
+			done: function(res) {
 				// 上传完毕回调
 				if (res.success) {
 					$("#key").val(res.obj);
 					$("#keyPath").html(res.obj);
 				}
 			},
-			error : function() {
+			error: function() {
 				// 请求异常回调
 			}
 		});
 	});
 })
 
-function checkType(type,id){
+function checkType(type, id) {
 	if (type == 0) {
 		$("#" + id + " span[name='valueSpan']").show();
 		$("#" + id + " span[name='rootPathSpan']").hide();
 		$("#" + id + " span[name='upstreamSelectSpan']").hide();
 		$("#" + id + " span[name='blankSpan']").hide();
 		$("#" + id + " span[name='headerSpan']").show();
-	} 
+	}
 	if (type == 1) {
 		$("#" + id + " span[name='valueSpan']").hide();
 		$("#" + id + " span[name='rootPathSpan']").show();
@@ -87,36 +87,36 @@ function checkType(type,id){
 		$("#" + id + " span[name='upstreamSelectSpan']").show();
 		$("#" + id + " span[name='blankSpan']").hide();
 		$("#" + id + " span[name='headerSpan']").show();
-	} 
+	}
 	if (type == 3) {
 		$("#" + id + " span[name='valueSpan']").hide();
 		$("#" + id + " span[name='rootPathSpan']").hide();
 		$("#" + id + " span[name='upstreamSelectSpan']").hide();
 		$("#" + id + " span[name='blankSpan']").show();
 		$("#" + id + " span[name='headerSpan']").hide();
-	} 
+	}
 }
 
-function checkSsl(value){
+function checkSsl(value) {
 	if (value == 0) {
 		$(".pemDiv").hide();
-	} 
+	}
 	if (value == 1) {
 		$(".pemDiv").show();
-	} 
+	}
 }
 
-function checkProxyType(value){
+function checkProxyType(value) {
 	if (value == 0) {
 		$(".proxyHttp").show();
 		$(".proxyTcp").hide();
-		
-	} 
+
+	}
 	if (value == 1) {
 		$(".proxyHttp").hide();
 		$(".proxyTcp").show();
-	} 
-	
+	}
+
 }
 
 function search() {
@@ -134,94 +134,94 @@ function add() {
 	$("#http2 option:first").prop("selected", true);
 	$("#proxyType option:first").prop("selected", true);
 	$("#proxyUpstreamId option:first").prop("selected", true);
-	
+
 	$("#pem").val("");
 	$("#pemPath").html("");
 	$("#key").val("");
 	$("#keyPath").html("");
 	$("#itemList").html("");
 	$("#paramJson").val("");
-	
+
 	checkSsl(0);
 	checkProxyType(0);
-	
+
 	form.render();
 	showWindow(serverStr.add);
 }
 
 function showWindow(title) {
 	layer.open({
-		type : 1,
-		title : title,
-		area : [ '1210px', '700px' ], // 宽高
-		content : $('#windowDiv')
+		type: 1,
+		title: title,
+		area: ['1210px', '700px'], // 宽高
+		content: $('#windowDiv')
 	});
 }
 
 function addOver() {
-	if($("#listen").val().trim() == ''){
+	if ($("#listen").val().trim() == '') {
 		layer.msg(serverStr.noPort);
 		return;
 	}
-	
-	if($("#ssl").val() == 1 && $("#serverName").val() == ''){
+
+	if ($("#ssl").val() == 1 && $("#serverName").val() == '') {
 		layer.msg(serverStr.sslTips);
 		return;
 	}
-	
+
 	var over = true;
-	$("input[name='path']").each(function(){
-		if($(this).val().trim() == ''){
+	$("input[name='path']").each(function() {
+		if ($(this).val().trim() == '') {
 			over = false;
 		}
 	})
-	$("input[name='value']").each(function(){
-		if(!$(this).is(":hidden") && $(this).val().trim() == ''){
+	$("input[name='value']").each(function() {
+		if (!$(this).is(":hidden") && $(this).val().trim() == '') {
 			over = false;
 		}
 	})
-	$("input[name='rootPath']").each(function(){
-		if(!$(this).is(":hidden") && $(this).val().trim() == ''){
+	$("input[name='rootPath']").each(function() {
+		if (!$(this).is(":hidden") && $(this).val().trim() == '') {
 			over = false;
 		}
 	})
-	$("select[name='upstreamId']").each(function(){
-		if(!$(this).parent().is(":hidden") && ($(this).val() == '' || $(this).val() == null)){
+	$("select[name='upstreamId']").each(function() {
+		if (!$(this).parent().is(":hidden") && ($(this).val() == '' || $(this).val() == null)) {
 			over = false;
 		}
 	})
-	$("select[name='proxyUpstreamId']").each(function(){
-		if($("#proxyType").val() == 1 &&  ($(this).val() == '' || $(this).val() == null)){
+	$("select[name='proxyUpstreamId']").each(function() {
+		if ($("#proxyType").val() == 1 && ($(this).val() == '' || $(this).val() == null)) {
 			over = false;
 		}
 	})
-	if(!over){
+	if (!over) {
 		layer.msg(serverStr.noFill);
 		return;
 	}
-	
-	
+
+
 	var server = {};
-	server.id =  $("#id").val();
+	server.id = $("#id").val();
 	server.proxyType = $("#proxyType").val();
 	server.proxyUpstreamId = $("#proxyUpstreamId").val();
 	server.listen = $("#listen").val();
-	if($("#ip").val() != ''){
+	if ($("#ip").val() != '') {
 		server.listen = $("#ip").val() + ":" + $("#listen").val();
 	}
-	server.def = $("#def").prop("checked")?"1":"0";
+	server.def = $("#def").prop("checked") ? "1" : "0";
 	server.serverName = $("#serverName").val();
 	server.ssl = $("#ssl").val();
 	server.pem = $("#pem").val();
 	server.key = $("#key").val();
 	server.rewrite = $("#rewrite").val();
 	server.http2 = $("#http2").val();
-	
+
 	var serverParamJson = $("#serverParamJson").val();
-	
+
 	var locations = [];
-	
-	$(".itemList").children().each(function(){
+
+	$(".itemList").children().each(function() {
 		var location = {};
 		location.path = $(this).find("input[name='path']").val();
 		location.type = $(this).find("select[name='type']").val();
@@ -231,62 +231,62 @@ function addOver() {
 		location.rootPath = $(this).find("input[name='rootPath']").val();
 		location.rootPage = $(this).find("input[name='rootPage']").val();
 		location.rootType = $(this).find("select[name='rootType']").val();
-		location.locationParamJson =  $(this).find("textarea[name='locationParamJson']").val();
-		location.header =  $(this).find("input[name='header']").prop("checked")?1:0;
-		
+		location.locationParamJson = $(this).find("textarea[name='locationParamJson']").val();
+		location.header = $(this).find("input[name='header']").prop("checked") ? 1 : 0;
+
 		locations.push(location);
 	})
-	
+
 	$.ajax({
-		type : 'POST',
-		url : ctx + '/adminPage/server/addOver',
-		data : {
-			serverJson : JSON.stringify(server),
-			serverParamJson : serverParamJson,
-			locationJson : JSON.stringify(locations),
+		type: 'POST',
+		url: ctx + '/adminPage/server/addOver',
+		data: {
+			serverJson: JSON.stringify(server),
+			serverParamJson: serverParamJson,
+			locationJson: JSON.stringify(locations),
 		},
-		dataType : 'json',
-		success : function(data) {
+		dataType: 'json',
+		success: function(data) {
 			if (data.success) {
 				location.reload();
 			} else {
 				layer.msg(data.msg);
 			}
 		},
-		error : function() {
+		error: function() {
 			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
-function edit(id,clone) {
+function edit(id, clone) {
 	$("#id").val(id);
 
 	$.ajax({
-		type : 'GET',
-		url : ctx + '/adminPage/server/detail',
-		dataType : 'json',
-		data : {
-			id : id
+		type: 'GET',
+		url: ctx + '/adminPage/server/detail',
+		dataType: 'json',
+		data: {
+			id: id
 		},
-		success : function(data) {
+		success: function(data) {
 			if (data.success) {
-				
+
 				var server = data.obj.server;
-				if(!clone){
+				if (!clone) {
 					$("#id").val(server.id);
-				}else{
+				} else {
 					$("#id").val("");
 				}
-				
-				if(server.listen.indexOf(":") > -1){
+
+				if (server.listen.indexOf(":") > -1) {
 					$("#ip").val(server.listen.split(":")[0]);
 					$("#listen").val(server.listen.split(":")[1]);
 				} else {
 					$("#ip").val("");
 					$("#listen").val(server.listen);
 				}
-				
+
 				$("#def").prop("checked", server.def == 1);
 				$("#serverName").val(server.serverName);
 				$("#ssl").val(server.ssl);
@@ -297,34 +297,34 @@ function edit(id,clone) {
 				$("#proxyType").val(server.proxyType);
 				$("#proxyUpstreamId").val(server.proxyUpstreamId);
 				$("#serverParamJson").val(data.obj.paramJson);
-				
-				if(server.rewrite != null){
+
+				if (server.rewrite != null) {
 					$("#rewrite").val(server.rewrite);
-				} else{
+				} else {
 					$("#rewrite option:first").prop("selected", true);
 				}
-				
-				if(server.http2 != null){
+
+				if (server.http2 != null) {
 					$("#http2").val(server.http2);
-				} else{
+				} else {
 					$("#http2 option:first").prop("selected", true);
 				}
-				
+
 				checkSsl(server.ssl);
 				checkProxyType(server.proxyType);
 				var list = data.obj.locationList;
-				
+
 				var upstreamSelect = $("#upstreamSelect").html();
 				$("#itemList").html("");
-				for(let i=0;i<list.length;i++){
+				for (let i = 0; i < list.length; i++) {
 					var location = list[i];
 					var uuid = guid();
-					
+
 					location.locationParamJson = location.locationParamJson;
 					var html = buildHtml(uuid, location, upstreamSelect);
-						
+
 					$("#itemList").append(html);
-					
+
 					$("#" + uuid + " input[name='value']").val(location.value);
 					$("#" + uuid + " input[name='rootType']").val(location.rootType);
 					$("#" + uuid + " input[name='rootPath']").val(location.rootPath);
@@ -332,23 +332,23 @@ function edit(id,clone) {
 					$("#" + uuid + " select[name='rootType']").val(location.rootType);
 					$("#" + uuid + " select[name='upstreamId']").val(location.upstreamId);
 					$("#" + uuid + " input[name='upstreamPath']").val(location.upstreamPath);
-					
-					if(location.header == 1){
+
+					if (location.header == 1) {
 						$("#" + uuid + " input[name='header']").prop("checked", true);
-					}else{
+					} else {
 						$("#" + uuid + " input[name='header']").prop("checked", false);
 					}
-					
+
 					checkType(location.type, uuid)
 				}
-				
+
 				form.render();
 				showWindow(serverStr.edit);
 			} else {
 				layer.msg(data.msg);
 			}
 		},
-		error : function() {
+		error: function() {
 			layer.alert(commonStr.errorInfo);
 		}
 	});
@@ -358,20 +358,20 @@ function edit(id,clone) {
 function del(id) {
 	if (confirm(commonStr.del)) {
 		$.ajax({
-			type : 'POST',
-			url : ctx + '/adminPage/server/del',
-			data : {
-				id : id
+			type: 'POST',
+			url: ctx + '/adminPage/server/del',
+			data: {
+				id: id
 			},
-			dataType : 'json',
-			success : function(data) {
+			dataType: 'json',
+			success: function(data) {
 				if (data.success) {
 					location.reload();
 				} else {
 					layer.msg(data.msg)
 				}
 			},
-			error : function() {
+			error: function() {
 				layer.alert(commonStr.errorInfo);
 			}
 		});
@@ -380,31 +380,31 @@ function del(id) {
 
 
 
-function addItem(){
+function addItem() {
 	var uuid = guid();
-	
+
 	var upstreamSelect = $("#upstreamSelect").html();
-	
+
 	var html = buildHtml(uuid, null, upstreamSelect);
-	
+
 	$("#itemList").append(html);
 	checkType(0, uuid);
 	form.render();
-	
+
 }
 
 
 
-function buildHtml(uuid, location, upstreamSelect){
-	if(location == null){
+function buildHtml(uuid, location, upstreamSelect) {
+	if (location == null) {
 		location = {
-			path : "/",
-			type : "0",
-			locationParamJson : ""
+			path: "/",
+			type: "0",
+			locationParamJson: ""
 		};
 	}
-	
-	
+
+
 	var str = `<tr id='${uuid}'>
 				<td>
 					<input type="text" name="path" class="layui-input short" value="${location.path}">
@@ -412,10 +412,10 @@ function buildHtml(uuid, location, upstreamSelect){
 				<td>
 					<div class="layui-input-inline" style="width: 130px;">
 						<select name="type" lang='${uuid}' lay-filter="type">
-							<option ${location.type=='0'?'selected':''} value="0">${serverStr.serverType0}</option>
-							<option ${location.type=='1'?'selected':''} value="1">${serverStr.serverType1}</option>
-							<option ${location.type=='2'?'selected':''} value="2">${serverStr.serverType2}</option>
-							<option ${location.type=='3'?'selected':''} value="3">${serverStr.serverType3}</option>
+							<option ${location.type == '0' ? 'selected' : ''} value="0">${serverStr.serverType0}</option>
+							<option ${location.type == '1' ? 'selected' : ''} value="1">${serverStr.serverType1}</option>
+							<option ${location.type == '2' ? 'selected' : ''} value="2">${serverStr.serverType2}</option>
+							<option ${location.type == '3' ? 'selected' : ''} value="3">${serverStr.serverType3}</option>
 						</select>
 					</div>
 				</td>
@@ -466,50 +466,50 @@ function buildHtml(uuid, location, upstreamSelect){
 					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
 				</td>
 			</tr>`
-		
+
 	return str;
 }
 
 
-function delTr(id){
+function delTr(id) {
 	$("#" + id).remove();
 }
 
 var certIndex;
-function selectCert(){
+function selectCert() {
 	certIndex = layer.open({
-		type : 1,
-		title : serverStr.selectCert,
-		area : [ '500px', '300px' ], // 宽高
-		content : $('#certDiv')
+		type: 1,
+		title: serverStr.selectCert,
+		area: ['500px', '300px'], // 宽高
+		content: $('#certDiv')
 	});
-	
+
 }
 
-function selectCertOver(){
+function selectCertOver() {
 	var id = $("#certId").val();
-	
+
 	$.ajax({
-		type : 'POST',
-		url : ctx + '/adminPage/cert/detail',
-		data : {
-			id : id
+		type: 'POST',
+		url: ctx + '/adminPage/cert/detail',
+		data: {
+			id: id
 		},
-		dataType : 'json',
-		success : function(data) {
+		dataType: 'json',
+		success: function(data) {
 			if (data.success) {
 				var cert = data.obj;
 				$("#pem").val(cert.pem);
 				$("#pemPath").html(cert.pem);
 				$("#key").val(cert.key);
 				$("#keyPath").html(cert.key);
-				
+
 				layer.close(certIndex);
 			} else {
 				layer.msg(data.msg)
 			}
 		},
-		error : function() {
+		error: function() {
 			layer.alert(commonStr.errorInfo);
 		}
 	});
@@ -517,100 +517,106 @@ function selectCertOver(){
 
 
 
-function selectPem(){
-	rootSelect.selectOne(function(rs){
+function selectPem() {
+	rootSelect.selectOne(function(rs) {
 		$("#pem").val(rs);
 		$("#pemPath").html(rs);
 	})
 }
 
 
-function selectKey(){
-	rootSelect.selectOne(function(rs){
+function selectKey() {
+	rootSelect.selectOne(function(rs) {
 		$("#key").val(rs);
 		$("#keyPath").html(rs);
 	})
 }
 
 
-function serverParam(){
+function serverParam() {
 	var json = $("#serverParamJson").val();
 	$("#targertId").val("serverParamJson");
-	var params = json!=''?JSON.parse(json):[];
+	var params = json != '' ? JSON.parse(json) : [];
 	fillTable(params);
-	
+
 }
 
-function locationParam(uuid){
+function locationParam(uuid) {
 	var json = $("#locationParamJson_" + uuid).val();
 	$("#targertId").val("locationParamJson_" + uuid);
-	var params = json!=''?JSON.parse(json):[];
+	var params = json != '' ? JSON.parse(json) : [];
 	fillTable(params);
 }
 
 var paramIndex;
-function fillTable(params){
+function fillTable(params) {
 	var html = "";
-	for(var i=0;i<params.length;i++){
+	for (var i = 0; i < params.length; i++) {
 		var param = params[i];
-		
+
 		var uuid = guid();
-		if(param.templateValue == null){
+		if (param.templateValue == null) {
 			html += `
 			<tr name="param" id=${uuid}>
 				<td>
 					<textarea  name="name" class="layui-textarea">${param.name}</textarea>
 				</td>
-				<td  style="width: 60%;">
+				<td  style="width: 50%;">
 					<textarea  name="value" class="layui-textarea">${param.value}</textarea>
 				</td>
 				<td>
 					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
+					
+					<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
+					<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
 				</td>
 			</tr>
 			`;
 		} else {
-			html +=  buildTemplateParam(param);
+			html += buildTemplateParam(uuid,param);
 		}
 	}
-	
+
 	$("#paramList").html(html);
-	
+
 	paramIndex = layer.open({
-		type : 1,
-		title : serverStr.extParm,
-		area : [ '800px', '600px' ], // 宽高
-		content : $('#paramJsonDiv')
+		type: 1,
+		title: serverStr.extParm,
+		area: ['800px', '600px'], // 宽高
+		content: $('#paramJsonDiv')
 	});
 }
 
-function addParam(){
+function addParam() {
 	var uuid = guid();
-	
+
 	var html = `
 	<tr name="param" id="${uuid}">
 		<td>
 			<textarea  name="name" class="layui-textarea"></textarea>
 		</td>
-		<td  style="width: 60%;">
+		<td style="width: 50%;">
 			<textarea  name="value" class="layui-textarea"></textarea>
 		</td>
 		<td>
 			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
+			
+			<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
+			<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
 		</td>
 	</tr>
 	`;
-	
+
 	$("#paramList").append(html);
-	
+
 }
 
 
-function addParamOver(){
-	
+function addParamOver() {
+
 	var targertId = $("#targertId").val();
 	var params = [];
-	$("tr[name='param']").each(function(){
+	$("tr[name='param']").each(function() {
 		var param = {};
 		if ($(this).find("input[name='templateValue']").val() == null) {
 			param.name = $(this).find("textarea[name='name']").val();
@@ -622,39 +628,39 @@ function addParamOver(){
 		params.push(param);
 	})
 	$("#" + targertId).val(JSON.stringify(params));
-	
+
 	layer.close(paramIndex);
 }
 
 
-function sort(id){
-	$("#sort").val(id.replace("Sort",""))
-	if($("#"+id).attr("class").indexOf("blue") > -1){
-		if($("#direction").val()=='asc'){
+function sort(id) {
+	$("#sort").val(id.replace("Sort", ""))
+	if ($("#" + id).attr("class").indexOf("blue") > -1) {
+		if ($("#direction").val() == 'asc') {
 			$("#direction").val("desc")
-		}else{
+		} else {
 			$("#direction").val("asc")
 		}
-	}else{
+	} else {
 		$("#direction").val("asc")
 	}
-	
+
 	search();
 }
 
 
 var wwwIndex;
 var uuid;
-function selectWww(id){
+function selectWww(id) {
 	uuid = id;
-	rootSelect.selectOne(function callBack(val){
+	rootSelect.selectOne(function callBack(val) {
 		$("#rootPath_" + uuid).val(val);
 	});
 }
 
 
-function clone(id){
-	if(confirm(serverStr.confirmClone)){
+function clone(id) {
+	if (confirm(serverStr.confirmClone)) {
 		edit(id, true);
 	}
 }
@@ -664,20 +670,20 @@ function importServer() {
 	var formData = new FormData();
 	formData.append("nginxPath", $("#nginxPath").val());
 	$.ajax({
-		type : 'POST',
-		url : ctx + '/adminPage/server/importServer',
-		data : formData,
-		dataType : 'json',
+		type: 'POST',
+		url: ctx + '/adminPage/server/importServer',
+		data: formData,
+		dataType: 'json',
 		processData: false,
 		contentType: false,
-		success : function(data) {
+		success: function(data) {
 			if (data.success) {
 				location.reload();
 			} else {
 				layer.msg(data.msg);
 			}
 		},
-		error : function() {
+		error: function() {
 			layer.alert(commonStr.errorInfo);
 		}
 	});
@@ -686,29 +692,29 @@ function importServer() {
 var importIndex;
 function openImport() {
 	importIndex = layer.open({
-		type : 1,
-		title : serverStr.importServer,
-		area : [ '500px', '300px' ], // 宽高
-		content : $('#importDiv')
+		type: 1,
+		title: serverStr.importServer,
+		area: ['500px', '300px'], // 宽高
+		content: $('#importDiv')
 	});
 }
 // 选择系统文件
-function selectRootCustom(inputId){
-	rootSelect.selectOne(function callBack(val){
+function selectRootCustom(inputId) {
+	rootSelect.selectOne(function callBack(val) {
 		$("#" + inputId).val(val);
 	});
 }
 
-function testPort(){
-	if(confirm(serverStr.testAllPort)){
+function testPort() {
+	if (confirm(serverStr.testAllPort)) {
 		layer.load();
 		$.ajax({
-			type : 'POST',
-			url : ctx + '/adminPage/server/testPort',
-			dataType : 'json',
+			type: 'POST',
+			url: ctx + '/adminPage/server/testPort',
+			dataType: 'json',
 			processData: false,
 			contentType: false,
-			success : function(data) {
+			success: function(data) {
 				layer.closeAll();
 				if (data.success) {
 					layer.msg(serverStr.noPortUsed);
@@ -716,11 +722,45 @@ function testPort(){
 					layer.alert(data.msg);
 				}
 			},
-			error : function() {
+			error: function() {
 				layer.closeAll();
 				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
-	
+
+}
+
+function editDescr(id, descr) {
+	$("#serverId").val(id);
+	$("#descr").val(descr);
+	layer.open({
+		type: 1,
+		title: serverStr.descr,
+		area: ['500px', '300px'], // 宽高
+		content: $('#descrDiv')
+	});
+
+}
+
+function editDescrOver(){
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/server/editDescr',
+		data: {
+			id: $("#serverId").val(),
+			descr : $("#descr").val()
+		},
+		dataType: 'json',
+		success: function(data) {
+			if (data.success) {
+				location.reload();
+			} else {
+				layer.msg(data.msg)
+			}
+		},
+		error: function() {
+			layer.alert(commonStr.errorInfo);
+		}
+	});
 }

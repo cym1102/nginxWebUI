@@ -124,8 +124,10 @@
 								<th>${serverStr.serverName} <i class="layui-icon ${(direction=='desc'&&sort=='serverName')?string('layui-icon-down','layui-icon-up')} ${(sort=='serverName')?string('blue','')}" id="serverNameSort" onclick="sort('serverNameSort')"></i></th>
 								<th>${serverStr.ssl}</th>
 								<th>${serverStr.sslOption}</th>
-								<th>${serverStr.proxyTargetsssss}</th>
+								<th>${serverStr.proxyTarget}</th>
 								<th>${serverStr.status}</th>
+								
+								<th style="width: 200px;">${serverStr.descr}</th>
 								<th>${commonStr.operation}</th>
 							</tr>
 						</thead>
@@ -165,6 +167,13 @@
 								<td>
 									<input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="ON|OFF" lay-skin="switch" ${(ext.server.enable)?string('checked','')}>
 								</td>
+								
+								<td>
+									${ext.server.descr} 
+									<a href="javascript:editDescr('${ext.server.id}','${ext.server.descr}')" style="color: blue;text-decoration: underline;">${commonStr.edit}</a> 
+								</td>
+								
+								
 								<td>
 									<button type="button" class="layui-btn layui-btn-sm" onclick="edit('${ext.server.id}', false)">${commonStr.edit}</button>
 									<button type="button" class="layui-btn layui-btn-sm" onclick="clone('${ext.server.id}')">${commonStr.clone}</button>
@@ -216,7 +225,7 @@
 						<div class="proxyHttp">
 							<label class="layui-form-label">&nbsp;</label>
 							<div class="layui-input-block">
-								<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" style="margin-left: 5px;" onclick="selectCert()">${serverStr.selectCert}</button>
+								<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectCert()">${serverStr.selectCert}</button>
 								<div class="layui-form-mid layui-word-aux"></div>
 							</div>
 						</div>
@@ -267,7 +276,7 @@
 										<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectPem()">${commonStr.selectPath}</button>
 										
 										<input type="hidden" name="pem" id="pem" class="layui-input">
-										<div class="layui-form-mid layui-word-aux" id="pemPath"></div>
+										<div class="layui-form-mid layui-word-aux ellipsis" id="pemPath"></div>
 										
 									</div>
 								</div>
@@ -279,7 +288,7 @@
 										<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectKey()">${commonStr.selectPath}</button>
 										
 										<input type="hidden" name="key" id="key" class="layui-input">
-										<div class="layui-form-mid layui-word-aux" id="keyPath"></div>
+										<div class="layui-form-mid layui-word-aux ellipsis" id="keyPath" ></div>
 									</div>
 								</div>
 
@@ -320,7 +329,7 @@
 							<tr>
 								<th>${serverStr.listenPath}</th>
 								<th>${serverStr.proxyType}</th>
-								<th>${serverStr.proxyTarget}</th>
+								<th style="width: 550px;">${serverStr.proxyTarget}</th>
 								<th>${commonStr.operation}</th>
 							</tr>
 						</thead>
@@ -416,6 +425,22 @@
 			<div class="layui-form-item">
 				<button type="button" class="layui-btn layui-btn-normal" onclick="importServer()">${serverStr.importServer}</button>
 				<button type="button" class="layui-btn" onclick="layer.close(importIndex)">${commonStr.close}</button>
+			</div>
+		</div>
+		
+		
+		<div class="layui-form" id="descrDiv" style="padding: 15px; display: none">
+			<input type="hidden" id="serverId" name="serverId">
+			<div class="layui-form-item">
+				<div class="layui-input-inline" style="width: 100%">
+					<textarea type="text" id="descr" name="descr" class="layui-textarea" >
+					
+					</textarea>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<button type="button" class="layui-btn layui-btn-normal" onclick="editDescrOver()">${commonStr.ok}</button>
+				<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 			</div>
 		</div>
 	</div>

@@ -63,13 +63,16 @@ function selectTemplateOver(){
 						<td>
 							${templateStr.template}
 						</td>
-						<td  style="width: 60%;">
+						<td  style="width: 50%;">
 							${ext.template.name}
 							<input type="hidden" name="templateValue" value="${ext.template.id}">
 							<input type="hidden" name="templateName" value="${ext.template.name}">
 						</td>
 						<td>
 							<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
+							
+							<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
+							<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
 						</td>
 					</tr>
 				`;
@@ -88,19 +91,22 @@ function selectTemplateOver(){
 }
 
 
-function buildTemplateParam(param){
+function buildTemplateParam(uuid, param){
 	return `
 			<tr name="param" id="${uuid}">
 				<td>
 					${templateStr.template}
 				</td>
-				<td  style="width: 60%;">
+				<td  style="width: 50%;">
 					${param.templateName}
 					<input type="hidden" name="templateValue" value="${param.templateValue}">
 					<input type="hidden" name="templateName" value="${param.templateName}">
 				</td>
 				<td>
 					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
+					
+					<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
+					<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
 				</td>
 			</tr>
 			`;

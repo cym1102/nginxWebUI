@@ -81,11 +81,14 @@ function edit(id) {
 								<td>
 									<textarea  name="name" class="layui-textarea">${param.name}</textarea>
 								</td>
-								<td  style="width: 60%;">
+								<td  style="width: 50%;">
 									<textarea  name="value" class="layui-textarea">${param.value}</textarea>
 								</td>
 								<td>
 									<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
+									
+									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
+									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
 								</td>
 							</tr>`
 				}
@@ -135,11 +138,14 @@ function addParam() {
 				<td>
 					<textarea  name="name" class="layui-textarea"></textarea>
 				</td>
-				<td  style="width: 60%;">
+				<td  style="width: 50%;">
 					<textarea  name="value" class="layui-textarea"></textarea>
 				</td>
 				<td>
 					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
+					
+					<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
+					<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
 				</td>
 			</tr>`
 	$("#paramList").append(html);

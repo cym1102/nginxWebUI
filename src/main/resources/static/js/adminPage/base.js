@@ -261,3 +261,16 @@ function changeLang() {
 		}
 	});
 }
+
+
+function  setParamOrder(id, seq){
+	if(seq == -1){
+		// 前移
+		var prev = $("#" + id).prev();
+		$("#" + id).after(prev);
+	}else{
+		// 后移
+		var next = $("#" + id).next();
+		$("#" + id).before(next);
+	}
+}

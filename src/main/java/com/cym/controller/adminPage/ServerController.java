@@ -216,4 +216,16 @@ public class ServerController extends BaseController {
 
 	}
 
+	
+	@RequestMapping("editDescr")
+	@ResponseBody
+	public JsonResult editDescr(String id,String descr) {
+		Server server = new Server();
+		server.setId(id);
+		server.setDescr(descr);
+		sqlHelper.updateById(server);
+
+		return renderSuccess();
+	}
+	
 }
