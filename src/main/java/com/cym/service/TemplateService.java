@@ -1,5 +1,6 @@
 package com.cym.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,8 @@ public class TemplateService {
 		sqlHelper.insertOrUpdate(template);
 
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("templateId", template.getId()), Param.class);
-
+		// 反向插入,保证列表与输入框对应
+		Collections.reverse(params);
 		for (Param param : params) {
 			param.setTemplateId(template.getId());
 			sqlHelper.insertOrUpdate(param);

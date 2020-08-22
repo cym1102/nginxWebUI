@@ -57,7 +57,7 @@ public class TemplateController extends BaseController {
 			if (count > 0) {
 				return renderError(m.get("templateStr.sameName"));
 			}
-		}else {
+		} else {
 			Long count = templateService.getCountByNameWithOutId(template.getName(), template.getId());
 			if (count > 0) {
 				return renderError(m.get("templateStr.sameName"));
