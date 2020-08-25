@@ -93,6 +93,7 @@
 							<td>
 								<#if ext.upstream.tactics==""> ${upstreamStr.default} </#if> 
 								<#if ext.upstream.tactics=="ip_hash"> ${upstreamStr.ipHash} </#if> 
+								<#if ext.upstream.tactics=="sticky"> ${upstreamStr.sticky} </#if> 
 								<#if ext.upstream.tactics=="least_conn"> ${upstreamStr.leastConn} </#if> 
 								<#if ext.upstream.tactics=="least_time"> ${upstreamStr.leastTime} </#if>
 							</td>
@@ -140,6 +141,7 @@
 					<div class="layui-input-inline">
 						<select name="tactics" id="tactics">
 							<option value="">${upstreamStr.default}</option>
+							<option value="sticky">${upstreamStr.sticky}</option>
 							<option value="ip_hash">${upstreamStr.ipHash}</option>
 							<option value="least_conn">${upstreamStr.leastConn}</option>
 							<option value="least_time">${upstreamStr.leastTime}</option>
