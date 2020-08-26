@@ -120,7 +120,6 @@ public class HttpController extends BaseController {
 	@ResponseBody
 	public JsonResult setOrder(String id, Integer count) {
 		httpService.setSeq(id, count);
-
 		return renderSuccess();
 	}
 }

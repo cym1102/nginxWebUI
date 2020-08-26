@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cym</groupId>
 	<artifactId>nginxWebUI</artifactId>
-	<version>1.9.1</version>
+	<version>1.9.2</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>cn.craccd</groupId>
 			<artifactId>sqlHelper</artifactId>
-			<version>0.2.6</version>
+			<version>0.2.7</version>
 		</dependency>
 
 		<dependency>

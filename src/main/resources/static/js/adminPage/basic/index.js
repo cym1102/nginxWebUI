@@ -104,6 +104,7 @@ function del(id){
 
 
 function setOrder(id, count){
+	showLoad();
 	$.ajax({
 		type : 'POST',
 		url : ctx + '/adminPage/basic/setOrder',
@@ -113,6 +114,7 @@ function setOrder(id, count){
 		},
 		dataType : 'json',
 		success : function(data) {
+			closeLoad();
 			if (data.success) {
 				location.reload();
 			}else{
@@ -120,6 +122,7 @@ function setOrder(id, count){
 			}
 		},
 		error : function() {
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});

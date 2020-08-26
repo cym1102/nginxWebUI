@@ -88,7 +88,7 @@ function showContent(dataGroup) {
 			trigger: 'item',
 			formatter(params) {
 				const item = params.data;
-				return item.name + commonStr.status + ": " + item.value;
+				return item.name + " " + commonStr.status + ": " + item.value;
 			},
 		},
 		series: [{
@@ -96,7 +96,7 @@ function showContent(dataGroup) {
 			radius: '55%',
 			data: dataGroup.status,
 			label: {
-				formatter: '{b}' + commonStr.status + ' : {c} ({d}%)'
+				formatter: '{b} ' + commonStr.status + ' : {c} ({d}%)'
 			}
 		}]
 	};
@@ -162,7 +162,7 @@ function showContent(dataGroup) {
 			trigger: 'axis',
 			formatter(params) {
 				return `
-	            	${params[0].name}时<br>
+	            	${params[0].name} ${logStr.hour}<br>
 	            	pv: ${params[0].value}<br>
 	            	uv: ${params[1].value}
 	            `;
@@ -220,6 +220,7 @@ function showContent(dataGroup) {
 			}
 		},
 		xAxis: {
+            name: logStr.times, //这里的域名统计，应该在x轴显示“次”，英文times
 			type: 'value'
 		},
 		yAxis: {
@@ -227,7 +228,7 @@ function showContent(dataGroup) {
 			data: names
 		},
 		grid: { // 控制图的大小，调整下面这些值就可以，
-			x: 150// x的值可以空值y轴与label标签的距离，效果如下图：
+			x: 150// x的值可以空值y轴与label标签的距离
 		},
 		series: [{
 			data: values,
@@ -259,6 +260,7 @@ function analysis() {
 			url: ctx + '/adminPage/log/analysis',
 			dataType: 'json',
 			success: function(data) {
+				layer.closeAll();
 				if (data.success) {
 					location.reload();
 				} else {
