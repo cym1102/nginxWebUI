@@ -117,7 +117,7 @@ In the HTTP parameters can be configured in the configuration of nginx HTTP proj
 
 ![输入图片说明](http://www.nginxwebui.cn/img/tcp.jpeg "tcp.jpg")
 
-Nginx's Steam project parameters can be configured in the TCP parameter configuration, but in most cases they are not.
+Nginx's Stream project parameters can be configured in the TCP parameter configuration, but in most cases they are not.
 
 ![输入图片说明](http://www.nginxwebui.cn/img/server.jpeg "server.jpg")
 
