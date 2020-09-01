@@ -146,8 +146,8 @@ public class ServerService {
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
 	}
 
-	public List<Server> getListByProxyType(Integer proxyType) {
-		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq("proxyType", proxyType), Server.class);
+	public List<Server> getListByProxyType(Integer[] proxyType) {
+		return sqlHelper.findListByQuery(new ConditionAndWrapper().in("proxyType", proxyType), Server.class);
 	}
 
 	@Transactional

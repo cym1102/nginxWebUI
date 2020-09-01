@@ -11,7 +11,7 @@ public class Upstream extends BaseModel {
 	
 	// 代理类型
 	@InitValue("0")
-	Integer proxyType; //  0 http 1 tcp
+	Integer proxyType; //  0 http 1 tcp/udp
 	
 	@InitValue("0")
 	Integer monitor;

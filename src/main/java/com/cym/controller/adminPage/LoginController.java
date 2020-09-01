@@ -20,6 +20,7 @@ import com.cym.model.Remote;
 import com.cym.service.AdminService;
 import com.cym.service.CreditService;
 import com.cym.service.SettingService;
+import com.cym.utils.AuthUtils;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.PwdCheckUtil;
@@ -46,7 +47,8 @@ public class LoginController extends BaseController {
 	CreditService creditService;
 	@Autowired
 	VersionConfig versionConfig;
-
+	@Autowired
+	AuthUtils authUtils;
 	@Value("${project.version}")
 	String currentVersion;
 
@@ -63,32 +65,9 @@ public class LoginController extends BaseController {
 	@RequestMapping("")
 	public ModelAndView admin(ModelAndView modelAndView) {
 
-
 		modelAndView.addObject("adminCount", sqlHelper.findCountByQuery(new ConditionAndWrapper(), Admin.class));
 		modelAndView.setViewName("/adminPage/login/index");
 		return modelAndView;
-	}
-
-	@RequestMapping("login")
-	@ResponseBody
-	public JsonResult submitLogin(String name, String pass, String code, HttpSession httpSession) {
-		String imgCode = (String) httpSession.getAttribute("imgCode");
-		if (StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
-			return renderError(m.get("loginStr.backError1"));
-		}
-
-		if (adminService.login(name, pass)) {
-
-			httpSession.setAttribute("localType", "local");
-			httpSession.setAttribute("isLogin", true);
-
-			// 检查更新
-			versionConfig.getNewVersion();
-
-			return renderSuccess();
-		} else {
-			return renderError(m.get("loginStr.backError2"));
-		}
 	}
 
 	@RequestMapping("loginOut")
@@ -103,18 +82,79 @@ public class LoginController extends BaseController {
 		return modelAndView;
 	}
 
+	@RequestMapping("login")
+	@ResponseBody
+	public JsonResult submitLogin(String name, String pass, String code, String authCode, HttpSession httpSession) {
+
+		// 验证码
+		String imgCode = (String) httpSession.getAttribute("imgCode");
+		if (StrUtil.isEmpty(imgCode) || StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
+			return renderError(m.get("loginStr.backError1"));
+		}
+		// 用户名
+		Admin admin = adminService.getOneByName(name);
+		if (admin == null) {
+			return renderError(m.get("loginStr.backError5"));
+		}
+		// 两步验证
+		if (admin.getAuth() && !authUtils.testKey(admin.getKey(), authCode)) {
+			return renderError(m.get("loginStr.backError6"));
+		}
+
+		// 用户名密码
+		if (adminService.login(name, pass) != null) {
+
+			httpSession.setAttribute("localType", "local");
+			httpSession.setAttribute("isLogin", true);
+
+			// 检查更新
+			versionConfig.getNewVersion();
+
+			return renderSuccess();
+		} else {
+			return renderError(m.get("loginStr.backError2"));
+		}
+	}
+
 	@ResponseBody
 	@RequestMapping("getCredit")
-	public JsonResult getCredit(String name, String pass) {
-		if (adminService.login(name, pass)) {
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("creditKey", creditService.make());
-			map.put("system", SystemTool.getSystem());
-			return renderSuccess(map);
-		} else {
+	public JsonResult getCredit(String name, String pass, String code, String auth) {
+		Admin admin = adminService.login(name, pass);
+		if (admin == null) {
 			return renderError(m.get("loginStr.backError3"));
 		}
 
+		if (!admin.getAuth()) {
+			String imgCode = settingService.get("remoteCode");
+			if (StrUtil.isEmpty(imgCode) || StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
+				return renderError(m.get("loginStr.backError1"));
+			}
+		} else {
+			if (!authUtils.testKey(admin.getKey(), auth)) {
+				return renderError(m.get("loginStr.backError6"));
+			}
+		}
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("creditKey", creditService.make());
+		map.put("system", SystemTool.getSystem());
+		return renderSuccess(map);
+
+	}
+
+	@ResponseBody
+	@RequestMapping("getAuth")
+	public JsonResult getAdminAuth(String name) {
+		Admin admin = adminService.getOneByName(name);
+		if (admin != null) {
+			Admin ad = new Admin();
+			ad.setAuth(admin.getAuth());
+			ad.setKey(admin.getKey());
+
+			return renderSuccess(ad);
+		} else {
+			return renderError(m.get("loginStr.backError5"));
+		}
 	}
 
 	@ResponseBody
@@ -165,6 +205,7 @@ public class LoginController extends BaseController {
 		Admin admin = new Admin();
 		admin.setName(name);
 		admin.setPass(pass);
+		admin.setAuth(false);
 
 		sqlHelper.insert(admin);
 
@@ -178,6 +219,17 @@ public class LoginController extends BaseController {
 
 		String createText = captcha.getCode();
 		httpServletRequest.getSession().setAttribute("imgCode", createText);
+
+		captcha.write(httpServletResponse.getOutputStream());
+	}
+
+	@RequestMapping("/getRemoteCode")
+	public void getRemoteCode(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+		ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(100, 40);
+		captcha.setGenerator(new RandomGenerator("0123456789", 4));
+
+		String createText = captcha.getCode();
+		settingService.set("remoteCode", createText);
 
 		captcha.write(httpServletResponse.getOutputStream());
 	}

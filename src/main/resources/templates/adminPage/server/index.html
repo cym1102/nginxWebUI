@@ -137,6 +137,7 @@
 								<td>
 									<#if ext.server.proxyType==0>http</#if>
 									<#if ext.server.proxyType==1>TCP</#if>
+									<#if ext.server.proxyType==2>UDP</#if>
 								</td>
 								<td>${ext.server.listen} <#if ext.server.def == 1>default</#if></td>
 								<td>
@@ -202,6 +203,7 @@
 						<select name="proxyType" id="proxyType" lay-filter="proxyType">
 							<option value="0">http</option>
 							<option value="1">TCP</option>
+							<option value="2">UDP</option>
 						</select>
 					</div>
 					

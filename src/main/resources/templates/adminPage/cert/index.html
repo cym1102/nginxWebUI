@@ -58,6 +58,7 @@
 								<#if cert.type == 0>
 									<#if cert.dnsType=='dp'> ${certStr.dnsPod} </#if> 
 									<#if cert.dnsType=='ali'> ${certStr.aliDns} </#if>
+									<#if cert.dnsType=='cf'> Cloudflare </#if>
 								</#if>
 							</td>
 							
@@ -124,6 +125,7 @@
 							<select name="dnsType" id="dnsType" lay-filter='dnsType'>
 								<option value="ali">${certStr.aliDns}</option>
 								<option value="dp">${certStr.dnsPod}</option>
+								<option value="cf">Cloudflare </option>
 							</select>
 						</div>
 					</div>
@@ -158,6 +160,22 @@
 							<label class="layui-form-label">DP_Key</label>
 							<div class="layui-input-block">
 								<input type="text" name="dpKey" id="dpKey" class="layui-input">
+							</div>
+						</div>
+					</div>
+					
+					<div id="cf">
+						<div class="layui-form-item">
+							<label class="layui-form-label">CF_Email</label>
+							<div class="layui-input-block">
+								<input type="text" name="cfEmail" id="cfEmail" class="layui-input">
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">CF_Key</label>
+							<div class="layui-input-block">
+								<input type="text" name="cfKey" id="cfKey" class="layui-input">
 							</div>
 						</div>
 					</div>

@@ -20,7 +20,7 @@ public class Server extends BaseModel {
 	String pem;
 	String key;
 	@InitValue("0")
-	Integer proxyType; // 代理类型 0 http 1 tcp
+	Integer proxyType; // 代理类型 0 http 1 tcp 2 udp
 	String proxyUpstreamId;
 	
 	String pemStr;

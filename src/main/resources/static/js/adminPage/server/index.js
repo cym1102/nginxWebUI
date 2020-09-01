@@ -112,7 +112,7 @@ function checkProxyType(value) {
 		$(".proxyTcp").hide();
 
 	}
-	if (value == 1) {
+	if (value == 1 || value == 2) {
 		$(".proxyHttp").hide();
 		$(".proxyTcp").show();
 	}

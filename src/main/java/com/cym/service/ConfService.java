@@ -101,7 +101,7 @@ public class ConfService {
 				List<UpstreamServer> upstreamServers = upstreamService.getUpstreamServers(upstream.getId());
 				for (UpstreamServer upstreamServer : upstreamServers) {
 					ngxParam = new NgxParam();
-					ngxParam.addValue("server " + buildNodeStr(upstreamServer, upstream.getProxyType()));
+					ngxParam.addValue("server " + buildNodeStr(upstreamServer));
 					ngxBlockServer.addEntry(ngxParam);
 				}
 
@@ -127,7 +127,7 @@ public class ConfService {
 			}
 
 			// 添加server
-			List<Server> servers = serverService.getListByProxyType(0);
+			List<Server> servers = serverService.getListByProxyType(new Integer[] {0});
 			for (Server server : servers) {
 				if (server.getEnable() == null || !server.getEnable()) {
 					continue;
@@ -171,7 +171,6 @@ public class ConfService {
 						ngxBlockServer.addEntry(ngxParam);
 
 						ngxParam = new NgxParam();
-//						ngxParam.addValue("ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3");
 						ngxParam.addValue("ssl_protocols TLSv1 TLSv1.1 TLSv1.2");
 						ngxBlockServer.addEntry(ngxParam);
 					}
@@ -185,7 +184,6 @@ public class ConfService {
 						NgxBlock ngxBlock = new NgxBlock();
 						ngxBlock.addValue("if ($scheme = http)");
 						ngxParam = new NgxParam();
-//						ngxParam.addValue("rewrite ^(.*) https://$server_name$1 permanent");
 						ngxParam.addValue("return 301 https://$host$request_uri"); 
 						ngxBlock.addEntry(ngxParam);
 
@@ -307,7 +305,7 @@ public class ConfService {
 				ngxConfig.addEntry(ngxBlockHttp);
 			}
 
-			// TCP转发
+			// TCP/UDP转发
 			// 创建stream
 			List<Stream> streamList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
 			boolean hasStream = false;
@@ -336,7 +334,7 @@ public class ConfService {
 				List<UpstreamServer> upstreamServers = upstreamService.getUpstreamServers(upstream.getId());
 				for (UpstreamServer upstreamServer : upstreamServers) {
 					ngxParam = new NgxParam();
-					ngxParam.addValue("server " + buildNodeStr(upstreamServer, upstream.getProxyType()));
+					ngxParam.addValue("server " + buildNodeStr(upstreamServer));
 					ngxBlockServer.addEntry(ngxParam);
 				}
 
@@ -360,7 +358,7 @@ public class ConfService {
 			}
 
 			// 添加server
-			servers = serverService.getListByProxyType(1);
+			servers = serverService.getListByProxyType(new Integer[] { 1,2});
 			for (Server server : servers) {
 				if (server.getEnable() == null || !server.getEnable()) {
 					continue;
@@ -371,7 +369,11 @@ public class ConfService {
 
 				// 监听端口
 				ngxParam = new NgxParam();
-				ngxParam.addValue("listen " + server.getListen());
+				String value = "listen " + server.getListen();
+				if(server.getProxyType() == 2) {
+					value += " udp reuseport";
+				}
+				ngxParam.addValue(value);
 				ngxBlockServer.addEntry(ngxParam);
 
 				// 指向负载均衡
@@ -417,7 +419,7 @@ public class ConfService {
 		return null;
 	}
 
-	public String buildNodeStr(UpstreamServer upstreamServer, Integer proxyType) {
+	public String buildNodeStr(UpstreamServer upstreamServer) {
 		String status = "";
 		if (!"none".equals(upstreamServer.getStatus())) {
 			status = upstreamServer.getStatus();

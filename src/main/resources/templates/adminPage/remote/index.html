@@ -120,6 +120,8 @@
 				</div>
 
 				<div class="layui-form-item">
+					<input type="hidden" name="code" id="code"> 
+					<input type="hidden" name="auth" id="auth"> 
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
@@ -236,12 +238,34 @@
 						</select>
 					</div>
 				</div>
-
+				
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="cmdOver()">${remoteStr.execute}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
+		</div>
+		
+		<div class="layui-form" id="codeDiv" style="padding: 15px; display: none">
+			<div class="layui-form-item" id="imgCode">
+				<label class="layui-form-label">${loginStr.code}</label>
+				<div class="layui-input-inline" style="width: 240px;">
+					<input type="text" id="codeInput" class="layui-input" style="width: 100px;display: inline-block;">
+					<img src="" id="codeImg" onclick="refreshCode('codeImg')">
+				</div>
+			</div>
+			
+			<div class="layui-form-item" id="authCode" >
+				<label class="layui-form-label">${loginStr.authCode}</label>
+				<div class="layui-input-inline" style="width: 240px;">
+					<input type="text" id="authInput" class="layui-input" style="display: inline-block;">
+				</div>
+			</div>
+			
+			<div class="layui-form-item" style="text-align: right;">
+				<button type="button" class="layui-btn layui-btn-normal" onclick="addOverSubmit()">${commonStr.submit}</button>
+				<button type="button" class="layui-btn" onclick="layer.close(codeIndex)">${commonStr.close}</button>
+			</div>
 		</div>
 
 	</div>

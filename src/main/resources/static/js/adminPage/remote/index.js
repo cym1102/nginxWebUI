@@ -218,6 +218,7 @@ function add() {
 	$("#id").val(""); 
 	$("#ip").val(""); 
 	$("#port").val(""); 
+	$("#descr").val(""); 
 	$("#protocol").val("http"); 
 	$("#name").val(""); 
 	$("#pass").val(""); 
@@ -290,35 +291,6 @@ function content(id) {
 			}
 		},
 		error : function() {
-			layer.alert(commonStr.errorInfo);
-		}
-	});
-}
-
-var load;
-function addOver() {
-	if($("#ip").val().trim() == '' || $("#port").val().trim() == '' || $("#name").val().trim() == '' || $("#pass").val().trim() == ''){
-		layer.msg(remoteStr.notFill);
-		return;
-	}
-	
-	load = layer.load();
-	$.ajax({
-		type : 'POST',
-		url : ctx + '/adminPage/remote/addOver',
-		data : $('#addForm').serialize(),
-		dataType : 'json',
-		success : function(data) {
-			layer.close(load);
-			if (data.success) {
-				location.reload();
-			} else {
-				
-				layer.msg(data.msg);
-			}
-		},
-		error : function() {
-			layer.close(load);
 			layer.alert(commonStr.errorInfo);
 		}
 	});
@@ -784,4 +756,77 @@ function testMail(){
 			}
 		});
 	}
+}
+
+
+
+
+function addOver() {
+	if($("#ip").val().trim() == '' || $("#port").val().trim() == '' || $("#name").val().trim() == '' || $("#pass").val().trim() == ''){
+		layer.msg(remoteStr.notFill);
+		return;
+	}
+	load = layer.load();
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/remote/getAuth',
+		data : $('#addForm').serialize(),
+		dataType : 'json',
+		success : function(data) {
+			layer.close(load);
+			if (data.success) {
+				if(data.obj.auth){
+					$("#authCode").show();
+					$("#imgCode").hide();
+				} else {
+					$("#authCode").hide();
+					$("#imgCode").show();
+				}
+				
+				refreshCode();
+				codeIndex = layer.open({
+					type : 1,
+					title : loginStr.googleAuth,
+					area : [ '500px', '200px' ], // 宽高
+					content : $('#codeDiv')
+				});
+			} else {
+				layer.msg(data.msg);
+			}
+		},
+		error : function() {
+			layer.close(load);
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+	
+}
+
+function addOverSubmit(){
+	$("#code").val($("#codeInput").val());
+	$("#auth").val($("#authInput").val());
+	load = layer.load();
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/remote/addOver',
+		data : $('#addForm').serialize(),
+		dataType : 'json',
+		success : function(data) {
+			layer.close(load);
+			if (data.success) {
+				location.reload();
+			} else {
+				layer.msg(data.msg);
+			}
+		},
+		error : function() {
+			layer.close(load);
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+}
+
+function refreshCode(){
+	var src = $("#protocol").val() + "://" + $("#ip").val() + ":" + $("#port").val() + "/adminPage/login/getRemoteCode?t=" + guid();
+	$("#codeImg").attr("src", src)
 }

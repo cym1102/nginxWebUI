@@ -70,13 +70,18 @@ $(function() {
 
 
 function checkDnsType(value) {
+	$("#ali").hide();
+	$("#dp").hide();
+	$("#cf").hide();
+		
 	if (value == 'ali') {
 		$("#ali").show();
-		$("#dp").hide();
 	}
 	if (value == 'dp') {
-		$("#ali").hide();
 		$("#dp").show();
+	}
+	if (value == 'cf') {
+		$("#cf").show();
 	}
 }
 
@@ -129,6 +134,8 @@ function edit(id) {
 				$("#aliSecret").val(cert.aliSecret);
 				$("#dpId").val(cert.dpId);
 				$("#dpKey").val(cert.dpKey);
+				$("#cfEmail").val(cert.cfEmail);
+				$("#cfKey").val(cert.cfKey);
 				$("#pem").val(cert.pem);
 				$("#key").val(cert.key);
 				$("#pemPath").html(cert.pem);
@@ -175,6 +182,12 @@ function addOver() {
 		}
 		if ($("#dnsType").val() == 'dp') {
 			if ($("#dpId").val() == '' || $("#dpKey").val() == '') {
+				layer.msg(commonStr.IncompleteEntry);
+				return;
+			}
+		}
+		if ($("#dnsType").val() == 'cf') {
+			if ($("#cfEmail").val() == '' || $("#cfKey").val() == '') {
 				layer.msg(commonStr.IncompleteEntry);
 				return;
 			}

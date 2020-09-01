@@ -22,7 +22,19 @@
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${adminStr.add}</button>
 						</div>
-
+						
+						<div class="layui-inline">
+							<button type="button" class="layui-btn" onclick="downApk()">${adminStr.downApk}</button>
+						</div>
+						
+						<div class="layui-inline">
+							<button type="button" class="layui-btn" onclick="readme()">${adminStr.readme}</button>
+						</div>
+						
+						
+						<div class="layui-inline">
+							<div class="layui-form-mid layui-word-aux">${adminStr.notice}</div>
+						</div>
 						<input type="hidden" name="curr" value="${page.curr}">
 						<input type="hidden" name="limit" value="${page.limit}">
 					</div>
@@ -32,7 +44,8 @@
 					<thead>
 						<tr>
 							<th>${adminStr.name}</th>
-
+							<th>${adminStr.googleAuthenticator}</th>
+							<th>${adminStr.privateKey} (${adminStr.remember})</th>
 							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
@@ -40,6 +53,20 @@
 						<#list page.records as admin>
 						<tr>
 							<td>${admin.name}</td>
+							<td>
+								<#if admin.auth>
+									${commonStr.yes}
+								</#if>
+								<#if !admin.auth>
+									${commonStr.no}
+								</#if>
+							</td>
+							<td>
+								<#if admin.auth>
+									${admin.key}
+									<a href="javascript:qr('${admin.name}','${admin.key}')" style="color: blue;" >${adminStr.qr}</a>
+								</#if>
+							</td>
 							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${admin.id}')">${commonStr.edit}</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${admin.id}')">${commonStr.del}</button>
@@ -72,12 +99,30 @@
 						<input type="password" name="pass" id="pass" class="layui-input">
 					</div>
 				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">谷歌验证</label>
+					<div class="layui-input-block">
+						<select id="auth" name="auth">
+							<option value="false">否</option>
+							<option value="true">是</option>
+						</select>
+					</div>
+					<!-- <div class="layui-form-mid layui-word-aux">注意：开启谷歌两步验证后，该账户不可用于连接远程服务器</div> -->
+				</div>
 
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
+		</div>
+		
+		
+		<div class="layui-form" id="qrDiv" style="padding: 15px;text-align:center; display: none">
+
+			<img id="qrImg" src="">
+
 		</div>
 
 	</div>

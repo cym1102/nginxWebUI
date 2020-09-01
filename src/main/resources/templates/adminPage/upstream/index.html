@@ -87,7 +87,7 @@
 						<#list page.records as ext>
 						<tr>
 							<td><#if ext.upstream.proxyType==0>http</#if> 
-								<#if ext.upstream.proxyType==1>TCP</#if>
+								<#if ext.upstream.proxyType==1>TCP/UDP</#if>
 							</td>
 							<td>${ext.upstream.name}</td>
 							<td>
@@ -126,7 +126,7 @@
 					<div class="layui-input-inline">
 						<select name="proxyType" id="proxyType">
 							<option value="0">http</option>
-							<option value="1">TCP</option>
+							<option value="1">TCP/UDP</option>
 						</select>
 					</div>
 				</div>

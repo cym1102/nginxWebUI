@@ -1,8 +1,12 @@
 package com.cym.controller.adminPage;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +18,16 @@ import org.springframework.web.servlet.ModelAndView;
 import com.cym.model.Admin;
 import com.cym.service.AdminService;
 import com.cym.service.SettingService;
+import com.cym.utils.AuthUtils;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SendMailUtils;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 
 import cn.craccd.sqlHelper.bean.Page;
 import cn.hutool.core.util.StrUtil;
@@ -30,6 +41,8 @@ public class AdminController extends BaseController {
 	SettingService settingService;
 	@Autowired
 	SendMailUtils sendCloudUtils;
+	@Autowired
+	AuthUtils authUtils;
 
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page) {
@@ -48,13 +61,19 @@ public class AdminController extends BaseController {
 			if (count > 0) {
 				return renderError(m.get("adminStr.nameRepetition"));
 			}
-		}else {
+		} else {
 			Long count = adminService.getCountByNameWithOutId(admin.getName(), admin.getId());
 			if (count > 0) {
 				return renderError(m.get("adminStr.nameRepetition"));
 			}
 		}
-		
+
+		if (admin.getAuth()) {
+			admin.setKey(authUtils.makeKey());
+		} else {
+			admin.setKey("");
+		}
+
 		sqlHelper.insertOrUpdate(admin);
 
 		return renderSuccess();
@@ -78,7 +97,6 @@ public class AdminController extends BaseController {
 	@ResponseBody
 	public JsonResult getMailSetting() {
 		Map<String, String> map = new HashMap<>();
-
 
 		map.put("mail_host", settingService.get("mail_host"));
 		map.put("mail_port", settingService.get("mail_port"));
@@ -106,7 +124,7 @@ public class AdminController extends BaseController {
 	@RequestMapping("testMail")
 	@ResponseBody
 	public JsonResult testMail(String mail) {
-		if(StrUtil.isEmpty(mail)) {
+		if (StrUtil.isEmpty(mail)) {
 			return renderError(m.get("adminStr.emailEmpty"));
 		}
 		try {
@@ -115,6 +133,38 @@ public class AdminController extends BaseController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return renderError(e.getMessage());
+		}
+	}
+	
+
+	@RequestMapping(value = "qr")
+	public void getqcode(HttpServletResponse resp, String url, Integer w, Integer h) throws IOException {
+		if (url != null && !"".equals(url)) {
+			ServletOutputStream stream = null;
+
+			if (w == null) {
+				w = 300;
+			}
+			if (h == null) {
+				h = 300;
+			}
+			try {
+				stream = resp.getOutputStream();
+
+				Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
+				hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
+				hints.put(EncodeHintType.MARGIN, 0);
+
+				BitMatrix matrix = new MultiFormatWriter().encode(url, BarcodeFormat.QR_CODE, w, h, hints);
+				MatrixToImageWriter.writeToStream(matrix, "png", stream);
+			} catch (WriterException e) {
+				e.printStackTrace();
+			} finally {
+				if (stream != null) {
+					stream.flush();
+					stream.close();
+				}
+			}
 		}
 	}
 }

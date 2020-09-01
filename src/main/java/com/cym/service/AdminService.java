@@ -16,8 +16,8 @@ public class AdminService {
 	@Autowired
 	SqlHelper sqlHelper;
 
-	public boolean login(String name, String pass) {
-		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("name", name).eq("pass", pass), Admin.class) > 0;
+	public Admin login(String name, String pass) {
+		return sqlHelper.findOneByQuery(new ConditionAndWrapper().eq("name", name).eq("pass", pass), Admin.class);
 	}
 
 	public Page search(Page page) {
@@ -32,6 +32,10 @@ public class AdminService {
 
 	public Long getCountByNameWithOutId(String name, String id) {
 		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("name", name).ne("id", id), Admin.class);
+	}
+
+	public Admin getOneByName(String name) {
+		return sqlHelper.findOneByQuery(new ConditionAndWrapper().eq("name", name), Admin.class);
 	}
 
 }

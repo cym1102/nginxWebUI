@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cym</groupId>
 	<artifactId>nginxWebUI</artifactId>
-	<version>1.9.3</version>
+	<version>1.9.4</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -45,7 +45,11 @@
 			<artifactId>sqlHelper</artifactId>
 			<version>0.2.7</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.warrenstrange</groupId>
+			<artifactId>googleauth</artifactId>
+			<version>1.1.5</version>
+		</dependency>
 		<dependency>
 			<groupId>cn.hutool</groupId>
 			<artifactId>hutool-all</artifactId>
@@ -57,7 +61,14 @@
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
 		</dependency>
-
+		
+		
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

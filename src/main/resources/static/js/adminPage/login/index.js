@@ -24,14 +24,13 @@ $(function() {
 })
 
 function login() {
+	$("#authCode").val($("#codeInput").val());
+	
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/login/login',
 		data: $("#loginForm").serialize(),
 		dataType: 'json',
-		xhrFields: {
-			withCredentials: true
-		},
 		success: function(data) {
 			if (data.success) {
 				location.href = ctx + "adminPage/monitor";
@@ -45,6 +44,40 @@ function login() {
 	});
 
 }
+
+function getAuth() {
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/login/getAuth',
+		data: {
+			name : $("#name").val()
+		},
+		dataType: 'json',
+		success: function(data) {
+			if (data.success) {
+				if(data.obj.auth){
+					// 两步验证
+					codeIndex = layer.open({
+						type : 1,
+						title : loginStr.googleAuth,
+						area : [ '500px', '200px' ], // 宽高
+						content : $('#codeDiv')
+					});
+				}else{
+					login();
+				}
+			} else {
+				layer.msg(data.msg);
+			}
+		},
+		error: function() {
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+
+}
+
+
 
 
 function addAdmin() {

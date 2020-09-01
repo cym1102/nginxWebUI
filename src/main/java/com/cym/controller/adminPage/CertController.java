@@ -101,16 +101,19 @@ public class CertController extends BaseController {
 		try {
 			// 设置dns账号
 			setEnv(cert);
-			
+
 			String cmd = "";
 			if (type.equals("issue") || StrUtil.isEmpty(cert.getPem())) {
 				// 申请
 				String dnsType = "";
-				if(cert.getDnsType().equals("ali")) {
+				if (cert.getDnsType().equals("ali")) {
 					dnsType = "dns_ali";
-				}else if(cert.getDnsType().equals("dp")) {
+				} else if (cert.getDnsType().equals("dp")) {
 					dnsType = "dns_dp";
+				} else if (cert.getDnsType().equals("cf")) {
+					dnsType = "dns_cf";
 				}
+
 				cmd = InitConfig.acmeSh + " --issue --dns " + dnsType + " -d " + cert.getDomain();
 			} else if (type.equals("renew")) {
 				// 续签,以第一个域名为证书名
@@ -159,7 +162,7 @@ public class CertController extends BaseController {
 			return renderError(rs.replace("\n", "<br>"));
 		}
 	}
-	
+
 	private void setEnv(Cert cert) {
 		List<String> list = new ArrayList<>();
 		list.add("UPGRADE_HASH='" + UUID.randomUUID().toString().replace("-", "") + "'");
@@ -171,11 +174,13 @@ public class CertController extends BaseController {
 			list.add("SAVED_DP_Id='" + cert.getDpId() + "'");
 			list.add("SAVED_DP_Key='" + cert.getDpKey() + "'");
 		}
+		if (cert.getDnsType().equals("cf")) {
+			list.add("SAVED_CF_Email='" + cert.getCfEmail() + "'");
+			list.add("SAVED_CF_Key='" + cert.getCfKey() + "'");
+		}
 		list.add("USER_PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin'");
 
 		FileUtil.writeLines(list, new File(InitConfig.acmeSh.replace("/acme.sh", "/account.conf")), Charset.defaultCharset());
 	}
-
-
 
 }

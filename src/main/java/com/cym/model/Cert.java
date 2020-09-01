@@ -24,11 +24,30 @@ public class Cert extends BaseModel {
 	String pemStr;
 	String keyStr;
 
-	String dnsType;
+	String dnsType; // ali dp cf
 	String dpId;
 	String dpKey;
 	String aliKey;
 	String aliSecret;
+	String cfEmail;
+	String cfKey;
+	
+	
+	public String getCfEmail() {
+		return cfEmail;
+	}
+
+	public void setCfEmail(String cfEmail) {
+		this.cfEmail = cfEmail;
+	}
+
+	public String getCfKey() {
+		return cfKey;
+	}
+
+	public void setCfKey(String cfKey) {
+		this.cfKey = cfKey;
+	}
 
 	public Integer getType() {
 		return type;

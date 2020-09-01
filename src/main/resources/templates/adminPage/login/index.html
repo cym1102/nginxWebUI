@@ -34,7 +34,8 @@
 					</div>
 				</div>
 				<div class="layui-form-item" style="text-align: center;">
-					<button type="button" class="layui-btn layui-btn-normal" onclick="login()">${loginStr.login}</button>
+					<input type="hidden" name="authCode" id="authCode" >
+					<button type="button" class="layui-btn layui-btn-normal" onclick="getAuth()">${loginStr.login}</button>
 				</div>
 			</form>
 		</div>
@@ -63,11 +64,24 @@
 				</div>
 				<div class="layui-form-item" style="text-align: center;">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addAdmin()">${loginStr.add}</button>
-
 				</div>
 			</form>
 		</div>
-
+		
+		<div class="layui-form" id="codeDiv" style="padding: 15px; display: none">
+			<div class="layui-form-item">
+				<label class="layui-form-label">${loginStr.authCode}</label>
+				<div class="layui-input-inline" >
+					<input type="number" id="codeInput" class="layui-input" >
+				</div>
+			</div>
+			
+			<div class="layui-form-item" style="text-align: right;">
+				<button type="button" class="layui-btn layui-btn-normal" onclick="login()">${commonStr.submit}</button>
+				<button type="button" class="layui-btn" onclick="layer.close(codeIndex)">${commonStr.close}</button>
+			</div>
+		</div>
+		
 	</div>
 	
 <#include '/adminPage/script.html'/>

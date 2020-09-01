@@ -7,6 +7,7 @@ function add() {
 	$("#id").val(""); 
 	$("#name").val(""); 
 	$("#pass").val(""); 
+	$("#auth").val("false"); 
 	
 	showWindow(adminStr.add);
 }
@@ -56,6 +57,7 @@ function edit(id) {
 				$("#id").val(admin.id); 
 				$("#pass").val(admin.pass); 
 				$("#name").val(admin.name);
+				$("#auth").val(admin.auth + "");
 				
 				form.render();
 				showWindow(commonStr.edit);
@@ -90,4 +92,23 @@ function del(id){
 			}
 		});
 	}
+}
+
+function downApk(){
+	window.open("https://www.wandoujia.com/apps/32913");
+}
+
+function readme(){
+	window.open(ctx + "img/readme.pdf");
+}
+
+function qr(name, key){
+	$("#qrImg").attr("src", ctx + "adminPage/admin/qr?url=" + encodeURIComponent(`otpauth://totp/${name}?secret=${key}&issuer=nginxWebUI`));
+	
+	layer.open({
+		type : 1,
+		title : adminStr.qr,
+		area : [ '350px', '380px' ], // 宽高
+		content : $('#qrDiv')
+	});
 }
