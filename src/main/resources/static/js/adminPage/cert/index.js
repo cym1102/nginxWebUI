@@ -99,15 +99,22 @@ function checkType(value) {
 function add() {
 	$("#id").val("");
 	$("#domain").val("");
+	$("#type option:first").prop("selected", true);
 	$("#dnsType option:first").prop("selected", true);
 	$("#aliKey").val("");
 	$("#aliSecret").val("");
 	$("#dpId").val("");
 	$("#dpKey").val("");
+	$("#cfEmail").val("");
+	$("#cfKey").val("");
+	$("#pem").val("");
+	$("#key").val("");
+	$("#pemPath").html("");
+	$("#keyPath").html("");
 	checkType(0);
 	checkDnsType('ali');
 
-
+	form.render();
 	showWindow(certStr.add);
 }
 
@@ -126,8 +133,8 @@ function edit(id) {
 			if (data.success) {
 
 				var cert = data.obj;
+				$("#id").val(cert.id);
 				$("#domain").val(cert.domain);
-
 				$("#type").val(cert.type);
 				$("#dnsType").val(cert.dnsType != null ? cert.dnsType : 'ali');
 				$("#aliKey").val(cert.aliKey);
@@ -145,7 +152,6 @@ function edit(id) {
 				checkDnsType(cert.dnsType != null ? cert.dnsType : 'ali');
 
 				form.render();
-
 				showWindow(certStr.edit);
 
 			} else {
