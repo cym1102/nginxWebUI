@@ -112,3 +112,41 @@ function qr(name, key){
 		content : $('#qrDiv')
 	});
 }
+
+function test(key){
+	$("#key").val(key);
+	
+	codeIndex = layer.open({
+		type : 1,
+		title : loginStr.googleAuth,
+		area : [ '400px', '200px' ], // 宽高
+		content : $('#codeDiv')
+	});
+}
+
+function testOver(){
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/admin/testAuth',
+		data : {
+			key : $("#key").val(),
+			code : $("#codeInput").val()
+		},
+		dataType : 'json',
+		success : function(data) {
+			if (data.success) {
+				if(data.obj){
+					layer.msg(adminStr.testSuccess);
+				}else{
+					layer.msg(adminStr.testFail);
+				}
+				
+			}else{
+				layer.msg(data.msg)
+			}
+		},
+		error : function() {
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+}

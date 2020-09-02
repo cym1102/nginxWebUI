@@ -2,6 +2,7 @@
 <html>
 <head>
 <#include "/adminPage/common.html"/>
+<link rel="stylesheet" type="text/css" href="${ctx}/lib/jsdifflib/diffview.css"/>
 <style type="text/css">
 .name {
 	padding: 10px;
@@ -75,7 +76,11 @@
 							<div class="layui-inline">
 								<button type="button" class="layui-btn layui-btn-normal" onclick="reload()">${confStr.reload}</button>
 							</div>
-
+							
+							<div class="layui-inline">
+								<button type="button" class="layui-btn" onclick="diffUsingJS()">${confStr.compare}</button>
+							</div>
+							
 							<div class="layui-inline">
 								<label class="layui-form-label" style="width: 120px;">${confStr.decompose}</label>
 							</div>
@@ -93,6 +98,8 @@
 							<div class="layui-inline">
 								<label class="layui-form-label" style="width: 150px;" id="nginxStatus"></label>
 							</div>
+							
+							
 						</div>
 					</div>
 
@@ -119,10 +126,20 @@
 			</div>
 		</div>
 	</div>
-
+	
+	<div style="height: 0px; width: 0px; overflow: hidden;">
+		<div id="diffoutput">
+		
+		</div>
+	</div>
+	
+	
+	
 	<#include '/adminPage/script.html'/>
 	<#include '/adminPage/select_root.html'/>
 	<script src="${ctx}/lib/auto-line-number/auto-line-number.js" type="text/javascript"></script>
+	<script src="${ctx}/lib/jsdifflib/difflib.js" type="text/javascript"></script>
+	<script src="${ctx}/lib/jsdifflib/diffview.js" type="text/javascript"></script>
 	<script src="${ctx}/js/adminPage/conf/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

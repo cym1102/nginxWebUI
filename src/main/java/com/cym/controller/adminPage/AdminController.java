@@ -136,6 +136,14 @@ public class AdminController extends BaseController {
 		}
 	}
 	
+	
+	@RequestMapping("testAuth")
+	@ResponseBody
+	public JsonResult testAuth(String key, String code) {
+		
+		Boolean rs = authUtils.testKey(key, code);
+		return renderSuccess(rs);
+	}
 
 	@RequestMapping(value = "qr")
 	public void getqcode(HttpServletResponse resp, String url, Integer w, Integer h) throws IOException {

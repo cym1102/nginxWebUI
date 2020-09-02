@@ -64,7 +64,9 @@
 							<td>
 								<#if admin.auth>
 									${admin.key}
-									<a href="javascript:qr('${admin.name}','${admin.key}')" style="color: blue;" >${adminStr.qr}</a>
+									<a href="javascript:qr('${admin.name}','${admin.key}')" style="color: blue;text-decoration: underline;" >${adminStr.qr}</a>
+									
+									<a href="javascript:test('${admin.key}')" style="color: blue;text-decoration: underline;" >${commonStr.test}</a>
 								</#if>
 							</td>
 							<td>
@@ -120,9 +122,23 @@
 		
 		
 		<div class="layui-form" id="qrDiv" style="padding: 15px;text-align:center; display: none">
-
 			<img id="qrImg" src="">
-
+		</div>
+		
+		
+		<div class="layui-form" id="codeDiv" style="padding: 15px; display: none">
+			<div class="layui-form-item">
+				<label class="layui-form-label">${loginStr.authCode}</label>
+				<div class="layui-input-inline" >
+					<input type="number" id="codeInput" class="layui-input" >
+				</div>
+			</div>
+			
+			<div class="layui-form-item" style="text-align: right;">
+				<input type="hidden" id="key">
+				<button type="button" class="layui-btn layui-btn-normal" onclick="testOver()">${commonStr.submit}</button>
+				<button type="button" class="layui-btn" onclick="layer.close(codeIndex)">${commonStr.close}</button>
+			</div>
 		</div>
 
 	</div>
