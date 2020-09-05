@@ -440,7 +440,6 @@ function diffUsingJS() {
     //contextSize = contextSize ? contextSize : null;
 
     // build the diff view and add it to the current DOM
-	diffoutputdiv.html("");
     diffoutputdiv.append(diffview.buildView({
         baseTextLines: base,
         newTextLines: newtxt,
@@ -456,7 +455,7 @@ function diffUsingJS() {
     layer.open({
 		type : 1,
 		title: false,
-		area : [ '1000px', '700px' ], //宽高
+		area : [ '1200px', '700px' ], //宽高
 		content : $('#diffoutput')
 	});
 }
