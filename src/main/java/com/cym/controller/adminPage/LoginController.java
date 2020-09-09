@@ -88,6 +88,8 @@ public class LoginController extends BaseController {
 
 		// 验证码
 		String imgCode = (String) httpSession.getAttribute("imgCode");
+		httpSession.removeAttribute("imgCode"); //立刻销毁验证码
+		
 		if (StrUtil.isEmpty(imgCode) || StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
 			return renderError(m.get("loginStr.backError1"));
 		}

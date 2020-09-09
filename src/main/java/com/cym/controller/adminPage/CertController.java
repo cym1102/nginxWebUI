@@ -1,10 +1,15 @@
 package com.cym.controller.adminPage;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -24,8 +29,10 @@ import com.cym.utils.SystemTool;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.net.URLEncoder;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.ZipUtil;
 
 @Controller
 @RequestMapping("/adminPage/cert")
@@ -183,4 +190,62 @@ public class CertController extends BaseController {
 		FileUtil.writeLines(list, new File(InitConfig.acmeSh.replace("/acme.sh", "/account.conf")), Charset.defaultCharset());
 	}
 
+	@RequestMapping("download")
+	public void download(String id, HttpServletResponse response) throws IOException {
+		Cert cert = sqlHelper.findById(id, Cert.class);
+		if (StrUtil.isNotEmpty(cert.getPem()) && StrUtil.isNotEmpty(cert.getKey())) {
+			String dir = FileUtil.getTmpDirPath() + File.separator + "cert";
+			FileUtil.del(dir);
+			FileUtil.del(dir + ".zip");
+			FileUtil.mkdir(dir);
+
+			File pem = new File(cert.getPem());
+			File key = new File(cert.getKey());
+			FileUtil.copy(pem, new File(dir + File.separator + pem.getName()), true);
+			FileUtil.copy(key, new File(dir + File.separator + key.getName()), true);
+
+			ZipUtil.zip(dir);
+			FileUtil.del(dir);
+			
+			String fileName = URLEncoder.createDefault().encode(cert.getDomain(), Charset.forName("UTF-8"));
+			handleStream(response, dir + ".zip", fileName);
+		}
+
+	}
+
+	private void handleStream(HttpServletResponse response, String path, String fileName) throws IOException {
+
+		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+		response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".zip");
+		byte[] buffer = new byte[1024];
+		FileInputStream fis = null;
+		BufferedInputStream bis = null;
+		try {
+			fis = new FileInputStream(path);
+			bis = new BufferedInputStream(fis);
+			OutputStream os = response.getOutputStream();
+			int i = bis.read(buffer);
+			while (i != -1) {
+				os.write(buffer, 0, i);
+				i = bis.read(buffer);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (bis != null) {
+				try {
+					bis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (fis != null) {
+				try {
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 }

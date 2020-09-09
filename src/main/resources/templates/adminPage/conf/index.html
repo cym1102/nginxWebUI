@@ -15,6 +15,10 @@
 	margin-bottom: 5px;
 	cursor: pointer;
 }
+
+table.diff{
+	width: 100%; 
+}
 </style>
 </head>
 <body class="layui-layout-body">
@@ -63,7 +67,7 @@
 							</div>
 						</div>
 
-						<div style="margin-top: 20px; padding-left: 130px;">
+						<div style="margin-top: 20px; ">
 							<div class="layui-inline">
 								<button type="button" class="layui-btn layui-btn-normal" onclick="loadOrg()">${confStr.readFile}</button>
 							</div>
@@ -128,7 +132,7 @@
 	</div>
 	
 	<div style="height: 0px; width: 0px; overflow: hidden;">
-		<div id="diffoutput">
+		<div id="diffoutput" >
 		
 		</div>
 	</div>

@@ -84,9 +84,7 @@ public class LogService {
 		dataGroup.setHttpReferer(httpReferer);
 
 		saveLog(dataGroup, path);
-		
-	
-		
+
 		return dataGroup;
 	}
 
@@ -120,13 +118,17 @@ public class LogService {
 
 				json = json.replace("\\x", "");
 				if (JSONUtil.isJson(json)) {
-					LogInfo logInfo = JSONUtil.toBean(json, LogInfo.class);
-					String[] str = logInfo.getTimeLocal().split(":");
-					logInfo.setHour(str[1]);
-					logInfo.setMinute(str[2]);
-					logInfo.setSecond(str[3].split(" ")[0]);
+					try {
+						LogInfo logInfo = JSONUtil.toBean(json, LogInfo.class);
+						String[] str = logInfo.getTimeLocal().split(":");
+						logInfo.setHour(str[1]);
+						logInfo.setMinute(str[2]);
+						logInfo.setSecond(str[3].split(" ")[0]);
 
-					list.add(logInfo);
+						list.add(logInfo);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				} else {
 					System.err.println(json);
 				}
