@@ -571,7 +571,7 @@ function cmdOver(){
 
 function addGroup(){
 	$("#groupId").val("");
-	$("#GroupName").val("");
+	$("#groupName").val("");
 	groupParentId.setValue([""]);
 	
 	layer.open({

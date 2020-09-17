@@ -83,6 +83,10 @@
 								</#if>
 
 								<button class="layui-btn layui-btn-sm" onclick="edit('${cert.id}')">${commonStr.edit}</button>
+								<#if cert.pem!=null && cert.pem!='' && cert.key!=null && cert.key!=''>
+									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="download('${cert.id}')">${certStr.download}</button>
+								</#if>
+								
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">${commonStr.del}</button></td>
 						</tr>
 						</#list>

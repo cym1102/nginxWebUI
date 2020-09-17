@@ -89,72 +89,84 @@ public class LoginController extends BaseController {
 		// 验证码
 		String imgCode = (String) httpSession.getAttribute("imgCode");
 		if (StrUtil.isEmpty(imgCode) || StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
-			return renderError(m.get("loginStr.backError1"));
-		}
-		// 用户名
-		Admin admin = adminService.getOneByName(name);
-		if (admin == null) {
-			return renderError(m.get("loginStr.backError5"));
-		}
-		// 两步验证
-		if (admin.getAuth() && !authUtils.testKey(admin.getKey(), authCode)) {
-			return renderError(m.get("loginStr.backError6"));
+			return renderError(m.get("loginStr.backError1")); // 验证码不正确
 		}
 
 		// 用户名密码
-		if (adminService.login(name, pass) != null) {
-
-			httpSession.setAttribute("localType", "local");
-			httpSession.setAttribute("isLogin", true);
-
-			// 检查更新
-			versionConfig.getNewVersion();
-
-			return renderSuccess();
-		} else {
-			return renderError(m.get("loginStr.backError2"));
+		Admin admin = adminService.login(name, pass);
+		if (admin == null) {
+			return renderError(m.get("loginStr.backError2")); // 用户名密码错误
 		}
+
+		// 两步验证
+		if (admin.getAuth() && !authUtils.testKey(admin.getKey(), authCode)) {
+			return renderError(m.get("loginStr.backError6")); // 身份码不正确
+		}
+		
+		// 登录成功
+		httpSession.setAttribute("localType", "local");
+		httpSession.setAttribute("isLogin", true);
+		httpSession.removeAttribute("imgCode"); // 立刻销毁验证码
+		
+		// 检查更新
+		versionConfig.getNewVersion();
+
+		return renderSuccess();
 	}
 
+	
+
+	@ResponseBody
+	@RequestMapping("getAuth")
+	public JsonResult getAuth(String name, String pass, String code, Integer remote, HttpSession httpSession) {
+		// 验证码
+		if(remote == null) {
+			String imgCode = (String) httpSession.getAttribute("imgCode");
+			if (StrUtil.isEmpty(imgCode) || StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
+				return renderError(m.get("loginStr.backError1")); // 验证码不正确
+			}
+		}
+		
+		// 用户名密码
+		Admin admin = adminService.login(name, pass);
+		if (admin == null) {
+			return renderError(m.get("loginStr.backError2")); // 用户名密码错误
+		}
+
+		Admin ad = new Admin();
+		ad.setAuth(admin.getAuth());
+		ad.setKey(admin.getKey());
+
+		return renderSuccess(ad);
+	}
+	
 	@ResponseBody
 	@RequestMapping("getCredit")
 	public JsonResult getCredit(String name, String pass, String code, String auth) {
+		// 用户名密码
 		Admin admin = adminService.login(name, pass);
 		if (admin == null) {
-			return renderError(m.get("loginStr.backError3"));
+			return renderError(m.get("loginStr.backError2"));  // 用户名密码错误
 		}
 
 		if (!admin.getAuth()) {
 			String imgCode = settingService.get("remoteCode");
 			if (StrUtil.isEmpty(imgCode) || StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
-				return renderError(m.get("loginStr.backError1"));
+				return renderError(m.get("loginStr.backError1")); // 验证码不正确
 			}
 		} else {
 			if (!authUtils.testKey(admin.getKey(), auth)) {
-				return renderError(m.get("loginStr.backError6"));
+				return renderError(m.get("loginStr.backError6")); // 身份码不正确
 			}
 		}
 
+		settingService.remove("remoteCode"); // 立刻销毁验证码
+		
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("creditKey", creditService.make());
 		map.put("system", SystemTool.getSystem());
 		return renderSuccess(map);
 
-	}
-
-	@ResponseBody
-	@RequestMapping("getAuth")
-	public JsonResult getAdminAuth(String name) {
-		Admin admin = adminService.getOneByName(name);
-		if (admin != null) {
-			Admin ad = new Admin();
-			ad.setAuth(admin.getAuth());
-			ad.setKey(admin.getKey());
-
-			return renderSuccess(ad);
-		} else {
-			return renderError(m.get("loginStr.backError5"));
-		}
 	}
 
 	@ResponseBody

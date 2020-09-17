@@ -2,7 +2,7 @@ package com.cym.ext;
 
 import java.util.List;
 
-import com.cym.model.Cert;
+import com.cym.model.Basic;
 import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Param;
@@ -12,7 +12,7 @@ import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
 
 public class AsycPack {
-//	List<Cert> certList;
+	List<Basic> basicList;
 	List<Http> httpList;
 	List<Server> serverList;
 	List<Location> locationList;
@@ -24,6 +24,14 @@ public class AsycPack {
 	ConfExt confExt;
 
 	String decompose;
+
+	public List<Basic> getBasicList() {
+		return basicList;
+	}
+
+	public void setBasicList(List<Basic> basicList) {
+		this.basicList = basicList;
+	}
 
 	public List<Param> getParamList() {
 		return paramList;
@@ -57,10 +65,6 @@ public class AsycPack {
 		this.streamList = streamList;
 	}
 
-//	public List<Cert> getCertList() {
-//		return certList;
-//	}
-
 	public List<Location> getLocationList() {
 		return locationList;
 	}
@@ -68,10 +72,6 @@ public class AsycPack {
 	public void setLocationList(List<Location> locationList) {
 		this.locationList = locationList;
 	}
-
-//	public void setCertList(List<Cert> certList) {
-//		this.certList = certList;
-//	}
 
 	public List<Http> getHttpList() {
 		return httpList;

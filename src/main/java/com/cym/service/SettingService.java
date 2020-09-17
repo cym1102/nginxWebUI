@@ -34,4 +34,9 @@ public class SettingService {
 			return setting.getValue();
 		}
 	}
+
+	public void remove(String key) {
+		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("key", key), Setting.class);
+
+	}
 }

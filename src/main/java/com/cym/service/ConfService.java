@@ -23,6 +23,7 @@ import com.cym.model.UpstreamServer;
 import com.github.odiszapc.nginxparser.NgxBlock;
 import com.github.odiszapc.nginxparser.NgxConfig;
 import com.github.odiszapc.nginxparser.NgxDumper;
+import com.github.odiszapc.nginxparser.NgxEntry;
 import com.github.odiszapc.nginxparser.NgxParam;
 
 import cn.craccd.sqlHelper.bean.Sort;
@@ -43,8 +44,9 @@ public class ConfService {
 	final ParamService paramService;
 	final SqlHelper sqlHelper;
 	final TemplateService templateService;
-	
-	public ConfService(TemplateService templateService,UpstreamService upstreamService, SettingService settingService, ServerService serverService, LocationService locationService, ParamService paramService, SqlHelper sqlHelper) {
+
+	public ConfService(TemplateService templateService, UpstreamService upstreamService, SettingService settingService, ServerService serverService, LocationService locationService,
+			ParamService paramService, SqlHelper sqlHelper) {
 		this.upstreamService = upstreamService;
 		this.settingService = settingService;
 		this.serverService = serverService;
@@ -127,7 +129,7 @@ public class ConfService {
 			}
 
 			// 添加server
-			List<Server> servers = serverService.getListByProxyType(new Integer[] {0});
+			List<Server> servers = serverService.getListByProxyType(new Integer[] { 0 });
 			for (Server server : servers) {
 				if (server.getEnable() == null || !server.getEnable()) {
 					continue;
@@ -146,10 +148,10 @@ public class ConfService {
 				// 监听端口
 				ngxParam = new NgxParam();
 				String value = "listen " + server.getListen();
-				if(server.getDef() == 1) {
+				if (server.getDef() == 1) {
 					value += " default";
 				}
-				
+
 				if (server.getSsl() != null && server.getSsl() == 1) {
 					value += " ssl";
 					if (server.getHttp2() != null && server.getHttp2() == 1) {
@@ -184,11 +186,11 @@ public class ConfService {
 						NgxBlock ngxBlock = new NgxBlock();
 						ngxBlock.addValue("if ($scheme = http)");
 						ngxParam = new NgxParam();
-						ngxParam.addValue("return 301 https://$host$request_uri"); 
+						ngxParam.addValue("return 301 https://$host$request_uri");
 						ngxBlock.addEntry(ngxParam);
 
 						ngxBlockServer.addEntry(ngxBlock);
-					
+
 					}
 				}
 
@@ -238,8 +240,8 @@ public class ConfService {
 							ngxParam.addValue("proxy_set_header X-Forwarded-Proto $scheme");
 							ngxBlockLocation.addEntry(ngxParam);
 						}
-						
-						if ( server.getSsl() == 1 && server.getRewrite() == 1) { // redirect http转https
+
+						if (server.getSsl() == 1 && server.getRewrite() == 1) { // redirect http转https
 							ngxParam = new NgxParam();
 							ngxParam.addValue("proxy_redirect http:// https://");
 							ngxBlockLocation.addEntry(ngxParam);
@@ -286,6 +288,7 @@ public class ConfService {
 				// 是否需要分解
 				if (decompose) {
 					String name = "all";
+
 					if (StrUtil.isNotEmpty(server.getServerName())) {
 						name = server.getServerName();
 					}
@@ -294,7 +297,10 @@ public class ConfService {
 
 					ngxParam = new NgxParam();
 					ngxParam.addValue("include " + nginxPath.replace("nginx.conf", "conf.d/" + name + ".conf"));
-					ngxBlockHttp.addEntry(ngxParam);
+
+					if (noContain(ngxBlockHttp, ngxParam)) {
+						ngxBlockHttp.addEntry(ngxParam);
+					}
 
 				} else {
 					ngxBlockHttp.addEntry(ngxBlockServer);
@@ -358,7 +364,7 @@ public class ConfService {
 			}
 
 			// 添加server
-			servers = serverService.getListByProxyType(new Integer[] { 1,2});
+			servers = serverService.getListByProxyType(new Integer[] { 1, 2 });
 			for (Server server : servers) {
 				if (server.getEnable() == null || !server.getEnable()) {
 					continue;
@@ -370,7 +376,7 @@ public class ConfService {
 				// 监听端口
 				ngxParam = new NgxParam();
 				String value = "listen " + server.getListen();
-				if(server.getProxyType() == 2) {
+				if (server.getProxyType() == 2) {
 					value += " udp reuseport";
 				}
 				ngxParam.addValue(value);
@@ -419,6 +425,23 @@ public class ConfService {
 		return null;
 	}
 
+	/**
+	 * include防止重复
+	 * 
+	 * @param ngxBlockHttp
+	 * @param ngxParam
+	 * @return
+	 */
+	private boolean noContain(NgxBlock ngxBlockHttp, NgxParam ngxParam) {
+		for (NgxEntry ngxEntry : ngxBlockHttp.getEntries()) {
+			if (ngxEntry.toString().equals(ngxParam.toString())) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	public String buildNodeStr(UpstreamServer upstreamServer) {
 		String status = "";
 		if (!"none".equals(upstreamServer.getStatus())) {
@@ -440,7 +463,7 @@ public class ConfService {
 			ngxBlock.addEntry(ngxParam);
 		} else {
 			List<Param> params = templateService.getParamList(param.getTemplateValue());
-			for(Param paramSub:params) {
+			for (Param paramSub : params) {
 				NgxParam ngxParam = new NgxParam();
 				ngxParam.addValue(paramSub.getName().trim() + " " + paramSub.getValue().trim());
 				ngxBlock.addEntry(ngxParam);
@@ -488,7 +511,7 @@ public class ConfService {
 		// 删除conf.d下全部文件
 		FileUtil.del(confd);
 		FileUtil.mkdir(confd);
-					
+
 		// 写入主文件
 		FileUtil.writeString(nginxContent, nginxPath, StandardCharsets.UTF_8);
 		String decompose = settingService.get("decompose");
@@ -507,6 +530,7 @@ public class ConfService {
 
 	public AsycPack getAsycPack() {
 		AsycPack asycPack = new AsycPack();
+		asycPack.setBasicList(sqlHelper.findAll(Basic.class));
 		asycPack.setHttpList(sqlHelper.findAll(Http.class));
 		List<Server> serverList = sqlHelper.findAll(Server.class);
 		for (Server server : serverList) {
@@ -554,6 +578,7 @@ public class ConfService {
 	@Transactional
 	public void setAsycPack(AsycPack asycPack) {
 		// 不要同步Cert表
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Basic.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Http.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Server.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Location.class);
@@ -562,6 +587,7 @@ public class ConfService {
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Stream.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Param.class);
 
+		sqlHelper.insertAll(asycPack.getBasicList());
 		sqlHelper.insertAll(asycPack.getHttpList());
 		sqlHelper.insertAll(asycPack.getServerList());
 		sqlHelper.insertAll(asycPack.getLocationList());

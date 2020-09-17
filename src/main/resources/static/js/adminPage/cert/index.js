@@ -331,3 +331,7 @@ function selectKey() {
 		$("#keyPath").html(rs);
 	})
 }
+
+function download(id) {
+	window.open(ctx + "/adminPage/cert/download?id=" + id);
+}

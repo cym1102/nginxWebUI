@@ -155,7 +155,9 @@ public class RemoteController extends BaseController {
 	@RequestMapping("addGroupOver")
 	@ResponseBody
 	public JsonResult addGroupOver(Group group) {
-
+		if(group.getId().equals(group.getParentId())) {
+			return renderError("父分组不可为自身");
+		}
 		sqlHelper.insertOrUpdate(group);
 
 		return renderSuccess();
@@ -385,7 +387,12 @@ public class RemoteController extends BaseController {
 	@ResponseBody
 	public JsonResult getAuth(Remote remote) {
 		try {
-			String rs = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/login/getAuth?name=" + remote.getName(), 3000);
+			Map<String, Object> map = new HashMap<>();
+			map.put("name", remote.getName());
+			map.put("pass", remote.getPass());
+			map.put("remote", 1);
+
+			String rs = HttpUtil.post(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/login/getAuth", map, 3000);
 
 			if (StrUtil.isNotEmpty(rs)) {
 				JsonResult jsonResult = JSONUtil.toBean(rs, JsonResult.class);

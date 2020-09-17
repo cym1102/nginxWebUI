@@ -142,8 +142,9 @@ function add() {
 	$("#itemList").html("");
 	$("#paramJson").val("");
 
-	checkSsl(0);
 	checkProxyType(0);
+	checkSsl(0);
+	
 
 	form.render();
 	showWindow(serverStr.add);
@@ -153,7 +154,7 @@ function showWindow(title) {
 	layer.open({
 		type: 1,
 		title: title,
-		area: ['1210px', '700px'], // 宽高
+		area: ['1250px', '700px'], // 宽高
 		content: $('#windowDiv')
 	});
 }
@@ -310,8 +311,9 @@ function edit(id, clone) {
 					$("#http2 option:first").prop("selected", true);
 				}
 
-				checkSsl(server.ssl);
 				checkProxyType(server.proxyType);
+				checkSsl(server.ssl);
+				
 				var list = data.obj.locationList;
 
 				var upstreamSelect = $("#upstreamSelect").html();
@@ -464,6 +466,9 @@ function buildHtml(uuid, location, upstreamSelect) {
 					<textarea style="display: none;" id="locationParamJson_${uuid}" name="locationParamJson" >${location.locationParamJson}</textarea>
 					<button type="button" class="layui-btn layui-btn-sm" onclick="locationParam('${uuid}')">${serverStr.extParm}</button>
 					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
+					
+					<button type="button" class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
+					<button type="button" class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
 				</td>
 			</tr>`
 

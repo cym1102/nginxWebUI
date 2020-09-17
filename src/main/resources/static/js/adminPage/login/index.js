@@ -37,6 +37,7 @@ function login() {
 			} else {
 				layer.msg(data.msg);
 			}
+			
 		},
 		error: function() {
 			layer.alert(commonStr.errorInfo);
@@ -50,7 +51,9 @@ function getAuth() {
 		type: 'POST',
 		url: ctx + '/adminPage/login/getAuth',
 		data: {
-			name : $("#name").val()
+			name : $("#name").val(),
+			pass : $("#pass").val(),
+			code  :  $("#code").val()
 		},
 		dataType: 'json',
 		success: function(data) {
@@ -63,12 +66,13 @@ function getAuth() {
 						area : [ '500px', '200px' ], // 宽高
 						content : $('#codeDiv')
 					});
-				}else{
+				} else {
 					login();
 				}
 			} else {
 				layer.msg(data.msg);
 			}
+			
 		},
 		error: function() {
 			layer.alert(commonStr.errorInfo);

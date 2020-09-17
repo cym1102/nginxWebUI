@@ -16,8 +16,8 @@ public class UpstreamServer extends BaseModel {
 	
 	String status; // 状态策略
 	
-	@InitValue("0")
-	Integer monitorStatus;// 监控状态 0 不通 1
+	@InitValue("-1")
+	Integer monitorStatus; // 监控状态 -1未检测 0 不通 1 通
 	
 	
 	public Integer getMonitorStatus() {

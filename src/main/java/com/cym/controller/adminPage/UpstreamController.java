@@ -84,7 +84,9 @@ public class UpstreamController extends BaseController {
 		String upstreamMonitor = settingService.get("upstreamMonitor");
 		if ("true".equals(upstreamMonitor)) {
 			monitorStatus += "<td>";
-			if (upstreamServer.getMonitorStatus() == 1) {
+			if (upstreamServer.getMonitorStatus() == -1) {
+				monitorStatus += "<span class='gray'>" + m.get("upstreamStr.gray") + "</span>";
+			}else if (upstreamServer.getMonitorStatus() == 1) {
 				monitorStatus += "<span class='green'>" + m.get("upstreamStr.green") + "</span>";
 			} else {
 				monitorStatus += "<span class='red'>" + m.get("upstreamStr.red") + "</span>";
@@ -175,24 +177,12 @@ public class UpstreamController extends BaseController {
 	public JsonResult upstreamOver(String mail, String upstreamMonitor) {
 		settingService.set("mail", mail);
 		settingService.set("upstreamMonitor", upstreamMonitor);
-
+		
+		if(upstreamMonitor.equals("true")) {
+			upstreamService.resetMonitorStatus();
+		}
+		
 		return renderSuccess();
 	}
-
-	/**
-	 * 检测node
-	 */
-//	private void testNode() {
-//		List<UpstreamServer> upstreamServers = upstreamService.getAllServer();
-//		for (UpstreamServer upstreamServer : upstreamServers) {
-//			if (!TelnetUtils.isRunning(upstreamServer.getServer(), upstreamServer.getPort())) {
-//				upstreamServer.setMonitorStatus(0);
-//			} else {
-//				upstreamServer.setMonitorStatus(1);
-//			}
-//
-//			sqlHelper.updateById(upstreamServer);
-//		}
-//	}
 
 }
