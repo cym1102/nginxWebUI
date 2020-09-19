@@ -141,7 +141,9 @@ function add() {
 	$("#keyPath").html("");
 	$("#itemList").html("");
 	$("#paramJson").val("");
-
+	
+	$(".protocols").prop("checked",true);
+	
 	checkProxyType(0);
 	checkSsl(0);
 	
@@ -218,6 +220,15 @@ function addOver() {
 	server.rewrite = $("#rewrite").val();
 	server.http2 = $("#http2").val();
 
+	var protocols = [];
+	$(".protocols").each(function() {
+		if($(this).prop("checked")){
+			protocols.push($(this).val());
+		}
+	});
+	server.protocols = protocols.join(" ");
+	
+	
 	var serverParamJson = $("#serverParamJson").val();
 
 	var locations = [];
@@ -310,6 +321,23 @@ function edit(id, clone) {
 				} else {
 					$("#http2 option:first").prop("selected", true);
 				}
+				
+				$(".protocols").prop("checked",false);
+				if(server.protocols!=null){
+					if(server.protocols.indexOf("TLSv1") > -1){
+						$("#TLSv1").prop("checked",true);
+					}
+					if(server.protocols.indexOf("TLSv1.1") > -1){
+						$("#TLSv1_1").prop("checked",true);
+					}
+					if(server.protocols.indexOf("TLSv1.2") > -1){
+						$("#TLSv1_2").prop("checked",true);
+					}
+					if(server.protocols.indexOf("TLSv1.3") > -1){
+						$("#TLSv1_3").prop("checked",true);
+					}
+				}
+				form.render();
 
 				checkProxyType(server.proxyType);
 				checkSsl(server.ssl);

@@ -172,9 +172,12 @@ public class ConfService {
 						ngxParam.addValue("ssl_certificate_key " + server.getKey());
 						ngxBlockServer.addEntry(ngxParam);
 
-						ngxParam = new NgxParam();
-						ngxParam.addValue("ssl_protocols TLSv1 TLSv1.1 TLSv1.2");
-						ngxBlockServer.addEntry(ngxParam);
+						if (StrUtil.isNotEmpty(server.getProtocols())) {
+							ngxParam = new NgxParam();
+							ngxParam.addValue("ssl_protocols " + server.getProtocols());
+							ngxBlockServer.addEntry(ngxParam);
+						}
+
 					}
 
 					// https添加80端口重写

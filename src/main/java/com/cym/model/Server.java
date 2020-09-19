@@ -30,8 +30,16 @@ public class Server extends BaseModel {
 	Boolean enable; // 是否启用
 	
 	String descr; // 描述
+	@InitValue("TLSv1 TLSv1.1 TLSv1.2 TLSv1.3")
+	String protocols; // 加密协议
 	
 	
+	public String getProtocols() {
+		return protocols;
+	}
+	public void setProtocols(String protocols) {
+		this.protocols = protocols;
+	}
 	public String getDescr() {
 		return descr;
 	}
