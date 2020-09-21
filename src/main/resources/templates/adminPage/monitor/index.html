@@ -28,37 +28,43 @@
 				
 				<input type="hidden" id="isInit" value="${isInit}"> 
 
-				<div style="padding: 20px; margin: 20px;border: 1px solid #bfbfbf;">
+				<div style="padding: 20px; background-color: #F2F2F2;">
 					<div class="layui-row layui-col-space15">
 						<!-- 监控 -->
 						<div class="layui-col-md6">
 							<div class="layui-card">
-								<fieldset class="layui-elem-field layui-field-title">
-									<legend>${monitorStr.cpuRatio}&nbsp;&nbsp;<span id="cpuCount" style="color: teal;"></span></legend>
-								</fieldset>
-
-								<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="cpu">
-									<div class="layui-progress-bar layui-bg-green" lay-percent="0%"></div>
+								<div class="layui-card-header">
+									${monitorStr.cpuRatio}&nbsp;&nbsp;<span id="cpuCount" style="color: teal;"></span>
 								</div>
 
-								<fieldset class="layui-elem-field layui-field-title" style="margin-top: 40px;">
-									<legend>${monitorStr.memUse}&nbsp;&nbsp;<span id="memContent" style="color: teal;"></span></legend>
-								</fieldset>
-
-								<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="mem">
-									<div class="layui-progress-bar layui-bg-blue" lay-percent="0%"></div>
-								</div>
-								
-								<fieldset class="layui-elem-field layui-field-title" style="margin-top: 40px;">
-									<legend>${monitorStr.diskUse}&nbsp;&nbsp;<span id="memContent" style="color: teal;"></span></legend>
-								</fieldset>
-								
-								<#list list as disk>
-									<span class="layui-breadcrumb"><a href="javacript:">${disk.path} ( ${disk.usableSpace} / ${disk.totalSpace} )</a></span>
-									<div class="layui-progress" lay-showpercent="true" style="margin-top: 20px;margin-bottom: 10px;">
-										<div class="layui-progress-bar layui-bg-blue" lay-percent="${disk.percent}"></div>
+								<div class="layui-card-body">
+									<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="cpu">
+										<div class="layui-progress-bar layui-bg-green" lay-percent="0%"></div>
 									</div>
-								</#list>
+								</div>
+
+								<div class="layui-card-header">
+									${monitorStr.memUse}&nbsp;&nbsp;<span id="memContent" style="color: teal;"></span>
+								</div>
+
+								<div class="layui-card-body">
+									<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="mem">
+										<div class="layui-progress-bar layui-bg-blue" lay-percent="0%"></div>
+									</div>
+								</div>
+								
+								<div class="layui-card-header">
+									${monitorStr.diskUse}&nbsp;&nbsp;<span id="memContent" style="color: teal;"></span>
+								</div>
+								
+								<div class="layui-card-body">
+									<#list list as disk>
+										<span class="layui-breadcrumb"><a href="javacript:">${disk.path} ( ${disk.usableSpace} / ${disk.totalSpace} )</a></span>
+										<div class="layui-progress" lay-showpercent="true" style="margin-top: 20px;margin-bottom: 10px;">
+											<div class="layui-progress-bar layui-bg-blue" lay-percent="${disk.percent}"></div>
+										</div>
+									</#list>
+								</div>
 							</div>
 						</div>
 						

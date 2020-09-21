@@ -42,7 +42,8 @@
 
 .blk {
 	display: inline-block;
-	width: 100px;
+	width: 105px;
+	text-align: right;
 }
 
 .blk2 {
@@ -109,19 +110,29 @@
 						<button type="button" class="layui-btn" onclick="search()">${commonStr.search}</button>
 
 
-						<input type="hidden" name="sort" id="sort" value="${sort}"> <input type="hidden" name="direction" id="direction" value="${direction}"> <input type="hidden" name="curr"
-							value="${page.curr}"> <input type="hidden" name="limit" value="${page.limit}">
+						<input type="hidden" name="sort" id="sort" value="${sort}">
+						<input type="hidden" name="direction" id="direction" value="${direction}">
+						<input type="hidden" name="curr" value="${page.curr}">
+						<input type="hidden" name="limit" value="${page.limit}">
 					</div>
 
 					<table class="layui-table layui-form">
 						<thead>
 							<tr>
-								<th>${serverStr.transpondType} <i class="layui-icon ${(direction=='desc'&&sort=='proxyType')?string('layui-icon-down','layui-icon-up')} ${(sort=='proxyType')?string('blue','')}"
-									id="proxyTypeSort" onclick="sort('proxyTypeSort')"></i></th>
-								<th>${serverStr.listen} <i class="layui-icon ${(direction=='desc'&&sort=='listen')?string('layui-icon-down','layui-icon-up')} ${(sort=='listen')?string('blue','')}" id="listenSort"
-									onclick="sort('listenSort')"></i></th>
-								<th>${serverStr.serverName} <i class="layui-icon ${(direction=='desc'&&sort=='serverName')?string('layui-icon-down','layui-icon-up')} ${(sort=='serverName')?string('blue','')}"
-									id="serverNameSort" onclick="sort('serverNameSort')"></i></th>
+								<th>
+									${serverStr.transpondType}
+									<i class="layui-icon ${(direction=='desc'&&sort=='proxyType')?string('layui-icon-down','layui-icon-up')} ${(sort=='proxyType')?string('blue','')}" id="proxyTypeSort"
+										onclick="sort('proxyTypeSort')"></i>
+								</th>
+								<th>
+									${serverStr.listen}
+									<i class="layui-icon ${(direction=='desc'&&sort=='listen')?string('layui-icon-down','layui-icon-up')} ${(sort=='listen')?string('blue','')}" id="listenSort" onclick="sort('listenSort')"></i>
+								</th>
+								<th>
+									${serverStr.serverName}
+									<i class="layui-icon ${(direction=='desc'&&sort=='serverName')?string('layui-icon-down','layui-icon-up')} ${(sort=='serverName')?string('blue','')}" id="serverNameSort"
+										onclick="sort('serverNameSort')"></i>
+								</th>
 								<th>${serverStr.ssl}</th>
 								<th>${serverStr.sslOption}</th>
 								<th>${serverStr.proxyTarget}</th>
@@ -134,19 +145,48 @@
 						<tbody>
 							<#list page.records as ext>
 							<tr>
-								<td><#if ext.server.proxyType==0>http</#if> <#if ext.server.proxyType==1>TCP</#if> <#if ext.server.proxyType==2>UDP</#if></td>
-								<td>${ext.server.listen} <#if ext.server.def==1>default</#if></td>
-								<td><#if ext.server.serverName==''>${serverStr.all}</#if> <#if ext.server.serverName!=''>${ext.server.serverName}</#if></td>
-								<td><#if ext.server.ssl==0>${commonStr.no}</#if> <#if ext.server.ssl==1>${commonStr.yes}</#if></td>
-								<td><#if ext.server.ssl==1> <span class="blk">${serverStr.httpToHttps}：</span> <#if ext.server.rewrite==0>${commonStr.no}</#if> <#if ext.server.rewrite==1>${commonStr.yes}</#if> <br>
-									<span class="blk">${serverStr.http2}：</span> <#if ext.server.http2==0>${commonStr.no}</#if> <#if ext.server.http2==1>${commonStr.yes}</#if> </#if></td>
+								<td>
+									<#if ext.server.proxyType==0>http</#if>
+									<#if ext.server.proxyType==1>TCP</#if>
+									<#if ext.server.proxyType==2>UDP</#if>
+								</td>
+								<td>
+									${ext.server.listen}
+									<#if ext.server.def==1>default</#if>
+								</td>
+								<td>
+									<#if ext.server.serverName==''>${serverStr.all}</#if>
+									<#if ext.server.serverName!=''>${ext.server.serverName}</#if>
+								</td>
+								<td>
+									<#if ext.server.ssl==0>${commonStr.no}</#if>
+									<#if ext.server.ssl==1>${commonStr.yes}</#if>
+								</td>
+								<td>
+									<#if ext.server.ssl==1> 
+										<span class="blk">${serverStr.httpToHttps}：</span> 
+										<#if ext.server.rewrite==0>${commonStr.no}</#if> 
+										<#if ext.server.rewrite==1>${commonStr.yes}</#if> 
+										<br>
+										<span class="blk">${serverStr.http2}：</span> 
+										<#if ext.server.http2==0>${commonStr.no}</#if> 
+										<#if ext.server.http2==1>${commonStr.yes}</#if> 
+										<br>
+										<span class="blk">${serverStr.protocols}：</span> 
+										${ext.server.protocols}
+									</#if>
+								</td>
 
 
 								<td>${ext.locationStr}</td>
 
-								<td><input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="ON|OFF" lay-skin="switch"${(ext.server.enable)?string('checked','')}></td>
+								<td>
+									<input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="ON|OFF" lay-skin="switch"${(ext.server.enable)?string('checked','')}>
+								</td>
 
-								<td>${ext.server.descr} <a href="javascript:editDescr('${ext.server.id}','${ext.server.descr}')" style="color: blue; text-decoration: underline;">${commonStr.edit}</a>
+								<td>
+									${ext.server.descr}
+									<a href="javascript:editDescr('${ext.server.id}','${ext.server.descr}')" style="color: blue; text-decoration: underline;">${commonStr.edit}</a>
 								</td>
 
 
@@ -188,11 +228,14 @@
 
 
 							<div class="layui-form-item">
-								<label class="layui-form-label">${serverStr.listen}<span class="red">*</span></label>
+								<label class="layui-form-label">
+									${serverStr.listen}
+									<span class="red">*</span>
+								</label>
 								<div class="layui-input-inline">
-									<input type="text" name="ip" id="ip" class="layui-input" style="width: 125px; display: inline-block;" placeholder="${serverStr.ipDefault}"> <input type="text" name="listen"
-										id="listen" style="width: 60px; display: inline-block;" class="layui-input" placeholder="${serverStr.port}"> <input type="checkbox" name="def" id="def" title="${serverStr.default}"
-										lay-skin="primary">
+									<input type="text" name="ip" id="ip" class="layui-input" style="width: 125px; display: inline-block;" placeholder="${serverStr.ipDefault}">
+									<input type="text" name="listen" id="listen" style="width: 60px; display: inline-block;" class="layui-input" placeholder="${serverStr.port}">
+									<input type="checkbox" name="def" id="def" title="${serverStr.default}" lay-skin="primary">
 								</div>
 							</div>
 
@@ -286,12 +329,12 @@
 									</select>
 								</div>
 							</div>
-							
+
 							<div class="layui-form-item pemDiv proxyHttp">
 								<label class="layui-form-label">${serverStr.protocols}</label>
-								
+
 								<div class="layui-input-inline" style="width: 400px;">
-									<input type="checkbox" class="protocols" id="TLSv1"  lay-skin="primary" value="TLSv1" title="TLSv1">
+									<input type="checkbox" class="protocols" id="TLSv1" lay-skin="primary" value="TLSv1" title="TLSv1">
 									<input type="checkbox" class="protocols" id="TLSv1_1" lay-skin="primary" value="TLSv1.1" title="TLSv1.1">
 									<input type="checkbox" class="protocols" id="TLSv1_2" lay-skin="primary" value="TLSv1.2" title="TLSv1.2">
 									<input type="checkbox" class="protocols" id="TLSv1_3" lay-skin="primary" value="TLSv1.3" title="TLSv1.3">
@@ -401,14 +444,24 @@
 		</div>
 		<!-- 选择导入文件弹出框 -->
 		<div class="layui-form" id="importDiv" style="padding: 15px; display: none">
+
+			<div class="layui-form-item">
+				<div class="layui-input-inline" style="width: 400px;">
+					<div class="layui-form-mid layui-word-aux">${serverStr.importMsg}</div>
+				</div>
+			</div>
+
 			<div class="layui-form-item">
 				<div class="layui-input-inline">
 					<input type="text" id="nginxPath" name="nginxPath" class="layui-input" placeholder="${commonStr.filePath}">
 				</div>
+
 				<div class="layui-input-inline">
 					<i class="layui-icon layui-icon-export" onclick="selectRootCustom('nginxPath')"></i>
 				</div>
 			</div>
+
+
 			<div class="layui-form-item">
 				<button type="button" class="layui-btn layui-btn-normal" onclick="importServer()">${serverStr.importServer}</button>
 				<button type="button" class="layui-btn" onclick="layer.close(importIndex)">${commonStr.close}</button>

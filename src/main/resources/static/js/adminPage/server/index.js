@@ -210,7 +210,11 @@ function addOver() {
 	server.proxyUpstreamId = $("#proxyUpstreamId").val();
 	server.listen = $("#listen").val();
 	if ($("#ip").val() != '') {
-		server.listen = $("#ip").val() + ":" + $("#listen").val();
+		var ip =  $("#ip").val();
+		if(ip.indexOf(":") > -1){
+			ip = `[${ip}]`;
+		}
+		server.listen = ip + ":" + $("#listen").val();
 	}
 	server.def = $("#def").prop("checked") ? "1" : "0";
 	server.serverName = $("#serverName").val();
@@ -292,8 +296,10 @@ function edit(id, clone) {
 				}
 
 				if (server.listen.indexOf(":") > -1) {
-					$("#ip").val(server.listen.split(":")[0]);
-					$("#listen").val(server.listen.split(":")[1]);
+					var listens = server.listen.split(":");
+					
+					$("#ip").val(server.listen.replace(":" + listens[listens.length - 1] , "").replace("[","").replace("]",""));
+					$("#listen").val(listens[listens.length - 1]);
 				} else {
 					$("#ip").val("");
 					$("#listen").val(server.listen);
@@ -323,17 +329,19 @@ function edit(id, clone) {
 				}
 				
 				$(".protocols").prop("checked",false);
-				if(server.protocols!=null){
-					if(server.protocols.indexOf("TLSv1") > -1){
+				if(server.protocols != null){
+					var protocols = server.protocols.split(" ");
+					
+					if(protocols.indexOf("TLSv1") > -1){
 						$("#TLSv1").prop("checked",true);
 					}
-					if(server.protocols.indexOf("TLSv1.1") > -1){
+					if(protocols.indexOf("TLSv1.1") > -1){
 						$("#TLSv1_1").prop("checked",true);
 					}
-					if(server.protocols.indexOf("TLSv1.2") > -1){
+					if(protocols.indexOf("TLSv1.2") > -1){
 						$("#TLSv1_2").prop("checked",true);
 					}
-					if(server.protocols.indexOf("TLSv1.3") > -1){
+					if(protocols.indexOf("TLSv1.3") > -1){
 						$("#TLSv1_3").prop("checked",true);
 					}
 				}

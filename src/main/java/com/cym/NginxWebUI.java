@@ -43,7 +43,7 @@ public class NginxWebUI {
 		}
 
 		for (String pid : pids) {
-			System.out.println("杀掉进程:" + pid);
+			//System.out.println("杀掉进程:" + pid);
 			RuntimeUtil.exec("kill -9 " + pid);
 		}
 
