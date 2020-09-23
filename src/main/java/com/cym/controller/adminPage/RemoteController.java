@@ -1,5 +1,10 @@
 package com.cym.controller.adminPage;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -155,7 +160,7 @@ public class RemoteController extends BaseController {
 	@RequestMapping("addGroupOver")
 	@ResponseBody
 	public JsonResult addGroupOver(Group group) {
-		if(StrUtil.isNotEmpty(group.getParentId()) && StrUtil.isNotEmpty(group.getId()) &&  group.getId().equals(group.getParentId())) {
+		if (StrUtil.isNotEmpty(group.getParentId()) && StrUtil.isNotEmpty(group.getId()) && group.getId().equals(group.getParentId())) {
 			return renderError(m.get("remoteStr.parentGroupMsg"));
 		}
 		sqlHelper.insertOrUpdate(group);
@@ -501,4 +506,34 @@ public class RemoteController extends BaseController {
 		return renderSuccess();
 	}
 
+	@RequestMapping("/src")
+	public void src(HttpServletRequest httpServletRequest, HttpServletResponse response, String url) throws Exception {
+
+//		response.addHeader("Content-Type", "image/jpeg");
+//		response.setHeader("content-disposition", "attachment;filename=code.jpg"); // 设置文件名
+
+		byte[] buffer = new byte[1024];
+		URL downUrl = new URL(url);
+		BufferedInputStream bis = null;
+		try {
+			bis = new BufferedInputStream(downUrl.openConnection().getInputStream());
+			OutputStream os = response.getOutputStream();
+			int i = bis.read(buffer);
+			while (i != -1) {
+				os.write(buffer, 0, i);
+				i = bis.read(buffer);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (bis != null) {
+				try {
+					bis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
 }

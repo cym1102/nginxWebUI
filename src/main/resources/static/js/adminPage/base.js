@@ -77,7 +77,8 @@ $(function() {
 	});
 	
 	// 判断屏幕分辨率, 给table加上lay-size="sm"
-	if(document.body.clientWidth  <= 1440){
+	//alert(document.body.clientWidth);
+	if(document.body.clientWidth  <= 1600){
 		$(".layui-table").attr("lay-size","sm");
 	}
 })

@@ -29,9 +29,11 @@ $(function(){
 
 var selectTemplateTagertId;
 var templateIndex;
+var templateType;
+
 function selectTemplate(id){
 	selectTemplateTagertId = id;
-	
+	templateType = "temp";
 	templateIndex = layer.open({
 		type: 1,
 		title: templateStr.select,
@@ -57,28 +59,54 @@ function selectTemplateOver(){
 			if (data.success) {
 				var ext = data.obj;
 				
-				var uuid = guid();
-				var html = `
-					<tr name="param" id="${uuid}">
-						<td>
-							${templateStr.template}
-						</td>
-						<td  style="width: 50%;">
-							${ext.template.name}
-							<input type="hidden" name="templateValue" value="${ext.template.id}">
-							<input type="hidden" name="templateName" value="${ext.template.name}">
-						</td>
-						<td>
-							<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
-							
-							<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
-							<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
-						</td>
-					</tr>
-				`;
+				if(templateType == 'temp'){
+					var uuid = guid();
+					var html = `
+						<tr name="param" id="${uuid}">
+							<td>
+								${templateStr.template}
+							</td>
+							<td  style="width: 50%;">
+								${ext.template.name}
+								<input type="hidden" name="templateValue" value="${ext.template.id}">
+								<input type="hidden" name="templateName" value="${ext.template.name}">
+							</td>
+							<td>
+								<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
+								
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
+							</td>
+						</tr>
+					`;
+					
+					
+				} else {
+					var html = "";
+					for (var i = 0; i < data.obj.paramList.length; i++) {
+						var param = data.obj.paramList[i];
+						var uuid = guid();
+					
+						html += `
+						<tr name="param" id=${uuid}>
+							<td>
+								<textarea  name="name" class="layui-textarea">${param.name}</textarea>
+							</td>
+							<td  style="width: 50%;">
+								<textarea  name="value" class="layui-textarea">${param.value}</textarea>
+							</td>
+							<td>
+								<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
+								
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
+							</td>
+						</tr>
+						`;
+					}
+				}
 				
 				$("#" + selectTemplateTagertId).append(html);
-				
 				layer.close(templateIndex);
 			} else {
 				layer.msg(data.msg);
@@ -87,6 +115,17 @@ function selectTemplateOver(){
 		error: function() {
 			layer.alert(commonStr.errorInfo);
 		}
+	});
+}
+
+function selectTemplateAsParam(id){
+	selectTemplateTagertId = id;
+	templateType = "param";
+	templateIndex = layer.open({
+		type: 1,
+		title: templateStr.select,
+		area: ['450px', '350px'], // 宽高
+		content: $('#templateSelectDiv')
 	});
 }
 
