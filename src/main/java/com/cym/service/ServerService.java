@@ -73,7 +73,7 @@ public class ServerService {
 	@Transactional
 	public void addOver(Server server, String serverParamJson, List<Location> locations) throws Exception {
 
-		if (server.getDef() == 1) {
+		if (server.getDef() != null && server.getDef() == 1) {
 			clearDef();
 		}
 
@@ -289,6 +289,7 @@ public class ServerService {
 				locations.add(location);
 			}
 
+			server.setDef(0); 
 			this.addOver(server, "", locations);
 		}
 

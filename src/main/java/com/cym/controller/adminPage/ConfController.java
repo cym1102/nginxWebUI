@@ -1,6 +1,7 @@
 package com.cym.controller.adminPage;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.net.URLDecoder;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
@@ -88,8 +90,11 @@ public class ConfController extends BaseController {
 		JSONObject jsonObject = JSONUtil.parseObj(json);
 
 		String nginxPath = jsonObject.getStr("nginxPath");
-		String nginxContent = jsonObject.getStr("nginxContent");
+		String nginxContent = URLDecoder.decode(jsonObject.getStr("nginxContent"), Charset.forName("UTF-8"));
 		List<String> subContent = jsonObject.getJSONArray("subContent").toList(String.class);
+		for (int i = 0; i < subContent.size(); i++) {
+			subContent.set(i, URLDecoder.decode(subContent.get(i), Charset.forName("UTF-8")));
+		}
 		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
 
 		if (nginxPath == null) {

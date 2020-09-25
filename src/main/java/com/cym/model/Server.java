@@ -9,7 +9,7 @@ public class Server extends BaseModel {
 	String serverName;
 	String listen;
 	@InitValue("0")
-	Integer def; 
+	Integer def;  // 是否为默认server
 	
 	@InitValue("0")
 	Integer rewrite; // 0否 1是

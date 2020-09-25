@@ -177,15 +177,15 @@
 										<#if ext.server.rewrite==0>${commonStr.no}</#if> 
 										<#if ext.server.rewrite==1>${commonStr.yes}</#if> 
 										</span>
-									
+										<br>
 										<span class="blk">${serverStr.http2}：</span> 
 										<span class="descr">
 										<#if ext.server.http2==0>${commonStr.no}</#if> 
 										<#if ext.server.http2==1>${commonStr.yes}</#if> 
 										</span>
-										<br>
+										<!-- <br>
 										<span class="blk">${serverStr.protocols}：</span> 
-										<span class="descr">${ext.server.protocols}</span>
+										<span class="descr">${ext.server.protocols}</span> -->
 									</#if>
 								</td>
 

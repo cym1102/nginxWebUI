@@ -54,11 +54,11 @@ function replace() {
 
 	var json = {};
 	json.nginxPath = $("#nginxPath").val();
-	json.nginxContent = $("#nginxContent").val();
+	json.nginxContent =  encodeURIComponent($("#nginxContent").val());
 	json.subContent = [];
 	json.subName = [];
 	$("textarea[name='subContent']").each(function(){
-		json.subContent.push($(this).val());
+		json.subContent.push(encodeURIComponent($(this).val()));
 	})
 	$("input[name='subName']").each(function(){
 		json.subName.push($(this).val());
