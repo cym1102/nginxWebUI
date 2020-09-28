@@ -51,14 +51,15 @@ function replace() {
 		layer.msg(confStr.jserror2);
 		return;
 	}
+	var base = new Base64();  
 
 	var json = {};
 	json.nginxPath = $("#nginxPath").val();
-	json.nginxContent =  encodeURIComponent($("#nginxContent").val());
+	json.nginxContent = base.encode($("#nginxContent").val());
 	json.subContent = [];
 	json.subName = [];
 	$("textarea[name='subContent']").each(function(){
-		json.subContent.push(encodeURIComponent($(this).val()));
+		json.subContent.push(base.encode($(this).val()));
 	})
 	$("input[name='subName']").each(function(){
 		json.subName.push($(this).val());

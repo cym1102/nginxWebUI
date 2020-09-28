@@ -22,21 +22,20 @@
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${adminStr.add}</button>
 						</div>
-						
+
 						<div class="layui-inline">
 							<button type="button" class="layui-btn" onclick="downApk()">${adminStr.downApk}</button>
 						</div>
-						
+
 						<div class="layui-inline">
 							<button type="button" class="layui-btn" onclick="readme()">${adminStr.readme}</button>
 						</div>
-						
-						
+
+
 						<div class="layui-inline">
 							<div class="layui-form-mid layui-word-aux">${adminStr.notice}</div>
 						</div>
-						<input type="hidden" name="curr" value="${page.curr}">
-						<input type="hidden" name="limit" value="${page.limit}">
+						<input type="hidden" name="curr" value="${page.curr}"> <input type="hidden" name="limit" value="${page.limit}">
 					</div>
 				</form>
 
@@ -53,22 +52,9 @@
 						<#list page.records as admin>
 						<tr>
 							<td>${admin.name}</td>
-							<td>
-								<#if admin.auth>
-									${commonStr.yes}
-								</#if>
-								<#if !admin.auth>
-									${commonStr.no}
-								</#if>
-							</td>
-							<td>
-								<#if admin.auth>
-									${admin.key}
-									<a href="javascript:qr('${admin.name}','${admin.key}')" style="color: blue;text-decoration: underline;" >${adminStr.qr}</a>
-									
-									<a href="javascript:test('${admin.key}')" style="color: blue;text-decoration: underline;" >${commonStr.test}</a>
-								</#if>
-							</td>
+							<td><#if admin.auth> ${commonStr.yes} </#if> <#if !admin.auth> ${commonStr.no} </#if></td>
+							<td><#if admin.auth> ${admin.key} <a href="javascript:qr('${admin.name}','${admin.key}')" style="color: blue; text-decoration: underline;">${adminStr.qr}</a> <a
+									href="javascript:test('${admin.key}')" style="color: blue; text-decoration: underline;">${commonStr.test}</a> </#if></td>
 							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${admin.id}')">${commonStr.edit}</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${admin.id}')">${commonStr.del}</button>
@@ -101,7 +87,7 @@
 						<input type="password" name="pass" id="pass" class="layui-input">
 					</div>
 				</div>
-				
+
 				<div class="layui-form-item">
 					<label class="layui-form-label">谷歌验证</label>
 					<div class="layui-input-block">
@@ -119,25 +105,47 @@
 				</div>
 			</form>
 		</div>
-		
-		
-		<div class="layui-form" id="qrDiv" style="padding: 15px;text-align:center; display: none">
+
+
+		<div class="layui-form" id="qrDiv" style="padding: 15px; text-align: center; display: none">
 			<img id="qrImg" src="">
 		</div>
-		
-		
+
+
 		<div class="layui-form" id="codeDiv" style="padding: 15px; display: none">
 			<div class="layui-form-item">
 				<label class="layui-form-label">${loginStr.authCode}</label>
-				<div class="layui-input-inline" >
-					<input type="number" id="codeInput" class="layui-input" >
+				<div class="layui-input-inline">
+					<input type="number" id="codeInput" class="layui-input">
 				</div>
 			</div>
-			
+
 			<div class="layui-form-item" style="text-align: right;">
 				<input type="hidden" id="key">
 				<button type="button" class="layui-btn layui-btn-normal" onclick="testOver()">${commonStr.submit}</button>
 				<button type="button" class="layui-btn" onclick="layer.close(codeIndex)">${commonStr.close}</button>
+			</div>
+		</div>
+
+
+		<div class="layui-form" id="downDiv" style="padding: 15px; display: none">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div style="text-align: center;">
+						<img id="androidImg" style="width: 200px;height: 200px;" src="${ctx}/adminPage/admin/qr?url=https://www.wandoujia.com/apps/8092183">
+					</div>
+					<div style="text-align: center;font-size: 16px;margin-top: 10px;">
+						${adminStr.android}
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div style="text-align: center;">
+						<img id="iosImg" style="width: 200px;height: 200px;" src="${ctx}/adminPage/admin/qr?url=https://apps.apple.com/cn/app/google-authenticator/id388497605">
+					</div>
+					<div style="text-align: center;font-size: 16px;margin-top: 10px;">
+						${adminStr.ios}
+					</div>
+				</div>
 			</div>
 		</div>
 

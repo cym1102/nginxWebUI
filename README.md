@@ -9,6 +9,8 @@ QQ技术交流群: 1106758598
 
 官网地址: http://www.nginxwebui.cn
 
+github: https://github.com/cym1102/nginxWebUI
+
 #### 功能说明
 
 本项目可以使用WebUI配置nginx的各项功能, 包括http协议转发, tcp协议转发, 反向代理, 负载均衡, ssl证书自动申请、续签、配置等, 最终生成nginx.conf文件并覆盖nginx的默认配置文件, 完成nginx的最终功能配置. 
@@ -46,7 +48,7 @@ sudo apt install nginx
 2.下载最新版发行包jar
 
 ```
-sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.1.0.jar
+sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.1.1.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -54,7 +56,7 @@ sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.1.0.jar
 3.启动程序
 
 ```
-sudo nohup java -jar -Xmx64m nginxWebUI-2.1.0.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+sudo nohup java -jar -Xmx64m nginxWebUI-2.1.1.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
 ```
 
 参数说明(都是非必填)
@@ -80,13 +82,13 @@ apt install docker.io
 2.下载镜像: 
 
 ```
-docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:2.1.0
+docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:2.1.1
 ```
 
 3. 启动容器: 
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:2.1.0 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:2.1.1 /bin/bash
 ```
 
 注意: 

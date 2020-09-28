@@ -89,10 +89,9 @@ public class InitConfig {
 					FileUtil.mkdir("/root/.acme.sh");
 					ZipUtil.unzip("/root/acme.zip", "/root/.acme.sh");
 					FileUtil.del("/root/acme.zip");
-
-					RuntimeUtil.exec("chmod 777 " + acmeSh);
 				}
-
+				
+				RuntimeUtil.exec("chmod 777 " + acmeSh);
 			}
 
 			// 查找ngx_stream_module模块

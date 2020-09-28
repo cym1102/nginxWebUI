@@ -95,7 +95,14 @@ function del(id){
 }
 
 function downApk(){
-	window.open("https://www.wandoujia.com/apps/32913");
+	//window.open("https://www.wandoujia.com/apps/8092183");
+	
+	layer.open({
+		type : 1,
+		title : adminStr.downApk,
+		area : [ '600px', '350px' ], // 宽高
+		content : $('#downDiv')
+	});
 }
 
 function readme(){
