@@ -1,5 +1,5 @@
 #不存在目标jar,就释放jar
-version="2.1.0";
+version="2.1.3";
 echo ${version};
 if [ ! -f "/home/nginxWebUI/nginxWebUI-${version}.jar" ]; then 
     if [ ! -d "/home/nginxWebUI/" ]; then

@@ -450,6 +450,10 @@ public class ConfService {
 		if (!"none".equals(upstreamServer.getStatus())) {
 			status = upstreamServer.getStatus();
 		}
+		
+		if (upstreamServer.getServer().contains(":")) {
+			upstreamServer.setServer("[" + upstreamServer.getServer() + "]");
+		}
 
 		return upstreamServer.getServer() + ":" + upstreamServer.getPort() //
 				+ " weight=" + upstreamServer.getWeight() //

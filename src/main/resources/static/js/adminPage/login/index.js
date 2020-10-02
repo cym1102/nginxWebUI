@@ -124,7 +124,7 @@ function addAdmin() {
 
 function getKey() {
 	if (event.keyCode == 13) {
-		login();
+		getAuth();
 	}
 }
 

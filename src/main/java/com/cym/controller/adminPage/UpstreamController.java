@@ -86,14 +86,18 @@ public class UpstreamController extends BaseController {
 			monitorStatus += "<td>";
 			if (upstreamServer.getMonitorStatus() == -1) {
 				monitorStatus += "<span class='gray'>" + m.get("upstreamStr.gray") + "</span>";
-			}else if (upstreamServer.getMonitorStatus() == 1) {
+			} else if (upstreamServer.getMonitorStatus() == 1) {
 				monitorStatus += "<span class='green'>" + m.get("upstreamStr.green") + "</span>";
 			} else {
 				monitorStatus += "<span class='red'>" + m.get("upstreamStr.red") + "</span>";
 			}
 			monitorStatus += "</td>";
 		}
-		System.err.println(upstreamServer.getServer() + ":" + upstreamServer.getMonitorStatus());
+//		System.err.println(upstreamServer.getServer() + ":" + upstreamServer.getMonitorStatus());
+
+		if (upstreamServer.getServer().contains(":")) {
+			upstreamServer.setServer("[" + upstreamServer.getServer() + "]");
+		}
 
 		return "<tr><td>" + upstreamServer.getServer() + ":" + upstreamServer.getPort() + "</td>"//
 				+ "<td>weight=" + upstreamServer.getWeight() + "</td>"//
@@ -177,11 +181,11 @@ public class UpstreamController extends BaseController {
 	public JsonResult upstreamOver(String mail, String upstreamMonitor) {
 		settingService.set("mail", mail);
 		settingService.set("upstreamMonitor", upstreamMonitor);
-		
-		if(upstreamMonitor.equals("true")) {
+
+		if (upstreamMonitor.equals("true")) {
 			upstreamService.resetMonitorStatus();
 		}
-		
+
 		return renderSuccess();
 	}
 

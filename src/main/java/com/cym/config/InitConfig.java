@@ -54,10 +54,8 @@ public class InitConfig {
 		Long count = sqlHelper.findAllCount(Basic.class);
 		if (count == 0) {
 			List<Basic> basics = new ArrayList<Basic>();
-
 			basics.add(new Basic("worker_processes", "auto", 1l));
 			basics.add(new Basic("events", "{\r\n" + "    worker_connections  1024;\r\n" + "}", 2l));
-
 			sqlHelper.insertAll(basics);
 		}
 
@@ -67,13 +65,29 @@ public class InitConfig {
 			List<Http> https = new ArrayList<Http>();
 			https.add(new Http("include", "mime.types", 0l));
 			https.add(new Http("default_type", "application/octet-stream", 1l));
-
 			sqlHelper.insertAll(https);
+		}
+		
+		// 释放nginx.conf,mime.types
+		if(!FileUtil.exist(home + "nginx.conf")) {
+			ClassPathResource resource = new ClassPathResource("nginx.conf");
+			FileUtil.writeFromStream(resource.getInputStream(), home + "nginx.conf");
+		}
+		if(!FileUtil.exist(home + "mime.types")) {
+			ClassPathResource resource = new ClassPathResource("mime.types");
+			FileUtil.writeFromStream(resource.getInputStream(), home + "mime.types");
+		}
+		
+		// 设置nginx配置文件
+		String nginxPath = settingService.get("nginxPath");
+		if (StrUtil.isEmpty(nginxPath)) {
+			nginxPath = home + "nginx.conf";
+			// 设置nginx.conf路径
+			settingService.set("nginxPath", nginxPath);
 		}
 
 		if (SystemTool.isLinux()) {
 			// 初始化acme.sh
-			logger.info("----------------release acme.sh--------------");
 			if (!FileUtil.exist("/root/.acme.sh")) {
 
 				// 查看是否存在/home/nginxWebUI/.acme.sh
@@ -91,11 +105,12 @@ public class InitConfig {
 					FileUtil.del("/root/acme.zip");
 				}
 				
+				// 赋予执行权限
 				RuntimeUtil.exec("chmod 777 " + acmeSh);
 			}
 
 			// 查找ngx_stream_module模块
-			if(!basicService.contain("ngx_stream_module.so")) {
+			if (!basicService.contain("ngx_stream_module.so")) {
 				List<String> list = RuntimeUtil.execForLines(CharsetUtil.systemCharset(), "find / -name ngx_stream_module.so");
 				for (String path : list) {
 					if (path.contains("ngx_stream_module.so") && path.length() < 80) {
@@ -105,36 +120,14 @@ public class InitConfig {
 					}
 				}
 			}
-			
 
-			// 找寻nginx配置文件
-			logger.info("----------------find nginx.conf--------------");
-			String nginxPath = settingService.get("nginxPath");
-
-			if (StrUtil.isEmpty(nginxPath)) {
-				try {
-					// 判断是否是容器中
-					if (inDocker()) {
-						logger.info("----------------release nginx.conf--------------");
-						// 释放nginxOrg.conf
-						nginxPath = home + "nginx.conf";
-						ClassPathResource resource = new ClassPathResource("nginxOrg.conf");
-						InputStream inputStream = resource.getInputStream();
-						FileUtil.writeFromStream(inputStream, nginxPath);
-						settingService.set("nginxPath", nginxPath);
-
-						// 设置nginx执行文件
-						settingService.set("nginxExe", "nginx");
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-
-			// 在容器中,尝试启动nginx;
+			// 判断是否是容器中
 			if (inDocker()) {
+				String nginxExe = "nginx";
+				// 设置nginx执行文件
+				settingService.set("nginxExe", nginxExe);
 				// 启动nginx
-				RuntimeUtil.exec("nginx");
+				RuntimeUtil.exec(nginxExe, "-c", nginxPath);
 			}
 		}
 
@@ -163,7 +156,13 @@ public class InitConfig {
 	 * @return
 	 */
 	private Boolean inDocker() {
-		return FileUtil.exist("/etc/nginx/nginx.conf") && FileUtil.readUtf8String("/etc/nginx/nginx.conf").contains("include " + home + "nginx.conf");
+		List<String> rs = RuntimeUtil.execForLines("cat /proc/1/cgroup");
+		for (String str : rs) {
+			if (str.startsWith("1:name") && str.contains("docker")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

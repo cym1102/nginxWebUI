@@ -20,12 +20,15 @@ public class AsyncUtils {
 	@Async
 	public void run(String path) {
 		ThreadUtil.safeSleep(2000);
+
 		String cmd = "mv " + path + " " + path.replace(".update", "");
 		LOG.info(cmd);
 		RuntimeUtil.exec(cmd);
-		
+
 		cmd = "nohup java -jar -Xmx64m " + path.replace(".update", "") + " --server.port=" + port + " --project.home=" + home + " > /dev/null &";
 		LOG.info(cmd);
 		RuntimeUtil.exec(cmd);
+
 	}
+
 }

@@ -12,6 +12,11 @@
 	width: 50px!important;
 }
 
+.ali{ 
+	color: red;
+	font-weight: bolder;
+}
+
 </style>
 </head>
 <body class="layui-layout-body">
@@ -70,7 +75,55 @@
 						
 						<!-- 广告 -->
 						<div class="layui-col-md6">
+							<div class="layui-card">
+								<div class="layui-card-header">
+									阿里云特惠
+								</div>
+
+								<div class="layui-card-body">
+									<a target="_blank" class="ali" href="https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=m8hvjkvi">${monitorStr.join}</a>
+									
+								</div>
+							</div>
 							
+							<div class="layui-card">
+								<div class="layui-card-header">
+									阿里最新活动
+								</div>
+
+								<div class="layui-card-body">
+									<a target="_blank" class="ali" href="https://www.aliyun.com/activity?userCode=m8hvjkvi">${monitorStr.join}</a>
+								</div>
+							</div>
+							
+							<div class="layui-card">
+								<div class="layui-card-header">
+									阿里云爆款特惠
+								</div>
+
+								<div class="layui-card-body">
+									<a target="_blank" class="ali" href="https://www.aliyun.com/activity/daily/bestoffer?userCode=m8hvjkvi">${monitorStr.join}</a>
+								</div>
+							</div>
+							
+							
+							<div class="layui-card">
+								<div class="layui-card-header">
+									云服务器ECS老用户升级四重礼遇
+								</div>
+								<div class="layui-card-body">
+									<a target="_blank" class="ali" href="https://www.aliyun.com/daily-act/ecs/care?userCode=m8hvjkvi">${monitorStr.join}</a>
+								</div>
+							</div>
+						
+							<div class="layui-card">
+								<div class="layui-card-header">
+									云数据库小站专享秒杀价低至1折
+								</div>
+								<div class="layui-card-body">
+									<a target="_blank" class="ali" href="https://www.aliyun.com/activity/ambassador/database?userCode=m8hvjkvi">${monitorStr.join}</a>
+								</div>
+							</div>
 						
 						</div>
 					</div>
@@ -81,8 +134,24 @@
 
 	<div style="height: 0px; width: 0px; overflow: hidden;">
 		<div class="layui-form" id="nginxGuideDiv" style="padding: 15px; display: none">
-			<form id="addForm">
+		
+			<div id="selectForm" >
 				<div class="layui-form-item">
+					<label class="layui-form-label long">${monitorStr.install}</label>
+					<div class="layui-input-inline">
+						<input type="radio" name="install" id="check0" value="0" title="${monitorStr.install0}" checked>
+      					<input type="radio" name="install" id="check1" value="1" title="${monitorStr.install1}" >
+					</div>
+				</div>
+	
+				<div class="layui-form-item" style="text-align: center;">
+					<button type="button" class="layui-btn layui-btn-normal" style="width: 100px;" onclick="selectNginxGiudeOver()">${commonStr.submit}</button>
+				</div>
+			</div>
+			
+			
+			<div id="addForm" style="display: none;">
+				<!-- <div class="layui-form-item">
 					<label class="layui-form-label long">nginx.conf ${commonStr.path}</label>
 					<div class="layui-input-inline">
 						<input type="text" id="nginxPath" class="layui-input" value="${nginxPath}">
@@ -91,7 +160,7 @@
 						<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxPath')"></i>   
 					</div>
 					<div class="layui-form-mid layui-word-aux">nginx.conf ${commonStr.path}</div>
-				</div>
+				</div> -->
 	
 				<div class="layui-form-item">
 					<label class="layui-form-label long">nginx ${monitorStr.exe}</label>
@@ -101,7 +170,7 @@
 					<div class="layui-input-inline short">
 						<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxExe')"></i>   
 					</div>
-					<div class="layui-form-mid layui-word-aux">${monitorStr.exeTips}</div>
+					<!-- <div class="layui-form-mid layui-word-aux">${monitorStr.exeTips}</div> -->
 				</div>
 	
 				<div class="layui-form-item">
@@ -112,13 +181,14 @@
 					<div class="layui-input-inline short">
 						<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxDir')"></i>   
 					</div>
-					<div class="layui-form-mid layui-word-aux">${monitorStr.dirTips}</div>
+					<!-- <div class="layui-form-mid layui-word-aux">${monitorStr.dirTips}</div> -->
 				</div>
 	
 				<div class="layui-form-item" style="text-align: center;">
+					<button type="button" class="layui-btn" style="width: 100px;" onclick="back()">${commonStr.back}</button>
 					<button type="button" class="layui-btn layui-btn-normal" style="width: 100px;" onclick="addNginxGiudeOver()">${commonStr.submit}</button>
 				</div>
-			</form>
+			</div>
 		</div>
 	
 	</div>

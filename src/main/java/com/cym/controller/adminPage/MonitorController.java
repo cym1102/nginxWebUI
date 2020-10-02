@@ -86,16 +86,18 @@ public class MonitorController extends BaseController {
 		String nginxExe = settingService.get("nginxExe");
 		String nginxDir = settingService.get("nginxDir");
 
-		Boolean isInit = StrUtil.isNotEmpty(nginxExe) || StrUtil.isNotEmpty(nginxPath);
-		if (StrUtil.isEmpty(nginxExe)) {
-			nginxExe = "nginx";
-		}
+		
+//		if (StrUtil.isEmpty(nginxExe)) {
+//			nginxExe = "nginx";
+//		}
 
 		modelAndView.addObject("nginxDir", nginxDir);
 		modelAndView.addObject("nginxExe", nginxExe);
 		modelAndView.addObject("nginxPath", nginxPath);
 
+		Boolean isInit = StrUtil.isNotEmpty(nginxExe);
 		modelAndView.addObject("isInit", isInit.toString());
+		
 		modelAndView.setViewName("/adminPage/monitor/index");
 		return modelAndView;
 	}
@@ -111,11 +113,10 @@ public class MonitorController extends BaseController {
 
 	@RequestMapping("addNginxGiudeOver")
 	@ResponseBody
-	public JsonResult addNginxGiudeOver(String nginxDir, String nginxExe, String nginxPath) {
+	public JsonResult addNginxGiudeOver(String nginxDir, String nginxExe) {
 
 		settingService.set("nginxDir", nginxDir);
 		settingService.set("nginxExe", nginxExe);
-		settingService.set("nginxPath", nginxPath);
 
 		return renderSuccess();
 	}

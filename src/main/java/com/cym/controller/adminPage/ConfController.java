@@ -188,17 +188,11 @@ public class ConfController extends BaseController {
 		}
 
 		try {
-			String rs;
-			String cmd;
-			if (SystemTool.isWindows()) {
-				cmd = nginxExe + " -s reload -c " + nginxPath + " -p " + nginxDir;
-			} else {
-				cmd = nginxExe + " -s reload";
-				if (nginxExe.contains("/") && StrUtil.isNotEmpty(nginxPath) && StrUtil.isNotEmpty(nginxDir)) {
-					cmd = cmd + " -c " + nginxPath + " -p " + nginxDir;
-				}
+			String cmd = nginxExe + " -s reload -c " + nginxPath;
+			if (StrUtil.isNotEmpty(nginxDir)) {
+				cmd += " -p " + nginxDir;
 			}
-			rs = RuntimeUtil.execForStr(cmd);
+			String rs = RuntimeUtil.execForStr(cmd);
 
 			cmd = "<span class='blue'>" + cmd + "</span>";
 			if (StrUtil.isEmpty(rs) || rs.contains("signal process started")) {
@@ -235,9 +229,9 @@ public class ConfController extends BaseController {
 				cmd = "cmd /c start nginx.exe" + " -c " + nginxPath + " -p " + nginxDir;
 				RuntimeUtil.exec(new String[] {}, new File(nginxDir), cmd);
 			} else {
-				cmd = nginxExe;
-				if (nginxExe.contains("/") && StrUtil.isNotEmpty(nginxPath) && StrUtil.isNotEmpty(nginxDir)) {
-					cmd = cmd + " -c " + nginxPath + " -p " + nginxDir;
+				cmd = nginxExe + " -c " + nginxPath;
+				if (StrUtil.isNotEmpty(nginxDir)) {
+					cmd += " -p " + nginxDir;
 				}
 				rs = RuntimeUtil.execForStr(cmd);
 			}
