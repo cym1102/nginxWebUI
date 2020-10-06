@@ -134,6 +134,7 @@ function add() {
 	$("#http2 option:first").prop("selected", true);
 	$("#proxyType option:first").prop("selected", true);
 	$("#proxyUpstreamId option:first").prop("selected", true);
+	$("#passwordId option:first").prop("selected", true);
 
 	$("#pem").val("");
 	$("#pemPath").html("");
@@ -223,7 +224,9 @@ function addOver() {
 	server.key = $("#key").val();
 	server.rewrite = $("#rewrite").val();
 	server.http2 = $("#http2").val();
-
+	debugger
+	server.passwordId = $("#passwordId").val();
+	
 	var protocols = [];
 	$(".protocols").each(function() {
 		if($(this).prop("checked")){
@@ -315,6 +318,7 @@ function edit(id, clone) {
 				$("#proxyType").val(server.proxyType);
 				$("#proxyUpstreamId").val(server.proxyUpstreamId);
 				$("#serverParamJson").val(data.obj.paramJson);
+				$("#passwordId").val(server.passwordId);
 
 				if (server.rewrite != null) {
 					$("#rewrite").val(server.rewrite);

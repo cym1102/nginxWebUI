@@ -16,6 +16,7 @@ import com.cym.model.Basic;
 import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Param;
+import com.cym.model.Password;
 import com.cym.model.Server;
 import com.cym.model.Stream;
 import com.cym.model.Upstream;
@@ -160,6 +161,21 @@ public class ConfService {
 				}
 				ngxParam.addValue(value);
 				ngxBlockServer.addEntry(ngxParam);
+
+				// 密码配置
+				if (StrUtil.isNotEmpty(server.getPasswordId())) {
+					Password password = sqlHelper.findById(server.getPasswordId(), Password.class);
+
+					if (password != null) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("auth_basic \"" + password.getDescr() + "\"");
+						ngxBlockServer.addEntry(ngxParam);
+
+						ngxParam = new NgxParam();
+						ngxParam.addValue("auth_basic_user_file " + password.getPath());
+						ngxBlockServer.addEntry(ngxParam);
+					}
+				}
 
 				// ssl配置
 				if (server.getSsl() == 1) {
@@ -450,7 +466,7 @@ public class ConfService {
 		if (!"none".equals(upstreamServer.getStatus())) {
 			status = upstreamServer.getStatus();
 		}
-		
+
 		if (upstreamServer.getServer().contains(":")) {
 			upstreamServer.setServer("[" + upstreamServer.getServer() + "]");
 		}

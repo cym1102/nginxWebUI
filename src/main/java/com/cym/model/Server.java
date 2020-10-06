@@ -33,7 +33,15 @@ public class Server extends BaseModel {
 	@InitValue("TLSv1 TLSv1.1 TLSv1.2 TLSv1.3")
 	String protocols; // 加密协议
 	
+	String passwordId;
 	
+	
+	public String getPasswordId() {
+		return passwordId;
+	}
+	public void setPasswordId(String passwordId) {
+		this.passwordId = passwordId;
+	}
 	public String getProtocols() {
 		return protocols;
 	}

@@ -269,6 +269,19 @@
 									</div>
 								</div>
 							</div>
+							
+							
+							<div class="layui-form-item">
+								<label class="layui-form-label">${serverStr.pass}</label>
+								<div class="layui-input-inline">
+									<select name="passwordId" id="passwordId" >
+										<option value="">--${serverStr.noPass}--</option>
+										<#list passwordList as password>
+											<option value="${password.id}">${password.name}</option>
+										</#list>
+									</select>
+								</div>
+							</div>
 						</div>
 
 						<div class="layui-col-md8">

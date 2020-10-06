@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.cym.ext.ServerExt;
 import com.cym.model.Cert;
 import com.cym.model.Location;
+import com.cym.model.Password;
 import com.cym.model.Server;
 import com.cym.model.Upstream;
 import com.cym.model.Www;
@@ -80,6 +81,8 @@ public class ServerController extends BaseController {
 		modelAndView.addObject("sort", sort);
 		modelAndView.addObject("direction", direction);
 
+		modelAndView.addObject("passwordList", sqlHelper.findAll(Password.class));
+		
 		modelAndView.addObject("keywords", keywords);
 		modelAndView.setViewName("/adminPage/server/index");
 		return modelAndView;
