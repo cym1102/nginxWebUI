@@ -47,7 +47,7 @@ public class WwwController extends BaseController {
 		}
 
 		try {
-			String dir = InitConfig.home + "wwww/" + www.getName();
+			String dir = InitConfig.home + "www/" + www.getName();
 			FileUtil.del(dir);
 			try {
 				ZipUtil.unzip(www.getDir(), dir);
@@ -84,9 +84,9 @@ public class WwwController extends BaseController {
 
 		// 修改名称, 也要修改文件夹名
 		Www wwwOrg = sqlHelper.findById(www.getId(), Www.class);
-		FileUtil.rename(new File(wwwOrg.getDir()), InitConfig.home + "wwww/" + www.getName(), true);
+		FileUtil.rename(new File(wwwOrg.getDir()), InitConfig.home + "www/" + www.getName(), true);
 
-		www.setDir(InitConfig.home + "wwww/" + www.getName());
+		www.setDir(InitConfig.home + "www/" + www.getName());
 		sqlHelper.insertOrUpdate(www);
 
 		return renderSuccess();
@@ -98,7 +98,7 @@ public class WwwController extends BaseController {
 	public JsonResult update(Www www) {
 
 		try {
-			String dir = InitConfig.home + "wwww/" + www.getName();
+			String dir = InitConfig.home + "www/" + www.getName();
 			FileUtil.del(dir);
 			try {
 				ZipUtil.unzip(www.getDir(), dir);
