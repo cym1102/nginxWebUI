@@ -1,8 +1,11 @@
 package com.cym.controller.adminPage;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,13 +92,18 @@ public class ConfController extends BaseController {
 	@RequestMapping(value = "replace")
 	@ResponseBody
 	public JsonResult replace(String json) {
+		
 		JSONObject jsonObject = JSONUtil.parseObj(json);
-
+		
 		String nginxPath = jsonObject.getStr("nginxPath");
 		String nginxContent = Base64.decodeStr(jsonObject.getStr("nginxContent"), Charset.forName("UTF-8"));
+		nginxContent = URLDecoder.decode(nginxContent,  Charset.forName("UTF-8"));
+		
 		List<String> subContent = jsonObject.getJSONArray("subContent").toList(String.class);
 		for (int i = 0; i < subContent.size(); i++) {
-			subContent.set(i, Base64.decodeStr(subContent.get(i), Charset.forName("UTF-8")));
+			String content = Base64.decodeStr(subContent.get(i), Charset.forName("UTF-8"));
+			content = URLDecoder.decode(nginxContent,  Charset.forName("UTF-8"));
+			subContent.set(i, content);
 		}
 		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
 
@@ -258,17 +266,13 @@ public class ConfController extends BaseController {
 			nginxDir = settingService.get("nginxDir");
 		}
 		try {
-			String rs;
 			String cmd;
 			if (SystemTool.isWindows()) {
-				cmd = "taskkill /im nginx.exe /f";
+				cmd = "taskkill /im /f nginx.exe ";
 			} else {
-				cmd = nginxExe + " -s stop";
-				if (nginxExe.contains("/") && StrUtil.isNotEmpty(nginxDir)) {
-					cmd = cmd + " -p " + nginxDir;
-				}
+				cmd = "pkill nginx";
 			}
-			rs = RuntimeUtil.execForStr(cmd);
+			String rs = RuntimeUtil.execForStr(cmd);
 
 			cmd = "<span class='blue'>" + cmd + "</span>";
 			if (StrUtil.isEmpty(rs) || rs.contains("已终止进程") || rs.toLowerCase().contains("terminated process")) {
@@ -282,6 +286,40 @@ public class ConfController extends BaseController {
 		}
 	}
 
+	
+	@RequestMapping(value = "runCmd")
+	@ResponseBody
+	public JsonResult runCmd(String cmd, String type) {
+		settingService.set(type, cmd); 
+		
+		try {
+			String rs = "";
+			if (cmd.contains(".exe")) {
+				RuntimeUtil.exec(cmd);
+			} else {
+				rs = RuntimeUtil.execForStr(cmd);
+			}
+			
+			cmd = "<span class='blue'>" + cmd + "</span>";
+			if (StrUtil.isEmpty(rs) || rs.contains("已终止进程") || rs.contains("signal process started") || rs.toLowerCase().contains("terminated process")) {
+				return renderSuccess(cmd + "<br>" + m.get("confStr.runSuccess") + "<br>" + rs.replace("\n", "<br>"));
+			} else {
+				return renderError(cmd + "<br>" + m.get("confStr.runFail") + "<br>" + rs.replace("\n", "<br>"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return renderError(m.get("confStr.runFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
+		}
+	}
+
+
+	@RequestMapping(value = "getLastCmd")
+	@ResponseBody
+	public JsonResult getLastCmd(String type) {
+		return renderSuccess(settingService.get(type));
+	}
+	
+	
 	@RequestMapping(value = "loadConf")
 	@ResponseBody
 	public JsonResult loadConf() {
@@ -338,6 +376,19 @@ public class ConfController extends BaseController {
 		} else {
 			return renderSuccess(m.get("confStr.noNeedUpdate"));
 		}
+	}
+
+	@RequestMapping(value = "getKey")
+	@ResponseBody
+	public JsonResult getKey(String key) {
+		return renderSuccess(settingService.get(key));
+	}
+
+	@RequestMapping(value = "setKey")
+	@ResponseBody
+	public JsonResult setKey(String key, String val) {
+		settingService.set(key, val);
+		return renderSuccess();
 	}
 
 }

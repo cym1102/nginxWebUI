@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cym</groupId>
 	<artifactId>nginxWebUI</artifactId>
-	<version>2.1.5</version>
+	<version>2.1.9</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>cn.hutool</groupId>
 			<artifactId>hutool-all</artifactId>
-			<version>5.3.8</version>
+			<version>5.4.4</version>
 		</dependency>
 
 		<dependency>
@@ -61,14 +61,20 @@
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
 		</dependency>
-		
-		
+
+
 		<dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>javase</artifactId>
 			<version>3.3.0</version>
 		</dependency>
-		
+		<!-- https://mvnrepository.com/artifact/com.github.oshi/oshi-core -->
+		<dependency>
+			<groupId>com.github.oshi</groupId>
+			<artifactId>oshi-core</artifactId>
+			<version>5.3.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

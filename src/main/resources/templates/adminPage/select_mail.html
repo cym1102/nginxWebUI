@@ -50,6 +50,14 @@
 				<input type="text" name="mail_pass" id="mail_pass" class="layui-input">
 			</div>
 		</div>
+		
+		<div class="layui-form-item">
+			<label class="layui-form-label">${mailStr.interval}</label>
+			<div class="layui-input-block">
+				<input type="number" name="mail_interval" id="mail_interval" class="layui-input">
+			</div>
+		</div>
+		
 		<div class="layui-form-item" style="text-align: center; margin-top: 20px;">
 			<button type="button" class="layui-btn layui-btn-sm" onclick="selectMailOver()">${commonStr.ok}</button>
 			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="layer.close(mailIndex)">${commonStr.close}</button>

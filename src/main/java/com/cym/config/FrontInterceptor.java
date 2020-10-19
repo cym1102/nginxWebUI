@@ -134,7 +134,7 @@ public class FrontInterceptor implements HandlerInterceptor {
 		try {
 			URI uri = new URI(url);
 			effectiveURI = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
-
+			System.err.println(effectiveURI.toString().replace("http:", "").replace("https:", ""));
 			return effectiveURI.toString().replace("http:", "").replace("https:", "");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -142,4 +142,10 @@ public class FrontInterceptor implements HandlerInterceptor {
 		return null;
 	}
 
+	
+//	private static String getIP(String url) {
+//		String str = "//" + url.split("adminPage")[0].replace("http:", "").replace("https:", "").replace("/", "");
+//		System.err.println(str); 
+//		return str;
+//	}
 }

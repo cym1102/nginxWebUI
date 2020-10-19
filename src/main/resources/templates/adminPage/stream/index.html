@@ -21,6 +21,9 @@
 					<div class="layui-form">
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${stream.add}</button> 
+							
+							<button type="button" class="layui-btn layui-btn-normal" onclick="preview(null,'stream')">${commonStr.preview}</button>
+							
 						</div>
 					</div>
 				</form>
@@ -83,6 +86,7 @@
 	</div>
 
 	<#include '/adminPage/script.html'/>
+	<#include '/adminPage/select_preview.html'/>
 	<script src="${ctx}/js/adminPage/stream/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

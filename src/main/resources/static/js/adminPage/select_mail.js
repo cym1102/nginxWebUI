@@ -17,7 +17,7 @@ function showSelectMail() {
 			
 				$("#mail_user").val(data.obj.mail_user)
 				$("#mail_pass").val(data.obj.mail_pass)
-
+				$("#mail_interval").val(data.obj.mail_interval)
 
 				form.render();
 
@@ -37,7 +37,7 @@ function showSelectMail() {
 
 function selectMailOver() {
 
-	if($("#mail_host").val() == '' || $("#mail_port").val() == '' || $("#mail_from").val() == '' || $("#mail_user").val() == '' || $("#mail_pass").val() == ''){
+	if($("#mail_host").val() == '' || $("#mail_port").val() == '' || $("#mail_from").val() == '' || $("#mail_user").val() == '' || $("#mail_pass").val() == '' || $("#mail_interval").val() == ''){
 		layer.msg(mailStr.noFill);
 		return;
 	}
@@ -51,7 +51,8 @@ function selectMailOver() {
 			mail_ssl: $("#mail_ssl").val(),
 			mail_from: $("#mail_from").val(),
 			mail_user: $("#mail_user").val(),
-			mail_pass: $("#mail_pass").val()
+			mail_pass: $("#mail_pass").val(),
+			mail_interval: $("#mail_interval").val()
 		},
 		dataType: 'json',
 		success: function(data) {

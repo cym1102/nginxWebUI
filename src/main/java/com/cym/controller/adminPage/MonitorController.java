@@ -86,7 +86,6 @@ public class MonitorController extends BaseController {
 		String nginxExe = settingService.get("nginxExe");
 		String nginxDir = settingService.get("nginxDir");
 
-		
 //		if (StrUtil.isEmpty(nginxExe)) {
 //			nginxExe = "nginx";
 //		}
@@ -97,11 +96,10 @@ public class MonitorController extends BaseController {
 
 		Boolean isInit = StrUtil.isNotEmpty(nginxExe);
 		modelAndView.addObject("isInit", isInit.toString());
-		
+
 		modelAndView.setViewName("/adminPage/monitor/index");
 		return modelAndView;
 	}
-	
 
 	@RequestMapping("check")
 	@ResponseBody
@@ -117,7 +115,6 @@ public class MonitorController extends BaseController {
 
 		settingService.set("nginxDir", nginxDir);
 		settingService.set("nginxExe", nginxExe);
-
 		return renderSuccess();
 	}
 

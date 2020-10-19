@@ -6,6 +6,7 @@ import com.cym.model.Basic;
 import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Param;
+import com.cym.model.Password;
 import com.cym.model.Server;
 import com.cym.model.Stream;
 import com.cym.model.Upstream;
@@ -20,10 +21,20 @@ public class AsycPack {
 	List<UpstreamServer> upstreamServerList;
 	List<Stream> streamList;
 	List<Param> paramList;
-
+	List<Password> passwordList;
+	
 	ConfExt confExt;
 
 	String decompose;
+
+
+	public List<Password> getPasswordList() {
+		return passwordList;
+	}
+
+	public void setPasswordList(List<Password> passwordList) {
+		this.passwordList = passwordList;
+	}
 
 	public List<Basic> getBasicList() {
 		return basicList;

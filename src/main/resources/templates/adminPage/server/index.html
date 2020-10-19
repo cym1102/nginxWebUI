@@ -203,6 +203,8 @@
 
 
 								<td>
+									<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="preview('${ext.server.id}','server')">${commonStr.preview}</button>
+									
 									<button type="button" class="layui-btn layui-btn-sm" onclick="edit('${ext.server.id}', false)">${commonStr.edit}</button>
 									<button type="button" class="layui-btn layui-btn-sm" onclick="clone('${ext.server.id}')">${commonStr.clone}</button>
 									<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.server.id}')">${commonStr.del}</button>
@@ -510,11 +512,13 @@
 				<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 			</div>
 		</div>
+		
 	</div>
 
 	<#include '/adminPage/script.html'/>
 	<#include '/adminPage/select_root.html'/>
 	<#include '/adminPage/select_template.html'/>
+	<#include '/adminPage/select_preview.html'/>
 	<script src="${ctx}/js/adminPage/server/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

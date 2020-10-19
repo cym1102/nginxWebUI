@@ -1,10 +1,5 @@
 package com.cym.utils;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
-
-import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.SystemUtil;
 
 public class SystemTool {
@@ -33,17 +28,6 @@ public class SystemTool {
 		return getSystem().equals("Linux");
 	}
 
-	public static Boolean hasNginx() {
-		// 寻找nginx执行文件
-		if (SystemTool.isLinux() || SystemTool.isMacOS()) {
-			String rs = RuntimeUtil.execForStr("which nginx");
-			if (StrUtil.isEmpty(rs)) {
-				return false;
-			}
-		}
-
-		return true;
-	}
 
 
 }

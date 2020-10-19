@@ -18,13 +18,13 @@ function showWindow(title){
 	layer.open({
 		type : 1,
 		title : title,
-		area : [ '400px', '500px' ], // 宽高
+		area : [ '400px', '300px' ], // 宽高
 		content : $('#windowDiv')
 	});
 }
 
 function addOver() {
-	if($("#name").val() == '' || $("#pass").val() == '' || $("#descr").val() == '' ){
+	if($("#name").val() == '' || $("#pass").val() == ''){
 		layer.msg(passwordStr.notFill);
 		return;
 	}

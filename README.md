@@ -48,7 +48,7 @@ sudo apt install nginx
 2.下载最新版发行包jar
 
 ```
-sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.1.5.jar
+sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.1.9.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -56,7 +56,7 @@ sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.1.5.jar
 3.启动程序
 
 ```
-sudo nohup java -jar -Xmx64m nginxWebUI-2.1.5.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+sudo nohup java -jar -Xmx64m nginxWebUI-2.1.9.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
 ```
 
 参数说明(都是非必填)
@@ -82,13 +82,13 @@ apt install docker.io
 2.下载镜像: 
 
 ```
-docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:2.1.5
+docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:latest
 ```
 
 3. 启动容器: 
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:2.1.5 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:latest /bin/bash
 ```
 
 注意: 
@@ -114,7 +114,7 @@ mvn clean package
 2. 使用docker构建镜像
 
 ```
-docker build -t nginxwebui:2.1.5 .
+docker build -t nginxwebui:2.1.9 .
 ```
 
 #### 使用说明

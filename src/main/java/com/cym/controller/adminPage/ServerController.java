@@ -13,11 +13,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.ext.ServerExt;
 import com.cym.model.Cert;
+import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Password;
 import com.cym.model.Server;
+import com.cym.model.Stream;
 import com.cym.model.Upstream;
 import com.cym.model.Www;
+import com.cym.service.ConfService;
 import com.cym.service.ParamService;
 import com.cym.service.ServerService;
 import com.cym.service.SettingService;
@@ -25,8 +28,14 @@ import com.cym.service.UpstreamService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.TelnetUtils;
+import com.github.odiszapc.nginxparser.NgxBlock;
+import com.github.odiszapc.nginxparser.NgxConfig;
+import com.github.odiszapc.nginxparser.NgxDumper;
+import com.github.odiszapc.nginxparser.NgxParam;
 
 import cn.craccd.sqlHelper.bean.Page;
+import cn.craccd.sqlHelper.bean.Sort;
+import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
@@ -42,6 +51,8 @@ public class ServerController extends BaseController {
 	ParamService paramService;
 	@Autowired
 	SettingService settingService;
+	@Autowired
+	ConfService confService;
 
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String sort, String direction, String keywords) {
@@ -82,7 +93,7 @@ public class ServerController extends BaseController {
 		modelAndView.addObject("direction", direction);
 
 		modelAndView.addObject("passwordList", sqlHelper.findAll(Password.class));
-		
+
 		modelAndView.addObject("keywords", keywords);
 		modelAndView.setViewName("/adminPage/server/index");
 		return modelAndView;
@@ -175,7 +186,7 @@ public class ServerController extends BaseController {
 	@ResponseBody
 	public JsonResult importServer(String nginxPath) {
 
-		if (StrUtil.isEmpty(nginxPath) ||  !FileUtil.exist(nginxPath)) {
+		if (StrUtil.isEmpty(nginxPath) || !FileUtil.exist(nginxPath)) {
 			return renderError(m.get("serverStr.fileNotExist"));
 		}
 
@@ -184,7 +195,7 @@ public class ServerController extends BaseController {
 			return renderSuccess(m.get("serverStr.importSuccess"));
 		} catch (Exception e) {
 			e.printStackTrace();
-			
+
 			return renderError(m.get("serverStr.importFail"));
 		}
 	}
@@ -219,10 +230,9 @@ public class ServerController extends BaseController {
 
 	}
 
-	
 	@RequestMapping("editDescr")
 	@ResponseBody
-	public JsonResult editDescr(String id,String descr) {
+	public JsonResult editDescr(String id, String descr) {
 		Server server = new Server();
 		server.setId(id);
 		server.setDescr(descr);
@@ -230,5 +240,42 @@ public class ServerController extends BaseController {
 
 		return renderSuccess();
 	}
-	
+
+	@RequestMapping("preview")
+	@ResponseBody
+	public JsonResult preview(String id, String type) {
+		NgxBlock ngxBlock = null;
+		if (type.equals("server")) {
+			Server server = sqlHelper.findById(id, Server.class);
+			ngxBlock = confService.bulidBlockServer(server);
+		} else if (type.equals("upstream")) {
+			Upstream upstream = sqlHelper.findById(id, Upstream.class);
+			ngxBlock = confService.buildBlockUpstream(upstream);
+		} else if (type.equals("http")) {
+			List<Http> httpList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Http.class);
+			ngxBlock = new NgxBlock();
+			ngxBlock.addValue("http");
+			for (Http http : httpList) {
+				NgxParam ngxParam = new NgxParam();
+				ngxParam.addValue(http.getName().trim() + " " + http.getValue().trim());
+				ngxBlock.addEntry(ngxParam);
+			}
+		} else if (type.equals("stream")) {
+			List<Stream> streamList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
+			ngxBlock = new NgxBlock();
+			ngxBlock.addValue("stream");
+			for (Stream stream : streamList) {
+				NgxParam ngxParam = new NgxParam();
+				ngxParam.addValue(stream.getName() + " " + stream.getValue());
+				ngxBlock.addEntry(ngxParam);
+			}
+		}
+		NgxConfig ngxConfig = new NgxConfig();
+		ngxConfig.addEntry(ngxBlock);
+
+		String conf = new NgxDumper(ngxConfig).dump().replace("};", "  }");
+
+		return renderSuccess(conf);
+	}
+
 }

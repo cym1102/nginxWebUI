@@ -103,6 +103,8 @@
 							</td>
 							<td><input type="checkbox" name="switch" lay-filter="monitor" value="${ext.upstream.id}" ${(ext.upstream.monitor==1)?string( 'checked','')}  lay-text="ON|OFF" lay-skin="switch"></td>
 							<td>
+								<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="preview('${ext.upstream.id}','upstream')">${commonStr.preview}</button>
+									
 								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.upstream.id}')">${commonStr.edit}</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.upstream.id}')">${commonStr.del}</button>
 							</td>
@@ -124,7 +126,7 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label">${upstreamStr.proxyType}</label>
 					<div class="layui-input-inline">
-						<select name="proxyType" id="proxyType">
+						<select name="proxyType" id="proxyType" lay-filter="proxyType">
 							<option value="0">http</option>
 							<option value="1">TCP/UDP</option>
 						</select>
@@ -136,19 +138,20 @@
 					<div class="layui-input-inline">
 						<input type="text" name="name" id="name" class="layui-input">
 					</div>
-
-					<label class="layui-form-label">${upstreamStr.loadTactics}</label>
-					<div class="layui-input-inline">
-						<select name="tactics" id="tactics">
-							<option value="">${upstreamStr.default}</option>
-							<option value="sticky">${upstreamStr.sticky}</option>
-							<option value="ip_hash">${upstreamStr.ipHash}</option>
-							<option value="least_conn">${upstreamStr.leastConn}</option>
-							<option value="least_time">${upstreamStr.leastTime}</option>
-						</select>
+					
+					<div id="tacticsDiv">
+						<label class="layui-form-label">${upstreamStr.loadTactics}</label>
+						<div class="layui-input-inline">
+							<select name="tactics" id="tactics">
+								<option value="">${upstreamStr.default}</option>
+								<option value="sticky">${upstreamStr.sticky}</option>
+								<option value="ip_hash">${upstreamStr.ipHash}</option>
+								<option value="least_conn">${upstreamStr.leastConn}</option>
+								<option value="least_time">${upstreamStr.leastTime}</option>
+							</select>
+						</div>
+						<div class="layui-form-mid layui-word-aux proxyHttp">${upstreamStr.proxyTips}</div>
 					</div>
-					<div class="layui-form-mid layui-word-aux proxyHttp">${upstreamStr.proxyTips}</div>
-
 				</div>
 
 				<div class="layui-form-item">
@@ -262,11 +265,22 @@
 				<button type="button" class="layui-btn" onclick="layer.close(paramIndex)">${commonStr.close}</button>
 			</div>
 		</div>
+		
+		<div class="layui-form" id="previewDiv" style="padding: 15px; display: none">
+			<div class="layui-form-item">
+				<div class="layui-input-inline" style="width: 100%">
+					<textarea type="text" id="preview" name="preview" readonly="readonly" class="layui-textarea" style="height: 500px;">
+					
+					</textarea>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<#include '/adminPage/script.html'/>
 	<#include '/adminPage/select_mail.html'/>
 	<#include '/adminPage/select_template.html'/>
+	<#include '/adminPage/select_preview.html'/>
 	<script src="${ctx}/js/adminPage/upstream/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

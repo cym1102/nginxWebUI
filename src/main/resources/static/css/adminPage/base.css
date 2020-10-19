@@ -27,6 +27,11 @@
 	color: gray;
 	cursor: pointer;
 }
+.layui-icon-set-fill {
+	font-size: 30px;
+	color: gray;
+	cursor: pointer;
+}
 
 textarea {
 	resize: none !important;

@@ -51,15 +51,15 @@ function replace() {
 		layer.msg(confStr.jserror2);
 		return;
 	}
-	var base = new Base64();  
+
 
 	var json = {};
 	json.nginxPath = $("#nginxPath").val();
-	json.nginxContent = base.encode($("#nginxContent").val());
+	json.nginxContent = Base64.encode(encodeURIComponent($("#nginxContent").val()));
 	json.subContent = [];
 	json.subName = [];
 	$("textarea[name='subContent']").each(function(){
-		json.subContent.push(base.encode($(this).val()));
+		json.subContent.push(Base64.encode(encodeURIComponent($(this).val())));
 	})
 	$("input[name='subName']").each(function(){
 		json.subName.push($(this).val());
@@ -276,7 +276,7 @@ function reload() {
 	});
 
 }
-
+/*
 function start(){
 	if ($("#nginxPath").val() == '') {
 		layer.msg(confStr.jserror2);
@@ -388,7 +388,7 @@ function stop(){
 		});
 	}
 }
-
+*/
 
 function saveCmd(){
 	
@@ -459,5 +459,115 @@ function diffUsingJS() {
 		title: false,
 		area : [ '1000px', '700px' ], //宽高
 		content : $('#diffoutput')
+	});
+}
+
+function runCmd(type){
+	
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/conf/getLastCmd',
+		data : {
+			type : type
+		},
+		dataType : 'json',
+		success : function(data) {
+			//debugger;
+			if(data.success){
+				$("#nginxStop").hide();
+				$("#nginxStart").hide();
+				
+				var dir = "";
+				if($("#nginxDir").val()!=''){
+					dir =  " -p " + $("#nginxDir").val();
+				}
+				
+				$("#startNormal").attr("title", $("#nginxExe").val() + " -c " + $("#nginxPath").val() + dir);
+				$("#stopNormal").attr("title", $("#nginxExe").val() + " -s stop" + dir);
+				
+				var cmd = data.obj;
+				if(type == 'cmdStop'){
+					$("#nginxStop").show();
+					$("#stopNormal").prop("checked",true);
+					
+					$("#nginxStop input[name='cmd']").each(function(){
+						if($(this).attr("title") == cmd){
+							$(this).prop("checked",true);
+						}
+					})
+				} else {
+					$("#nginxStart").show();
+					$("#startNormal").prop("checked",true);
+					
+					$("#nginxStart input[name='cmd']").each(function(){
+						if($(this).attr("title") == cmd){
+							$(this).prop("checked",true);
+						}
+					})
+				}
+				
+				form.render();
+				
+				
+				layer.open({
+					type : 1,
+					title: false,
+					area : [ '750px', '300px' ], //宽高
+					content : $('#cmdForm')
+				});
+			}
+		},
+		error : function() {
+			
+		}
+	});
+	
+	
+	
+}
+
+function runCmdOver(){
+	//debugger;
+	var cmd = "";
+	var type = "";
+	$("input[name='cmd']").each(function(){
+		if($(this).prop("checked")){
+			cmd = $(this).attr("title");
+			type = $(this).attr("lang");
+		}
+	})
+	
+	
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/conf/runCmd',
+		data : {
+			cmd : cmd,
+			type : type
+		},
+		dataType : 'json',
+		success : function(data) {
+			layer.closeAll();
+			if (data.success) {
+				layer.open({
+					  type: 0, 
+					  area : [ '810px', '400px' ],
+					  content: data.obj
+				});
+			} else {
+				layer.open({
+					  type: 0, 
+					  area : [ '810px', '400px' ],
+					  content: data.msg
+				});
+			}
+			
+			setTimeout(() => {
+				nginxStatus();
+			}, 3000);
+		},
+		error : function() {
+			
+		}
 	});
 }

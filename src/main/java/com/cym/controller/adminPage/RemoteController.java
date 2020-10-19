@@ -226,7 +226,7 @@ public class RemoteController extends BaseController {
 
 		Tree tree = new Tree();
 		tree.setName(m.get("remoteStr.local"));
-		tree.setValue(m.get("remoteStr.local"));
+		tree.setValue("local");
 
 		treeList.add(0, tree);
 
@@ -328,7 +328,7 @@ public class RemoteController extends BaseController {
 		}
 
 		for (String remoteToId : remoteId) {
-			if (remoteToId.equals("local")) {
+			if (remoteToId.equals("local") || remoteToId.equals("本地") ) {
 				setAsycPack(json);
 			} else {
 				Remote remoteTo = sqlHelper.findById(remoteToId, Remote.class);

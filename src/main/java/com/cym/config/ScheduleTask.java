@@ -1,9 +1,11 @@
 package com.cym.config;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -106,10 +108,26 @@ public class ScheduleTask {
 		// 删掉7天前日志文件(zip)
 		long time = System.currentTimeMillis();
 		File dir = new File(InitConfig.home + "log/");
-
 		for (File file : dir.listFiles()) {
 			if (file.getName().contains("access.") && file.getName().endsWith(".zip")) {
 				String dateStr = file.getName().replace("access.", "").replace(".zip", "");
+				DateTime date = null;
+				if (dateStr.length() != 10) {
+					FileUtil.del(file);
+				} else {
+					date = DateUtil.parse(dateStr, "yyyy-MM-dd");
+					if (time - date.getTime() > TimeUnit.DAYS.toMillis(8)) {
+						FileUtil.del(file);
+					}
+				}
+			}
+		}
+
+		// 删除7天前的备份
+		dir = new File(InitConfig.home + "bak/");
+		for (File file : dir.listFiles()) {
+			if (file.getName().contains("nginx.conf.") && (file.getName().endsWith(".zip") || file.getName().endsWith(".bak"))) {
+				String dateStr = file.getName().replace("nginx.conf.", "").replace(".zip", "").replace(".bak", "");
 				DateTime date = null;
 				if (dateStr.length() != 10) {
 					FileUtil.del(file);
@@ -126,12 +144,15 @@ public class ScheduleTask {
 	// 检查远程服务器
 	@Scheduled(cron = "0/30 * * * * ?")
 	public void nginxTasks() {
-		// System.err.println("检查nginx运行");
-
 		String lastNginxSend = settingService.get("lastNginxSend");
 		String mail = settingService.get("mail");
 		String nginxMonitor = settingService.get("nginxMonitor");
-		if ("true".equals(nginxMonitor) && StrUtil.isNotEmpty(mail) && (StrUtil.isEmpty(lastNginxSend) || System.currentTimeMillis() - Long.parseLong(lastNginxSend) > TimeUnit.MINUTES.toMillis(30))) {
+		String mailInterval =  settingService.get("mail_interval");
+		if(StrUtil.isEmpty(mailInterval)) {
+			mailInterval = "30";
+		}
+		
+		if ("true".equals(nginxMonitor) && StrUtil.isNotEmpty(mail) && (StrUtil.isEmpty(lastNginxSend) || System.currentTimeMillis() - Long.parseLong(lastNginxSend) > TimeUnit.MINUTES.toMillis(Integer.parseInt(mailInterval)))) {
 			List<String> names = new ArrayList<>();
 
 			// 测试远程
@@ -147,7 +168,7 @@ public class ScheduleTask {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					
+
 					names.add(remote.getDescr() + "[" + remote.getIp() + ":" + remote.getPort() + "]");
 				}
 			}
@@ -171,11 +192,14 @@ public class ScheduleTask {
 	// 检查节点情况
 	@Scheduled(cron = "0/30 * * * * ?")
 	public void nodeTasks() {
-		// System.err.println("检查节点情况");
-
 		String lastUpstreamSend = settingService.get("lastUpstreamSend");
 		String mail = settingService.get("mail");
 		String upstreamMonitor = settingService.get("upstreamMonitor");
+		String mailInterval =  settingService.get("mail_interval");
+		if(StrUtil.isEmpty(mailInterval)) {
+			mailInterval = "30";
+		}
+			
 		if ("true".equals(upstreamMonitor)) {
 
 			List<UpstreamServer> upstreamServers = upstreamService.getAllServer();
@@ -185,7 +209,7 @@ public class ScheduleTask {
 				if (!TelnetUtils.isRunning(upstreamServer.getServer(), upstreamServer.getPort())) {
 					Upstream upstream = sqlHelper.findById(upstreamServer.getUpstreamId(), Upstream.class);
 					if (upstream.getMonitor() == 1 && StrUtil.isNotEmpty(mail)
-							&& (StrUtil.isEmpty(lastUpstreamSend) || System.currentTimeMillis() - Long.parseLong(lastUpstreamSend) > TimeUnit.MINUTES.toMillis(30))) {
+							&& (StrUtil.isEmpty(lastUpstreamSend) || System.currentTimeMillis() - Long.parseLong(lastUpstreamSend) > TimeUnit.MINUTES.toMillis(Integer.parseInt(mailInterval)))) {
 						ips.add(upstreamServer.getServer() + ":" + upstreamServer.getPort());
 					}
 					upstreamServer.setMonitorStatus(0);
@@ -197,7 +221,14 @@ public class ScheduleTask {
 			}
 
 			if (ips.size() > 0) {
-				sendMailUtils.sendMailSmtp(mail, m.get("mailStr.upstreamFail"), m.get("mailStr.upstreamTips") + StrUtil.join(" ", ips));
+				String dateStr = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+				if (settingService.get("lang") != null && settingService.get("lang").equals("en_US")) {
+
+					SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH);
+					dateStr = dateFormat.format(new Date());
+				}
+
+				sendMailUtils.sendMailSmtp(mail, m.get("mailStr.upstreamFail"), m.get("mailStr.upstreamTips") + StrUtil.join(" ", ips) + "\r\n" + dateStr);
 				settingService.set("lastUpstreamSend", String.valueOf(System.currentTimeMillis()));
 			}
 		}

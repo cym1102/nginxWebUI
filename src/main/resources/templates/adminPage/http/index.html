@@ -36,6 +36,9 @@ input[name='param']{
 							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${httpStr.add}</button>
 							
 							<button type="button" class="layui-btn" onclick="guide()">${httpStr.guide}</button>
+							
+							<button type="button" class="layui-btn layui-btn-normal" onclick="preview(null,'http')">${commonStr.preview}</button>
+									
 						</div>
 					</div>
 				</form>
@@ -180,6 +183,7 @@ input[name='param']{
 	</div>
 
 	<#include '/adminPage/script.html'/>
+	<#include '/adminPage/select_preview.html'/>
 	<script src="${ctx}/js/adminPage/http/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

@@ -224,7 +224,7 @@ function addOver() {
 	server.key = $("#key").val();
 	server.rewrite = $("#rewrite").val();
 	server.http2 = $("#http2").val();
-	debugger
+	//debugger
 	server.passwordId = $("#passwordId").val();
 	
 	var protocols = [];

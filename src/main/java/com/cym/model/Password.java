@@ -9,8 +9,17 @@ public class Password extends BaseModel {
 	String pass;
 	String path;
 	String descr;
+	String pathStr;
 	
 	
+	public String getPathStr() {
+		return pathStr;
+	}
+
+	public void setPathStr(String pathStr) {
+		this.pathStr = pathStr;
+	}
+
 	public String getDescr() {
 		return descr;
 	}

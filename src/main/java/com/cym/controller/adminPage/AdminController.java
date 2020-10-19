@@ -104,20 +104,22 @@ public class AdminController extends BaseController {
 		map.put("mail_user", settingService.get("mail_user"));
 		map.put("mail_pass", settingService.get("mail_pass"));
 		map.put("mail_ssl", settingService.get("mail_ssl"));
-
+		map.put("mail_interval", settingService.get("mail_interval"));
+		
 		return renderSuccess(map);
 	}
 
 	@RequestMapping("updateMailSetting")
 	@ResponseBody
-	public JsonResult updateMailSetting(String mailType, String mail_user, String mail_host, String mail_port, String mail_from, String mail_pass, String mail_ssl) {
+	public JsonResult updateMailSetting(String mailType, String mail_user, String mail_host, String mail_port, String mail_from, String mail_pass, String mail_ssl,String mail_interval) {
 		settingService.set("mail_host", mail_host);
 		settingService.set("mail_port", mail_port);
 		settingService.set("mail_user", mail_user);
 		settingService.set("mail_from", mail_from);
 		settingService.set("mail_pass", mail_pass);
 		settingService.set("mail_ssl", mail_ssl);
-
+		settingService.set("mail_interval", mail_interval);
+		
 		return renderSuccess();
 	}
 

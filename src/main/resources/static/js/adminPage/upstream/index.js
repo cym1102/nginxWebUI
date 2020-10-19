@@ -22,6 +22,15 @@ $(function() {
 		});
 	});
 
+	form.on('select(proxyType)', function(data) {
+		if(data.value == 0){
+			$("#tacticsDiv").show();
+		}else{
+			$("#tacticsDiv").hide();
+		}
+	});
+
+proxyType
 })
 
 
@@ -141,11 +150,18 @@ function edit(id) {
 			if (data.success) {
 				var ext = data.obj;
 				var list = ext.upstreamServerList;
-
+				
 				$("#id").val(ext.upstream.id);
 				$("#name").val(ext.upstream.name);
 				$("#tactics").val(ext.upstream.tactics);
 				$("#proxyType").val(ext.upstream.proxyType);
+				
+				if(ext.upstream.proxyType == 0){
+					$("#tacticsDiv").show();
+				}else{
+					$("#tacticsDiv").hide();
+				}
+				
 				$("#upstreamParamJson").val(ext.paramJson);
 
 				var html = ``;

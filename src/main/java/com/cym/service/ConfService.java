@@ -13,6 +13,7 @@ import com.cym.ext.AsycPack;
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
 import com.cym.model.Basic;
+import com.cym.model.Cert;
 import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Param;
@@ -136,172 +137,7 @@ public class ConfService {
 					continue;
 				}
 
-				NgxBlock ngxBlockServer = new NgxBlock();
-				ngxBlockServer.addValue("server");
-
-				// 监听域名
-				if (StrUtil.isNotEmpty(server.getServerName())) {
-					ngxParam = new NgxParam();
-					ngxParam.addValue("server_name " + server.getServerName());
-					ngxBlockServer.addEntry(ngxParam);
-				}
-
-				// 监听端口
-				ngxParam = new NgxParam();
-				String value = "listen " + server.getListen();
-				if (server.getDef() == 1) {
-					value += " default";
-				}
-
-				if (server.getSsl() != null && server.getSsl() == 1) {
-					value += " ssl";
-					if (server.getHttp2() != null && server.getHttp2() == 1) {
-						value += " http2";
-					}
-				}
-				ngxParam.addValue(value);
-				ngxBlockServer.addEntry(ngxParam);
-
-				// 密码配置
-				if (StrUtil.isNotEmpty(server.getPasswordId())) {
-					Password password = sqlHelper.findById(server.getPasswordId(), Password.class);
-
-					if (password != null) {
-						ngxParam = new NgxParam();
-						ngxParam.addValue("auth_basic \"" + password.getDescr() + "\"");
-						ngxBlockServer.addEntry(ngxParam);
-
-						ngxParam = new NgxParam();
-						ngxParam.addValue("auth_basic_user_file " + password.getPath());
-						ngxBlockServer.addEntry(ngxParam);
-					}
-				}
-
-				// ssl配置
-				if (server.getSsl() == 1) {
-					if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getKey())) {
-						ngxParam = new NgxParam();
-						ngxParam.addValue("ssl_certificate " + server.getPem());
-						ngxBlockServer.addEntry(ngxParam);
-
-						ngxParam = new NgxParam();
-						ngxParam.addValue("ssl_certificate_key " + server.getKey());
-						ngxBlockServer.addEntry(ngxParam);
-
-						if (StrUtil.isNotEmpty(server.getProtocols())) {
-							ngxParam = new NgxParam();
-							ngxParam.addValue("ssl_protocols " + server.getProtocols());
-							ngxBlockServer.addEntry(ngxParam);
-						}
-
-					}
-
-					// https添加80端口重写
-					if (server.getRewrite() == 1) {
-						ngxParam = new NgxParam();
-						ngxParam.addValue("listen 80");
-						ngxBlockServer.addEntry(ngxParam);
-
-						NgxBlock ngxBlock = new NgxBlock();
-						ngxBlock.addValue("if ($scheme = http)");
-						ngxParam = new NgxParam();
-						ngxParam.addValue("return 301 https://$host$request_uri");
-						ngxBlock.addEntry(ngxParam);
-
-						ngxBlockServer.addEntry(ngxBlock);
-
-					}
-				}
-
-				// 自定义参数
-				List<Param> paramList = paramService.getListByTypeId(server.getId(), "server");
-				for (Param param : paramList) {
-					setSameParam(param, ngxBlockServer);
-				}
-
-				List<Location> locationList = serverService.getLocationByServerId(server.getId());
-
-				// location参数配置
-				for (Location location : locationList) {
-					NgxBlock ngxBlockLocation = new NgxBlock();
-					if (location.getType() == 0 || location.getType() == 2) { // location或负载均衡
-						// 添加location
-						ngxBlockLocation.addValue("location");
-						ngxBlockLocation.addValue(location.getPath());
-
-						if (location.getType() == 0) {
-							ngxParam = new NgxParam();
-							ngxParam.addValue("proxy_pass " + location.getValue());
-							ngxBlockLocation.addEntry(ngxParam);
-						} else if (location.getType() == 2) {
-							Upstream upstream = sqlHelper.findById(location.getUpstreamId(), Upstream.class);
-							if (upstream != null) {
-								ngxParam = new NgxParam();
-								ngxParam.addValue("proxy_pass http://" + upstream.getName() + (location.getUpstreamPath() != null ? location.getUpstreamPath() : ""));
-								ngxBlockLocation.addEntry(ngxParam);
-							}
-						}
-
-						if (location.getHeader() == 1) { // 设置header
-							ngxParam = new NgxParam();
-							ngxParam.addValue("proxy_set_header Host $host:$server_port");
-							ngxBlockLocation.addEntry(ngxParam);
-
-							ngxParam = new NgxParam();
-							ngxParam.addValue("proxy_set_header X-Real-IP $remote_addr");
-							ngxBlockLocation.addEntry(ngxParam);
-
-							ngxParam = new NgxParam();
-							ngxParam.addValue("proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for");
-							ngxBlockLocation.addEntry(ngxParam);
-
-							ngxParam = new NgxParam();
-							ngxParam.addValue("proxy_set_header X-Forwarded-Proto $scheme");
-							ngxBlockLocation.addEntry(ngxParam);
-						}
-
-						if (server.getSsl() == 1 && server.getRewrite() == 1) { // redirect http转https
-							ngxParam = new NgxParam();
-							ngxParam.addValue("proxy_redirect http:// https://");
-							ngxBlockLocation.addEntry(ngxParam);
-						}
-
-					} else if (location.getType() == 1) { // 静态html
-						ngxBlockLocation.addValue("location");
-						ngxBlockLocation.addValue(location.getPath());
-
-						if (location.getRootType() != null && location.getRootType().equals("alias")) {
-							ngxParam = new NgxParam();
-							ngxParam.addValue("alias " + location.getRootPath());
-							ngxBlockLocation.addEntry(ngxParam);
-						} else {
-							ngxParam = new NgxParam();
-							ngxParam.addValue("root " + location.getRootPath());
-							ngxBlockLocation.addEntry(ngxParam);
-						}
-
-						if (StrUtil.isNotEmpty(location.getRootPage())) {
-							ngxParam = new NgxParam();
-							ngxParam.addValue("index " + location.getRootPage());
-							ngxBlockLocation.addEntry(ngxParam);
-						}
-
-					} else if (location.getType() == 3) { // 空白location
-
-						ngxBlockLocation.addValue("location");
-						ngxBlockLocation.addValue(location.getPath());
-
-					}
-
-					// 自定义参数
-					paramList = paramService.getListByTypeId(location.getId(), "location");
-					for (Param param : paramList) {
-						setSameParam(param, ngxBlockLocation);
-					}
-
-					ngxBlockServer.addEntry(ngxBlockLocation);
-
-				}
+				NgxBlock ngxBlockServer = bulidBlockServer(server);
 				hasHttp = true;
 
 				// 是否需要分解
@@ -347,28 +183,8 @@ public class ConfService {
 			// 添加upstream
 			upstreams = upstreamService.getListByProxyType(1);
 			for (Upstream upstream : upstreams) {
-				NgxBlock ngxBlockServer = new NgxBlock();
-				ngxBlockServer.addValue("upstream " + upstream.getName());
-
-				if (StrUtil.isNotEmpty(upstream.getTactics())) {
-					ngxParam = new NgxParam();
-					ngxParam.addValue(upstream.getTactics());
-					ngxBlockServer.addEntry(ngxParam);
-				}
-
-				List<UpstreamServer> upstreamServers = upstreamService.getUpstreamServers(upstream.getId());
-				for (UpstreamServer upstreamServer : upstreamServers) {
-					ngxParam = new NgxParam();
-					ngxParam.addValue("server " + buildNodeStr(upstreamServer));
-					ngxBlockServer.addEntry(ngxParam);
-				}
-
-				// 自定义参数
-				List<Param> paramList = paramService.getListByTypeId(upstream.getId(), "upstream");
-				for (Param param : paramList) {
-					setSameParam(param, ngxBlockServer);
-				}
-
+				NgxBlock ngxBlockServer = buildBlockUpstream(upstream);
+				
 				if (decompose) {
 					addConfFile(confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
 
@@ -378,7 +194,7 @@ public class ConfService {
 				} else {
 					ngxBlockStream.addEntry(ngxBlockServer);
 				}
-
+				
 				hasStream = true;
 			}
 
@@ -389,31 +205,7 @@ public class ConfService {
 					continue;
 				}
 
-				NgxBlock ngxBlockServer = new NgxBlock();
-				ngxBlockServer.addValue("server");
-
-				// 监听端口
-				ngxParam = new NgxParam();
-				String value = "listen " + server.getListen();
-				if (server.getProxyType() == 2) {
-					value += " udp reuseport";
-				}
-				ngxParam.addValue(value);
-				ngxBlockServer.addEntry(ngxParam);
-
-				// 指向负载均衡
-				Upstream upstream = sqlHelper.findById(server.getProxyUpstreamId(), Upstream.class);
-				if (upstream != null) {
-					ngxParam = new NgxParam();
-					ngxParam.addValue("proxy_pass " + upstream.getName());
-					ngxBlockServer.addEntry(ngxParam);
-				}
-
-				// 自定义参数
-				List<Param> paramList = paramService.getListByTypeId(server.getId(), "server");
-				for (Param param : paramList) {
-					setSameParam(param, ngxBlockServer);
-				}
+				NgxBlock ngxBlockServer = bulidBlockServer(server); 
 
 				if (decompose) {
 					addConfFile(confExt, "stream." + server.getListen() + ".conf", ngxBlockServer);
@@ -442,6 +234,237 @@ public class ConfService {
 		}
 
 		return null;
+	}
+
+	public NgxBlock buildBlockUpstream(Upstream upstream) {
+		NgxParam ngxParam = null;
+
+		NgxBlock ngxBlockServer = new NgxBlock();
+		
+		ngxBlockServer.addValue("upstream " + upstream.getName());
+
+		if (StrUtil.isNotEmpty(upstream.getTactics())) {
+			ngxParam = new NgxParam();
+			ngxParam.addValue(upstream.getTactics());
+			ngxBlockServer.addEntry(ngxParam);
+		}
+
+		List<UpstreamServer> upstreamServers = upstreamService.getUpstreamServers(upstream.getId());
+		for (UpstreamServer upstreamServer : upstreamServers) {
+			ngxParam = new NgxParam();
+			ngxParam.addValue("server " + buildNodeStr(upstreamServer));
+			ngxBlockServer.addEntry(ngxParam);
+		}
+
+		// 自定义参数
+		List<Param> paramList = paramService.getListByTypeId(upstream.getId(), "upstream");
+		for (Param param : paramList) {
+			setSameParam(param, ngxBlockServer);
+		}
+
+	
+		return ngxBlockServer;
+	}
+
+	public NgxBlock bulidBlockServer(Server server) {
+		NgxParam ngxParam = null;
+
+		NgxBlock ngxBlockServer = new NgxBlock();
+		if (server.getProxyType() == 0) {
+			ngxBlockServer.addValue("server");
+
+			// 监听域名
+			if (StrUtil.isNotEmpty(server.getServerName())) {
+				ngxParam = new NgxParam();
+				ngxParam.addValue("server_name " + server.getServerName());
+				ngxBlockServer.addEntry(ngxParam);
+			}
+
+			// 监听端口
+			ngxParam = new NgxParam();
+			String value = "listen " + server.getListen();
+			if (server.getDef() == 1) {
+				value += " default";
+			}
+
+			if (server.getSsl() != null && server.getSsl() == 1) {
+				value += " ssl";
+				if (server.getHttp2() != null && server.getHttp2() == 1) {
+					value += " http2";
+				}
+			}
+			ngxParam.addValue(value);
+			ngxBlockServer.addEntry(ngxParam);
+
+			// 密码配置
+			if (StrUtil.isNotEmpty(server.getPasswordId())) {
+				Password password = sqlHelper.findById(server.getPasswordId(), Password.class);
+
+				if (password != null) {
+					ngxParam = new NgxParam();
+					ngxParam.addValue("auth_basic \"" + password.getDescr() + "\"");
+					ngxBlockServer.addEntry(ngxParam);
+
+					ngxParam = new NgxParam();
+					ngxParam.addValue("auth_basic_user_file " + password.getPath());
+					ngxBlockServer.addEntry(ngxParam);
+				}
+			}
+
+			// ssl配置
+			if (server.getSsl() == 1) {
+				if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getKey())) {
+					ngxParam = new NgxParam();
+					ngxParam.addValue("ssl_certificate " + server.getPem());
+					ngxBlockServer.addEntry(ngxParam);
+
+					ngxParam = new NgxParam();
+					ngxParam.addValue("ssl_certificate_key " + server.getKey());
+					ngxBlockServer.addEntry(ngxParam);
+
+					if (StrUtil.isNotEmpty(server.getProtocols())) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("ssl_protocols " + server.getProtocols());
+						ngxBlockServer.addEntry(ngxParam);
+					}
+
+				}
+
+				// https添加80端口重写
+				if (server.getRewrite() == 1) {
+					ngxParam = new NgxParam();
+					ngxParam.addValue("listen 80");
+					ngxBlockServer.addEntry(ngxParam);
+
+					NgxBlock ngxBlock = new NgxBlock();
+					ngxBlock.addValue("if ($scheme = http)");
+					ngxParam = new NgxParam();
+					ngxParam.addValue("return 301 https://$host$request_uri");
+					ngxBlock.addEntry(ngxParam);
+
+					ngxBlockServer.addEntry(ngxBlock);
+
+				}
+			}
+
+			// 自定义参数
+			List<Param> paramList = paramService.getListByTypeId(server.getId(), "server");
+			for (Param param : paramList) {
+				setSameParam(param, ngxBlockServer);
+			}
+
+			List<Location> locationList = serverService.getLocationByServerId(server.getId());
+
+			// location参数配置
+			for (Location location : locationList) {
+				NgxBlock ngxBlockLocation = new NgxBlock();
+				if (location.getType() == 0 || location.getType() == 2) { // location或负载均衡
+					// 添加location
+					ngxBlockLocation.addValue("location");
+					ngxBlockLocation.addValue(location.getPath());
+
+					if (location.getType() == 0) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("proxy_pass " + location.getValue());
+						ngxBlockLocation.addEntry(ngxParam);
+					} else if (location.getType() == 2) {
+						Upstream upstream = sqlHelper.findById(location.getUpstreamId(), Upstream.class);
+						if (upstream != null) {
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_pass http://" + upstream.getName() + (location.getUpstreamPath() != null ? location.getUpstreamPath() : ""));
+							ngxBlockLocation.addEntry(ngxParam);
+						}
+					}
+
+					if (location.getHeader() == 1) { // 设置header
+						ngxParam = new NgxParam();
+						ngxParam.addValue("proxy_set_header Host $host:$server_port");
+						ngxBlockLocation.addEntry(ngxParam);
+
+						ngxParam = new NgxParam();
+						ngxParam.addValue("proxy_set_header X-Real-IP $remote_addr");
+						ngxBlockLocation.addEntry(ngxParam);
+
+						ngxParam = new NgxParam();
+						ngxParam.addValue("proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for");
+						ngxBlockLocation.addEntry(ngxParam);
+
+						ngxParam = new NgxParam();
+						ngxParam.addValue("proxy_set_header X-Forwarded-Proto $scheme");
+						ngxBlockLocation.addEntry(ngxParam);
+					}
+
+					if (server.getSsl() == 1 && server.getRewrite() == 1) { // redirect http转https
+						ngxParam = new NgxParam();
+						ngxParam.addValue("proxy_redirect http:// https://");
+						ngxBlockLocation.addEntry(ngxParam);
+					}
+
+				} else if (location.getType() == 1) { // 静态html
+					ngxBlockLocation.addValue("location");
+					ngxBlockLocation.addValue(location.getPath());
+
+					if (location.getRootType() != null && location.getRootType().equals("alias")) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("alias " + location.getRootPath());
+						ngxBlockLocation.addEntry(ngxParam);
+					} else {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("root " + location.getRootPath());
+						ngxBlockLocation.addEntry(ngxParam);
+					}
+
+					if (StrUtil.isNotEmpty(location.getRootPage())) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("index " + location.getRootPage());
+						ngxBlockLocation.addEntry(ngxParam);
+					}
+
+				} else if (location.getType() == 3) { // 空白location
+
+					ngxBlockLocation.addValue("location");
+					ngxBlockLocation.addValue(location.getPath());
+
+				}
+
+				// 自定义参数
+				paramList = paramService.getListByTypeId(location.getId(), "location");
+				for (Param param : paramList) {
+					setSameParam(param, ngxBlockLocation);
+				}
+
+				ngxBlockServer.addEntry(ngxBlockLocation);
+
+			}
+
+		} else {
+			ngxBlockServer.addValue("server");
+
+			// 监听端口
+			ngxParam = new NgxParam();
+			String value = "listen " + server.getListen();
+			if (server.getProxyType() == 2) {
+				value += " udp reuseport";
+			}
+			ngxParam.addValue(value);
+			ngxBlockServer.addEntry(ngxParam);
+
+			// 指向负载均衡
+			Upstream upstream = sqlHelper.findById(server.getProxyUpstreamId(), Upstream.class);
+			if (upstream != null) {
+				ngxParam = new NgxParam();
+				ngxParam.addValue("proxy_pass " + upstream.getName());
+				ngxBlockServer.addEntry(ngxParam);
+			}
+
+			// 自定义参数
+			List<Param> paramList = paramService.getListByTypeId(server.getId(), "server");
+			for (Param param : paramList) {
+				setSameParam(param, ngxBlockServer);
+			}
+		}
+
+		return ngxBlockServer;
 	}
 
 	/**
@@ -554,6 +577,7 @@ public class ConfService {
 	public AsycPack getAsycPack() {
 		AsycPack asycPack = new AsycPack();
 		asycPack.setBasicList(sqlHelper.findAll(Basic.class));
+
 		asycPack.setHttpList(sqlHelper.findAll(Http.class));
 		List<Server> serverList = sqlHelper.findAll(Server.class);
 		for (Server server : serverList) {
@@ -566,6 +590,15 @@ public class ConfService {
 			}
 		}
 		asycPack.setServerList(serverList);
+
+		List<Password> passwordList = sqlHelper.findAll(Password.class);
+		for (Password password : passwordList) {
+			if (StrUtil.isNotEmpty(password.getPath()) && FileUtil.exist(password.getPath())) {
+				password.setPathStr(FileUtil.readString(password.getPath(), StandardCharsets.UTF_8));
+			}
+
+		}
+		asycPack.setPasswordList(passwordList);
 
 		asycPack.setLocationList(sqlHelper.findAll(Location.class));
 		asycPack.setUpstreamList(sqlHelper.findAll(Upstream.class));
@@ -601,6 +634,7 @@ public class ConfService {
 	@Transactional
 	public void setAsycPack(AsycPack asycPack) {
 		// 不要同步Cert表
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Password.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Basic.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Http.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Server.class);
@@ -618,6 +652,7 @@ public class ConfService {
 		sqlHelper.insertAll(asycPack.getUpstreamServerList());
 		sqlHelper.insertAll(asycPack.getStreamList());
 		sqlHelper.insertAll(asycPack.getParamList());
+		sqlHelper.insertAll(asycPack.getPasswordList());
 
 		for (Server server : asycPack.getServerList()) {
 			if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getPemStr())) {
@@ -625,6 +660,12 @@ public class ConfService {
 			}
 			if (StrUtil.isNotEmpty(server.getKey()) && StrUtil.isNotEmpty(server.getKeyStr())) {
 				FileUtil.writeString(server.getKeyStr(), server.getKey(), StandardCharsets.UTF_8);
+			}
+		}
+
+		for (Password password : asycPack.getPasswordList()) {
+			if (StrUtil.isNotEmpty(password.getPath()) && StrUtil.isNotEmpty(password.getPathStr())) {
+				FileUtil.writeString(password.getPathStr(), password.getPath(), StandardCharsets.UTF_8);
 			}
 		}
 
