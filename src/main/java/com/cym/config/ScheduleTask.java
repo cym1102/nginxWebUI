@@ -104,7 +104,7 @@ public class ScheduleTask {
 			logInfoService.buildDataGroup(InitConfig.home + "log/access." + date + ".zip");
 			logInfoService.clearDb();
 		}
-		
+
 		// 删除多余文件
 		delCache();
 	}
@@ -113,16 +113,18 @@ public class ScheduleTask {
 		// 删掉7天前日志文件(zip)
 		long time = System.currentTimeMillis();
 		File dir = new File(InitConfig.home + "log/");
-		for (File file : dir.listFiles()) {
-			if (file.getName().contains("access.") && file.getName().endsWith(".zip")) {
-				String dateStr = file.getName().replace("access.", "").replace(".zip", "");
-				DateTime date = null;
-				if (dateStr.length() != 10) {
-					FileUtil.del(file);
-				} else {
-					date = DateUtil.parse(dateStr, "yyyy-MM-dd");
-					if (time - date.getTime() > TimeUnit.DAYS.toMillis(8)) {
+		if (dir.exists()) {
+			for (File file : dir.listFiles()) {
+				if (file.getName().contains("access.") && file.getName().endsWith(".zip")) {
+					String dateStr = file.getName().replace("access.", "").replace(".zip", "");
+					DateTime date = null;
+					if (dateStr.length() != 10) {
 						FileUtil.del(file);
+					} else {
+						date = DateUtil.parse(dateStr, "yyyy-MM-dd");
+						if (time - date.getTime() > TimeUnit.DAYS.toMillis(8)) {
+							FileUtil.del(file);
+						}
 					}
 				}
 			}
@@ -130,16 +132,18 @@ public class ScheduleTask {
 
 		// 删除7天前的备份
 		dir = new File(InitConfig.home + "bak/");
-		for (File file : dir.listFiles()) {
-			if (file.getName().contains("nginx.conf.") && (file.getName().endsWith(".zip") || file.getName().endsWith(".bak"))) {
-				String dateStr = file.getName().replace("nginx.conf.", "").replace(".zip", "").replace(".bak", "").split("_")[0];
-				DateTime date = null;
-				if (dateStr.length() != 10) {
-					FileUtil.del(file);
-				} else {
-					date = DateUtil.parse(dateStr, "yyyy-MM-dd");
-					if (time - date.getTime() > TimeUnit.DAYS.toMillis(8)) {
+		if (dir.exists()) {
+			for (File file : dir.listFiles()) {
+				if (file.getName().contains("nginx.conf.") && (file.getName().endsWith(".zip") || file.getName().endsWith(".bak"))) {
+					String dateStr = file.getName().replace("nginx.conf.", "").replace(".zip", "").replace(".bak", "").split("_")[0];
+					DateTime date = null;
+					if (dateStr.length() != 10) {
 						FileUtil.del(file);
+					} else {
+						date = DateUtil.parse(dateStr, "yyyy-MM-dd");
+						if (time - date.getTime() > TimeUnit.DAYS.toMillis(8)) {
+							FileUtil.del(file);
+						}
 					}
 				}
 			}
@@ -152,12 +156,13 @@ public class ScheduleTask {
 		String lastNginxSend = settingService.get("lastNginxSend");
 		String mail = settingService.get("mail");
 		String nginxMonitor = settingService.get("nginxMonitor");
-		String mailInterval =  settingService.get("mail_interval");
-		if(StrUtil.isEmpty(mailInterval)) {
+		String mailInterval = settingService.get("mail_interval");
+		if (StrUtil.isEmpty(mailInterval)) {
 			mailInterval = "30";
 		}
-		
-		if ("true".equals(nginxMonitor) && StrUtil.isNotEmpty(mail) && (StrUtil.isEmpty(lastNginxSend) || System.currentTimeMillis() - Long.parseLong(lastNginxSend) > TimeUnit.MINUTES.toMillis(Integer.parseInt(mailInterval)))) {
+
+		if ("true".equals(nginxMonitor) && StrUtil.isNotEmpty(mail)
+				&& (StrUtil.isEmpty(lastNginxSend) || System.currentTimeMillis() - Long.parseLong(lastNginxSend) > TimeUnit.MINUTES.toMillis(Integer.parseInt(mailInterval)))) {
 			List<String> names = new ArrayList<>();
 
 			// 测试远程
@@ -200,11 +205,11 @@ public class ScheduleTask {
 		String lastUpstreamSend = settingService.get("lastUpstreamSend");
 		String mail = settingService.get("mail");
 		String upstreamMonitor = settingService.get("upstreamMonitor");
-		String mailInterval =  settingService.get("mail_interval");
-		if(StrUtil.isEmpty(mailInterval)) {
+		String mailInterval = settingService.get("mail_interval");
+		if (StrUtil.isEmpty(mailInterval)) {
 			mailInterval = "30";
 		}
-			
+
 		if ("true".equals(upstreamMonitor)) {
 
 			List<UpstreamServer> upstreamServers = upstreamService.getAllServer();
