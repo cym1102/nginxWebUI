@@ -104,7 +104,12 @@ public class ScheduleTask {
 			logInfoService.buildDataGroup(InitConfig.home + "log/access." + date + ".zip");
 			logInfoService.clearDb();
 		}
+		
+		// 删除多余文件
+		delCache();
+	}
 
+	public void delCache() {
 		// 删掉7天前日志文件(zip)
 		long time = System.currentTimeMillis();
 		File dir = new File(InitConfig.home + "log/");
@@ -127,7 +132,7 @@ public class ScheduleTask {
 		dir = new File(InitConfig.home + "bak/");
 		for (File file : dir.listFiles()) {
 			if (file.getName().contains("nginx.conf.") && (file.getName().endsWith(".zip") || file.getName().endsWith(".bak"))) {
-				String dateStr = file.getName().replace("nginx.conf.", "").replace(".zip", "").replace(".bak", "");
+				String dateStr = file.getName().replace("nginx.conf.", "").replace(".zip", "").replace(".bak", "").split("_")[0];
 				DateTime date = null;
 				if (dateStr.length() != 10) {
 					FileUtil.del(file);

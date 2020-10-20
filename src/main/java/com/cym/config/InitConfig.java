@@ -39,7 +39,8 @@ public class InitConfig {
 	SettingService settingService;
 	@Autowired
 	BasicService basicService;
-
+	@Autowired
+	ScheduleTask scheduleTask;
 	@Autowired
 	SqlHelper sqlHelper;
 
@@ -147,7 +148,10 @@ public class InitConfig {
 				sqlHelper.updateById(stream);
 			}
 		}
-
+		
+		
+		// 删除多余备份文件
+		scheduleTask.delCache();
 	}
 
 	/**

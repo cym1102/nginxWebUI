@@ -102,7 +102,7 @@ public class ConfController extends BaseController {
 		List<String> subContent = jsonObject.getJSONArray("subContent").toList(String.class);
 		for (int i = 0; i < subContent.size(); i++) {
 			String content = Base64.decodeStr(subContent.get(i), Charset.forName("UTF-8"));
-			content = URLDecoder.decode(nginxContent,  Charset.forName("UTF-8"));
+			content = URLDecoder.decode(content,  Charset.forName("UTF-8"));
 			subContent.set(i, content);
 		}
 		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
@@ -147,9 +147,9 @@ public class ConfController extends BaseController {
 			if (SystemTool.isWindows()) {
 				cmd = nginxExe + " -t -c " + nginxPath + " -p " + nginxDir;
 			} else {
-				cmd = nginxExe + " -t";
-				if (nginxExe.contains("/")) {
-					cmd = cmd + " -c " + nginxPath + " -p " + nginxDir;
+				cmd = nginxExe + " -t -c " + nginxPath;
+				if (StrUtil.isNotEmpty(nginxDir)) {
+					cmd += " -p " + nginxDir;
 				}
 			}
 			rs = RuntimeUtil.execForStr(cmd);
