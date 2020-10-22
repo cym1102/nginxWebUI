@@ -559,14 +559,14 @@ public class ConfService {
 		FileUtil.mkdir(confd);
 
 		// 写入主文件
-		FileUtil.writeString(nginxContent, nginxPath, StandardCharsets.UTF_8);
+		FileUtil.writeString(nginxContent, nginxPath.replace(" ", "_"), StandardCharsets.UTF_8);
 		String decompose = settingService.get("decompose");
 
 		if ("true".equals(decompose)) {
 			// 写入conf.d文件
 			if (subContent != null) {
 				for (int i = 0; i < subContent.size(); i++) {
-					String tagert = nginxPath.replace("nginx.conf", "conf.d/" + subName.get(i));
+					String tagert = nginxPath.replace("nginx.conf", "conf.d/" + subName.get(i)).replace(" ", "_");
 					FileUtil.writeString(subContent.get(i), tagert, StandardCharsets.UTF_8); // 清空
 				}
 			}

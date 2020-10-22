@@ -417,6 +417,10 @@ function selectRootCustom(inputId){
 	rootSelect.selectOne(function callBack(val){
 		$("#" + inputId).val(val);
 		saveCmd();
+		
+		if(inputId == 'nginxPath'){
+			loadOrg();
+		}
 	});
 }
 
