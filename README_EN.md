@@ -44,7 +44,7 @@ sudo apt install nginx
 2.Download the latest release of the distribution jar
 
 ```
-sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.2.1.jar
+sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.2.3.jar
 ```
 
 With a new version, you just need to change the version in the path
@@ -52,7 +52,7 @@ With a new version, you just need to change the version in the path
 3.Start program
 
 ```
-sudo nohup java -jar -Xmx64m nginxWebUI-2.2.1.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+sudo nohup java -jar -Xmx64m nginxWebUI-2.2.3.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
 ```
 
 Parameter description (both non-required)
@@ -62,6 +62,14 @@ Parameter description (both non-required)
 --server.port Occupied port, default starts at port 8080
 
 --project.home Project profile directory for database files, certificate files, logs, etc. Default is /home/nginxwebui/
+
+--spring.database.type=mysql Use other databases, not filled with native SQLite, options include mysql and postgresql
+
+--spring.datasource.url=jdbc:mysql://ip:port/nginxwebui Databases url
+
+--spring.datasource.username=root  Databases user
+
+--spring.datasource.password=pass  Databases password
 
 Note that the command ends with an & to indicate that the project is running in the background
 
@@ -78,13 +86,13 @@ sudo apt install docker.io
 2.Download images:
 
 ```
-docker pull registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:2.2.1
+docker pull cym1102/nginxwebui:2.2.3
 ```
 
 3.start container
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  registry.cn-hangzhou.aliyuncs.com/cym1102/nginxwebui:2.2.1 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.2.3 /bin/bash
 ```
 
 notice: 

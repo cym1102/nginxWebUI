@@ -43,6 +43,9 @@ input[name='param']{
 						<tr>
 							<th>${commonStr.name}</th>
 							<th>${templateStr.paramCount}</th>
+							<th>
+								${templateStr.def}
+							</th>
 							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
@@ -51,6 +54,18 @@ input[name='param']{
 						<tr>
 							<td>${ext.template.name}</td>
 							<td>${ext.count}</td>
+							<td>${ext.template.def}
+								<#if ext.template.def == 'server'>
+									${menuStr.server}
+								</#if>
+								<#if ext.template.def == 'location'>
+									${menuStr.location}
+								</#if>
+								<#if ext.template.def == 'upstream'>
+									${menuStr.upstream}
+								</#if>
+							
+							</td>
 							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.template.id}')">${commonStr.edit}</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.template.id}')">${commonStr.del}</button>
@@ -65,13 +80,23 @@ input[name='param']{
 
 	<div style="height: 0px; width: 0px; overflow: hidden;">
 		<!-- 弹出框 -->
-		<div id="windowDiv" style="display: none;padding: 15px;"> 
+		<div id="windowDiv" class="layui-form" style="display: none;padding: 15px;"> 
 			<input type="hidden" id="id" name="id">
-		
+			
 			<div class="layui-form-item">
 				<label class="layui-form-label">${templateStr.name}</label>
 				<div class="layui-input-inline">
 					<input type="text" name="name" id="name" class="layui-input">
+				</div>
+				
+				<label class="layui-form-label">${templateStr.def}</label>
+				<div class="layui-input-inline">
+					<select name="def" id="def">
+						<option value="">${commonStr.null}</option>
+						<option value="server">${menuStr.server}</option>
+						<option value="location">${menuStr.location}</option>
+						<option value="upstream">${menuStr.upstream}</option>
+					</select>
 				</div>
 			</div>
 			
@@ -79,6 +104,7 @@ input[name='param']{
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">${templateStr.addParam}</button>
 			</div>
 			
+		
 			
 			<div class="layui-form-item">
 				<table class="layui-table">

@@ -59,6 +59,7 @@
 									<#if cert.dnsType=='dp'> ${certStr.dnsPod} </#if> 
 									<#if cert.dnsType=='ali'> ${certStr.aliDns} </#if>
 									<#if cert.dnsType=='cf'> Cloudflare </#if>
+									<#if cert.dnsType=='gd'> Godaddy </#if>
 								</#if>
 							</td>
 							
@@ -130,6 +131,7 @@
 								<option value="ali">${certStr.aliDns}</option>
 								<option value="dp">${certStr.dnsPod}</option>
 								<option value="cf">Cloudflare </option>
+								<option value="gd">Godaddy </option>
 							</select>
 						</div>
 					</div>
@@ -180,6 +182,22 @@
 							<label class="layui-form-label">CF_Key</label>
 							<div class="layui-input-block">
 								<input type="text" name="cfKey" id="cfKey" class="layui-input">
+							</div>
+						</div>
+					</div>
+					
+					<div id="gd">
+						<div class="layui-form-item">
+							<label class="layui-form-label">GD_Key</label>
+							<div class="layui-input-block">
+								<input type="text" name="gdKey" id="gdKey" class="layui-input">
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">GD_Secret</label>
+							<div class="layui-input-block">
+								<input type="text" name="gdSecret" id="gdSecret" class="layui-input">
 							</div>
 						</div>
 					</div>

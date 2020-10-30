@@ -45,18 +45,7 @@ public class MainTest {
 
 	@Test
 	public void testStartUp() throws InterruptedException {
-//		for(int i=0;i<100;i++) {
-//			LogInfo logInfo = new LogInfo();
-//			logInfo.setRemoteAddr("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-//		
-//			sqlHelper.insert(logInfo);
-//		}
-		
-//		sqlHelper.deleteByQuery(new ConditionAndWrapper(), LogInfo.class);
-//		jdbcTemplate.execute("vacuum;");
-		
-		String mail = settingService.get("mail");
-		sendMailUtils.sendMailSmtp(mail, m.get("mailStr.upstreamFail"), m.get("mailStr.upstreamFail") + StrUtil.join(" ", "127.0.0.1"));
+
 	}
 
 	@AfterAll

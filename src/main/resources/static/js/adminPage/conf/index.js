@@ -75,7 +75,6 @@ function replace() {
 		success : function(data) {
 			if (data.success) {
 				layer.msg(data.obj);
-				//loadConf();
 				loadOrg();
 
 			} else {
@@ -90,7 +89,6 @@ function replace() {
 
 
 function loadConf() {
-	//layer.load();
 	$.ajax({
 		type : 'POST',
 		url : ctx + '/adminPage/conf/loadConf',
@@ -276,119 +274,7 @@ function reload() {
 	});
 
 }
-/*
-function start(){
-	if ($("#nginxPath").val() == '') {
-		layer.msg(confStr.jserror2);
-		return;
-	}
-	
-	if ($("#nginxExe").val() == '') {
-		layer.msg(confStr.jserror3);
-		return;
-	}
-	
-	if($("#nginxExe").val().indexOf('/') > -1 || $("#nginxExe").val().indexOf('\\') > -1){
-		if ($("#nginxDir").val() == '') {
-			layer.msg(confStr.jserror4);
-			return;
-		}
-	}
-	
-	if(confirm(confStr.confirmStart)){
-		layer.load();
-		$.ajax({
-			type : 'POST',
-			url : ctx + '/adminPage/conf/start',
-			data : {
-				nginxPath : $("#nginxPath").val(),
-				nginxExe : $("#nginxExe").val(),
-				nginxDir : $("#nginxDir").val()
-			},
-			dataType : 'json',
-			success : function(data) {
-				layer.closeAll();
-				if (data.success) {
-					layer.open({
-						  type: 0, 
-						  area : [ '810px', '400px' ],
-						  content: data.obj
-					});
-				} else {
-					layer.open({
-						  type: 0, 
-						  area : [ '810px', '400px' ],
-						  content: data.msg
-					});
-				}
-				
-				setTimeout(() => {
-					nginxStatus();
-				}, 1000);
-			},
-			error : function() {
-				layer.closeAll();
-				layer.alert(commonStr.errorInfo);
-			}
-		});
-	}
-}
 
-
-
-function stop(){
-	if ($("#nginxExe").val() == '') {
-		layer.msg(confStr.jserror3);
-		return;
-	}
-	
-	if($("#nginxExe").val().indexOf('/') > -1 || $("#nginxExe").val().indexOf('\\') > -1){
-		if ($("#nginxDir").val() == '') {
-			layer.msg(confStr.jserror4);
-			return;
-		}
-	}
-	
-	
-	if(confirm(confStr.confirmStop)){
-		layer.load();
-		$.ajax({
-			type : 'POST',
-			url : ctx + '/adminPage/conf/stop',
-			data : {
-				nginxExe : $("#nginxExe").val(),
-				nginxDir : $("#nginxDir").val()
-			},
-			dataType : 'json',
-			success : function(data) {
-				layer.closeAll();
-				if (data.success) {
-					layer.open({
-						  type: 0, 
-						  area : [ '810px', '400px' ],
-						  content: data.obj
-					});
-				} else {
-					layer.open({
-						  type: 0, 
-						  area : [ '810px', '400px' ],
-						  content: data.msg
-					});
-				}
-				
-				setTimeout(() => {
-					nginxStatus();
-				}, 3000);
-				
-			},
-			error : function() {
-				layer.closeAll();
-				layer.alert(commonStr.errorInfo);
-			}
-		});
-	}
-}
-*/
 
 function saveCmd(){
 	
@@ -427,7 +313,7 @@ function selectRootCustom(inputId){
 
 function diffUsingJS() {
     // get the baseText and newText values from the two textboxes, and split them into lines
-    var base = difflib.stringAsLines($("#org ").val());
+    var base = difflib.stringAsLines($("#org").val());
     var newtxt = difflib.stringAsLines($("#nginxContent").val());
 
     // create a SequenceMatcher instance that diffs the two sets of lines
@@ -447,12 +333,12 @@ function diffUsingJS() {
     // build the diff view and add it to the current DOM
 	diffoutputdiv.html("");
     diffoutputdiv.append(diffview.buildView({
-        baseTextLines: base,
+        baseTextLines: base ,
         newTextLines: newtxt,
         opcodes: opcodes,
         // set the display titles for each resource
-        baseTextName: confStr.target,
-        newTextName: confStr.build,
+        baseTextName: confStr.build,
+        newTextName: confStr.target,
         //contextSize: contextSize,
         viewType: 1
     }));

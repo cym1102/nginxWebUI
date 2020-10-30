@@ -59,12 +59,13 @@
 								</div>
 								
 								<div class="layui-card-header">
-									${monitorStr.diskUse}&nbsp;&nbsp;<span id="memContent" style="color: teal;"></span>
+									${monitorStr.diskUse}&nbsp;&nbsp;<span id="diskContent" style="color: teal;"></span>
 								</div>
 								
 								<div class="layui-card-body">
 									<#list list as disk>
-										<span class="layui-breadcrumb"><a href="javacript:">${disk.path} ( ${disk.usableSpace} / ${disk.totalSpace} )</a></span>
+										${disk.usedSpace}
+										<span class="layui-breadcrumb"><a href="javacript:">${disk.path} (${disk.useSpace} / ${disk.totalSpace})</a></span>
 										<div class="layui-progress" lay-showpercent="true" style="margin-top: 20px;margin-bottom: 10px;">
 											<div class="layui-progress-bar layui-bg-blue" lay-percent="${disk.percent}"></div>
 										</div>
@@ -75,56 +76,11 @@
 						
 						<!-- 广告 -->
 						<div class="layui-col-md6">
-							<div class="layui-card">
-								<div class="layui-card-header">
-									阿里云特惠
-								</div>
-
-								<div class="layui-card-body">
-									<a target="_blank" class="ali" href="https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=m8hvjkvi">${monitorStr.join}</a>
-									
-								</div>
+							<div class="layui-card" id="netDiv" style="height: 500px;">
+								
+								
+								
 							</div>
-							
-							<div class="layui-card">
-								<div class="layui-card-header">
-									阿里最新活动
-								</div>
-
-								<div class="layui-card-body">
-									<a target="_blank" class="ali" href="https://www.aliyun.com/activity?userCode=m8hvjkvi">${monitorStr.join}</a>
-								</div>
-							</div>
-							
-							<div class="layui-card">
-								<div class="layui-card-header">
-									阿里云爆款特惠
-								</div>
-
-								<div class="layui-card-body">
-									<a target="_blank" class="ali" href="https://www.aliyun.com/activity/daily/bestoffer?userCode=m8hvjkvi">${monitorStr.join}</a>
-								</div>
-							</div>
-							
-							
-							<div class="layui-card">
-								<div class="layui-card-header">
-									云服务器ECS老用户升级四重礼遇
-								</div>
-								<div class="layui-card-body">
-									<a target="_blank" class="ali" href="https://www.aliyun.com/daily-act/ecs/care?userCode=m8hvjkvi">${monitorStr.join}</a>
-								</div>
-							</div>
-						
-							<div class="layui-card">
-								<div class="layui-card-header">
-									云数据库小站专享秒杀价低至1折
-								</div>
-								<div class="layui-card-body">
-									<a target="_blank" class="ali" href="https://www.aliyun.com/activity/ambassador/database?userCode=m8hvjkvi">${monitorStr.join}</a>
-								</div>
-							</div>
-						
 						</div>
 					</div>
 				</div>
@@ -151,16 +107,6 @@
 			
 			
 			<div id="addForm" style="display: none;">
-				<!-- <div class="layui-form-item">
-					<label class="layui-form-label long">nginx.conf ${commonStr.path}</label>
-					<div class="layui-input-inline">
-						<input type="text" id="nginxPath" class="layui-input" value="${nginxPath}">
-					</div>
-					<div class="layui-input-inline short">
-						<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxPath')"></i>   
-					</div>
-					<div class="layui-form-mid layui-word-aux">nginx.conf ${commonStr.path}</div>
-				</div> -->
 	
 				<div class="layui-form-item">
 					<label class="layui-form-label long">nginx ${monitorStr.exe}</label>
@@ -170,7 +116,6 @@
 					<div class="layui-input-inline short">
 						<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxExe')"></i>   
 					</div>
-					<!-- <div class="layui-form-mid layui-word-aux">${monitorStr.exeTips}</div> -->
 				</div>
 	
 				<div class="layui-form-item">
@@ -181,7 +126,6 @@
 					<div class="layui-input-inline short">
 						<i class="layui-icon layui-icon-export" onclick="selectRoot('nginxDir')"></i>   
 					</div>
-					<!-- <div class="layui-form-mid layui-word-aux">${monitorStr.dirTips}</div> -->
 				</div>
 	
 				<div class="layui-form-item" style="text-align: center;">

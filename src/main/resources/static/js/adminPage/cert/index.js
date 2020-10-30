@@ -26,7 +26,7 @@ $(function() {
 		var upload = layui.upload;
 		upload.render({
 			elem: '#pemBtn',
-			url: '/upload/',
+			url: '/adminPage/main/upload/',
 			accept: 'file',
 			done: function(res) {
 				// 上传完毕回调
@@ -43,7 +43,7 @@ $(function() {
 
 		upload.render({
 			elem: '#keyBtn',
-			url: '/upload/',
+			url: '/adminPage/main/upload/',
 			accept: 'file',
 			done: function(res) {
 				// 上传完毕回调
@@ -73,16 +73,9 @@ function checkDnsType(value) {
 	$("#ali").hide();
 	$("#dp").hide();
 	$("#cf").hide();
+	$("#gd").hide();
 		
-	if (value == 'ali') {
-		$("#ali").show();
-	}
-	if (value == 'dp') {
-		$("#dp").show();
-	}
-	if (value == 'cf') {
-		$("#cf").show();
-	}
+	$("#" + value).show();
 }
 
 function checkType(value) {
@@ -107,6 +100,8 @@ function add() {
 	$("#dpKey").val("");
 	$("#cfEmail").val("");
 	$("#cfKey").val("");
+	$("#gdKey").val("");
+	$("#gdSecret").val("");
 	$("#pem").val("");
 	$("#key").val("");
 	$("#pemPath").html("");
@@ -143,6 +138,8 @@ function edit(id) {
 				$("#dpKey").val(cert.dpKey);
 				$("#cfEmail").val(cert.cfEmail);
 				$("#cfKey").val(cert.cfKey);
+				$("#gdKey").val(cert.gdKey);
+				$("#gdSecret").val(cert.gdSecret);
 				$("#pem").val(cert.pem);
 				$("#key").val(cert.key);
 				$("#pemPath").html(cert.pem);
@@ -194,6 +191,12 @@ function addOver() {
 		}
 		if ($("#dnsType").val() == 'cf') {
 			if ($("#cfEmail").val() == '' || $("#cfKey").val() == '') {
+				layer.msg(commonStr.IncompleteEntry);
+				return;
+			}
+		}
+		if ($("#dnsType").val() == 'gd') {
+			if ($("#gdKey").val() == '' || $("#gdSecret").val() == '') {
 				layer.msg(commonStr.IncompleteEntry);
 				return;
 			}

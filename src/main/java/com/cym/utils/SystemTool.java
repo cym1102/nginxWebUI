@@ -28,6 +28,16 @@ public class SystemTool {
 		return getSystem().equals("Linux");
 	}
 
-
+	public static boolean hasRoot() {
+		if (SystemTool.isLinux()) {
+			String user = System.getProperties().getProperty(SystemUtil.USER_NAME);
+			if ("root".equals(user)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
 
 }

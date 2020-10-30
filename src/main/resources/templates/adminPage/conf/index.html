@@ -83,23 +83,23 @@ input[type='radio']{
 						</div>
 
 						<div style="margin-top: 20px;">
-							<!-- <div class="layui-inline">
-								<button type="button" class="layui-btn layui-btn-normal" onclick="loadOrg()">${confStr.readFile}</button>
-							</div> -->
 							<div class="layui-inline">
-								<button type="button" class="layui-btn layui-btn-normal" onclick="replace()">${confStr.replaceFile}</button>
+								<button type="button" class="layui-btn" onclick="diffUsingJS()">${confStr.compare}</button>
 							</div>
+							
 							<div class="layui-inline">
 								<button type="button" class="layui-btn layui-btn-normal" onclick="check()">${confStr.verifyFile}</button>
 							</div>
+							
+							<div class="layui-inline">
+								<button type="button" class="layui-btn layui-btn-normal" onclick="replace()">${confStr.replaceFile}</button>
+							</div>
+							
 							<div class="layui-inline">
 								<button type="button" class="layui-btn layui-btn-normal" onclick="reload()">${confStr.reload}</button>
 							</div>
 
-							<div class="layui-inline">
-								<button type="button" class="layui-btn" onclick="diffUsingJS()">${confStr.compare}</button>
-							</div>
-
+							
 							<div class="layui-inline">
 								<label class="layui-form-label" style="width: 120px;">${confStr.decompose}</label>
 							</div>

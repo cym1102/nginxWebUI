@@ -213,7 +213,7 @@ function autoUpdate(url){
 		loaded =	layer.load();
 		$.ajax({
 			type : 'POST',
-			url : ctx + '/autoUpdate',
+			url : ctx + '/adminPage/main/autoUpdate',
 			data:{
 				url : url
 			},

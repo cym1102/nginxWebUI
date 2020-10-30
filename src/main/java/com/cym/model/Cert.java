@@ -31,8 +31,25 @@ public class Cert extends BaseModel {
 	String aliSecret;
 	String cfEmail;
 	String cfKey;
+	String gdKey;
+	String gdSecret;
 	
-	
+	public String getGdKey() {
+		return gdKey;
+	}
+
+	public void setGdKey(String gdKey) {
+		this.gdKey = gdKey;
+	}
+
+	public String getGdSecret() {
+		return gdSecret;
+	}
+
+	public void setGdSecret(String gdSecret) {
+		this.gdSecret = gdSecret;
+	}
+
 	public String getCfEmail() {
 		return cfEmail;
 	}

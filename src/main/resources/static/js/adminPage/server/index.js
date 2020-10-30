@@ -33,7 +33,7 @@ $(function() {
 		var upload = layui.upload;
 		upload.render({
 			elem: '#pemBtn',
-			url: '/upload/',
+			url: '/adminPage/main/upload/',
 			accept: 'file',
 			done: function(res) {
 				// 上传完毕回调
@@ -50,7 +50,7 @@ $(function() {
 
 		upload.render({
 			elem: '#keyBtn',
-			url: '/upload/',
+			url: '/adminPage/main/upload/',
 			accept: 'file',
 			done: function(res) {
 				// 上传完毕回调

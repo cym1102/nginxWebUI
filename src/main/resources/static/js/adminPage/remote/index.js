@@ -1,5 +1,6 @@
 var parentId;
 var groupParentId
+
 $(function(){
 	// 加载组件
 	layui.config({
@@ -88,7 +89,15 @@ $(function(){
 		});
 	});   
 	
+	form.on('select(cmd)', function(data){
+		if(data.value=='reload'){
+			$("#intervalDiv").show();
+		}else{
+			$("#intervalDiv").hide();
+		}
+	});   
 	
+	layer.load();
 	layui.config({
 		base: ctx + 'lib/layui/exts/treeTable/'
 	}).extend({
@@ -105,7 +114,7 @@ $(function(){
 					is_checkbox : false,
 					end : function(e) {
 						console.dir(e);
-						// checkPermission();
+						layer.closeAll();
 						form.render();
 					},
 					cols : [{
@@ -542,6 +551,11 @@ function cmdGroup(){
 
 
 function cmdOver(){
+	if($("input[name='remoteId']").val()==''){
+		layer.msg(remoteStr.noSelect);
+		return;
+	}
+	
 	
 	layer.load();
 	$.ajax({

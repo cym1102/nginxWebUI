@@ -21,7 +21,7 @@ public class BasicService {
 
 	public Long buildOrder() {
 
-		Basic basic = sqlHelper.findOneByQuery(new Sort("seq", Direction.DESC), Basic.class);
+		Basic basic = sqlHelper.findOneByQuery(new Sort().add(Basic::getSeq, Direction.DESC), Basic.class);
 		if (basic != null) {
 			return basic.getSeq() + 1;
 		}
@@ -33,7 +33,7 @@ public class BasicService {
 	public void setSeq(String basicId, Integer seqAdd) {
 		Basic basic = sqlHelper.findById(basicId, Basic.class);
 
-		List<Basic> basicList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Basic.class);
+		List<Basic> basicList = sqlHelper.findAll(new Sort(Basic::getSeq, Direction.ASC), Basic.class);
 		if (basicList.size() > 0) {
 			Basic tagert = null;
 			if (seqAdd < 0) {
@@ -65,7 +65,7 @@ public class BasicService {
 	}
 
 	public boolean contain(String content) {
-		return sqlHelper.findCountByQuery(new ConditionOrWrapper().like("value", content).like("name", content), Basic.class) > 0;
+		return sqlHelper.findCountByQuery(new ConditionOrWrapper().like(Basic::getValue, content).like(Basic::getName, content), Basic.class) > 0;
 	}
 
 }

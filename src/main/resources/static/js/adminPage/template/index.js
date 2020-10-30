@@ -1,6 +1,7 @@
 function add() {
 	$("#id").val("");
 	$("#name").val("");
+	$("#def option:first").prop("selected", true);
 	$("#paramList").html("");
 
 	form.render();
@@ -40,6 +41,7 @@ function addOver() {
 		data: {
 			id: $("#id").val(),
 			name : $("#name").val(),
+			def : $("#def").val(), 
 			paramJson: JSON.stringify(templateParams),
 		},
 		dataType: 'json',
@@ -72,7 +74,8 @@ function edit(id) {
 
 				$("#id").val(ext.template.id);
 				$("#name").val(ext.template.name);
-
+				$("#def").val(ext.template.def);
+				
 				var html = ``;
 				for (let i = 0; i < list.length; i++) {
 					var param = list[i];

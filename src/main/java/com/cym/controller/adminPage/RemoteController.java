@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,16 +16,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cym.config.ScheduleTask;
-import com.cym.controller.MainController;
 import com.cym.ext.AsycPack;
+import com.cym.ext.ConfExt;
+import com.cym.ext.ConfFile;
 import com.cym.ext.Tree;
 import com.cym.model.Group;
 import com.cym.model.Remote;
@@ -37,14 +37,13 @@ import com.cym.utils.JsonResult;
 import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
 
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
-import cn.hutool.captcha.CaptchaUtil;
-import cn.hutool.captcha.ShearCaptcha;
-import cn.hutool.captcha.generator.RandomGenerator;
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
 @Controller
@@ -260,9 +259,9 @@ public class RemoteController extends BaseController {
 
 	@RequestMapping("cmdOver")
 	@ResponseBody
-	public JsonResult cmdOver(String[] remoteId, String cmd) {
+	public JsonResult cmdOver(String[] remoteId, String cmd, Integer interval) {
 		if (remoteId == null || remoteId.length == 0) {
-			return renderSuccess("未选择服务器");
+			return renderSuccess(m.get("remoteStr.noSelect"));
 		}
 
 		StringBuilder rs = new StringBuilder();
@@ -274,6 +273,9 @@ public class RemoteController extends BaseController {
 				}
 				if (cmd.contentEquals("reload")) {
 					jsonResult = confController.reload(null, null, null);
+				}
+				if (cmd.contentEquals("replace")) {
+					jsonResult = confController.replace(confController.getReplaceJson());
 				}
 				if (cmd.contentEquals("start")) {
 					jsonResult = confController.start(null, null, null);
@@ -305,6 +307,14 @@ public class RemoteController extends BaseController {
 				}
 			}
 			rs.append("<br>");
+
+			if (interval != null) {
+				try {
+					Thread.sleep(interval * 1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		return renderSuccess(rs.toString());
@@ -328,7 +338,7 @@ public class RemoteController extends BaseController {
 		}
 
 		for (String remoteToId : remoteId) {
-			if (remoteToId.equals("local") || remoteToId.equals("本地") ) {
+			if (remoteToId.equals("local") || remoteToId.equals("本地")) {
 				setAsycPack(json);
 			} else {
 				Remote remoteTo = sqlHelper.findById(remoteToId, Remote.class);

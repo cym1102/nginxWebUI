@@ -3,6 +3,7 @@ MAINTAINER Chenyimeng "cym1102@qq.com"
 RUN apt-get clean && apt-get update &&\
 	apt-get install -y nginx &&\
 	apt-get install -y openjdk-8-jre &&\
+	apt-get install -y net-tools &&\
 	apt-get install -y curl &&\
 	apt-get install -y wget
 COPY target/nginxWebUI-*.jar /home/nginxWebUI.jar

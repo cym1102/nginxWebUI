@@ -119,6 +119,8 @@ public class CertController extends BaseController {
 					dnsType = "dns_dp";
 				} else if (cert.getDnsType().equals("cf")) {
 					dnsType = "dns_cf";
+				} else if (cert.getDnsType().equals("gd")) {
+					dnsType = "dns_gd";
 				}
 
 				cmd = InitConfig.acmeSh + " --issue --dns " + dnsType + " -d " + cert.getDomain();
@@ -185,6 +187,11 @@ public class CertController extends BaseController {
 			list.add("SAVED_CF_Email='" + cert.getCfEmail() + "'");
 			list.add("SAVED_CF_Key='" + cert.getCfKey() + "'");
 		}
+		if (cert.getDnsType().equals("gd")) {
+			list.add("SAVED_GD_Key='" + cert.getGdKey() + "'");
+			list.add("SAVED_GD_Secret='" + cert.getGdSecret() + "'");
+		}
+		
 		list.add("USER_PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin'");
 
 		FileUtil.writeLines(list, new File(InitConfig.acmeSh.replace("/acme.sh", "/account.conf")), Charset.defaultCharset());
