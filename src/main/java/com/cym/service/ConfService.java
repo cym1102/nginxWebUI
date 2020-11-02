@@ -184,7 +184,7 @@ public class ConfService {
 			upstreams = upstreamService.getListByProxyType(1);
 			for (Upstream upstream : upstreams) {
 				NgxBlock ngxBlockServer = buildBlockUpstream(upstream);
-				
+
 				if (decompose) {
 					addConfFile(confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
 
@@ -194,7 +194,7 @@ public class ConfService {
 				} else {
 					ngxBlockStream.addEntry(ngxBlockServer);
 				}
-				
+
 				hasStream = true;
 			}
 
@@ -205,7 +205,7 @@ public class ConfService {
 					continue;
 				}
 
-				NgxBlock ngxBlockServer = bulidBlockServer(server); 
+				NgxBlock ngxBlockServer = bulidBlockServer(server);
 
 				if (decompose) {
 					addConfFile(confExt, "stream." + server.getListen() + ".conf", ngxBlockServer);
@@ -240,7 +240,7 @@ public class ConfService {
 		NgxParam ngxParam = null;
 
 		NgxBlock ngxBlockServer = new NgxBlock();
-		
+
 		ngxBlockServer.addValue("upstream " + upstream.getName());
 
 		if (StrUtil.isNotEmpty(upstream.getTactics())) {
@@ -262,7 +262,6 @@ public class ConfService {
 			setSameParam(param, ngxBlockServer);
 		}
 
-	
 		return ngxBlockServer;
 	}
 
@@ -332,10 +331,11 @@ public class ConfService {
 
 				// https添加80端口重写
 				if (server.getRewrite() == 1) {
-					ngxParam = new NgxParam();
-					ngxParam.addValue("listen 80");
-					ngxBlockServer.addEntry(ngxParam);
-
+					if (StrUtil.isNotEmpty(server.getRewriteListen())) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("listen " + server.getRewriteListen());
+						ngxBlockServer.addEntry(ngxParam);
+					}
 					NgxBlock ngxBlock = new NgxBlock();
 					ngxBlock.addValue("if ($scheme = http)");
 					ngxParam = new NgxParam();

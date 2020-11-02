@@ -13,6 +13,8 @@ public class Server extends BaseModel {
 	
 	@InitValue("0")
 	Integer rewrite; // 0否 1是
+	String rewriteListen; // 转跳监听
+	
 	@InitValue("0")
 	Integer ssl; // 0 否 1是
 	@InitValue("0")
@@ -133,6 +135,12 @@ public class Server extends BaseModel {
 
 	public void setRewrite(Integer rewrite) {
 		this.rewrite = rewrite;
+	}
+	public String getRewriteListen() {
+		return rewriteListen;
+	}
+	public void setRewriteListen(String rewriteListen) {
+		this.rewriteListen = rewriteListen;
 	}
 
 	

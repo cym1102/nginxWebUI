@@ -48,7 +48,7 @@ sudo apt install nginx
 2.下载最新版发行包jar
 
 ```
-sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.2.3.jar
+sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.2.4.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -56,7 +56,7 @@ sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.2.3.jar
 3.启动程序
 
 ```
-sudo nohup java -jar -Xmx64m nginxWebUI-2.2.3.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+sudo nohup java -jar -Xmx64m nginxWebUI-2.2.4.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
 ```
 
 参数说明(都是非必填)
@@ -122,7 +122,7 @@ mvn clean package
 2. 使用docker构建镜像
 
 ```
-docker build -t nginxwebui:2.2.3 .
+docker build -t nginxwebui:2.2.4 .
 ```
 
 #### 使用说明

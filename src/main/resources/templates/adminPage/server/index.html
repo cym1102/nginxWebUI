@@ -183,9 +183,6 @@
 										<#if ext.server.http2==0>${commonStr.no}</#if> 
 										<#if ext.server.http2==1>${commonStr.yes}</#if> 
 										</span>
-										<!-- <br>
-										<span class="blk">${serverStr.protocols}：</span> 
-										<span class="descr">${ext.server.protocols}</span> -->
 									</#if>
 								</td>
 
@@ -340,15 +337,8 @@
 							</div>
 
 							<div class="layui-form-item pemDiv proxyHttp">
-								<label class="layui-form-label">${serverStr.httpToHttps}</label>
-								<div class="layui-input-inline" style="width: 100px;">
-									<select name="rewrite" id="rewrite">
-										<option value="1">${commonStr.yes}</option>
-										<option value="0">${commonStr.no}</option>
-									</select>
-								</div>
 
-								<label class="layui-form-label" style="width: 80px;">${serverStr.http2}</label>
+								<label class="layui-form-label">${serverStr.http2}</label>
 								<div class="layui-input-inline" style="width: 100px;">
 									<select name="http2" id="http2">
 										<option value="1">${commonStr.yes}</option>
@@ -367,6 +357,25 @@
 									<input type="checkbox" class="protocols" id="TLSv1_3" lay-skin="primary" value="TLSv1.3" title="TLSv1.3">
 								</div>
 							</div>
+							
+							<div class="layui-form-item pemDiv proxyHttp">
+								<label class="layui-form-label">${serverStr.httpToHttps}</label>
+								<div class="layui-input-inline" style="width: 100px;">
+									<select name="rewrite" id="rewrite" lay-filter="rewrite">
+										<option value="1">${commonStr.yes}</option>
+										<option value="0">${commonStr.no}</option>
+									</select>
+								</div>
+								
+								<div  id="rewriteListenDiv">
+									<label class="layui-form-label" style="width: 80px;">${serverStr.rewriteListen}</label>
+									<div class="layui-input-inline">
+										<input type="text" name="rewriteIp" id="rewriteIp" class="layui-input" style="width: 125px; display: inline-block;" placeholder="${serverStr.ipDefault}">
+										<input type="text" name="rewriteListen" id="rewriteListen" style="width: 60px; display: inline-block;" class="layui-input" placeholder="${serverStr.port}">
+									</div>
+								</div>
+							</div>
+							
 						</div>
 					</div>
 				</div>

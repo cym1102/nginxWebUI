@@ -28,7 +28,10 @@ $(function() {
 	form.on('select(proxyType)', function(data) {
 		checkProxyType(data.value);
 	});
-
+	form.on('select(rewrite)', function(data) {
+		checkRewrite(data.value);
+	});
+	
 	layui.use('upload', function() {
 		var upload = layui.upload;
 		upload.render({
@@ -119,6 +122,16 @@ function checkProxyType(value) {
 
 }
 
+function checkRewrite(value){
+	if (value == null || value == '' || value == 0) {
+		$("#rewriteListenDiv").hide();
+
+	}
+	if (value == 1) {
+		$("#rewriteListenDiv").show();
+	}
+}
+
 function search() {
 	$("#searchForm").submit();
 }
@@ -135,6 +148,8 @@ function add() {
 	$("#proxyType option:first").prop("selected", true);
 	$("#proxyUpstreamId option:first").prop("selected", true);
 	$("#passwordId option:first").prop("selected", true);
+	
+	$("#rewriteListen").val("80");
 
 	$("#pem").val("");
 	$("#pemPath").html("");
@@ -147,7 +162,7 @@ function add() {
 	
 	checkProxyType(0);
 	checkSsl(0);
-	
+	checkRewrite(1);
 
 	form.render();
 	showWindow(serverStr.add);
@@ -217,12 +232,25 @@ function addOver() {
 		}
 		server.listen = ip + ":" + $("#listen").val();
 	}
+	
+	
+	
 	server.def = $("#def").prop("checked") ? "1" : "0";
 	server.serverName = $("#serverName").val();
 	server.ssl = $("#ssl").val();
 	server.pem = $("#pem").val();
 	server.key = $("#key").val();
 	server.rewrite = $("#rewrite").val();
+	if(server.rewrite == 1){
+		server.rewriteListen = $("#rewriteListen").val();
+		if ($("#rewriteIp").val() != '') {
+			var ip =  $("#rewriteIp").val();
+			if(ip.indexOf(":") > -1){
+				ip = `[${ip}]`;
+			}
+			server.rewriteListen = ip + ":" + $("#rewriteListen").val();
+		}
+	}
 	server.http2 = $("#http2").val();
 	//debugger
 	server.passwordId = $("#passwordId").val();
@@ -298,7 +326,7 @@ function edit(id, clone) {
 					$("#id").val("");
 				}
 
-				if (server.listen.indexOf(":") > -1) {
+				if (server.listen !=null && server.listen.indexOf(":") > -1) {
 					var listens = server.listen.split(":");
 					
 					$("#ip").val(server.listen.replace(":" + listens[listens.length - 1] , "").replace("[","").replace("]",""));
@@ -306,6 +334,16 @@ function edit(id, clone) {
 				} else {
 					$("#ip").val("");
 					$("#listen").val(server.listen);
+				}
+				
+				if (server.rewriteListen != null && server.rewriteListen.indexOf(":") > -1) {
+					var listens = server.rewriteListen.split(":");
+					
+					$("#rewriteIp").val(server.rewriteListen.replace(":" + listens[listens.length - 1] , "").replace("[","").replace("]",""));
+					$("#rewriteListen").val(listens[listens.length - 1]);
+				} else {
+					$("#rewriteIp").val("");
+					$("#rewriteListen").val(server.rewriteListen);
 				}
 
 				$("#def").prop("checked", server.def == 1);
@@ -316,9 +354,11 @@ function edit(id, clone) {
 				$("#pemPath").html(server.pem);
 				$("#keyPath").html(server.key);
 				$("#proxyType").val(server.proxyType);
+				$("#proxyType").val(server.proxyType);
 				$("#proxyUpstreamId").val(server.proxyUpstreamId);
 				$("#serverParamJson").val(data.obj.paramJson);
 				$("#passwordId").val(server.passwordId);
+
 
 				if (server.rewrite != null) {
 					$("#rewrite").val(server.rewrite);
@@ -351,8 +391,10 @@ function edit(id, clone) {
 				}
 				form.render();
 
+
 				checkProxyType(server.proxyType);
 				checkSsl(server.ssl);
+				checkRewrite(server.rewrite);
 				
 				var list = data.obj.locationList;
 
