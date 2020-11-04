@@ -44,7 +44,7 @@ sudo apt install nginx
 2.Download the latest release of the distribution jar
 
 ```
-sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.2.4.jar
+sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.2.5.jar
 ```
 
 With a new version, you just need to change the version in the path
@@ -52,7 +52,7 @@ With a new version, you just need to change the version in the path
 3.Start program
 
 ```
-sudo nohup java -jar -Xmx64m nginxWebUI-2.2.4.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+sudo nohup java -jar -Xmx64m nginxWebUI-2.2.5.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
 ```
 
 Parameter description (both non-required)
@@ -86,13 +86,13 @@ sudo apt install docker.io
 2.Download images:
 
 ```
-docker pull cym1102/nginxwebui:2.2.4
+docker pull cym1102/nginxwebui:2.2.5
 ```
 
 3.start container
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.2.4 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.2.5 /bin/bash
 ```
 
 notice: 

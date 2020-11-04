@@ -13,6 +13,7 @@ public class Server extends BaseModel {
 	
 	@InitValue("0")
 	Integer rewrite; // 0否 1是
+	@InitValue("80")
 	String rewriteListen; // 转跳监听
 	
 	@InitValue("0")
