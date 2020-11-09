@@ -113,9 +113,6 @@ input[type='radio']{
 							<div class="layui-inline">
 								<button type="button" class="layui-btn" onclick="runCmd('cmdStop')">${confStr.stop}</button>
 							</div>
-							<!-- <div class="layui-inline">
-								<i class="layui-icon layui-icon-set-fill" title="配置nginx停止命令" onclick="setStop()"></i>
-							</div> -->
 							<div class="layui-inline">
 								<label class="layui-form-label" style="width: 150px;" id="nginxStatus"></label>
 							</div>
@@ -128,7 +125,7 @@ input[type='radio']{
 
 						<div style="width: 47%;">
 							<div class="name">${confStr.build}</div>
-							<div class="title">nginx.conf</div>
+							<div class="title">${tmp}</div>
 							<textarea class="layui-textarea conf" id="nginxContent" name="nginxContent" style="height: 500px; resize: none;" spellcheck="false"></textarea>
 
 							<div id="nginxContentOther"></div>
@@ -137,7 +134,7 @@ input[type='radio']{
 
 						<div style="width: 47%;">
 							<div class="name">${confStr.target}</div>
-							<div class="title">nginx.conf</div>
+							<div class="title" id="target">${nginxPath}</div>
 							<textarea class="layui-textarea org" id="org" name="org" style="height: 500px; margin-left: 10px; resize: none; background-color: #ededed;" readonly="readonly" spellcheck="false"></textarea>
 
 							<div id="orgOther"></div>

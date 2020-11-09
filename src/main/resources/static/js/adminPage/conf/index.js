@@ -306,6 +306,7 @@ function selectRootCustom(inputId){
 		
 		if(inputId == 'nginxPath'){
 			loadOrg();
+			$("#target").html(val);
 		}
 	});
 }

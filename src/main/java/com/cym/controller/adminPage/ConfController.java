@@ -70,6 +70,8 @@ public class ConfController extends BaseController {
 		String decompose = settingService.get("decompose");
 		modelAndView.addObject("decompose", decompose);
 
+		modelAndView.addObject("tmp", FileUtil.getTmpDirPath().replace("\\", "/") + "nginx.conf"); 
+		
 		modelAndView.setViewName("/adminPage/conf/index");
 		return modelAndView;
 	}
