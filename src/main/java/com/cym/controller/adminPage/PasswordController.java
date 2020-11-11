@@ -66,8 +66,10 @@ public class PasswordController extends BaseController {
 	@RequestMapping("del")
 	@ResponseBody
 	public JsonResult del(String id) {
+		Password password = sqlHelper.findById(id, Password.class);
 		sqlHelper.deleteById(id, Password.class);
-
+		FileUtil.del(password.getPath());
+		
 		return renderSuccess();
 	}
 

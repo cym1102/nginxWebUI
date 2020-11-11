@@ -58,11 +58,14 @@ public class ConfService {
 		this.templateService = templateService;
 	}
 
-	public synchronized ConfExt buildConf(Boolean decompose) {
+	public synchronized ConfExt buildConf(Boolean decompose, Boolean check) {
 		ConfExt confExt = new ConfExt();
 		confExt.setFileList(new ArrayList<>());
 
 		String nginxPath = settingService.get("nginxPath");
+		if (check) {
+			nginxPath = InitConfig.home + "temp/nginx.conf";
+		}
 		try {
 
 			NgxConfig ngxConfig = new NgxConfig();
@@ -610,7 +613,7 @@ public class ConfService {
 		String nginxPath = settingService.get("nginxPath");
 		String decompose = settingService.get("decompose");
 
-		ConfExt confExt = buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"));
+		ConfExt confExt = buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"), false);
 
 		if (FileUtil.exist(nginxPath)) {
 			String orgStr = FileUtil.readString(nginxPath, StandardCharsets.UTF_8);
