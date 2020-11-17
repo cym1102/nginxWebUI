@@ -6,6 +6,7 @@ RUN apt-get clean && apt-get update &&\
 	apt-get install -y net-tools &&\
 	apt-get install -y curl &&\
 	apt-get install -y wget
+ENV LANG C.UTF-8
 COPY target/nginxWebUI-*.jar /home/nginxWebUI.jar
 ADD nginxWebUI.sh /home/
 RUN chmod 777 /home/nginxWebUI.sh
