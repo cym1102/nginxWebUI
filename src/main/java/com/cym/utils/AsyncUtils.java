@@ -15,6 +15,16 @@ public class AsyncUtils {
 	String port;
 	@Value("${project.home}")
 	String home;
+
+	@Value("${spring.database.type:}")
+	String type;
+	@Value("${spring.datasource.url:}")
+	String url;
+	@Value("${spring.datasource.username:}")
+	String username;
+	@Value("${spring.datasource.password:}")
+	String password;
+
 	private static final Logger LOG = LoggerFactory.getLogger(AsyncUtils.class);
 
 	@Async
@@ -25,7 +35,15 @@ public class AsyncUtils {
 		LOG.info(cmd);
 		RuntimeUtil.exec(cmd);
 
-		cmd = "nohup java -jar -Xmx64m " + path.replace(".update", "") + " --server.port=" + port + " --project.home=" + home + " > /dev/null &";
+		String param = " --server.port=" + port + " --project.home=" + home;
+		if ("mysql".equalsIgnoreCase(type)) {
+			param += " --spring.database.type=" + type //
+					+ " --spring.datasource.url=" + url //
+					+ " --spring.datasource.username=" + username //
+					+ " --spring.datasource.password=" + password;
+		}
+
+		cmd = "nohup java -jar -Xmx64m " + path.replace(".update", "") + param + " > /dev/null &";
 		LOG.info(cmd);
 		RuntimeUtil.exec(cmd);
 

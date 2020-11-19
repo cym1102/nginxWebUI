@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.cym.NginxWebUI;
+import com.cym.model.Version;
 import com.cym.service.MonitorService;
 import com.cym.service.SettingService;
 import com.cym.utils.MessageUtils;
@@ -18,6 +19,7 @@ import com.cym.utils.SendMailUtils;
 
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 
 @SpringBootTest(classes = NginxWebUI.class)
 public class MainTest {

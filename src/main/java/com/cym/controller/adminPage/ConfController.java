@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cym.config.InitConfig;
 import com.cym.config.VersionConfig;
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
@@ -70,8 +71,8 @@ public class ConfController extends BaseController {
 		String decompose = settingService.get("decompose");
 		modelAndView.addObject("decompose", decompose);
 
-		modelAndView.addObject("tmp", FileUtil.getTmpDirPath().replace("\\", "/") + "nginx.conf"); 
-		
+		modelAndView.addObject("tmp", InitConfig.home + "temp/nginx.conf");
+
 		modelAndView.setViewName("/adminPage/conf/index");
 		return modelAndView;
 	}
@@ -132,7 +133,7 @@ public class ConfController extends BaseController {
 
 	public String getReplaceJson() {
 		String decompose = settingService.get("decompose");
-		ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"));
+		ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"), false);
 
 		URLEncoder urlEncoder = new URLEncoder();
 
@@ -157,15 +158,28 @@ public class ConfController extends BaseController {
 			nginxDir = settingService.get("nginxDir");
 		}
 
+		String decompose = settingService.get("decompose");
+
 		String rs = null;
 		String cmd = null;
-		String fileTemp = FileUtil.getTmpDirPath() + File.separator + "nginx.conf";
+
+		FileUtil.del(InitConfig.home + "temp");
+		String fileTemp = InitConfig.home + "temp/nginx.conf";
 
 		try {
-			ConfExt confExt = confService.buildConf(false);
+			ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"), true);
 			FileUtil.writeString(confExt.getConf(), fileTemp, CharsetUtil.CHARSET_UTF_8);
+
 			ClassPathResource resource = new ClassPathResource("mime.types");
-			FileUtil.writeFromStream(resource.getInputStream(), FileUtil.getTmpDirPath() + File.separator  + "mime.types");
+			FileUtil.writeFromStream(resource.getInputStream(), InitConfig.home + "temp/mime.types");
+
+			for (int i = 0; i < confExt.getFileList().size(); i++) {
+				String subName = confExt.getFileList().get(i).getName();
+				String subContent = confExt.getFileList().get(i).getConf();
+
+				String tagert = fileTemp.replace("nginx.conf", "conf.d/" + subName).replace(" ", "_");
+				FileUtil.writeString(subContent, tagert, StandardCharsets.UTF_8); // 清空
+			}
 
 			if (SystemTool.isWindows()) {
 				cmd = nginxExe + " -t -c " + fileTemp + " -p " + nginxDir;
@@ -345,7 +359,7 @@ public class ConfController extends BaseController {
 	public JsonResult loadConf() {
 		String decompose = settingService.get("decompose");
 
-		ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"));
+		ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"), false);
 		return renderSuccess(confExt);
 	}
 
@@ -353,7 +367,7 @@ public class ConfController extends BaseController {
 	@ResponseBody
 	public JsonResult loadOrg(String nginxPath) {
 		String decompose = settingService.get("decompose");
-		ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"));
+		ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"), false);
 
 		if (StrUtil.isNotEmpty(nginxPath) && FileUtil.exist(nginxPath) && FileUtil.isFile(nginxPath)) {
 			String orgStr = FileUtil.readString(nginxPath, StandardCharsets.UTF_8);
