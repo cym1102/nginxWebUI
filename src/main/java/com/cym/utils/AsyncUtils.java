@@ -16,13 +16,13 @@ public class AsyncUtils {
 	@Value("${project.home}")
 	String home;
 
-	@Value("${spring.database.type}")
+	@Value("${spring.database.type:}")
 	String type;
-	@Value("${spring.datasource.url}")
+	@Value("${spring.datasource.url:}")
 	String url;
-	@Value("${spring.datasource.username}")
+	@Value("${spring.datasource.username:}")
 	String username;
-	@Value("${spring.datasource.password}")
+	@Value("${spring.datasource.password:}")
 	String password;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AsyncUtils.class);
