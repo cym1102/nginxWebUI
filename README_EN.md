@@ -36,9 +36,18 @@ Take the Ubuntu operating system, for example.
 
 1.Install the Java runtime environment and Nginx
 
+Ubuntu:
+
 ```
-sudo apt install openjdk-8-jdk
-sudo apt install nginx
+apt install openjdk-8-jdk
+apt install nginx
+```
+
+centos:
+
+```
+yum install java-1.8.0-openjdk
+yum install nginx
 ```
 
 2.Download the latest release of the distribution jar
@@ -79,8 +88,16 @@ Note that an & sign is added at the end of the command, indicating that the dock
 
 1.Install the Docker environment
 
+ubuntu:
+
 ```
-sudo apt install docker.io
+apt install docker.io
+```
+
+centos:
+
+```
+yum install docker
 ```
 
 2.Download images:

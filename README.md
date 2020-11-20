@@ -42,15 +42,24 @@ nginx本身功能复杂, 本项目并不能涵盖nginx所有功能, 只能配置
 
 1.安装java运行环境和nginx
 
+Ubuntu:
+
 ```
-sudo apt install openjdk-8-jdk
-sudo apt install nginx
+apt install openjdk-8-jdk
+apt install nginx
+```
+
+centos:
+
+```
+yum install java-1.8.0-openjdk
+yum install nginx
 ```
 
 2.下载最新版发行包jar
 
 ```
-sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.3.1.jar
+wget http://www.nginxwebui.cn/download/nginxWebUI-2.3.1.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -58,7 +67,7 @@ sudo wget http://www.nginxwebui.cn/download/nginxWebUI-2.3.1.jar
 3.启动程序
 
 ```
-sudo nohup java -jar -Xmx64m nginxWebUI-2.3.1.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+nohup java -jar -Xmx64m nginxWebUI-2.3.1.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
 ```
 
 参数说明(都是非必填)
@@ -85,11 +94,19 @@ sudo nohup java -jar -Xmx64m nginxWebUI-2.3.1.jar --server.port=8080 --project.h
 
 1.安装docker容器环境
 
+ubuntu:
+
 ```
-sudo apt install docker.io
+apt install docker.io
 ```
 
-2.下载镜像: 
+centos:
+
+```
+yum install docker
+```
+
+2.拉取镜像: 
 
 ```
 docker pull cym1102/nginxwebui:latest
