@@ -36,7 +36,7 @@ Take the Ubuntu operating system, for example.
 
 1.Install the Java runtime environment and Nginx
 
-Ubuntu:
+ubuntu:
 
 ```
 apt install openjdk-8-jdk
