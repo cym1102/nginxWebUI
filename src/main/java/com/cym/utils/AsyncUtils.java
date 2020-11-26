@@ -36,7 +36,7 @@ public class AsyncUtils {
 		RuntimeUtil.exec(cmd);
 
 		String param = " --server.port=" + port + " --project.home=" + home;
-		if ("mysql".equalsIgnoreCase(type)) {
+		if (!"sqlite".equals(type)) {
 			param += " --spring.database.type=" + type //
 					+ " --spring.datasource.url=" + url //
 					+ " --spring.datasource.username=" + username //

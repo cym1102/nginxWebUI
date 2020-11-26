@@ -55,11 +55,11 @@ function replace() {
 
 	var json = {};
 	json.nginxPath = $("#nginxPath").val();
-	json.nginxContent = Base64.encode(encodeURIComponent($("#nginxContent").val()));
+	json.nginxContent = Base64.encode(encodeURIComponent($("#nginxContent").val().replace(/\~/g, "<wave>")));
 	json.subContent = [];
 	json.subName = [];
 	$("textarea[name='subContent']").each(function(){
-		json.subContent.push(Base64.encode(encodeURIComponent($(this).val())));
+		json.subContent.push(Base64.encode(encodeURIComponent($(this).val().replace(/\~/g, "<wave>"))));
 	})
 	$("input[name='subName']").each(function(){
 		json.subName.push($(this).val());

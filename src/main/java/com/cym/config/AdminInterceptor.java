@@ -2,10 +2,9 @@ package com.cym.config;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -14,7 +13,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +27,7 @@ import com.cym.service.CreditService;
 import com.cym.utils.MessageUtils;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
@@ -40,6 +39,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 	CreditService creditService;
 	@Autowired
 	MessageUtils m;
+
 	/*
 	 * 视图渲染之后的操作
 	 */
@@ -130,19 +130,16 @@ public class AdminInterceptor implements HandlerInterceptor {
 
 		return true;
 	}
-	
-	
 
-	private String buldBody(Map<String, String[]> parameterMap, Remote remote) {
+	private String buldBody(Map<String, String[]> parameterMap, Remote remote) throws UnsupportedEncodingException {
 		List<String> body = new ArrayList<>();
 		body.add("creditKey=" + remote.getCreditKey());
-		body.add("loca=" + remote.getCreditKey());
 
 		for (Iterator itr = parameterMap.entrySet().iterator(); itr.hasNext();) {
 			Map.Entry me = (Map.Entry) itr.next();
 
 			for (String value : (String[]) me.getValue()) {
-				body.add(me.getKey() + "=" + value);
+				body.add(me.getKey() + "=" + URLEncoder.encode(value, "UTF-8"));
 			}
 
 		}

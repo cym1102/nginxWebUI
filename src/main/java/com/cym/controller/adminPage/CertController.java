@@ -83,6 +83,8 @@ public class CertController extends BaseController {
 		if (cert.getPem() != null) {
 			FileUtil.del(cert.getPem());
 		}
+		
+		FileUtil.del("/root/.acme.sh/" + cert.getDomain());
 		sqlHelper.deleteById(id, Cert.class);
 		return renderSuccess();
 	}
