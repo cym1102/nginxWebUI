@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.config.InitConfig;
 import com.cym.model.Remote;
-import com.cym.utils.AsyncUtils;
+import com.cym.utils.UpdateUtils;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
@@ -34,7 +34,7 @@ import cn.hutool.json.JSONUtil;
 @Controller
 public class MainController extends BaseController {
 	@Autowired
-	AsyncUtils asyncUtils;
+	UpdateUtils asyncUtils;
 
 	private static final Logger LOG = LoggerFactory.getLogger(MainController.class);
 
