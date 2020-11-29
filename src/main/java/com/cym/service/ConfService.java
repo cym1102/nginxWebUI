@@ -548,15 +548,19 @@ public class ConfService {
 	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName) {
 		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
 		// 备份主文件
-		FileUtil.mkdir(InitConfig.home + "bak");
-		FileUtil.copy(nginxPath, InitConfig.home + "bak/nginx.conf." + date + ".bak", true);
+		if (FileUtil.exist(nginxPath)) {
+			FileUtil.mkdir(InitConfig.home + "bak");
+			FileUtil.copy(nginxPath, InitConfig.home + "bak/nginx.conf." + date + ".bak", true);
+		}
+
 		// 备份conf.d文件夹
 		String confd = nginxPath.replace("nginx.conf", "conf.d/");
 		if (!FileUtil.exist(confd)) {
 			FileUtil.mkdir(confd);
+		} else {
+			ZipUtil.zip(confd, InitConfig.home + "bak/nginx.conf." + date + ".zip");
 		}
-		ZipUtil.zip(confd, InitConfig.home + "bak/nginx.conf." + date + ".zip");
-
+		
 		// 删除conf.d下全部文件
 		FileUtil.del(confd);
 		FileUtil.mkdir(confd);

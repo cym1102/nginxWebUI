@@ -54,7 +54,7 @@ public class LogService {
 				"	FROM log_info " + //
 				"	GROUP BY hour, remote_addr " + //
 				"	ORDER BY name " + //
-				") " + //
+				") tmp" + //
 				"GROUP BY name", new BeanPropertyRowMapper<KeyValue>(KeyValue.class)));
 
 		// 状态

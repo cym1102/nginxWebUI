@@ -100,12 +100,12 @@ public class ConfController extends BaseController {
 
 		String nginxPath = jsonObject.getStr("nginxPath");
 		String nginxContent = Base64.decodeStr(jsonObject.getStr("nginxContent"), CharsetUtil.CHARSET_UTF_8);
-		nginxContent = URLDecoder.decode(nginxContent, CharsetUtil.CHARSET_UTF_8);
+		nginxContent = URLDecoder.decode(nginxContent, CharsetUtil.CHARSET_UTF_8).replace("<wave>", "~");
 
 		List<String> subContent = jsonObject.getJSONArray("subContent").toList(String.class);
 		for (int i = 0; i < subContent.size(); i++) {
 			String content = Base64.decodeStr(subContent.get(i), CharsetUtil.CHARSET_UTF_8);
-			content = URLDecoder.decode(content, CharsetUtil.CHARSET_UTF_8);
+			content = URLDecoder.decode(content, CharsetUtil.CHARSET_UTF_8).replace("<wave>", "~");
 			subContent.set(i, content);
 		}
 		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
@@ -113,13 +113,16 @@ public class ConfController extends BaseController {
 		if (nginxPath == null) {
 			nginxPath = settingService.get("nginxPath");
 		}
-		if (!FileUtil.exist(nginxPath)) {
-			return renderError(m.get("confStr.error1"));
-		}
+		
 		if (FileUtil.isDirectory(nginxPath)) {
+			// 是文件夹, 提示
 			return renderError(m.get("confStr.error2"));
 		}
-
+		
+//		if (!FileUtil.exist(nginxPath)) {
+//			return renderError(m.get("confStr.error1"));
+//		}
+		
 		try {
 			confService.replace(nginxPath, nginxContent, subContent, subName);
 			return renderSuccess(m.get("confStr.replaceSuccess"));

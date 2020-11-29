@@ -10,7 +10,7 @@ import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.RuntimeUtil;
 
 @Component
-public class AsyncUtils {
+public class UpdateUtils {
 	@Value("${server.port}")
 	String port;
 	@Value("${project.home}")
@@ -25,9 +25,8 @@ public class AsyncUtils {
 	@Value("${spring.datasource.password:}")
 	String password;
 
-	private static final Logger LOG = LoggerFactory.getLogger(AsyncUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(UpdateUtils.class);
 
-	@Async
 	public void run(String path) {
 		ThreadUtil.safeSleep(2000);
 
@@ -36,7 +35,7 @@ public class AsyncUtils {
 		RuntimeUtil.exec(cmd);
 
 		String param = " --server.port=" + port + " --project.home=" + home;
-		if ("mysql".equalsIgnoreCase(type)) {
+		if (!"sqlite".equals(type)) {
 			param += " --spring.database.type=" + type //
 					+ " --spring.datasource.url=" + url //
 					+ " --spring.datasource.username=" + username //
