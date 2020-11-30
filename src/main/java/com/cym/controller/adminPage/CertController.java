@@ -203,7 +203,7 @@ public class CertController extends BaseController {
 	public void download(String id, HttpServletResponse response) throws IOException {
 		Cert cert = sqlHelper.findById(id, Cert.class);
 		if (StrUtil.isNotEmpty(cert.getPem()) && StrUtil.isNotEmpty(cert.getKey())) {
-			String dir = FileUtil.getTmpDirPath() + File.separator + "cert";
+			String dir = InitConfig.home + "/temp/cert";
 			FileUtil.del(dir);
 			FileUtil.del(dir + ".zip");
 			FileUtil.mkdir(dir);
@@ -216,16 +216,16 @@ public class CertController extends BaseController {
 			ZipUtil.zip(dir);
 			FileUtil.del(dir);
 			
-			String fileName = URLEncoder.createDefault().encode(cert.getDomain(), Charset.forName("UTF-8"));
-			handleStream(response, dir + ".zip", fileName);
+			handleStream(response, dir + ".zip");
 		}
-
 	}
+	
+	
 
-	private void handleStream(HttpServletResponse response, String path, String fileName) throws IOException {
+	private void handleStream(HttpServletResponse response, String path) throws IOException {
 
 		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
-		response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".zip");
+		response.setHeader("Content-Disposition", "attachment;filename=cert.zip");
 		byte[] buffer = new byte[1024];
 		FileInputStream fis = null;
 		BufferedInputStream bis = null;

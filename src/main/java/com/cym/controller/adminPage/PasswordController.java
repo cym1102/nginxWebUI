@@ -14,7 +14,9 @@ import com.cym.config.InitConfig;
 import com.cym.model.Password;
 import com.cym.service.PasswordService;
 import com.cym.utils.BaseController;
+import com.cym.utils.Crypt;
 import com.cym.utils.JsonResult;
+import com.cym.utils.SystemTool;
 
 import cn.craccd.sqlHelper.bean.Page;
 import cn.hutool.core.io.FileUtil;
@@ -55,8 +57,16 @@ public class PasswordController extends BaseController {
 		}
 
 		password.setPath(InitConfig.home + "password/" + password.getName());
-//		CryptUtils.make(password.getName(), password.getPass(), password.getPath());
-		FileUtil.writeString( password.getName() + ":" +  password.getPass(), password.getPath(), "UTF-8");
+
+		String value = "";
+		if (SystemTool.isWindows()) {
+			// windows 明码
+			value = password.getName() + ":" + password.getName();
+		} else {
+			// linux 生成加密
+			value = Crypt.getString(password.getName(), password.getName());
+		}
+		FileUtil.writeString(value, password.getPath(), "UTF-8");
 
 		sqlHelper.insertOrUpdate(password);
 
@@ -69,7 +79,7 @@ public class PasswordController extends BaseController {
 		Password password = sqlHelper.findById(id, Password.class);
 		sqlHelper.deleteById(id, Password.class);
 		FileUtil.del(password.getPath());
-		
+
 		return renderSuccess();
 	}
 

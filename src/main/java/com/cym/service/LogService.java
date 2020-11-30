@@ -49,13 +49,13 @@ public class LogService {
 		// pvuv
 		dataGroup.setPv(jdbcTemplate.query("select hour as name,count(1) as value FROM log_info group by hour order by name", new BeanPropertyRowMapper<KeyValue>(KeyValue.class)));
 		dataGroup.setUv(jdbcTemplate.query("SELECT name, COUNT(value) as value " + //
-				"FROM ( " + //
+				" FROM ( " + //
 				"	SELECT hour AS name, COUNT(remote_addr) AS value " + //
 				"	FROM log_info " + //
 				"	GROUP BY hour, remote_addr " + //
 				"	ORDER BY name " + //
-				") tmp" + //
-				"GROUP BY name", new BeanPropertyRowMapper<KeyValue>(KeyValue.class)));
+				" ) tmp " + //
+				" GROUP BY name ", new BeanPropertyRowMapper<KeyValue>(KeyValue.class)));
 
 		// 状态
 		dataGroup.setStatus(jdbcTemplate.query("select status as name,count(1) as value FROM log_info group by status", new BeanPropertyRowMapper<KeyValue>(KeyValue.class)));
