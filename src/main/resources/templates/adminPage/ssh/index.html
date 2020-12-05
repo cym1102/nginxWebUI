@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<#include "/adminPage/common.html"/>
+
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+
+		<#include "/adminPage/header.html"/>
+		<#include "/adminPage/menu.html"/>
+
+		<div class="layui-body">
+			<!-- 内容主体区域 -->
+			<div style="padding: 15px">
+				<fieldset class="layui-elem-field layui-field-title">
+					<legend>${menuStr.ssh}</legend>
+				</fieldset>
+
+				<form action="${ctx}/adminPage/ssh" id="searchForm" method="post">
+					<div class="layui-form">
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${commonStr.add}</button>
+						</div>
+
+						<input type="hidden" name="curr" value="${page.curr}"> 
+						<input type="hidden" name="limit" value="${page.limit}">
+					</div>
+				</form>
+
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>${sshStr.name}</th>
+							<th>${sshStr.host}</th>
+							<th>${sshStr.port}</th>
+							<th>${sshStr.username}</th>
+							<th>${commonStr.operation}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list page.records as ssh>
+						<tr>
+							<td>${ssh.name}</td>
+							<td>${ssh.host}</td>
+							<td>${ssh.port}</td>
+							<td>${ssh.username}</td>
+							<td>
+								<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="link('${ssh.id}','${ssh.name}')">连接</button>
+								<button class="layui-btn layui-btn-sm" onclick="edit('${ssh.id}')">${commonStr.edit}</button>
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ssh.id}')">${commonStr.del}</button>
+							</td>
+						</tr>
+						</#list>
+					</tbody>
+				</table>
+				<div id="pageInfo"></div>
+			</div>
+		</div>
+	</div>
+
+	<div style="height: 0px; width: 0px; overflow: hidden;">
+		<!-- 弹出框 -->
+		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none">
+			<form id="addForm">
+				<input type="hidden" name="id" id="id">
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">${sshStr.name}</label>
+					<div class="layui-input-block">
+						<input type="text" name="name" id="name" class="layui-input">
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">${sshStr.host}</label>
+					<div class="layui-input-block">
+						<input type="text" name="host" id="host" class="layui-input">
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">${sshStr.port}</label>
+					<div class="layui-input-block">
+						<input type="number" name="port" id="port" class="layui-input">
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">${sshStr.username}</label>
+					<div class="layui-input-block">
+						<input type="text" name="username" id="username" class="layui-input">
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">${sshStr.password}</label>
+					<div class="layui-input-block">
+						<input type="password" name="password" id="password" class="layui-input">
+					</div>
+				</div>
+
+
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
+				</div>
+			</form>
+		</div>
+
+
+
+	</div>
+
+	<#include '/adminPage/script.html'/>
+	<script src="${ctx}/js/adminPage/ssh/index.js?v=${jsrandom}" type="text/javascript"></script>
+</body>
+
+
+</html>

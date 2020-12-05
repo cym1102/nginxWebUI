@@ -1,12 +1,35 @@
 $(function() {
-
 	if ($("#adminCount").val() > 0) {
+		var adminId = window.localStorage.getItem("adminId");
+		var time = window.localStorage.getItem("time");
+		
+		if(adminId != null && adminId != '' && new Date().getTime() - time < 7 * 24 * 60 * 60 * 1000){
+			// 自动登录
+			$.ajax({
+				type: 'POST',
+				url: ctx + '/adminPage/login/autoLogin',
+				data: {
+					adminId : adminId
+				},
+				dataType: 'json',
+				success: function(data) {
+					if (data.success) {
+						window.localStorage.setItem("time", new Date().getTime());
+						location.href = ctx + "adminPage/monitor";
+					} 
+				},
+				error: function() {
+					layer.alert(commonStr.errorInfo);
+				}
+			});
+		}
+		
 		layer.open({
 			type: 1,
 			shade: false,
 			title: loginStr.title1,
 			closeBtn: false,
-			area: ['400px', '330px'], //宽高
+			area: ['400px', '350px'], //宽高
 			content: $('#windowDiv')
 		});
 	} else {
@@ -33,6 +56,13 @@ function login() {
 		dataType: 'json',
 		success: function(data) {
 			if (data.success) {
+				if($("#remember").prop("checked")){
+					window.localStorage.setItem("time", new Date().getTime());
+					window.localStorage.setItem("adminId",data.obj.id);
+				} else {
+					window.localStorage.removeItem("adminId");
+				}
+				
 				location.href = ctx + "adminPage/monitor";
 			} else {
 				layer.msg(data.msg);

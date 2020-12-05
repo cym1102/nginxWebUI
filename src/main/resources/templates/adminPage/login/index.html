@@ -16,16 +16,17 @@
 				<input type="hidden" name="id" id="id">
 				<div class="layui-form-item">
 					<label class="layui-form-label">${loginStr.name}</label>
-					<div class="layui-input-block">
+					<div class="layui-input-inline">
 						<input type="text" name="name" id="name" class="layui-input" value="">
 					</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">${loginStr.pass}</label>
-					<div class="layui-input-block">
+					<div class="layui-input-inline">
 						<input type="password" name="pass" id="pass" class="layui-input" value="" onkeyup="getKey()">
 					</div>
 				</div>
+				
 				<div class="layui-form-item">
 					<label class="layui-form-label">${loginStr.code}</label>
 					<div class="layui-input-inline" style="width: 240px;">
@@ -33,6 +34,14 @@
 						<img src="${ctx}/adminPage/login/getCode?t=${jsrandom}" id="codeImg" onclick="refreshCode('codeImg')">
 					</div>
 				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label"> </label>
+					<div class="layui-input-inline">
+						<input type="checkbox" name="remember" id="remember"  title="${loginStr.remember}" lay-skin="primary">
+					</div>
+				</div>
+				
 				<div class="layui-form-item" style="text-align: center;">
 					<input type="hidden" name="authCode" id="authCode" >
 					<button type="button" class="layui-btn layui-btn-normal" onclick="getAuth()">${loginStr.login}</button>
@@ -45,19 +54,19 @@
 			<form id="adminForm">
 				<div class="layui-form-item">
 					<label class="layui-form-label">${loginStr.name}</label>
-					<div class="layui-input-block">
+					<div class="layui-input-inline">
 						<input type="text" name="name" id="adminName" class="layui-input" value="">
 					</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">${loginStr.pass}</label>
-					<div class="layui-input-block">
+					<div class="layui-input-inline">
 						<input type="password" name="pass" id="adminPass" class="layui-input" value="" >
 					</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">${loginStr.repeatPass}</label>
-					<div class="layui-input-block">
+					<div class="layui-input-inline">
 						<input type="password" id="repeatPass" class="layui-input" value="" >
 						<div class="layui-form-mid layui-word-aux">${loginStr.tips}</div>
 					</div>

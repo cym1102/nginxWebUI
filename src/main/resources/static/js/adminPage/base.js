@@ -97,6 +97,7 @@ function gohref(url) {
 // 退出登录
 function loginOut() {
 	if (confirm(baseStr.exit)) {
+		window.localStorage.removeItem("adminId");
 		location.href = ctx + "/adminPage/login/loginOut";
 	}
 }

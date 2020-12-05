@@ -19,9 +19,11 @@ import com.cym.controller.adminPage.CertController;
 import com.cym.controller.adminPage.ConfController;
 import com.cym.controller.adminPage.RemoteController;
 import com.cym.model.Cert;
+import com.cym.model.Http;
 import com.cym.model.Remote;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
+import com.cym.service.HttpService;
 import com.cym.service.LogService;
 import com.cym.service.RemoteService;
 import com.cym.service.SettingService;
@@ -56,10 +58,11 @@ public class ScheduleTask {
 	final UpstreamService upstreamService;
 	final LogService logInfoService;
 	final SendMailUtils sendMailUtils;
+	final HttpService httpService;
 	final MessageUtils m;
 
 	public ScheduleTask(MessageUtils m, UpstreamService upstreamService, RemoteService remoteService, SendMailUtils sendMailUtils, RemoteController remoteController, SqlHelper sqlHelper,
-			CertController certController, SettingService settingService, ConfController confController, LogService logInfoService) {
+			CertController certController, SettingService settingService, ConfController confController, LogService logInfoService, HttpService httpService) {
 		this.sqlHelper = sqlHelper;
 		this.upstreamService = upstreamService;
 		this.remoteService = remoteService;
@@ -69,6 +72,7 @@ public class ScheduleTask {
 		this.logInfoService = logInfoService;
 		this.remoteController = remoteController;
 		this.sendMailUtils = sendMailUtils;
+		this.httpService = httpService;
 		this.m = m;
 	}
 
@@ -90,7 +94,13 @@ public class ScheduleTask {
 	// 分隔日志,每天
 	@Scheduled(cron = "0 55 23 * * ?")
 	public void diviLog() {
-		if (FileUtil.exist(InitConfig.home + "log/access.log")) {
+		Http http = httpService.getName("access_log");
+		String path = null;
+		if (http != null && StrUtil.isNotEmpty(http.getValue())) {
+			path = http.getValue().split(" ")[0];
+		}
+
+		if (StrUtil.isNotEmpty(path) && FileUtil.exist(path)) {
 
 			String date = DateUtil.format(new Date(), "yyyy-MM-dd");
 			// 分隔日志

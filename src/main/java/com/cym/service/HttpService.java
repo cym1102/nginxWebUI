@@ -97,4 +97,10 @@ public class HttpService {
 		return 0l;
 	}
 
+	public Http getName(String name) {
+		Http http = sqlHelper.findOneByQuery(new ConditionAndWrapper().eq("name", name), Http.class);
+		
+		return http;
+	}
+
 }

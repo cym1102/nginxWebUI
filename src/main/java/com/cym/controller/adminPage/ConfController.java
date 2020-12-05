@@ -119,10 +119,6 @@ public class ConfController extends BaseController {
 			return renderError(m.get("confStr.error2"));
 		}
 		
-//		if (!FileUtil.exist(nginxPath)) {
-//			return renderError(m.get("confStr.error1"));
-//		}
-		
 		try {
 			confService.replace(nginxPath, nginxContent, subContent, subName);
 			return renderSuccess(m.get("confStr.replaceSuccess"));

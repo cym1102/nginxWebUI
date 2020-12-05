@@ -3,6 +3,7 @@ package com.cym.controller.adminPage;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -55,23 +56,24 @@ public class LoginController extends BaseController {
 	@Autowired
 	SettingService settingService;
 
-	@RequestMapping("map")
-	public ModelAndView map(ModelAndView modelAndView) {
-
-		modelAndView.setViewName("/adminPage/login/map");
-		return modelAndView;
-	}
+//	@RequestMapping("map")
+//	public ModelAndView map(ModelAndView modelAndView) {
+//
+//		modelAndView.setViewName("/adminPage/login/map");
+//		return modelAndView;
+//	}
 
 	@RequestMapping("")
-	public ModelAndView admin(ModelAndView modelAndView) {
+	public ModelAndView admin(ModelAndView modelAndView, HttpServletRequest request, HttpSession httpSession, String adminId) {
 
-		modelAndView.addObject("adminCount", sqlHelper.findCountByQuery(new ConditionAndWrapper(), Admin.class));
+		modelAndView.addObject("adminCount", sqlHelper.findAllCount(Admin.class));
 		modelAndView.setViewName("/adminPage/login/index");
 		return modelAndView;
 	}
 
 	@RequestMapping("loginOut")
-	public String loginOut(HttpSession httpSession) {
+	public String loginOut(HttpSession httpSession, HttpServletRequest request) {
+
 		httpSession.removeAttribute("isLogin");
 		return "redirect:/adminPage/login";
 	}
@@ -84,7 +86,7 @@ public class LoginController extends BaseController {
 
 	@RequestMapping("login")
 	@ResponseBody
-	public JsonResult submitLogin(String name, String pass, String code, String authCode, HttpSession httpSession) {
+	public JsonResult submitLogin(String name, String pass, String code, String authCode, String remember, HttpSession httpSession) {
 
 		// 验证码
 		String imgCode = (String) httpSession.getAttribute("imgCode");
@@ -102,31 +104,51 @@ public class LoginController extends BaseController {
 		if (admin.getAuth() && !authUtils.testKey(admin.getKey(), authCode)) {
 			return renderError(m.get("loginStr.backError6")); // 身份码不正确
 		}
-		
+
 		// 登录成功
 		httpSession.setAttribute("localType", "local");
 		httpSession.setAttribute("isLogin", true);
 		httpSession.removeAttribute("imgCode"); // 立刻销毁验证码
-		
+
 		// 检查更新
 		versionConfig.getNewVersion();
 
-		return renderSuccess();
+		return renderSuccess(admin);
 	}
 
-	
+	@RequestMapping("autoLogin")
+	@ResponseBody
+	public JsonResult autoLogin(String adminId, HttpSession httpSession) {
+
+		// 用户名密码
+		Admin admin = sqlHelper.findById(adminId, Admin.class);
+		if (admin != null) {
+			// 登录成功
+			httpSession.setAttribute("localType", "local");
+			httpSession.setAttribute("isLogin", true);
+			httpSession.removeAttribute("imgCode"); // 立刻销毁验证码
+
+			// 检查更新
+			versionConfig.getNewVersion();
+
+			return renderSuccess(admin);
+		} else {
+			return renderError();
+		}
+
+	}
 
 	@ResponseBody
 	@RequestMapping("getAuth")
 	public JsonResult getAuth(String name, String pass, String code, Integer remote, HttpSession httpSession) {
 		// 验证码
-		if(remote == null) {
+		if (remote == null) {
 			String imgCode = (String) httpSession.getAttribute("imgCode");
 			if (StrUtil.isEmpty(imgCode) || StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
 				return renderError(m.get("loginStr.backError1")); // 验证码不正确
 			}
 		}
-		
+
 		// 用户名密码
 		Admin admin = adminService.login(name, pass);
 		if (admin == null) {
@@ -139,14 +161,14 @@ public class LoginController extends BaseController {
 
 		return renderSuccess(ad);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("getCredit")
 	public JsonResult getCredit(String name, String pass, String code, String auth) {
 		// 用户名密码
 		Admin admin = adminService.login(name, pass);
 		if (admin == null) {
-			return renderError(m.get("loginStr.backError2"));  // 用户名密码错误
+			return renderError(m.get("loginStr.backError2")); // 用户名密码错误
 		}
 
 		if (!admin.getAuth()) {
@@ -161,7 +183,7 @@ public class LoginController extends BaseController {
 		}
 
 		settingService.remove("remoteCode"); // 立刻销毁验证码
-		
+
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("creditKey", creditService.make());
 		map.put("system", SystemTool.getSystem());
@@ -205,7 +227,7 @@ public class LoginController extends BaseController {
 	@ResponseBody
 	public JsonResult addAdmin(String name, String pass) {
 
-		Long adminCount = sqlHelper.findCountByQuery(new ConditionAndWrapper(), Admin.class);
+		Long adminCount = sqlHelper.findAllCount(Admin.class);
 		if (adminCount > 0) {
 			return renderError(m.get("loginStr.backError4"));
 		}
