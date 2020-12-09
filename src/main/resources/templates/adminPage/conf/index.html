@@ -13,6 +13,8 @@
 .title {
 	margin-top: 5px;
 	margin-bottom: 5px;
+	height:30px;
+	line-height:30px;
 	cursor: pointer;
 }
 
@@ -51,16 +53,6 @@ input[type='radio']{
 				<form id="addForm">
 					<div class="layui-form">
 						<div>
-							<div class="layui-input-inline">
-								<label class="layui-form-label" style="width: 100px;">${confStr.confPath}<span class="red">*</span></label>
-							</div>
-							<div class="layui-input-inline">
-								<input type="text" id="nginxPath" name="nginxPath" class="layui-input" style="width: 210px;" value="${nginxPath}" oninput="saveCmd()">
-							</div>
-							<div class="layui-input-inline">
-								<i class="layui-icon layui-icon-export" onclick="selectRootCustom('nginxPath')"></i>
-							</div>
-
 							<div class="layui-input-inline">
 								<label class="layui-form-label" style="width: 100px;">${confStr.nginxExe}<span class="red">*</span></label>
 							</div>
@@ -124,18 +116,27 @@ input[type='radio']{
 					<div class="layui-form" style="margin-top: 10px; display: flex;">
 
 						<div style="width: 47%;">
-							<div class="name">${confStr.build}</div>
-							<div class="title">${tmp}</div>
+							<div class="layui-inline" style="padding-bottom: 5px;width: 100%;">
+								<label class="layui-form-label ellipsis" style="width: 80%;text-align: left;">${confStr.build}：${tmp}</label>
+							</div>
 							<textarea class="layui-textarea conf" id="nginxContent" name="nginxContent" style="height: 500px; resize: none;" spellcheck="false"></textarea>
-
+							
 							<div id="nginxContentOther"></div>
 						</div>
 
 
 						<div style="width: 47%;">
-							<div class="name">${confStr.target}</div>
-							<div class="title" id="target">${nginxPath}</div>
-							<textarea class="layui-textarea org" id="org" name="org" style="height: 500px; margin-left: 10px; resize: none; background-color: #ededed;" readonly="readonly" spellcheck="false"></textarea>
+							<div class="layui-inline" style="padding-bottom: 5px;">
+								<label class="layui-form-label" style="width: 110px;text-align: left;"><span class="red">*</span>${confStr.target}：</label>
+								<div class="layui-input-inline">
+									<input type="text" id="nginxPath" class="layui-input" name="nginxPath" style="width: 300px;" value="${nginxPath}" oninput="saveCmd()">
+								</div>
+								<div class="layui-input-inline">
+									<i class="layui-icon layui-icon-export" onclick="selectRootCustom('nginxPath')"></i>
+								</div>
+							</div>
+							
+							<textarea class="layui-textarea org" id="org" name="org" style="height: 500px; margin-left: 10px;resize: none; background-color: #ededed;" readonly="readonly" spellcheck="false"></textarea>
 
 							<div id="orgOther"></div>
 						</div>

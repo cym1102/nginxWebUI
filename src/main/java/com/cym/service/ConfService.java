@@ -1,5 +1,6 @@
 package com.cym.service;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
@@ -124,7 +125,7 @@ public class ConfService {
 					addConfFile(confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + nginxPath.replace("nginx.conf", "conf.d/upstreams." + upstream.getName() + ".conf"));
+					ngxParam.addValue("include " + new File(nginxPath).getParent() + "conf.d/upstreams." + upstream.getName() + ".conf");
 					ngxBlockHttp.addEntry(ngxParam);
 
 				} else {
@@ -154,7 +155,7 @@ public class ConfService {
 					addConfFile(confExt, name + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + nginxPath.replace("nginx.conf", "conf.d/" + name + ".conf"));
+					ngxParam.addValue("include " + new File(nginxPath).getParent() +  "conf.d/" + name + ".conf");
 
 					if (noContain(ngxBlockHttp, ngxParam)) {
 						ngxBlockHttp.addEntry(ngxParam);
@@ -192,7 +193,7 @@ public class ConfService {
 					addConfFile(confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + nginxPath.replace("nginx.conf", "conf.d/upstreams." + upstream.getName() + ".conf"));
+					ngxParam.addValue("include " + new File(nginxPath).getParent() +  "conf.d/upstreams." + upstream.getName() + ".conf");
 					ngxBlockStream.addEntry(ngxParam);
 				} else {
 					ngxBlockStream.addEntry(ngxBlockServer);
@@ -214,7 +215,7 @@ public class ConfService {
 					addConfFile(confExt, "stream." + server.getListen() + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + nginxPath.replace("nginx.conf", "conf.d/stream." + server.getListen() + ".conf"));
+					ngxParam.addValue("include " + new File(nginxPath).getParent() +  "conf.d/stream." + server.getListen() + ".conf");
 					ngxBlockStream.addEntry(ngxParam);
 				} else {
 					ngxBlockStream.addEntry(ngxBlockServer);
@@ -554,7 +555,7 @@ public class ConfService {
 		}
 
 		// 备份conf.d文件夹
-		String confd = nginxPath.replace("nginx.conf", "conf.d/");
+		String confd = new File(nginxPath).getParent()  + "conf.d/"; 
 		if (!FileUtil.exist(confd)) {
 			FileUtil.mkdir(confd);
 		} else {
@@ -573,13 +574,14 @@ public class ConfService {
 			// 写入conf.d文件
 			if (subContent != null) {
 				for (int i = 0; i < subContent.size(); i++) {
-					String tagert = nginxPath.replace("nginx.conf", "conf.d/" + subName.get(i)).replace(" ", "_");
+					String tagert = (new File(nginxPath).getParent() + "conf.d/" + subName.get(i)).replace(" ", "_");
 					FileUtil.writeString(subContent.get(i), tagert, StandardCharsets.UTF_8); // 清空
 				}
 			}
 		}
 
 	}
+
 
 	public AsycPack getAsycPack() {
 		AsycPack asycPack = new AsycPack();
@@ -626,7 +628,7 @@ public class ConfService {
 			for (ConfFile confFile : confExt.getFileList()) {
 				confFile.setConf("");
 
-				String filePath = nginxPath.replace("nginx.conf", "conf.d/" + confFile.getName());
+				String filePath = new File(nginxPath).getParent() +  "conf.d/" + confFile.getName();
 				if (FileUtil.exist(filePath)) {
 					confFile.setConf(FileUtil.readString(filePath, StandardCharsets.UTF_8));
 				}

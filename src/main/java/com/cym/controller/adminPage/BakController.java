@@ -86,6 +86,10 @@ public class BakController extends BaseController {
 	@RequestMapping("replace")
 	@ResponseBody
 	public JsonResult replace(String path) {
+		if(!FileUtil.exist(path)) {
+			return renderError(m.get("bakStr.fileNotExist"));
+		}
+		
 		String nginxPath = settingService.get("nginxPath");
 
 		if (StrUtil.isNotEmpty(nginxPath)) {

@@ -567,7 +567,7 @@ function selectCert() {
 	certIndex = layer.open({
 		type: 1,
 		title: serverStr.selectCert,
-		area: ['500px', '300px'], // 宽高
+		area: ['500px', '410px'], // 宽高
 		content: $('#certDiv')
 	});
 

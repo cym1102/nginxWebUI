@@ -176,7 +176,7 @@ public class ConfController extends BaseController {
 				String subName = confExt.getFileList().get(i).getName();
 				String subContent = confExt.getFileList().get(i).getConf();
 
-				String tagert = fileTemp.replace("nginx.conf", "conf.d/" + subName).replace(" ", "_");
+				String tagert = (new File(nginxPath).getParent() + "conf.d/" + subName).replace(" ", "_");
 				FileUtil.writeString(subContent, tagert, StandardCharsets.UTF_8); // 清空
 			}
 
@@ -375,7 +375,7 @@ public class ConfController extends BaseController {
 			for (ConfFile confFile : confExt.getFileList()) {
 				confFile.setConf("");
 
-				String filePath = nginxPath.replace("nginx.conf", "conf.d/" + confFile.getName());
+				String filePath = new File(nginxPath).getParent() + "conf.d/" + confFile.getName();
 				if (FileUtil.exist(filePath)) {
 					confFile.setConf(FileUtil.readString(filePath, StandardCharsets.UTF_8));
 				}

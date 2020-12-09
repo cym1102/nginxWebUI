@@ -47,7 +47,6 @@ public class MainTest {
 
 	@Test
 	public void testStartUp() throws InterruptedException {
-
 	}
 
 	@AfterAll
