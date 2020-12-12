@@ -280,7 +280,7 @@ function addOver() {
 		location.rootType = $(this).find("select[name='rootType']").val();
 		location.locationParamJson = $(this).find("textarea[name='locationParamJson']").val();
 		location.header = $(this).find("input[name='header']").prop("checked") ? 1 : 0;
-
+		location.websocket = $(this).find("input[name='websocket']").prop("checked") ? 1 : 0;
 		locations.push(location);
 	})
 
@@ -423,6 +423,12 @@ function edit(id, clone) {
 						$("#" + uuid + " input[name='header']").prop("checked", false);
 					}
 
+					if (location.websocket == 1) {
+						$("#" + uuid + " input[name='websocket']").prop("checked", true);
+					} else {
+						$("#" + uuid + " input[name='websocket']").prop("checked", false);
+					}
+					
 					checkType(location.type, uuid)
 				}
 
@@ -491,10 +497,12 @@ function buildHtml(uuid, location, upstreamSelect) {
 
 	var str = `<tr id='${uuid}'>
 				<td>
-					<input type="text" name="path" class="layui-input short" value="${location.path}">
+					<div class="layui-inline" >
+						<input type="text" name="path" class="layui-input short" value="${location.path}">
+					</div>
 				</td>
 				<td>
-					<div class="layui-input-inline" style="width: 130px;">
+					<div class="layui-inline" style="width: 130px;">
 						<select name="type" lang='${uuid}' lay-filter="type">
 							<option ${location.type == '0' ? 'selected' : ''} value="0">${serverStr.serverType0}</option>
 							<option ${location.type == '1' ? 'selected' : ''} value="1">${serverStr.serverType1}</option>
@@ -507,7 +515,7 @@ function buildHtml(uuid, location, upstreamSelect) {
 				<td>
 					<span name="valueSpan">
 						<div class="layui-inline">
-							<input type="text"  style="width: 315px;" name="value" id="value_${uuid}" class="layui-input long" value=""  placeholder="${serverStr.example}：http://127.0.0.1:8080">
+							<input type="text"  style="width: 240px;" name="value" id="value_${uuid}" class="layui-input long" value=""  placeholder="${serverStr.example}：http://127.0.0.1:8080">
 						</div>
 					</span>
 					
@@ -541,6 +549,9 @@ function buildHtml(uuid, location, upstreamSelect) {
 					<span  name="headerSpan">
 						<div class="layui-inline">
 							<input type="checkbox" name="header" title="${serverStr.headerAddHost}" lay-skin="primary" checked> 
+						</div>
+						<div class="layui-inline">
+							<input type="checkbox" name="websocket" title="${serverStr.websocket}" lay-skin="primary" checked> 
 						</div>
 					</span>
 				</td> 

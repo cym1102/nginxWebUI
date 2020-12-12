@@ -5,7 +5,7 @@ function showWindow(title){
 	layer.open({
 		type : 1,
 		title : title,
-		area : [ '1200px', '745px' ], // 宽高
+		area : [ '1000px', '700px' ], // 宽高
 		content : $('#windowDiv')
 	});
 }
@@ -23,7 +23,7 @@ function content(path) {
 			if (data.success) {
 				$("#content").val(data.obj);
 
-				$("#content").setTextareaCount();
+				//$("#content").setTextareaCount();
 				
 				form.render();
 				
@@ -74,7 +74,9 @@ function replace(path){
 			dataType : 'json',
 			success : function(data) {
 				if (data.success) {
-					layer.msg(bakStr.operationSuccess)
+					layer.msg(bakStr.operationSuccess);
+					
+					parent.loadOrg();
 				}else{
 					layer.msg(data.msg)
 				}

@@ -37,8 +37,16 @@ public class Server extends BaseModel {
 	String protocols; // 加密协议
 	
 	String passwordId;
+	String denyAllowId;
 	
 	
+	
+	public String getDenyAllowId() {
+		return denyAllowId;
+	}
+	public void setDenyAllowId(String denyAllowId) {
+		this.denyAllowId = denyAllowId;
+	}
 	public String getPasswordId() {
 		return passwordId;
 	}

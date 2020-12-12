@@ -1,7 +1,9 @@
 package com.cym.config;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +34,8 @@ import cn.hutool.core.util.ZipUtil;
 public class InitConfig {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public static String acmeSh = "/root/.acme.sh/acme.sh";
+	public static String acmeSh;
+	public static String acmeShDir;
 	public static String home;
 
 	@Autowired
@@ -47,6 +50,8 @@ public class InitConfig {
 	@Value("${project.home}")
 	public void setHome(String home) {
 		InitConfig.home = home;
+		InitConfig.acmeShDir = home + ".acme.sh/";
+		InitConfig.acmeSh = home + ".acme.sh/acme.sh";
 	}
 
 	@PostConstruct
@@ -68,17 +73,17 @@ public class InitConfig {
 			https.add(new Http("default_type", "application/octet-stream", 1l));
 			sqlHelper.insertAll(https);
 		}
-		
+
 		// 释放nginx.conf,mime.types
-		if(!FileUtil.exist(home + "nginx.conf")) {
+		if (!FileUtil.exist(home + "nginx.conf")) {
 			ClassPathResource resource = new ClassPathResource("nginx.conf");
 			FileUtil.writeFromStream(resource.getInputStream(), home + "nginx.conf");
 		}
-		if(!FileUtil.exist(home + "mime.types")) {
+		if (!FileUtil.exist(home + "mime.types")) {
 			ClassPathResource resource = new ClassPathResource("mime.types");
 			FileUtil.writeFromStream(resource.getInputStream(), home + "mime.types");
 		}
-		
+
 		// 设置nginx配置文件
 		String nginxPath = settingService.get("nginxPath");
 		if (StrUtil.isEmpty(nginxPath)) {
@@ -88,28 +93,30 @@ public class InitConfig {
 		}
 
 		if (SystemTool.isLinux()) {
-			// 初始化acme.sh
-			if (!FileUtil.exist("/root/.acme.sh")) {
+			// 释放全新包
+			ClassPathResource resource = new ClassPathResource("acme.zip");
+			InputStream inputStream = resource.getInputStream();
+			FileUtil.writeFromStream(inputStream, InitConfig.home + "acme.zip");
+			FileUtil.mkdir(InitConfig.acmeShDir);
+			ZipUtil.unzip(InitConfig.home + "acme.zip", InitConfig.acmeShDir);
+			FileUtil.del(InitConfig.home + "acme.zip");
 
-				// 查看是否存在/home/nginxWebUI/.acme.sh
-				if (FileUtil.exist(home + ".acme.sh")) {
-					// 有,直接复制过来
-					FileUtil.copy(home + ".acme.sh", "/root/", true);
-				} else {
-					// 没有,释放全新包
-					ClassPathResource resource = new ClassPathResource("acme.zip");
-					InputStream inputStream = resource.getInputStream();
-
-					FileUtil.writeFromStream(inputStream, "/root/acme.zip");
-					FileUtil.mkdir("/root/.acme.sh");
-					ZipUtil.unzip("/root/acme.zip", "/root/.acme.sh");
-					FileUtil.del("/root/acme.zip");
+			// 释放新的.acme.sh文件
+			resource = new ClassPathResource("acme.sh");
+			List<String> res = new ArrayList<>();
+			BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream(), "UTF-8"));
+			String str = "";
+			while ((str = br.readLine()) != null) {
+				if (str.contains("${acmeShDir}")) {
+					str = str.replace("${acmeShDir}", InitConfig.acmeShDir);
 				}
-				
-				// 赋予执行权限
-				RuntimeUtil.exec("chmod 777 " + acmeSh);
+				res.add(str);
 			}
 
+			FileUtil.writeLines(res, InitConfig.acmeSh, "UTF-8");
+			RuntimeUtil.exec("chmod a+x " + acmeSh);
+
+			
 			// 查找ngx_stream_module模块
 			if (!basicService.contain("ngx_stream_module.so")) {
 				List<String> list = RuntimeUtil.execForLines(CharsetUtil.systemCharset(), "find / -name ngx_stream_module.so");
@@ -133,23 +140,22 @@ public class InitConfig {
 		}
 
 		// 初始化http和stream的seq值
-		List<Http> https = sqlHelper.findAll(Http.class);
-		List<Stream> streams = sqlHelper.findAll(Stream.class);
+//		List<Http> https = sqlHelper.findAll(Http.class);
+//		List<Stream> streams = sqlHelper.findAll(Stream.class);
+//
+//		for (Http http : https) {
+//			if (http.getSeq() == null) {
+//				http.setSeq(Long.parseLong(http.getId()));
+//				sqlHelper.updateById(http);
+//			}
+//		}
+//		for (Stream stream : streams) {
+//			if (stream.getSeq() == null) {
+//				stream.setSeq(Long.parseLong(stream.getId()));
+//				sqlHelper.updateById(stream);
+//			}
+//		}
 
-		for (Http http : https) {
-			if (http.getSeq() == null) {
-				http.setSeq(Long.parseLong(http.getId()));
-				sqlHelper.updateById(http);
-			}
-		}
-		for (Stream stream : streams) {
-			if (stream.getSeq() == null) {
-				stream.setSeq(Long.parseLong(stream.getId()));
-				sqlHelper.updateById(stream);
-			}
-		}
-		
-		
 		// 删除多余备份文件
 		scheduleTask.delCache();
 	}

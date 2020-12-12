@@ -462,3 +462,14 @@ function runCmdOver(){
 		}
 	});
 }
+
+
+function showBak(){
+	
+	layer.open({
+		  type: 2, 
+		  title: bakStr.bakFile,
+		  area : [ '1200px', '800px' ],
+		  content: ctx + "/adminPage/bak"
+	});
+}

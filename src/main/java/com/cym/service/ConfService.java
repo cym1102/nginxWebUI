@@ -397,6 +397,20 @@ public class ConfService {
 						ngxParam.addValue("proxy_set_header X-Forwarded-Proto $scheme");
 						ngxBlockLocation.addEntry(ngxParam);
 					}
+					
+					if (location.getWebsocket() == 1) { // 设置header
+						ngxParam = new NgxParam();
+						ngxParam.addValue("proxy_http_version 1.1");
+						ngxBlockLocation.addEntry(ngxParam);
+
+						ngxParam = new NgxParam();
+						ngxParam.addValue("proxy_set_header Upgrade $http_upgrade");
+						ngxBlockLocation.addEntry(ngxParam);
+
+						ngxParam = new NgxParam();
+						ngxParam.addValue("proxy_set_header Connection \"upgrade\"");
+						ngxBlockLocation.addEntry(ngxParam);
+					}
 
 					if (server.getSsl() == 1 && server.getRewrite() == 1) { // redirect http转https
 						ngxParam = new NgxParam();

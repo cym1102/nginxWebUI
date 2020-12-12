@@ -23,7 +23,17 @@ public class Location extends BaseModel {
 	
 	@InitValue("1")
 	Integer header; // 是否设置header参数
+	@InitValue("0")
+	Integer websocket; // websocket支持
 	
+	
+	public Integer getWebsocket() {
+		return websocket;
+	}
+
+	public void setWebsocket(Integer websocket) {
+		this.websocket = websocket;
+	}
 
 	public Integer getHeader() {
 		return header;

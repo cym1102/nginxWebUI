@@ -1,5 +1,7 @@
 package com.cym.test;
 
+import java.io.File;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,6 +20,7 @@ import com.cym.utils.MessageUtils;
 import com.cym.utils.SendMailUtils;
 
 import cn.craccd.sqlHelper.utils.SqlHelper;
+import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
@@ -39,23 +42,15 @@ public class MainTest {
 	SettingService settingService;
 	@Autowired
 	MessageUtils m;
-	
-	@BeforeAll
-	static void before() {
-		System.out.println("--------------测试开始----------");
-	}
 
 	@Test
 	public void testStartUp() throws InterruptedException {
-	}
 
-	@AfterAll
-	static void after() {
-		System.out.println("--------------测试结束----------");
 	}
-
 
 	public static void main(String[] args) {
-		
+		Process ps = RuntimeUtil.exec(new String[] {}, new File("d:/"), "tasklist");
+		String rs = RuntimeUtil.getResult(ps);
+		System.out.println(rs);
 	}
 }
