@@ -61,10 +61,10 @@ public class PasswordController extends BaseController {
 		String value = "";
 		if (SystemTool.isWindows()) {
 			// windows 明码
-			value = password.getName() + ":" + password.getName();
+			value = password.getName() + ":" + password.getPass();
 		} else {
 			// linux 生成加密
-			value = Crypt.getString(password.getName(), password.getName());
+			value = Crypt.getString(password.getName(), password.getPass());
 		}
 		FileUtil.writeString(value, password.getPath(), "UTF-8");
 

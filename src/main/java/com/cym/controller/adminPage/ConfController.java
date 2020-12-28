@@ -166,19 +166,19 @@ public class ConfController extends BaseController {
 		String fileTemp = InitConfig.home + "temp/nginx.conf";
 
 		try {
-			ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"), true);
+			ConfExt confExt = confService.buildConf(false, true);
 			FileUtil.writeString(confExt.getConf(), fileTemp, CharsetUtil.CHARSET_UTF_8);
 
 			ClassPathResource resource = new ClassPathResource("mime.types");
 			FileUtil.writeFromStream(resource.getInputStream(), InitConfig.home + "temp/mime.types");
 
-			for (int i = 0; i < confExt.getFileList().size(); i++) {
-				String subName = confExt.getFileList().get(i).getName();
-				String subContent = confExt.getFileList().get(i).getConf();
-
-				String tagert = (new File(nginxPath).getParent() + "conf.d/" + subName).replace(" ", "_");
-				FileUtil.writeString(subContent, tagert, StandardCharsets.UTF_8); // 清空
-			}
+//			for (int i = 0; i < confExt.getFileList().size(); i++) {
+//				String subName = confExt.getFileList().get(i).getName();
+//				String subContent = confExt.getFileList().get(i).getConf();
+//
+//				String tagert = (new File(fileTemp).getParent() + "/conf.d/" + subName).replace(" ", "_");
+//				FileUtil.writeString(subContent, tagert, StandardCharsets.UTF_8); // 清空
+//			}
 
 			if (SystemTool.isWindows()) {
 				cmd = nginxExe + " -t -c " + fileTemp + " -p " + nginxDir;
@@ -375,7 +375,7 @@ public class ConfController extends BaseController {
 			for (ConfFile confFile : confExt.getFileList()) {
 				confFile.setConf("");
 
-				String filePath = new File(nginxPath).getParent() + "conf.d/" + confFile.getName();
+				String filePath = new File(nginxPath).getParent() + "/conf.d/" + confFile.getName();
 				if (FileUtil.exist(filePath)) {
 					confFile.setConf(FileUtil.readString(filePath, StandardCharsets.UTF_8));
 				}

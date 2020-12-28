@@ -8,6 +8,8 @@ import cn.craccd.sqlHelper.config.Table;
 public class Server extends BaseModel {
 	String serverName;
 	String listen;
+	
+	
 	@InitValue("0")
 	Integer def; // 是否为默认server
 

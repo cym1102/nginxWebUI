@@ -42,7 +42,7 @@ public class CertController extends BaseController {
 	SettingService settingService;
 	@Autowired
 	CertService certService;
-	
+
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	Boolean isInApply = false;
@@ -59,10 +59,10 @@ public class CertController extends BaseController {
 	@RequestMapping("addOver")
 	@ResponseBody
 	public JsonResult addOver(Cert cert) {
-		if(certService.hasSame(cert)) {
-			return renderError(m.get("certStr.same")); 
+		if (certService.hasSame(cert)) {
+			return renderError(m.get("certStr.same"));
 		}
-		
+
 		sqlHelper.insertOrUpdate(cert);
 		return renderSuccess();
 	}
@@ -84,12 +84,12 @@ public class CertController extends BaseController {
 	@ResponseBody
 	public JsonResult del(String id) {
 		Cert cert = sqlHelper.findById(id, Cert.class);
-		if (cert.getKey() != null) {
-			FileUtil.del(cert.getKey());
-		}
-		if (cert.getPem() != null) {
-			FileUtil.del(cert.getPem());
-		}
+//		if (cert.getKey() != null) {
+//			FileUtil.del(cert.getKey());
+//		}
+//		if (cert.getPem() != null) {
+//			FileUtil.del(cert.getPem());
+//		}
 
 		FileUtil.del(InitConfig.acmeShDir + cert.getDomain());
 		sqlHelper.deleteById(id, Cert.class);
