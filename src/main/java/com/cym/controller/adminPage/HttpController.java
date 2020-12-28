@@ -33,7 +33,7 @@ public class HttpController extends BaseController {
 
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
-		List<Http> httpList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Http.class);
+		List<Http> httpList = httpService.findAll(); 
 
 		modelAndView.addObject("httpList", httpList);
 		modelAndView.setViewName("/adminPage/http/index");

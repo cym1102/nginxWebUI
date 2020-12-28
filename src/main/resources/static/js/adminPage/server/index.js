@@ -172,7 +172,7 @@ function showWindow(title) {
 	layer.open({
 		type: 1,
 		title: title,
-		area: ['1250px', '700px'], // 宽高
+		area: ['1300px', '700px'], // 宽高
 		content: $('#windowDiv')
 	});
 }
@@ -551,7 +551,7 @@ function buildHtml(uuid, location, upstreamSelect) {
 							<input type="checkbox" name="header" title="${serverStr.headerAddHost}" lay-skin="primary" checked> 
 						</div>
 						<div class="layui-inline">
-							<input type="checkbox" name="websocket" title="${serverStr.websocket}" lay-skin="primary" checked> 
+							<input type="checkbox" name="websocket" title="${serverStr.websocket}" lay-skin="primary"> 
 						</div>
 					</span>
 				</td> 
@@ -731,7 +731,7 @@ function addParamOver() {
 }
 
 
-function sort(id) {
+/*function sort(id) {
 	$("#sort").val(id.replace("Sort", ""))
 	if ($("#" + id).attr("class").indexOf("blue") > -1) {
 		if ($("#direction").val() == 'asc') {
@@ -744,7 +744,7 @@ function sort(id) {
 	}
 
 	search();
-}
+}*/
 
 
 var wwwIndex;
@@ -858,6 +858,32 @@ function editDescrOver(){
 			}
 		},
 		error: function() {
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+}
+
+
+function setOrder(id, count){
+	showLoad();
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/server/setOrder',
+		data : {
+			id : id,
+			count : count
+		},
+		dataType : 'json',
+		success : function(data) {
+			closeLoad();
+			if (data.success) {
+				location.reload();
+			}else{
+				layer.msg(data.msg)
+			}
+		},
+		error : function() {
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});

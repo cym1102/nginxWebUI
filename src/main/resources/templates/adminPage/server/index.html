@@ -114,8 +114,9 @@
 						<button type="button" class="layui-btn" onclick="search()">${commonStr.search}</button>
 
 
-						<input type="hidden" name="sort" id="sort" value="${sort}">
-						<input type="hidden" name="direction" id="direction" value="${direction}">
+						<!-- <input type="hidden" name="sort" id="sort" value="${sort}">
+						<input type="hidden" name="direction" id="direction" value="${direction}"> -->
+						
 						<input type="hidden" name="curr" value="${page.curr}">
 						<input type="hidden" name="limit" value="${page.limit}">
 					</div>
@@ -125,17 +126,17 @@
 							<tr>
 								<th>
 									${serverStr.transpondType}
-									<i class="layui-icon ${(direction=='desc'&&sort=='proxyType')?string('layui-icon-down','layui-icon-up')} ${(sort=='proxyType')?string('blue','')}" id="proxyTypeSort"
-										onclick="sort('proxyTypeSort')"></i>
+									<!-- <i class="layui-icon ${(direction=='desc'&&sort=='proxyType')?string('layui-icon-down','layui-icon-up')} ${(sort=='proxyType')?string('blue','')}" id="proxyTypeSort"
+										onclick="sort('proxyTypeSort')"></i> -->
 								</th>
 								<th>
 									${serverStr.listen}
-									<i class="layui-icon ${(direction=='desc'&&sort=='listen')?string('layui-icon-down','layui-icon-up')} ${(sort=='listen')?string('blue','')}" id="listenSort" onclick="sort('listenSort')"></i>
+									<!-- <i class="layui-icon ${(direction=='desc'&&sort=='listen')?string('layui-icon-down','layui-icon-up')} ${(sort=='listen')?string('blue','')}" id="listenSort" onclick="sort('listenSort')"></i> -->
 								</th>
 								<th>
 									${serverStr.serverName}
-									<i class="layui-icon ${(direction=='desc'&&sort=='serverName')?string('layui-icon-down','layui-icon-up')} ${(sort=='serverName')?string('blue','')}" id="serverNameSort"
-										onclick="sort('serverNameSort')"></i>
+									<!-- <i class="layui-icon ${(direction=='desc'&&sort=='serverName')?string('layui-icon-down','layui-icon-up')} ${(sort=='serverName')?string('blue','')}" id="serverNameSort"
+										onclick="sort('serverNameSort')"></i> -->
 								</th>
 								<th>${serverStr.ssl}</th>
 								<th>${serverStr.sslOption}</th>
@@ -205,7 +206,9 @@
 									<button type="button" class="layui-btn layui-btn-sm" onclick="edit('${ext.server.id}', false)">${commonStr.edit}</button>
 									<button type="button" class="layui-btn layui-btn-sm" onclick="clone('${ext.server.id}')">${commonStr.clone}</button>
 									<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.server.id}')">${commonStr.del}</button>
-
+									
+									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${ext.server.id}', 1)">${commonStr.up}</button>
+									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${ext.server.id}', -1)">${commonStr.down}</button>
 								</td>
 							</tr>
 							</#list>

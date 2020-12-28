@@ -1,27 +1,24 @@
 package com.cym.service;
 
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import cn.hutool.core.io.FileUtil;
-import com.github.odiszapc.nginxparser.NgxBlock;
-import com.github.odiszapc.nginxparser.NgxConfig;
-import com.github.odiszapc.nginxparser.NgxEntry;
-import com.github.odiszapc.nginxparser.NgxParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cym.model.Location;
 import com.cym.model.Param;
 import com.cym.model.Server;
+import com.github.odiszapc.nginxparser.NgxBlock;
+import com.github.odiszapc.nginxparser.NgxConfig;
+import com.github.odiszapc.nginxparser.NgxEntry;
+import com.github.odiszapc.nginxparser.NgxParam;
 
 import cn.craccd.sqlHelper.bean.Page;
 import cn.craccd.sqlHelper.bean.Sort;
@@ -29,10 +26,10 @@ import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import org.springframework.util.StringUtils;
 
 @Service
 public class ServerService {
@@ -41,19 +38,14 @@ public class ServerService {
 	@Autowired
 	SqlHelper sqlHelper;
 
-//	@Value("${project.home}")
-//	private String tmpPath;
 
-	public Page search(Page page, String sortColum, String direction, String keywords) {
+	public Page search(Page page, String keywords) {
 		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper();
 		if (StrUtil.isNotEmpty(keywords)) {
 			conditionAndWrapper.and(new ConditionOrWrapper().like("descr", keywords).like("serverName", keywords.trim()).like("listen", keywords.trim()));
 		}
 
-		Sort sort = null;
-		if (StrUtil.isNotEmpty(sortColum)) {
-			sort = new Sort(sortColum, "asc".equalsIgnoreCase(direction) ? Direction.ASC : Direction.DESC);
-		}
+		Sort sort = new Sort().add("seq + 0", Direction.DESC);
 
 		page = sqlHelper.findPage(conditionAndWrapper, sort, page, Server.class);
 
@@ -147,7 +139,8 @@ public class ServerService {
 	}
 
 	public List<Server> getListByProxyType(Integer[] proxyType) {
-		return sqlHelper.findListByQuery(new ConditionAndWrapper().in("proxyType", proxyType), Server.class);
+		Sort sort = new Sort().add("seq + 0", Direction.DESC);
+		return sqlHelper.findListByQuery(new ConditionAndWrapper().in("proxyType", proxyType), sort, Server.class);
 	}
 
 	@Transactional
@@ -289,8 +282,9 @@ public class ServerService {
 				locations.add(location);
 			}
 
-			server.setDef(0); 
-			this.addOver(server, "", locations);
+			server.setDef(0);
+			server.setSeq(buildOrder());
+			addOver(server, "", locations);
 		}
 
 		// 删除临时文件
@@ -318,5 +312,52 @@ public class ServerService {
 		String initNginxPath = FileUtil.getTmpDirPath() + UUID.randomUUID().toString();
 		FileUtil.writeLines(rs, initNginxPath, CharsetUtil.CHARSET_UTF_8);
 		return initNginxPath;
+	}
+
+	public void setSeq(String serverId, Integer seqAdd) {
+		Server server = sqlHelper.findById(serverId, Server.class);
+
+		List<Server> serverList = sqlHelper.findAll(new Sort("seq + 0", Direction.DESC), Server.class);
+		if (serverList.size() > 0) {
+			Server tagert = null;
+			if (seqAdd < 0) {
+				// 下移
+				for (int i = 0; i < serverList.size(); i++) {
+					if (serverList.get(i).getSeq() < server.getSeq()) {
+						tagert = serverList.get(i);
+						break;
+					}
+				}
+			} else {
+				// 上移
+				for (int i = serverList.size() - 1; i >= 0; i--) {
+					if (serverList.get(i).getSeq() > server.getSeq()) {
+						tagert = serverList.get(i);
+						break;
+					}
+				}
+			}
+
+			if (tagert != null) {
+				// 交换seq
+				Long seq = tagert.getSeq();
+				tagert.setSeq(server.getSeq());
+				server.setSeq(seq);
+
+				sqlHelper.updateById(tagert);
+				sqlHelper.updateById(server);
+			}
+
+		}
+
+	}
+
+	public Long buildOrder() {
+		Server server = sqlHelper.findOneByQuery(new Sort("seq + 0", Direction.DESC), Server.class);
+		if (server != null) {
+			return server.getSeq() + 1;
+		}
+
+		return 0l;
 	}
 }

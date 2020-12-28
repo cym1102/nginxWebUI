@@ -26,7 +26,8 @@ public class BasicController extends BaseController {
 	
 	@RequestMapping("")
 	public ModelAndView index(ModelAndView modelAndView) {
-		List<Basic> basicList = sqlHelper.findAll(new Sort().add(Basic::getSeq, Direction.ASC), Basic.class);
+		List<Basic> basicList = basicService.findAll();
+				
 
 		modelAndView.addObject("basicList", basicList);
 		modelAndView.setViewName("/adminPage/basic/index");

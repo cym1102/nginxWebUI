@@ -481,3 +481,30 @@ function addBatchOver(){
 	form.render();
 	layer.close(batchIndex);
 }
+
+
+
+function setOrder(id, count){
+	showLoad();
+	$.ajax({
+		type : 'POST',
+		url : ctx + '/adminPage/upstream/setOrder',
+		data : {
+			id : id,
+			count : count
+		},
+		dataType : 'json',
+		success : function(data) {
+			closeLoad();
+			if (data.success) {
+				location.reload();
+			}else{
+				layer.msg(data.msg)
+			}
+		},
+		error : function() {
+			closeLoad();
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+}

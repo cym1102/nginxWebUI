@@ -22,14 +22,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.config.InitConfig;
 import com.cym.model.Cert;
+import com.cym.service.CertService;
 import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
 
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.UUID;
-import cn.hutool.core.net.URLEncoder;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
@@ -39,7 +40,9 @@ import cn.hutool.core.util.ZipUtil;
 public class CertController extends BaseController {
 	@Autowired
 	SettingService settingService;
-
+	@Autowired
+	CertService certService;
+	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	Boolean isInApply = false;
@@ -56,6 +59,10 @@ public class CertController extends BaseController {
 	@RequestMapping("addOver")
 	@ResponseBody
 	public JsonResult addOver(Cert cert) {
+		if(certService.hasSame(cert)) {
+			return renderError(m.get("certStr.same")); 
+		}
+		
 		sqlHelper.insertOrUpdate(cert);
 		return renderSuccess();
 	}
@@ -83,7 +90,7 @@ public class CertController extends BaseController {
 		if (cert.getPem() != null) {
 			FileUtil.del(cert.getPem());
 		}
-		
+
 		FileUtil.del(InitConfig.acmeShDir + cert.getDomain());
 		sqlHelper.deleteById(id, Cert.class);
 		return renderSuccess();
@@ -188,7 +195,7 @@ public class CertController extends BaseController {
 			list.add("SAVED_GD_Key='" + cert.getGdKey() + "'");
 			list.add("SAVED_GD_Secret='" + cert.getGdSecret() + "'");
 		}
-		
+
 		list.add("USER_PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin'");
 
 		FileUtil.writeLines(list, new File(InitConfig.acmeSh.replace("/acme.sh", "/account.conf")), Charset.defaultCharset());
@@ -210,12 +217,10 @@ public class CertController extends BaseController {
 
 			ZipUtil.zip(dir);
 			FileUtil.del(dir);
-			
+
 			handleStream(response, dir + ".zip");
 		}
 	}
-	
-	
 
 	private void handleStream(HttpServletResponse response, String path) throws IOException {
 

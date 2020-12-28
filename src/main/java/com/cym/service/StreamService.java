@@ -20,7 +20,7 @@ public class StreamService {
 	public void setSeq(String streamId, Integer seqAdd) {
 		Stream http = sqlHelper.findById(streamId, Stream.class);
 
-		List<Stream> httpList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
+		List<Stream> httpList = sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Stream.class);
 		if (httpList.size() > 0) {
 			Stream tagert = null;
 			if (seqAdd < 0) {
@@ -53,12 +53,16 @@ public class StreamService {
 
 	public Long buildOrder() {
 
-		Stream stream = sqlHelper.findOneByQuery(new Sort("seq", Direction.DESC), Stream.class);
+		Stream stream = sqlHelper.findOneByQuery(new Sort("seq + 0", Direction.DESC), Stream.class);
 		if (stream != null) {
 			return stream.getSeq() + 1;
 		}
 
 		return 0l;
+	}
+
+	public List<Stream> findAll() {
+		return sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Stream.class);
 	}
 
 	

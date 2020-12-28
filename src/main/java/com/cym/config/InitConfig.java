@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import com.cym.model.Basic;
@@ -23,6 +24,8 @@ import com.cym.service.BasicService;
 import com.cym.service.SettingService;
 import com.cym.utils.SystemTool;
 
+import cn.craccd.sqlHelper.bean.Update;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.CharsetUtil;
@@ -38,6 +41,7 @@ public class InitConfig {
 	public static String acmeShDir;
 	public static String home;
 
+	
 	@Autowired
 	SettingService settingService;
 	@Autowired
@@ -46,7 +50,9 @@ public class InitConfig {
 	ScheduleTask scheduleTask;
 	@Autowired
 	SqlHelper sqlHelper;
-
+	@Autowired
+	JdbcTemplate jdbcTemplate;
+	
 	@Value("${project.home}")
 	public void setHome(String home) {
 		InitConfig.home = home;
@@ -140,22 +146,9 @@ public class InitConfig {
 		}
 
 		// 初始化http和stream的seq值
-//		List<Http> https = sqlHelper.findAll(Http.class);
-//		List<Stream> streams = sqlHelper.findAll(Stream.class);
-//
-//		for (Http http : https) {
-//			if (http.getSeq() == null) {
-//				http.setSeq(Long.parseLong(http.getId()));
-//				sqlHelper.updateById(http);
-//			}
-//		}
-//		for (Stream stream : streams) {
-//			if (stream.getSeq() == null) {
-//				stream.setSeq(Long.parseLong(stream.getId()));
-//				sqlHelper.updateById(stream);
-//			}
-//		}
-
+		jdbcTemplate.update("update server set seq = id where seq is null");
+		jdbcTemplate.update("update http set seq = id where seq is null");
+		jdbcTemplate.update("update upstream set seq = id where seq is null");
 		// 删除多余备份文件
 		scheduleTask.delCache();
 	}

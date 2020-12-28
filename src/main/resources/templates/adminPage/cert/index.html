@@ -88,7 +88,9 @@
 									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="download('${cert.id}')">${certStr.download}</button>
 								</#if>
 								
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">${commonStr.del}</button></td>
+								<button class="layui-btn layui-btn-sm" onclick="clone('${cert.id}')">${commonStr.clone}</button>
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">${commonStr.del}</button>
+								</td>
 						</tr>
 						</#list>
 					</tbody>

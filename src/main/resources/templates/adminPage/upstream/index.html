@@ -107,6 +107,9 @@
 									
 								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.upstream.id}')">${commonStr.edit}</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.upstream.id}')">${commonStr.del}</button>
+								
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${ext.upstream.id}', 1)">${commonStr.up}</button>
+								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${ext.upstream.id}', -1)">${commonStr.down}</button>
 							</td>
 						</tr>
 						</#list>

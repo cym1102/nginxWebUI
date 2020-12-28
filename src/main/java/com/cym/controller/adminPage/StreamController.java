@@ -27,7 +27,7 @@ public class StreamController extends BaseController {
 
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
-		List<Stream> streamList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
+		List<Stream> streamList = streamService.findAll();
 
 		modelAndView.addObject("streamList", streamList);
 		modelAndView.setViewName("/adminPage/stream/index");

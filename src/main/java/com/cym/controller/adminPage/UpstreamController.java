@@ -43,11 +43,6 @@ public class UpstreamController extends BaseController {
 
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String keywords) {
-		// 检测node
-//		String upstreamMonitor = settingService.get("upstreamMonitor");
-//		if ("true".equals(upstreamMonitor)) {
-//			testNode();
-//		}
 
 		page = upstreamService.search(page, keywords);
 
@@ -93,7 +88,6 @@ public class UpstreamController extends BaseController {
 			}
 			monitorStatus += "</td>";
 		}
-//		System.err.println(upstreamServer.getServer() + ":" + upstreamServer.getMonitorStatus());
 
 		if (upstreamServer.getServer().contains(":")) {
 			upstreamServer.setServer("[" + upstreamServer.getServer() + "]");
@@ -114,6 +108,11 @@ public class UpstreamController extends BaseController {
 		Upstream upstream = JSONUtil.toBean(upstreamJson, Upstream.class);
 		List<UpstreamServer> upstreamServers = JSONUtil.toList(JSONUtil.parseArray(upstreamServerJson), UpstreamServer.class);
 
+
+		if (StrUtil.isEmpty(upstream.getId())) {
+			upstream.setSeq(upstreamService.buildOrder());
+		}
+		
 		if (StrUtil.isEmpty(upstream.getId())) {
 			Long count = upstreamService.getCountByName(upstream.getName());
 			if (count > 0) {
@@ -186,6 +185,13 @@ public class UpstreamController extends BaseController {
 			upstreamService.resetMonitorStatus();
 		}
 
+		return renderSuccess();
+	}
+	
+	@RequestMapping("setOrder")
+	@ResponseBody
+	public JsonResult setOrder(String id, Integer count) {
+		upstreamService.setSeq(id, count);
 		return renderSuccess();
 	}
 

@@ -1,9 +1,8 @@
 package com.cym.test;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,16 +12,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.cym.NginxWebUI;
-import com.cym.model.Version;
 import com.cym.service.MonitorService;
 import com.cym.service.SettingService;
 import com.cym.utils.MessageUtils;
 import com.cym.utils.SendMailUtils;
 
 import cn.craccd.sqlHelper.utils.SqlHelper;
-import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 
 @SpringBootTest(classes = NginxWebUI.class)
 public class MainTest {
@@ -48,9 +43,5 @@ public class MainTest {
 
 	}
 
-	public static void main(String[] args) {
-		Process ps = RuntimeUtil.exec(new String[] {}, new File("d:/"), "tasklist");
-		String rs = RuntimeUtil.getResult(ps);
-		System.out.println(rs);
-	}
+	
 }

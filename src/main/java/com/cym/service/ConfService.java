@@ -72,7 +72,7 @@ public class ConfService {
 			NgxConfig ngxConfig = new NgxConfig();
 
 			// 获取基本参数
-			List<Basic> basicList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Basic.class);
+			List<Basic> basicList = sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Basic.class);
 			for (Basic basic : basicList) {
 				NgxParam ngxParam = new NgxParam();
 				ngxParam.addValue(basic.getName().trim() + " " + basic.getValue().trim());
@@ -80,7 +80,7 @@ public class ConfService {
 			}
 
 			// 获取http
-			List<Http> httpList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Http.class);
+			List<Http> httpList = sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Http.class);
 			boolean hasHttp = false;
 			NgxBlock ngxBlockHttp = new NgxBlock();
 			ngxBlockHttp.addValue("http");
@@ -172,7 +172,7 @@ public class ConfService {
 
 			// TCP/UDP转发
 			// 创建stream
-			List<Stream> streamList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
+			List<Stream> streamList = sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Stream.class);
 			boolean hasStream = false;
 			NgxBlock ngxBlockStream = new NgxBlock();
 			ngxBlockStream.addValue("stream");

@@ -114,7 +114,7 @@ function add() {
 }
 
 
-function edit(id) {
+function edit(id, clone) {
 	$("#id").val(id);
 
 	$.ajax({
@@ -128,7 +128,11 @@ function edit(id) {
 			if (data.success) {
 
 				var cert = data.obj;
-				$("#id").val(cert.id);
+				if (!clone) {
+					$("#id").val(cert.id);
+				} else {
+					$("#id").val("");
+				}
 				$("#domain").val(cert.domain);
 				$("#type").val(cert.type);
 				$("#dnsType").val(cert.dnsType != null ? cert.dnsType : 'ali');
@@ -337,4 +341,10 @@ function selectKey() {
 
 function download(id) {
 	window.open(ctx + "/adminPage/cert/download?id=" + id);
+}
+
+function clone(id){
+	if (confirm(serverStr.confirmClone)) {
+		edit(id, true);
+	}
 }

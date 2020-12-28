@@ -55,8 +55,8 @@ public class ServerController extends BaseController {
 	ConfService confService;
 
 	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String sort, String direction, String keywords) {
-		page = serverService.search(page, sort, direction, keywords);
+	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String keywords) {
+		page = serverService.search(page, keywords);
 
 		List<ServerExt> exts = new ArrayList<ServerExt>();
 		for (Server server : page.getRecords(Server.class)) {
@@ -89,8 +89,6 @@ public class ServerController extends BaseController {
 
 		modelAndView.addObject("certList", sqlHelper.findAll(Cert.class));
 		modelAndView.addObject("wwwList", sqlHelper.findAll(Www.class));
-		modelAndView.addObject("sort", sort);
-		modelAndView.addObject("direction", direction);
 
 		modelAndView.addObject("passwordList", sqlHelper.findAll(Password.class));
 
@@ -127,6 +125,10 @@ public class ServerController extends BaseController {
 		Server server = JSONUtil.toBean(serverJson, Server.class);
 		List<Location> locations = JSONUtil.toList(JSONUtil.parseArray(locationJson), Location.class);
 
+		if (StrUtil.isEmpty(server.getId())) {
+			server.setSeq(serverService.buildOrder());
+		}
+		
 		if (server.getProxyType() == 0) {
 			try {
 				serverService.addOver(server, serverParamJson, locations);
@@ -252,7 +254,7 @@ public class ServerController extends BaseController {
 			Upstream upstream = sqlHelper.findById(id, Upstream.class);
 			ngxBlock = confService.buildBlockUpstream(upstream);
 		} else if (type.equals("http")) {
-			List<Http> httpList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Http.class);
+			List<Http> httpList = sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Http.class);
 			ngxBlock = new NgxBlock();
 			ngxBlock.addValue("http");
 			for (Http http : httpList) {
@@ -261,7 +263,7 @@ public class ServerController extends BaseController {
 				ngxBlock.addEntry(ngxParam);
 			}
 		} else if (type.equals("stream")) {
-			List<Stream> streamList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
+			List<Stream> streamList = sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Stream.class);
 			ngxBlock = new NgxBlock();
 			ngxBlock.addValue("stream");
 			for (Stream stream : streamList) {
@@ -277,5 +279,11 @@ public class ServerController extends BaseController {
 
 		return renderSuccess(conf);
 	}
-
+	
+	@RequestMapping("setOrder")
+	@ResponseBody
+	public JsonResult setOrder(String id, Integer count) {
+		serverService.setSeq(id, count);
+		return renderSuccess();
+	}
 }

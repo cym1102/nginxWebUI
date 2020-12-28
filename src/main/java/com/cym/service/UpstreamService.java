@@ -34,7 +34,7 @@ public class UpstreamService {
 			conditionAndWrapper.and(new ConditionOrWrapper().like("name", word));
 		}
 
-		page = sqlHelper.findPage(conditionAndWrapper, new Sort("id", Direction.DESC), page, Upstream.class);
+		page = sqlHelper.findPage(conditionAndWrapper, new Sort("seq + 0", Direction.DESC), page, Upstream.class);
 
 		return page;
 	}
@@ -90,7 +90,8 @@ public class UpstreamService {
 	}
 
 	public List<Upstream> getListByProxyType(Integer proxyType) {
-		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq("proxyType", proxyType), Upstream.class);
+		Sort sort = new Sort().add("seq + 0", Direction.DESC);
+		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq("proxyType", proxyType), sort, Upstream.class);
 	}
 
 	public Long getCountByName(String name) {
@@ -112,13 +113,55 @@ public class UpstreamService {
 	}
 
 	public void resetMonitorStatus() {
-//		List<UpstreamServer> list = sqlHelper.findAll(UpstreamServer.class);
-//		for (UpstreamServer upstreamServer : list) {
-//			upstreamServer.setMonitorStatus(-1);
-//			sqlHelper.updateById(upstreamServer);
-//		}
 
 		sqlHelper.updateMulti(new ConditionAndWrapper(), new Update().set("monitorStatus", -1), UpstreamServer.class);
+	}
+
+	public Long buildOrder() {
+		Upstream upstream = sqlHelper.findOneByQuery(new Sort("seq + 0", Direction.DESC), Upstream.class);
+		if (upstream != null) {
+			return upstream.getSeq() + 1;
+		}
+
+		return 0l;
+	}
+
+	public void setSeq(String upstreamId, Integer seqAdd) {
+		Upstream upstream = sqlHelper.findById(upstreamId, Upstream.class);
+
+		List<Upstream> upstreamList = sqlHelper.findAll(new Sort("seq + 0", Direction.DESC), Upstream.class);
+		if (upstreamList.size() > 0) {
+			Upstream tagert = null;
+			if (seqAdd < 0) {
+				// 下移
+				for (int i = 0; i < upstreamList.size(); i++) {
+					if (upstreamList.get(i).getSeq() < upstream.getSeq()) {
+						tagert = upstreamList.get(i);
+						break;
+					}
+				}
+			} else {
+				// 上移
+				for (int i = upstreamList.size() - 1; i >= 0; i--) {
+					if (upstreamList.get(i).getSeq() > upstream.getSeq()) {
+						tagert = upstreamList.get(i);
+						break;
+					}
+				}
+			}
+
+			if (tagert != null) {
+				// 交换seq
+				Long seq = tagert.getSeq();
+				tagert.setSeq(upstream.getSeq());
+				upstream.setSeq(seq);
+
+				sqlHelper.updateById(tagert);
+				sqlHelper.updateById(upstream);
+			}
+
+		}
+
 	}
 
 }
