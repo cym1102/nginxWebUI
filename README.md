@@ -157,13 +157,24 @@ apt install supervisor
 centos:
 
 ```
-yum install supervisor
+yum install epel-release // 引入supervisor的源
+yum install supervisor // 安装supervisor
+systemctl start supervisord.service     //启动supervisor并加载默认配置文件
+systemctl enable supervisord.service    //将supervisor加入开机启动项
 ```
 
 2. 编辑启动配置
 
+ubuntu:
+
 ```
 vim /etc/supervisor/conf.d/nginxwebui.conf
+```
+
+centos:
+
+```
+vim /etc/supervisord.d/nginxwebui.ini
 ```
 
 内容:
@@ -177,6 +188,8 @@ stderr_logfile=/tmp/nginxwebui_stderr.log #错误输出
 stdout_logfile=/tmp/nginxwebui_stdout.log #日志输出
 user = root #启动用户,必须为root
 ```
+
+重启即可
 
 #### 使用说明
 
