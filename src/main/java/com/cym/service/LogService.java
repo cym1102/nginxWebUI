@@ -199,4 +199,9 @@ public class LogService {
 		return page;
 	}
 
+	public List<Log> findByDate(String startDate, String endDate) {
+		
+		return sqlHelper.findListByQuery(new ConditionAndWrapper().gte("date", startDate).lte("date", endDate), Log.class);
+	}
+
 }

@@ -5,7 +5,7 @@
 <style type="text/css">
 
 .long{
-	width: 150px;
+	width: 210px;
 }
 
 .short{
@@ -155,6 +155,37 @@ input[name='param']{
 					</div>
 					<div class="layui-form-mid layui-word-aux">MB，${httpStr.bodyBufferSize}</div>
 				</div>
+				
+				
+				
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label long">server_names_hash_bucket_size</label>
+					<div class="layui-input-inline short">
+						<input type="text" name="param" id="server_names_hash_bucket_size" class="layui-input" value="512" lang="">
+					</div>
+					<div class="layui-form-mid layui-word-aux">${httpStr.serverNamesHash}</div>
+				</div>
+				
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label long">proxy_headers_hash_max_size</label>
+					<div class="layui-input-inline short">
+						<input type="text" name="param" id="proxy_headers_hash_max_size" class="layui-input" value="51200" lang="">
+					</div>
+					<div class="layui-form-mid layui-word-aux">${httpStr.proxyHeadersMax}</div>
+				</div>
+				
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label long">proxy_headers_hash_bucket_size</label>
+					<div class="layui-input-inline short">
+						<input type="text" name="param" id="proxy_headers_hash_bucket_size" class="layui-input" value="6400" lang="">
+					</div>
+					<div class="layui-form-mid layui-word-aux">${httpStr.proxyHeadersHash}</div>
+				</div>
+				
+				
 				
 				
 				<div class="layui-form-item">

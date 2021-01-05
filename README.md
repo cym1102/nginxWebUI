@@ -59,7 +59,7 @@ yum install nginx
 2.下载最新版发行包jar
 
 ```
-wget http://file.nginxwebui.cn/nginxWebUI-2.4.3.jar
+wget http://file.nginxwebui.cn/nginxWebUI-2.4.4.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -67,7 +67,7 @@ wget http://file.nginxwebui.cn/nginxWebUI-2.4.3.jar
 3.启动程序
 
 ```
-nohup java -jar -Xmx64m nginxWebUI-2.4.3.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+nohup java -jar -Xmx64m nginxWebUI-2.4.4.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
 ```
 
 参数说明(都是非必填)
@@ -141,7 +141,7 @@ mvn clean package
 2. 使用docker构建镜像
 
 ```
-docker build -t nginxwebui:2.4.3 .
+docker build -t nginxwebui:2.4.4 .
 ```
 
 #### 添加开机启动
@@ -181,7 +181,7 @@ vim /etc/supervisord.d/nginxwebui.ini
 
 ```
 [program:nginxwebui]
-command=java -jar /home/nginxWebUI-2.4.3.jar
+command=java -jar /home/nginxWebUI-2.4.4.jar
 autostart=true #开机自启动
 autorestart=true #进程死掉后自动重启
 stderr_logfile=/tmp/nginxwebui_stderr.log #错误输出

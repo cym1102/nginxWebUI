@@ -106,7 +106,7 @@ function guide(){
 	layer.open({
 		type : 1,
 		title : httpStr.guide,
-		area : [ '800px', '610px' ], // 宽高
+		area : [ '800px', '765px' ], // 宽高
 		content : $('#guideDiv')
 	});
 	

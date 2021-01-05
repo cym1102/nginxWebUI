@@ -137,7 +137,14 @@ function addOver() {
 	});
 }
 
-function edit(id) {
+function clone(id) {
+	if (confirm(serverStr.confirmClone)) {
+		edit(id, true);
+	}
+}
+
+
+function edit(id,clone) {
 
 	$.ajax({
 		type: 'GET',
@@ -151,7 +158,12 @@ function edit(id) {
 				var ext = data.obj;
 				var list = ext.upstreamServerList;
 				
-				$("#id").val(ext.upstream.id);
+				if (!clone) {
+					$("#id").val(ext.upstream.id);
+				} else {
+					$("#id").val("");
+				}
+				
 				$("#name").val(ext.upstream.name);
 				$("#tactics").val(ext.upstream.tactics);
 				$("#proxyType").val(ext.upstream.proxyType);

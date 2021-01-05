@@ -143,36 +143,36 @@ public class ServerService {
 		return sqlHelper.findListByQuery(new ConditionAndWrapper().in("proxyType", proxyType), sort, Server.class);
 	}
 
-	@Transactional
-	public void clone(String id) {
-		Server server = sqlHelper.findById(id, Server.class);
-
-		List<Location> locations = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
-		List<Param> params = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Param.class);
-
-		server.setId(null);
-		sqlHelper.insertOrUpdate(server);
-		for (Param param : params) {
-			param.setId(null);
-			param.setServerId(server.getId());
-			sqlHelper.insert(param);
-		}
-
-		for (Location location : locations) {
-			params = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("locationId", location.getId()), Param.class);
-
-			location.setId(null);
-			location.setServerId(server.getId());
-			sqlHelper.insert(location);
-
-			for (Param param : params) {
-				param.setId(null);
-				param.setLocationId(location.getId());
-				sqlHelper.insert(param);
-			}
-		}
-
-	}
+//	@Transactional
+//	public void clone(String id) {
+//		Server server = sqlHelper.findById(id, Server.class);
+//
+//		List<Location> locations = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
+//		List<Param> params = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Param.class);
+//
+//		server.setId(null);
+//		sqlHelper.insertOrUpdate(server);
+//		for (Param param : params) {
+//			param.setId(null);
+//			param.setServerId(server.getId());
+//			sqlHelper.insert(param);
+//		}
+//
+//		for (Location location : locations) {
+//			params = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("locationId", location.getId()), Param.class);
+//
+//			location.setId(null);
+//			location.setServerId(server.getId());
+//			sqlHelper.insert(location);
+//
+//			for (Param param : params) {
+//				param.setId(null);
+//				param.setLocationId(location.getId());
+//				sqlHelper.insert(param);
+//			}
+//		}
+//
+//	}
 
 	public void importServer(String nginxPath) throws Exception {
 		String initNginxPath = initNginx(nginxPath);

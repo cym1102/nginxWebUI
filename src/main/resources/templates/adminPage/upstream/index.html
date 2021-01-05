@@ -105,7 +105,10 @@
 							<td>
 								<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="preview('${ext.upstream.id}','upstream')">${commonStr.preview}</button>
 									
-								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.upstream.id}')">${commonStr.edit}</button>
+								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.upstream.id}', false)">${commonStr.edit}</button>
+								<button class="layui-btn layui-btn-sm" onclick="clone('${ext.upstream.id}')">${commonStr.clone}</button>
+								
+								
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.upstream.id}')">${commonStr.del}</button>
 								
 								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${ext.upstream.id}', 1)">${commonStr.up}</button>

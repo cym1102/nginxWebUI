@@ -76,6 +76,38 @@ function del(id) {
 	}
 }
 
+function seeByTime(){
+	
+	var startDate = $("input[name='startDate']").val();
+	var endDate = $("input[name='endDate']").val();
+	
+	if(startDate == '' || endDate == ''){
+		layer.msg(loginStr.timeFill);
+		return;
+	}
+	
+	$.ajax({
+		type: 'GET',
+		url: ctx + '/adminPage/log/detailByTIme',
+		dataType: 'json',
+		data: {
+			startDate: startDate,
+			endDate: endDate
+		},
+		success: function(data) {
+			if (data.success) {
+				showContent(data.obj)
+			} else {
+				layer.msg(data.msg);
+			}
+		},
+		error: function() {
+			layer.closeAll();
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+}
+
 var pvuv, statusDiv, browser, httpReferer;
 function showContent(dataGroup) {
 	// 请求状态占比
