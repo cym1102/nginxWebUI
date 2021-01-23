@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.cym.model.Basic;
 import com.cym.model.Stream;
+import com.cym.utils.SnowFlakeUtils;
 
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
@@ -20,7 +21,7 @@ public class StreamService {
 	public void setSeq(String streamId, Integer seqAdd) {
 		Stream http = sqlHelper.findById(streamId, Stream.class);
 
-		List<Stream> httpList = sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Stream.class);
+		List<Stream> httpList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
 		if (httpList.size() > 0) {
 			Stream tagert = null;
 			if (seqAdd < 0) {
@@ -51,18 +52,9 @@ public class StreamService {
 
 	}
 
-	public Long buildOrder() {
-
-		Stream stream = sqlHelper.findOneByQuery(new Sort("seq + 0", Direction.DESC), Stream.class);
-		if (stream != null) {
-			return stream.getSeq() + 1;
-		}
-
-		return 0l;
-	}
 
 	public List<Stream> findAll() {
-		return sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Stream.class);
+		return sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
 	}
 
 	

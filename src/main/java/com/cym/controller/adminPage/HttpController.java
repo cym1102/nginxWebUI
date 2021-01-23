@@ -17,6 +17,7 @@ import com.cym.service.HttpService;
 import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
+import com.cym.utils.SnowFlakeUtils;
 
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
@@ -44,7 +45,7 @@ public class HttpController extends BaseController {
 	@ResponseBody
 	public JsonResult addOver(Http http) {
 		if (StrUtil.isEmpty(http.getId())) {
-			http.setSeq(httpService.buildOrder());
+			http.setSeq( SnowFlakeUtils.getId());
 		}
 		sqlHelper.insertOrUpdate(http);
 

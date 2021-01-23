@@ -27,6 +27,7 @@ import com.cym.service.SettingService;
 import com.cym.service.UpstreamService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
+import com.cym.utils.SnowFlakeUtils;
 import com.cym.utils.TelnetUtils;
 import com.github.odiszapc.nginxparser.NgxBlock;
 import com.github.odiszapc.nginxparser.NgxConfig;
@@ -126,7 +127,7 @@ public class ServerController extends BaseController {
 		List<Location> locations = JSONUtil.toList(JSONUtil.parseArray(locationJson), Location.class);
 
 		if (StrUtil.isEmpty(server.getId())) {
-			server.setSeq(serverService.buildOrder());
+			server.setSeq( SnowFlakeUtils.getId());
 		}
 		
 		if (server.getProxyType() == 0) {
@@ -254,7 +255,7 @@ public class ServerController extends BaseController {
 			Upstream upstream = sqlHelper.findById(id, Upstream.class);
 			ngxBlock = confService.buildBlockUpstream(upstream);
 		} else if (type.equals("http")) {
-			List<Http> httpList = sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Http.class);
+			List<Http> httpList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Http.class);
 			ngxBlock = new NgxBlock();
 			ngxBlock.addValue("http");
 			for (Http http : httpList) {
@@ -263,7 +264,7 @@ public class ServerController extends BaseController {
 				ngxBlock.addEntry(ngxParam);
 			}
 		} else if (type.equals("stream")) {
-			List<Stream> streamList = sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Stream.class);
+			List<Stream> streamList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
 			ngxBlock = new NgxBlock();
 			ngxBlock.addValue("stream");
 			for (Stream stream : streamList) {

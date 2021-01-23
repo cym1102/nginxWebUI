@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cym.model.Location;
 import com.cym.model.Param;
 import com.cym.model.Server;
+import com.cym.utils.SnowFlakeUtils;
 import com.github.odiszapc.nginxparser.NgxBlock;
 import com.github.odiszapc.nginxparser.NgxConfig;
 import com.github.odiszapc.nginxparser.NgxEntry;
@@ -38,6 +39,7 @@ public class ServerService {
 	@Autowired
 	SqlHelper sqlHelper;
 
+	
 
 	public Page search(Page page, String keywords) {
 		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper();
@@ -45,7 +47,7 @@ public class ServerService {
 			conditionAndWrapper.and(new ConditionOrWrapper().like("descr", keywords).like("serverName", keywords.trim()).like("listen", keywords.trim()));
 		}
 
-		Sort sort = new Sort().add("seq + 0", Direction.DESC);
+		Sort sort = new Sort().add("seq", Direction.DESC);
 
 		page = sqlHelper.findPage(conditionAndWrapper, sort, page, Server.class);
 
@@ -139,40 +141,11 @@ public class ServerService {
 	}
 
 	public List<Server> getListByProxyType(Integer[] proxyType) {
-		Sort sort = new Sort().add("seq + 0", Direction.DESC);
+		Sort sort = new Sort().add("seq", Direction.DESC);
 		return sqlHelper.findListByQuery(new ConditionAndWrapper().in("proxyType", proxyType), sort, Server.class);
 	}
 
-//	@Transactional
-//	public void clone(String id) {
-//		Server server = sqlHelper.findById(id, Server.class);
-//
-//		List<Location> locations = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
-//		List<Param> params = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Param.class);
-//
-//		server.setId(null);
-//		sqlHelper.insertOrUpdate(server);
-//		for (Param param : params) {
-//			param.setId(null);
-//			param.setServerId(server.getId());
-//			sqlHelper.insert(param);
-//		}
-//
-//		for (Location location : locations) {
-//			params = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("locationId", location.getId()), Param.class);
-//
-//			location.setId(null);
-//			location.setServerId(server.getId());
-//			sqlHelper.insert(location);
-//
-//			for (Param param : params) {
-//				param.setId(null);
-//				param.setLocationId(location.getId());
-//				sqlHelper.insert(param);
-//			}
-//		}
-//
-//	}
+
 
 	public void importServer(String nginxPath) throws Exception {
 		String initNginxPath = initNginx(nginxPath);
@@ -206,11 +179,6 @@ public class ServerService {
 			List<NgxEntry> listens = serverNgx.findAll(NgxConfig.PARAM, "listen");
 			for (NgxEntry item : listens) {
 				NgxParam param = (NgxParam) item;
-
-//				System.err.println(param.getName());
-//				System.err.println(param.getValue());
-//				System.err.println(param.getTokens());
-//				System.err.println(param.getValues());
 
 				if (server.getListen() == null) {
 					server.setListen((String) param.getValues().toArray()[0]);
@@ -283,7 +251,7 @@ public class ServerService {
 			}
 
 			server.setDef(0);
-			server.setSeq(buildOrder());
+			server.setSeq( SnowFlakeUtils.getId());
 			addOver(server, "", locations);
 		}
 
@@ -317,7 +285,7 @@ public class ServerService {
 	public void setSeq(String serverId, Integer seqAdd) {
 		Server server = sqlHelper.findById(serverId, Server.class);
 
-		List<Server> serverList = sqlHelper.findAll(new Sort("seq + 0", Direction.DESC), Server.class);
+		List<Server> serverList = sqlHelper.findAll(new Sort("seq", Direction.DESC), Server.class);
 		if (serverList.size() > 0) {
 			Server tagert = null;
 			if (seqAdd < 0) {
@@ -330,7 +298,9 @@ public class ServerService {
 				}
 			} else {
 				// 上移
+				System.out.println(server.getSeq());
 				for (int i = serverList.size() - 1; i >= 0; i--) {
+					System.out.println(serverList.get(i).getSeq());
 					if (serverList.get(i).getSeq() > server.getSeq()) {
 						tagert = serverList.get(i);
 						break;
@@ -339,6 +309,10 @@ public class ServerService {
 			}
 
 			if (tagert != null) {
+				
+				System.err.println("tagert:" + tagert.getServerName() + tagert.getListen());
+				System.err.println("server:" + server.getServerName() + server.getListen());
+				
 				// 交换seq
 				Long seq = tagert.getSeq();
 				tagert.setSeq(server.getSeq());
@@ -352,12 +326,4 @@ public class ServerService {
 
 	}
 
-	public Long buildOrder() {
-		Server server = sqlHelper.findOneByQuery(new Sort("seq + 0", Direction.DESC), Server.class);
-		if (server != null) {
-			return server.getSeq() + 1;
-		}
-
-		return 0l;
-	}
 }

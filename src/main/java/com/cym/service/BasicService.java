@@ -20,24 +20,15 @@ public class BasicService {
 	SqlHelper sqlHelper;
 
 	public List<Basic> findAll() {
-		return sqlHelper.findAll(new Sort().add("seq + 0", Direction.ASC), Basic.class);
+		return sqlHelper.findAll(new Sort().add("seq", Direction.ASC), Basic.class);
 	}
 
-	public Long buildOrder() {
-
-		Basic basic = sqlHelper.findOneByQuery(new Sort().add("seq + 0", Direction.DESC), Basic.class);
-		if (basic != null) {
-			return basic.getSeq() + 1;
-		}
-
-		return 0l;
-	}
 
 	@Transactional
 	public void setSeq(String basicId, Integer seqAdd) {
 		Basic basic = sqlHelper.findById(basicId, Basic.class);
 
-		List<Basic> basicList = sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Basic.class);
+		List<Basic> basicList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Basic.class);
 		if (basicList.size() > 0) {
 			Basic tagert = null;
 			if (seqAdd < 0) {

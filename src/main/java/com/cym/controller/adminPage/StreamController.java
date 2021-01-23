@@ -14,6 +14,7 @@ import com.cym.model.Stream;
 import com.cym.service.StreamService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
+import com.cym.utils.SnowFlakeUtils;
 
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
@@ -38,7 +39,7 @@ public class StreamController extends BaseController {
 	@ResponseBody
 	public JsonResult addOver(Stream stream) {
 		if (StrUtil.isEmpty(stream.getId())) {
-			stream.setSeq(streamService.buildOrder());
+			stream.setSeq( SnowFlakeUtils.getId());
 		}
 		sqlHelper.insertOrUpdate(stream);
 

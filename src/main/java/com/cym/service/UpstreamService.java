@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cym.model.Param;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
+import com.cym.utils.SnowFlakeUtils;
 
 import cn.craccd.sqlHelper.bean.Page;
 import cn.craccd.sqlHelper.bean.Sort;
@@ -34,7 +35,7 @@ public class UpstreamService {
 			conditionAndWrapper.and(new ConditionOrWrapper().like("name", word));
 		}
 
-		page = sqlHelper.findPage(conditionAndWrapper, new Sort("seq + 0", Direction.DESC), page, Upstream.class);
+		page = sqlHelper.findPage(conditionAndWrapper, new Sort("seq", Direction.DESC), page, Upstream.class);
 
 		return page;
 	}
@@ -90,7 +91,7 @@ public class UpstreamService {
 	}
 
 	public List<Upstream> getListByProxyType(Integer proxyType) {
-		Sort sort = new Sort().add("seq + 0", Direction.DESC);
+		Sort sort = new Sort().add("seq", Direction.DESC);
 		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq("proxyType", proxyType), sort, Upstream.class);
 	}
 
@@ -117,19 +118,11 @@ public class UpstreamService {
 		sqlHelper.updateMulti(new ConditionAndWrapper(), new Update().set("monitorStatus", -1), UpstreamServer.class);
 	}
 
-	public Long buildOrder() {
-		Upstream upstream = sqlHelper.findOneByQuery(new Sort("seq + 0", Direction.DESC), Upstream.class);
-		if (upstream != null) {
-			return upstream.getSeq() + 1;
-		}
-
-		return 0l;
-	}
 
 	public void setSeq(String upstreamId, Integer seqAdd) {
 		Upstream upstream = sqlHelper.findById(upstreamId, Upstream.class);
 
-		List<Upstream> upstreamList = sqlHelper.findAll(new Sort("seq + 0", Direction.DESC), Upstream.class);
+		List<Upstream> upstreamList = sqlHelper.findAll(new Sort("seq", Direction.DESC), Upstream.class);
 		if (upstreamList.size() > 0) {
 			Upstream tagert = null;
 			if (seqAdd < 0) {

@@ -19,7 +19,7 @@ public class VersionConfig {
 	public void getNewVersion() {
 		
 		try {
-			String json = HttpUtil.get("http://www.nginxwebui.cn/download/version.json", 1000);
+			String json = HttpUtil.get("https://www.nginxwebui.cn/download/version.json", 1000);
 			if (StrUtil.isNotEmpty(json)) {
 				version = JSONUtil.toBean(json, Version.class);
 			}
@@ -28,6 +28,7 @@ public class VersionConfig {
 		}
 		
 	}
+	
 
 	public Version getVersion() {
 		return version;

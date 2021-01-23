@@ -13,6 +13,7 @@ import com.cym.service.BasicService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.MessageUtils;
+import com.cym.utils.SnowFlakeUtils;
 
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
@@ -38,7 +39,7 @@ public class BasicController extends BaseController {
 	@ResponseBody
 	public JsonResult addOver(Basic base) {
 		if (StrUtil.isEmpty(base.getId())) {
-			base.setSeq(basicService.buildOrder());
+			base.setSeq( SnowFlakeUtils.getId());
 		}
 		sqlHelper.insertOrUpdate(base);
 

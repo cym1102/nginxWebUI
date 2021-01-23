@@ -146,9 +146,11 @@ public class InitConfig {
 		}
 
 		// 初始化http和stream的seq值
-		jdbcTemplate.update("update server set seq = id where seq is null");
-		jdbcTemplate.update("update http set seq = id where seq is null");
-		jdbcTemplate.update("update upstream set seq = id where seq is null");
+//		jdbcTemplate.update("update server set seq = id where seq is null");
+//		jdbcTemplate.update("update http set seq = id where seq is null");
+//		jdbcTemplate.update("update upstream set seq = id where seq is null");
+		
+		
 		// 删除多余备份文件
 		scheduleTask.delCache();
 	}

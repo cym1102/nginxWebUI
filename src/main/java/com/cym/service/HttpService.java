@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cym.model.Http;
+import com.cym.utils.SnowFlakeUtils;
 
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
@@ -18,7 +19,7 @@ public class HttpService {
 	SqlHelper sqlHelper;
 
 	public List<Http> findAll() {
-		return sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Http.class);
+		return sqlHelper.findAll(new Sort("seq", Direction.ASC), Http.class);
 	}
 
 	public void setAll(List<Http> https) {
@@ -48,7 +49,7 @@ public class HttpService {
 				http.setId(httpOrg.getId());
 			}
 
-			http.setSeq(buildOrder());
+			http.setSeq( SnowFlakeUtils.getId());
 			http.setValue(http.getValue() + http.getUnit());
 
 			sqlHelper.insertOrUpdate(http);
@@ -60,7 +61,7 @@ public class HttpService {
 	public void setSeq(String httpId, Integer seqAdd) {
 		Http http = sqlHelper.findById(httpId, Http.class);
 
-		List<Http> httpList = sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Http.class);
+		List<Http> httpList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Http.class);
 		if (httpList.size() > 0) {
 			Http tagert = null;
 			if (seqAdd < 0) {
@@ -93,15 +94,6 @@ public class HttpService {
 
 	}
 
-	public Long buildOrder() {
-
-		Http http = sqlHelper.findOneByQuery(new Sort("seq + 0", Direction.DESC), Http.class);
-		if (http != null) {
-			return http.getSeq() + 1;
-		}
-
-		return 0l;
-	}
 
 	public Http getName(String name) {
 		Http http = sqlHelper.findOneByQuery(new ConditionAndWrapper().eq("name", name), Http.class);

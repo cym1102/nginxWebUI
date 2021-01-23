@@ -23,6 +23,7 @@ import com.cym.service.SettingService;
 import com.cym.service.UpstreamService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
+import com.cym.utils.SnowFlakeUtils;
 import com.cym.utils.TelnetUtils;
 
 import cn.craccd.sqlHelper.bean.Page;
@@ -110,7 +111,7 @@ public class UpstreamController extends BaseController {
 
 
 		if (StrUtil.isEmpty(upstream.getId())) {
-			upstream.setSeq(upstreamService.buildOrder());
+			upstream.setSeq( SnowFlakeUtils.getId());
 		}
 		
 		if (StrUtil.isEmpty(upstream.getId())) {
