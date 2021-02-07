@@ -33,3 +33,6 @@ logging:
     name: ${project.home}log/nginxWebUI.log
   level: 
     root: info
+
+knife4j:
+  enable: true  

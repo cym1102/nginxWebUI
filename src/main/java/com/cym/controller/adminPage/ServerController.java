@@ -60,7 +60,7 @@ public class ServerController extends BaseController {
 		page = serverService.search(page, keywords);
 
 		List<ServerExt> exts = new ArrayList<ServerExt>();
-		for (Server server : page.getRecords(Server.class)) {
+		for (Server server : (List<Server>) page.getRecords()) {
 			ServerExt serverExt = new ServerExt();
 			if (server.getEnable() == null) {
 				server.setEnable(false);
@@ -127,9 +127,9 @@ public class ServerController extends BaseController {
 		List<Location> locations = JSONUtil.toList(JSONUtil.parseArray(locationJson), Location.class);
 
 		if (StrUtil.isEmpty(server.getId())) {
-			server.setSeq( SnowFlakeUtils.getId());
+			server.setSeq(SnowFlakeUtils.getId());
 		}
-		
+
 		if (server.getProxyType() == 0) {
 			try {
 				serverService.addOver(server, serverParamJson, locations);
@@ -280,7 +280,7 @@ public class ServerController extends BaseController {
 
 		return renderSuccess(conf);
 	}
-	
+
 	@RequestMapping("setOrder")
 	@ResponseBody
 	public JsonResult setOrder(String id, Integer count) {

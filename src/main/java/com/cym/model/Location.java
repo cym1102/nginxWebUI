@@ -3,30 +3,45 @@ package com.cym.model;
 import cn.craccd.sqlHelper.bean.BaseModel;
 import cn.craccd.sqlHelper.config.InitValue;
 import cn.craccd.sqlHelper.config.Table;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+@ApiModel("代理目标location")
 @Table
 public class Location extends BaseModel {
+	@ApiModelProperty("*所属反向代理serverId")
 	String serverId;
+	@ApiModelProperty("*监控路径 例:/")
+	String path;
+	@ApiModelProperty("代理类型 0:动态代理(默认) 1:静态代理 2:负载均衡 3:空白代理")
+	@InitValue("0")
+	Integer type;
+	@ApiModelProperty(hidden = true, name = "额外参数")
+	String locationParamJson;
 
-	String path; // 监控路径
-	Integer type; // 0 http 1 root 2 负载均衡 3 空白
-	String locationParamJson; // 额外参数
+	@ApiModelProperty("动态代理目标 (例:http://10.10.10.1:8080/)")
+	String value;
 
-	String value; // http代理
-
-	String upstreamId; // 负载均衡代理
+	@ApiModelProperty("代理负载均衡upstream的id")
+	String upstreamId; 
+	@ApiModelProperty("代理负载额外路径,默认为空")
 	String upstreamPath;
 
-	String rootPath; // 静态页面代理
+	@ApiModelProperty("静态代理路径 (例:/home/www)")
+	String rootPath;
+	@ApiModelProperty("静态代理默认页面 (例:index.html)")
 	String rootPage;
+	@ApiModelProperty("静态代理类型 root:根路径模式 alias:别名模式")
 	String rootType;
-	
+
+	@ApiModelProperty("是否携带Host参数 0否 1是(默认)")
 	@InitValue("1")
-	Integer header; // 是否设置header参数
+	Integer header; 
+	
+	@ApiModelProperty("是否开启websocket支持 0否(默认) 1是")
 	@InitValue("0")
-	Integer websocket; // websocket支持
-	
-	
+	Integer websocket;
+
 	public Integer getWebsocket() {
 		return websocket;
 	}

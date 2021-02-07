@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,27 +50,23 @@ import cn.hutool.json.JSONUtil;
 @Controller
 @RequestMapping("/adminPage/remote")
 public class RemoteController extends BaseController {
-	final RemoteService remoteService;
-	final SettingService settingService;
-	final ConfService confService;
-	final GroupService groupService;
-	final ConfController confController;
-	final MainController mainController;
+	@Autowired
+	RemoteService remoteService;
+	@Autowired
+	SettingService settingService;
+	@Autowired
+	ConfService confService;
+	@Autowired
+	GroupService groupService;
+	@Autowired
+	ConfController confController;
+	@Autowired
+	MainController mainController;
 
 	@Value("${project.version}")
 	String projectVersion;
 	@Value("${server.port}")
 	Integer port;
-
-	public RemoteController(RemoteService remoteService, SettingService settingService, ConfService confService, GroupService groupService, ConfController confController,
-			MainController mainController) {
-		this.remoteService = remoteService;
-		this.settingService = settingService;
-		this.confService = confService;
-		this.groupService = groupService;
-		this.confController = confController;
-		this.mainController = mainController;
-	}
 
 	@RequestMapping("version")
 	@ResponseBody

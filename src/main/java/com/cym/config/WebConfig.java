@@ -14,7 +14,8 @@ public class WebConfig implements WebMvcConfigurer {
 	private AdminInterceptor adminInterceptor;
 	@Resource
 	private FrontInterceptor frontInterceptor;
-
+	@Resource
+	private ApiInterceptor apiInterceptor;
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		// 自定义拦截器，添加拦截路径和排除拦截路径
@@ -24,7 +25,14 @@ public class WebConfig implements WebMvcConfigurer {
 				.excludePathPatterns("/js/**")//
 				.excludePathPatterns("/img/**")//
 				.excludePathPatterns("/css/**");
-
+		
+		registry.addInterceptor(apiInterceptor)//
+				.addPathPatterns("/api/**") //
+				.excludePathPatterns("/lib/**") //
+				.excludePathPatterns("/js/**")//
+				.excludePathPatterns("/img/**")//
+				.excludePathPatterns("/css/**");
+		
 		registry.addInterceptor(frontInterceptor)//
 				.addPathPatterns("/**")//
 				.excludePathPatterns("/lib/**") //

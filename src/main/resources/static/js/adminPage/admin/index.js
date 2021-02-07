@@ -8,6 +8,7 @@ function add() {
 	$("#name").val(""); 
 	$("#pass").val(""); 
 	$("#auth").val("false"); 
+	$("#api").val("false"); 
 	
 	showWindow(adminStr.add);
 }
@@ -58,6 +59,7 @@ function edit(id) {
 				$("#pass").val(admin.pass); 
 				$("#name").val(admin.name);
 				$("#auth").val(admin.auth + "");
+				$("#api").val(admin.api+ "");
 				
 				form.render();
 				showWindow(commonStr.edit);
@@ -156,4 +158,8 @@ function testOver(){
 			layer.alert(commonStr.errorInfo);
 		}
 	});
+}
+
+function apiPage(){
+	window.open(ctx + "/doc.html")
 }

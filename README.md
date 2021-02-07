@@ -27,9 +27,7 @@ nginx本身功能复杂, 本项目并不能涵盖nginx所有功能, 只能配置
 
 本项目是基于springBoot的web系统, 数据库使用sqlite, 因此服务器上不需要安装任何数据库
 
-其中orm使用了本人自己开源的sqlHelper项目作为orm, 使用sqlite作为数据库, 项目启动时会释放一个.sqlite.db到系统用户文件夹中, 注意进行备份
-
-> sqlHelper是一个可以像mongodb一样使用sql数据库的orm, 解放开发者对sql数据库表结构的维护工作, 支持sqlite, mysql, postgresql三种数据库, 有兴趣的可以了解一下 https://gitee.com/cym1102/sqlHelper
+项目启动时会释放一个.sqlite.db到系统用户文件夹中, 注意进行备份
 
 本系统通过Let's encrypt申请证书, 使用acme.sh脚本进行自动化申请和续签, 开启续签的证书将在每天凌晨2点进行续签, 只有超过60天的证书才会进行续签. 只支持在linux下签发证书.
 
@@ -45,21 +43,21 @@ nginx本身功能复杂, 本项目并不能涵盖nginx所有功能, 只能配置
 ubuntu:
 
 ```
-apt install openjdk-8-jdk
+apt install openjdk-11-jdk
 apt install nginx
 ```
 
 centos:
 
 ```
-yum install java-1.8.0-openjdk
+yum install java-11-openjdk
 yum install nginx
 ```
 
 2.下载最新版发行包jar
 
 ```
-wget http://file.nginxwebui.cn/nginxWebUI-2.4.4.jar
+wget http://file.nginxwebui.cn/nginxWebUI-2.4.6.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -67,7 +65,7 @@ wget http://file.nginxwebui.cn/nginxWebUI-2.4.4.jar
 3.启动程序
 
 ```
-nohup java -jar -Xmx64m nginxWebUI-2.4.4.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+nohup java -jar -Xmx64m nginxWebUI-2.4.6.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
 ```
 
 参数说明(都是非必填)
@@ -141,7 +139,7 @@ mvn clean package
 2. 使用docker构建镜像
 
 ```
-docker build -t nginxwebui:2.4.4 .
+docker build -t nginxwebui:2.4.6 .
 ```
 
 #### 添加开机启动
@@ -181,7 +179,7 @@ vim /etc/supervisord.d/nginxwebui.ini
 
 ```
 [program:nginxwebui]
-command=java -jar /home/nginxWebUI-2.4.4.jar
+command=java -jar /home/nginxWebUI-2.4.6.jar
 autostart=true #开机自启动
 autorestart=true #进程死掉后自动重启
 stderr_logfile=/tmp/nginxwebui_stderr.log #错误输出
@@ -244,6 +242,18 @@ log管理, 在http配置中如果开启了log监控的话, 会每天在这里生
 远程服务器管理, 如果有多台nginx服务器, 可以都部署上nginxWebUI, 然后登录其中一台, 在远程管理中添加其他服务器的ip和用户名密码, 就可以在一台机器上管理所有的nginx服务器了.
 
 提供一键同步功能, 可以将某一台服务器的数据配置和证书文件同步到其他服务器中
+
+#### 接口开发
+
+本系统提供http接口调用, 只要打开 http://xxx.xxx.xxx.xxx:8080/doc.html 即可查看knife4j接口页面.
+
+接口调用需要在header中添加token, 其中token的获取需要在管理员管理中, 打开用户的接口调用权限, 然后通过用户名密码调用获取token接口, 才能得到token, 然后在knife4j的文档管理中设置全局token. 
+
+注意: 参数说明中, 带*前缀的均是必填项
+
+如要屏蔽knife4j界面展示, 只要在启动参数添加 --knife4j.production=true 即可屏蔽
+
+![输入图片说明](http://www.nginxwebui.cn/img/knife4j.png "knife4j.png")
 
 #### 找回密码
 

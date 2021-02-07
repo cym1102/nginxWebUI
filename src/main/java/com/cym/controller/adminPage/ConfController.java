@@ -157,7 +157,7 @@ public class ConfController extends BaseController {
 			nginxDir = settingService.get("nginxDir");
 		}
 
-		String decompose = settingService.get("decompose");
+//		String decompose = settingService.get("decompose");
 
 		String rs = null;
 		String cmd = null;
@@ -336,7 +336,11 @@ public class ConfController extends BaseController {
 			}
 
 			cmd = "<span class='blue'>" + cmd + "</span>";
-			if (StrUtil.isEmpty(rs) || rs.contains("已终止进程") || rs.contains("signal process started") || rs.toLowerCase().contains("terminated process")) {
+			if (StrUtil.isEmpty(rs) || rs.contains("已终止进程") //
+					|| rs.contains("signal process started") //
+					|| rs.toLowerCase().contains("terminated process") //
+					|| rs.toLowerCase().contains("starting") //
+					|| rs.toLowerCase().contains("stopping")) {
 				return renderSuccess(cmd + "<br>" + m.get("confStr.runSuccess") + "<br>" + rs.replace("\n", "<br>"));
 			} else {
 				return renderError(cmd + "<br>" + m.get("confStr.runFail") + "<br>" + rs.replace("\n", "<br>"));

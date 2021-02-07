@@ -1,15 +1,19 @@
 package com.cym.model;
 
 import cn.craccd.sqlHelper.bean.BaseModel;
-import cn.craccd.sqlHelper.config.InitValue;
 import cn.craccd.sqlHelper.config.Table;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+@ApiModel("基础参数")
 @Table
 public class Basic extends BaseModel {
+	@ApiModelProperty("参数名")
 	String name;
+	@ApiModelProperty("参数值")
 	String value;
+	@ApiModelProperty(hidden = true)
 	Long seq;
-
 
 	public Basic() {
 
@@ -21,7 +25,6 @@ public class Basic extends BaseModel {
 		this.seq = seq;
 	}
 
-
 	public Long getSeq() {
 		return seq;
 	}
@@ -29,7 +32,6 @@ public class Basic extends BaseModel {
 	public void setSeq(Long seq) {
 		this.seq = seq;
 	}
-
 
 	public String getName() {
 		return name;

@@ -11,12 +11,34 @@ public class Admin extends BaseModel {
 	@SingleIndex(unique = true)
 	String name;
 	String pass;
-
+	// 谷歌秘钥
 	String key;
+	// 是否开启谷歌验证
 	@InitValue("false")
 	Boolean auth;
-	
-	
+
+	// 是否开启api
+	@InitValue("false")
+	Boolean api;
+
+	String token;
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public Boolean getApi() {
+		return api;
+	}
+
+	public void setApi(Boolean api) {
+		this.api = api;
+	}
+
 	public String getKey() {
 		return key;
 	}

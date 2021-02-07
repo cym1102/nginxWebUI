@@ -28,7 +28,6 @@ public class BasicController extends BaseController {
 	@RequestMapping("")
 	public ModelAndView index(ModelAndView modelAndView) {
 		List<Basic> basicList = basicService.findAll();
-				
 
 		modelAndView.addObject("basicList", basicList);
 		modelAndView.setViewName("/adminPage/basic/index");
@@ -37,11 +36,11 @@ public class BasicController extends BaseController {
 
 	@RequestMapping("addOver")
 	@ResponseBody
-	public JsonResult addOver(Basic base) {
-		if (StrUtil.isEmpty(base.getId())) {
-			base.setSeq( SnowFlakeUtils.getId());
+	public JsonResult addOver(Basic basic) {
+		if (StrUtil.isEmpty(basic.getId())) {
+			basic.setSeq( SnowFlakeUtils.getId());
 		}
-		sqlHelper.insertOrUpdate(base);
+		sqlHelper.insertOrUpdate(basic);
 
 		return renderSuccess();
 	}

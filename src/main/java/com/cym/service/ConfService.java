@@ -545,6 +545,8 @@ public class ConfService {
 	}
 
 	private void addConfFile(ConfExt confExt, String name, NgxBlock ngxBlockServer) {
+		name = name.replace(" ", "_").replace("*", "-");
+		
 		boolean hasSameName = false;
 		for (ConfFile confFile : confExt.getFileList()) {
 			if (confFile.getName().equals(name)) {

@@ -1,5 +1,7 @@
 package com.cym.service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,20 @@ public class AdminService {
 
 	public Admin getOneByName(String name) {
 		return sqlHelper.findOneByQuery(new ConditionAndWrapper().eq(Admin::getName, name), Admin.class);
+	}
+
+	public String makeToken(String id) {
+		String token = UUID.randomUUID().toString();
+		Admin admin = new Admin();
+		admin.setId(id);
+		admin.setToken(token);
+		sqlHelper.updateById(admin);
+
+		return token;
+	}
+
+	public boolean checkToken(String token) {
+		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("api", true).eq("token", token), Admin.class) > 0;
 	}
 
 }

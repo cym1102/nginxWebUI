@@ -46,4 +46,19 @@ public class ParamService {
 		return list;
 	}
 
+	public List<Param> getList(String serverId, String locationId, String upstreamId) {
+		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper();
+		if(StrUtil.isEmpty(serverId)) {
+			conditionAndWrapper.eq("serverId", serverId);
+		}
+		if(StrUtil.isEmpty(locationId)) {
+			conditionAndWrapper.eq("locationId", locationId);
+		}
+		if(StrUtil.isEmpty(upstreamId)) {
+			conditionAndWrapper.eq("upstreamId", upstreamId);
+		}
+		
+		return sqlHelper.findListByQuery(conditionAndWrapper, Param.class);
+	}
+
 }

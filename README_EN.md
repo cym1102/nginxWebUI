@@ -23,7 +23,7 @@ After deploying this project, nginx can be configured without searching on the I
 
 This project is a Web system based on springBoot. The database use SQLite, so there is no need to install any database on the server.
 
-Among them, ORM use its own open source sqlHelper project as ORM and SQLite as database. Sqlite. Db will be released into the system user folder when the project starts, so pay attention to backup.
+sqlite.db will be released into the system user folder when the project starts, so pay attention to backup.
 
 This system applies for the certificate through Let's ENCRYPT and USES acme.sh script to automatically apply for and renew the certificate. Once the certificate is renewed, it will be renewed at 2 am every day, and only certificates exceeding 60 days will be renewed.
 
@@ -39,21 +39,21 @@ Take the Ubuntu operating system, for example.
 ubuntu:
 
 ```
-apt install openjdk-8-jdk
+apt install openjdk-11-jdk
 apt install nginx
 ```
 
 centos:
 
 ```
-yum install java-1.8.0-openjdk
+yum install java-11-openjdk
 yum install nginx
 ```
 
 2.Download the latest release of the distribution jar
 
 ```
-sudo wget http://file.nginxwebui.cn/nginxWebUI-2.4.4.jar
+sudo wget http://file.nginxwebui.cn/nginxWebUI-2.4.6.jar
 ```
 
 With a new version, you just need to change the version in the path
@@ -61,7 +61,7 @@ With a new version, you just need to change the version in the path
 3.Start program
 
 ```
-sudo nohup java -jar -Xmx64m nginxWebUI-2.4.4.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+sudo nohup java -jar -Xmx64m nginxWebUI-2.4.6.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
 ```
 
 Parameter description (both non-required)
@@ -103,13 +103,13 @@ yum install docker
 2.Download images:
 
 ```
-docker pull cym1102/nginxwebui:2.4.4
+docker pull cym1102/nginxwebui:2.4.6
 ```
 
 3.start container
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.4.4 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.4.6 /bin/bash
 ```
 
 notice: 
@@ -136,7 +136,7 @@ mvn clean package
 2. Compile the image with Docker
 
 ```
-docker build -t nginxwebui:2.4.4 .
+docker build -t nginxwebui:2.4.6 .
 ```
 
 #### Add boot up run
@@ -176,7 +176,7 @@ Content:
 
 ```
 [program:nginxwebui]
-command=java -jar /home/nginxWebUI-2.4.4.jar
+command=java -jar /home/nginxWebUI-2.4.6.jar
 autostart=true
 autorestart=true
 stderr_logfile=/tmp/nginxwebui_stderr.log
@@ -237,6 +237,18 @@ Log management, if log monitoring is on in the HTTP configuration, log analysis 
 Remote server management. If you have multiple Nginx servers, you can deploy nginxWebUI, log in to one of them, add the IP and username and password of other servers to the remote management, and then you can manage all Nginx servers on one machine.
 
 Provides one-click synchronization to synchronize data configuration and certificate files from one server to another
+
+#### Interface development 
+
+This system provides the HTTP interface call, as long as the open http://xxx.xxx.xxx.xxx:8080/doc.html to view page knife4j interface.
+
+The interface call needs to add the token in the header, where the token acquisition needs to be managed by the administrator, open the user's interface call authority, and then get the token interface through the user name and password call to get the token, and then set the global token in the document management of knife4j.
+
+Note: In the parameter description, all fields with * prefix are required.
+
+To block knife4j display, simply add --knife4j. Production =true to the startup parameter.
+
+![输入图片说明](http://www.nginxwebui.cn/img/knife4j.png "knife4j.png")
 
 #### Forgot Password
 

@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.ext.UpstreamExt;
 import com.cym.model.Remote;
+import com.cym.model.Server;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
 import com.cym.service.ParamService;
@@ -48,7 +49,7 @@ public class UpstreamController extends BaseController {
 		page = upstreamService.search(page, keywords);
 
 		List<UpstreamExt> list = new ArrayList<UpstreamExt>();
-		for (Upstream upstream : page.getRecords(Upstream.class)) {
+		for (Upstream upstream :(List<Upstream>)  page.getRecords()) {
 			UpstreamExt upstreamExt = new UpstreamExt();
 			upstreamExt.setUpstream(upstream);
 

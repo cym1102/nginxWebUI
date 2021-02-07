@@ -1,16 +1,20 @@
 package com.cym.model;
 
 import cn.craccd.sqlHelper.bean.BaseModel;
-import cn.craccd.sqlHelper.config.InitValue;
-import cn.craccd.sqlHelper.config.SingleIndex;
 import cn.craccd.sqlHelper.config.Table;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+@ApiModel("Http参数")
 @Table
 public class Http extends BaseModel {
+	@ApiModelProperty("参数名")
 	String name;
+	@ApiModelProperty("参数值")
 	String value;
+	@ApiModelProperty("参数单位")
 	String unit;
-
+	@ApiModelProperty(hidden = true)
 	Long seq;
 
 	public Http() {

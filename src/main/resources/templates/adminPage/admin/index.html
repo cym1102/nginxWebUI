@@ -31,9 +31,14 @@
 							<button type="button" class="layui-btn" onclick="readme()">${adminStr.readme}</button>
 						</div>
 
-
+						
+						
 						<div class="layui-inline">
 							<div class="layui-form-mid layui-word-aux">${adminStr.notice}</div>
+						</div>
+						
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-normal" onclick="apiPage()">${adminStr.apiPage}</button>
 						</div>
 						<input type="hidden" name="curr" value="${page.curr}"> <input type="hidden" name="limit" value="${page.limit}">
 					</div>
@@ -43,8 +48,9 @@
 					<thead>
 						<tr>
 							<th>${adminStr.name}</th>
-							<th>${adminStr.googleAuthenticator}</th>
+							<th>${adminStr.twoStep}</th>
 							<th>${adminStr.privateKey} (${adminStr.remember})</th>
+							<th>${adminStr.api}</th>
 							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
@@ -55,6 +61,7 @@
 							<td><#if admin.auth> ${commonStr.yes} </#if> <#if !admin.auth> ${commonStr.no} </#if></td>
 							<td><#if admin.auth> ${admin.key} <a href="javascript:qr('${admin.name}','${admin.key}')" style="color: blue; text-decoration: underline;">${adminStr.qr}</a> <a
 									href="javascript:test('${admin.key}')" style="color: blue; text-decoration: underline;">${commonStr.test}</a> </#if></td>
+							<td><#if admin.api> ${commonStr.yes} </#if> <#if !admin.api> ${commonStr.no} </#if></td>
 							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${admin.id}')">${commonStr.edit}</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${admin.id}')">${commonStr.del}</button>
@@ -89,14 +96,23 @@
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">谷歌验证</label>
+					<label class="layui-form-label">${adminStr.twoStep}</label>
 					<div class="layui-input-block">
 						<select id="auth" name="auth">
-							<option value="false">否</option>
-							<option value="true">是</option>
+							<option value="false">${commonStr.no}</option>
+							<option value="true">${commonStr.yes}</option>
 						</select>
 					</div>
-					<!-- <div class="layui-form-mid layui-word-aux">注意：开启谷歌两步验证后，该账户不可用于连接远程服务器</div> -->
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">${adminStr.api}</label>
+					<div class="layui-input-block">
+						<select id="api" name="api">
+							<option value="false">${commonStr.no}</option>
+							<option value="true">${commonStr.yes}</option>
+						</select>
+					</div>
 				</div>
 
 				<div class="layui-form-item">
