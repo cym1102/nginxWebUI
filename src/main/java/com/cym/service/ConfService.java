@@ -172,7 +172,7 @@ public class ConfService {
 
 			// TCP/UDP转发
 			// 创建stream
-			List<Stream> streamList = sqlHelper.findAll(new Sort("seq + 0", Direction.ASC), Stream.class);
+			List<Stream> streamList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
 			boolean hasStream = false;
 			NgxBlock ngxBlockStream = new NgxBlock();
 			ngxBlockStream.addValue("stream");
@@ -288,6 +288,9 @@ public class ConfService {
 			String value = "listen " + server.getListen();
 			if (server.getDef() == 1) {
 				value += " default";
+			}
+			if (server.getProxyProtocol() == 1) {
+				value += " proxy_protocol";
 			}
 
 			if (server.getSsl() != null && server.getSsl() == 1) {

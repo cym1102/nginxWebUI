@@ -34,6 +34,11 @@ public class Server extends BaseModel {
 	@InitValue("0")
 	Integer http2; 
 	
+	@ApiModelProperty("是否开启proxy_protocol 0否(默认) 1是")
+	@InitValue("0")
+	Integer proxyProtocol; 
+	 
+	
 	@ApiModelProperty("ssl证书pem文件路径")
 	String pem;
 	@ApiModelProperty("ssl证书key文件路径")
@@ -206,6 +211,14 @@ public class Server extends BaseModel {
 
 	public String getRewriteListen() {
 		return rewriteListen;
+	}
+
+	public Integer getProxyProtocol() {
+		return proxyProtocol;
+	}
+
+	public void setProxyProtocol(Integer proxyProtocol) {
+		this.proxyProtocol = proxyProtocol;
 	}
 
 	public void setRewriteListen(String rewriteListen) {

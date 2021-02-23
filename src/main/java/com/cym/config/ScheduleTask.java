@@ -49,32 +49,28 @@ public class ScheduleTask {
 	@Value("${server.port}")
 	Integer port;
 
-	final SqlHelper sqlHelper;
-	final CertController certController;
-	final SettingService settingService;
-	final ConfController confController;
-	final RemoteController remoteController;
-	final RemoteService remoteService;
-	final UpstreamService upstreamService;
-	final LogService logInfoService;
-	final SendMailUtils sendMailUtils;
-	final HttpService httpService;
-	final MessageUtils m;
-
-	public ScheduleTask(MessageUtils m, UpstreamService upstreamService, RemoteService remoteService, SendMailUtils sendMailUtils, RemoteController remoteController, SqlHelper sqlHelper,
-			CertController certController, SettingService settingService, ConfController confController, LogService logInfoService, HttpService httpService) {
-		this.sqlHelper = sqlHelper;
-		this.upstreamService = upstreamService;
-		this.remoteService = remoteService;
-		this.certController = certController;
-		this.settingService = settingService;
-		this.confController = confController;
-		this.logInfoService = logInfoService;
-		this.remoteController = remoteController;
-		this.sendMailUtils = sendMailUtils;
-		this.httpService = httpService;
-		this.m = m;
-	}
+	@Autowired
+	SqlHelper sqlHelper;
+	@Autowired
+	CertController certController;
+	@Autowired
+	SettingService settingService;
+	@Autowired
+	ConfController confController;
+	@Autowired
+	RemoteController remoteController;
+	@Autowired
+	RemoteService remoteService;
+	@Autowired
+	UpstreamService upstreamService;
+	@Autowired
+	LogService logInfoService;
+	@Autowired
+	SendMailUtils sendMailUtils;
+	@Autowired
+	HttpService httpService;
+	@Autowired
+	MessageUtils m;
 
 	// 使用TimeUnit.DAYS.toMillis()进行时间粒度转换。Modified by Sai on 2020-6-17.
 	@Scheduled(cron = "0 0 2 * * ?")

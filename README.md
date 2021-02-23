@@ -57,7 +57,7 @@ yum install nginx
 2.下载最新版发行包jar
 
 ```
-wget http://file.nginxwebui.cn/nginxWebUI-2.4.6.jar
+wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.4.9.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -65,7 +65,7 @@ wget http://file.nginxwebui.cn/nginxWebUI-2.4.6.jar
 3.启动程序
 
 ```
-nohup java -jar -Xmx64m nginxWebUI-2.4.6.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+nohup java -jar -Xmx64m /home/nginxWebUI/nginxWebUI.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
 ```
 
 参数说明(都是非必填)
@@ -139,55 +139,43 @@ mvn clean package
 2. 使用docker构建镜像
 
 ```
-docker build -t nginxwebui:2.4.6 .
+docker build -t nginxwebui:2.4.9 .
 ```
 
 #### 添加开机启动
 
-1. 安装Supervisor
 
-ubuntu:
-
-```
-apt install supervisor
-```
-
-centos:
+1. 编辑service配置
 
 ```
-yum install epel-release // 引入supervisor的源
-yum install supervisor // 安装supervisor
-systemctl start supervisord.service     //启动supervisor并加载默认配置文件
-systemctl enable supervisord.service    //将supervisor加入开机启动项
+vim /etc/systemd/system/nginxwebui.service
 ```
 
-2. 编辑启动配置
-
-ubuntu:
-
 ```
-vim /etc/supervisor/conf.d/nginxwebui.conf
-```
-
-centos:
-
-```
-vim /etc/supervisord.d/nginxwebui.ini
-```
-
-内容:
-
-```
-[program:nginxwebui]
-command=java -jar /home/nginxWebUI-2.4.6.jar
-autostart=true #开机自启动
-autorestart=true #进程死掉后自动重启
-stderr_logfile=/tmp/nginxwebui_stderr.log #错误输出
-stdout_logfile=/tmp/nginxwebui_stdout.log #日志输出
-user = root #启动用户,必须为root
+[Unit]
+Description=NginxWebUI
+After=syslog.target
+After=network.target
+ 
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/home/nginxWebUI
+ExecStart=/usr/bin/java -jar /home/nginxWebUI/nginxWebUI.jar
+Restart=always
+ 
+[Install]
+WantedBy=multi-user.target
 ```
 
-重启即可
+之后执行
+
+```
+systemctl daemon-reload
+systemctl enable nginxwebui.service
+systemctl start nginxwebui.service
+```
 
 #### 使用说明
 

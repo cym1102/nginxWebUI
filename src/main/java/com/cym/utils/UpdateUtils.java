@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Component
 public class UpdateUtils {
@@ -15,6 +16,8 @@ public class UpdateUtils {
 	String port;
 	@Value("${project.home}")
 	String home;
+	@Value("${knife4j.production:}")
+	String production;
 
 	@Value("${spring.database.type:}")
 	String type;
@@ -34,7 +37,13 @@ public class UpdateUtils {
 		LOG.info(cmd);
 		RuntimeUtil.exec(cmd);
 
-		String param = " --server.port=" + port + " --project.home=" + home;
+		String param = " --server.port=" + port //
+				+ " --project.home=" + home;
+		
+		if (StrUtil.isNotEmpty(production)) {
+			param += " --knife4j.production=" + production;
+		}
+		
 		if (!"sqlite".equals(type)) {
 			param += " --spring.database.type=" + type //
 					+ " --spring.datasource.url=" + url //

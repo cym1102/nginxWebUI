@@ -245,7 +245,10 @@
 								<div class="layui-input-inline">
 									<input type="text" name="ip" id="ip" class="layui-input" style="width: 125px; display: inline-block;" placeholder="${serverStr.ipDefault}">
 									<input type="text" name="listen" id="listen" style="width: 60px; display: inline-block;" class="layui-input" placeholder="${serverStr.port}">
-									<input type="checkbox" name="def" id="def" title="${serverStr.default}" lay-skin="primary">
+									<div class="layui-input-inline" style="width: 250px;">
+									<input type="checkbox" name="def" id="def" title="default" lay-skin="primary">
+									<input type="checkbox" name="proxyProtocol" id="proxyProtocol" title="proxy protocol" lay-skin="primary">
+									</div>
 								</div>
 							</div>
 
@@ -394,7 +397,7 @@
 							<tr>
 								<th>${serverStr.listenPath}</th>
 								<th>${serverStr.proxyType}</th>
-								<th style="width: 650px;">${serverStr.proxyTarget}</th>
+								<th>${serverStr.proxyTarget}</th>
 								<th>${commonStr.operation}</th>
 							</tr>
 						</thead>
@@ -510,9 +513,7 @@
 			<input type="hidden" id="serverId" name="serverId">
 			<div class="layui-form-item">
 				<div class="layui-input-inline" style="width: 100%">
-					<textarea type="text" id="descr" name="descr" class="layui-textarea">
-					
-					</textarea>
+					<textarea type="text" id="descr" name="descr" class="layui-textarea"></textarea>
 				</div>
 			</div>
 			<div class="layui-form-item">

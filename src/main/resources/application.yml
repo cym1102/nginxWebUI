@@ -35,4 +35,4 @@ logging:
     root: info
 
 knife4j:
-  enable: true  
+  enable: true
