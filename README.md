@@ -128,6 +128,24 @@ docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.p
 
 4. 日志默认存放在/home/nginxWebUI/log/nginxWebUI.log
 
+另: 使用docker-compose时配置文件如下
+
+```
+version: "3.2"
+services:
+  nginxWebUi-server:
+    image: cym1102/nginxwebui:2.4.9
+    volumes:
+      - type: bind
+        source: "/home/nginxWebUI"
+        target: "/home/nginxWebUI"
+    environment:
+      BOOT_OPTIONS: "--server.port=8080"
+    privileged: true
+    network_mode: "host"
+
+```
+
 #### 编译说明
 
 1. 使用maven编译打包

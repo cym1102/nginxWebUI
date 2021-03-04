@@ -124,6 +124,23 @@ notice:
 
 4. Logs are stored by default /home/nginxWebUI/log/nginxWebUI.log
 
+moreover: The following configuration file is used when using docker-compose
+
+```
+version: "3.2"
+services:
+  nginxWebUi-server:
+    image: cym1102/nginxwebui:2.4.9
+    volumes:
+      - type: bind
+        source: "/home/nginxWebUI"
+        target: "/home/nginxWebUI"
+    environment:
+      BOOT_OPTIONS: "--server.port=8080"
+    privileged: true
+    network_mode: "host"
+
+```
 
 #### Compile 
 
