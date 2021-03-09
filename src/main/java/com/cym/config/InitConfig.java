@@ -152,7 +152,7 @@ public class InitConfig {
 		
 		
 		// 删除多余备份文件
-		scheduleTask.delCache();
+//		scheduleTask.delCache();
 	}
 
 	/**

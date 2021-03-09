@@ -45,6 +45,15 @@ public class StreamController extends BaseController {
 
 		return renderSuccess();
 	}
+	
+
+	@RequestMapping("addTemplate")
+	@ResponseBody
+	public JsonResult addTemplate(String templateId) {
+		streamService.addTemplate(templateId);
+		
+		return renderSuccess();
+	}
 
 	@RequestMapping("detail")
 	@ResponseBody

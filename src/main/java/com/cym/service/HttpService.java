@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cym.model.Http;
+import com.cym.model.Param;
 import com.cym.utils.SnowFlakeUtils;
 
 import cn.craccd.sqlHelper.bean.Sort;
@@ -49,7 +50,7 @@ public class HttpService {
 				http.setId(httpOrg.getId());
 			}
 
-			http.setSeq( SnowFlakeUtils.getId());
+			http.setSeq(SnowFlakeUtils.getId());
 			http.setValue(http.getValue() + http.getUnit());
 
 			sqlHelper.insertOrUpdate(http);
@@ -94,11 +95,23 @@ public class HttpService {
 
 	}
 
-
 	public Http getName(String name) {
 		Http http = sqlHelper.findOneByQuery(new ConditionAndWrapper().eq("name", name), Http.class);
 
 		return http;
+	}
+
+	public void addTemplate(String templateId) {
+		List<Param> parmList = sqlHelper.findListByQuery(new ConditionAndWrapper().eq(Param::getTemplateId, templateId), Param.class);
+
+		for (Param param : parmList) {
+			Http http = new Http();
+			http.setName(param.getName());
+			http.setValue(param.getValue());
+			http.setSeq(SnowFlakeUtils.getId());
+			
+			sqlHelper.insert(http);
+		}
 	}
 
 }

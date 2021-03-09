@@ -52,6 +52,14 @@ public class HttpController extends BaseController {
 		return renderSuccess();
 	}
 
+	@RequestMapping("addTemplate")
+	@ResponseBody
+	public JsonResult addTemplate(String templateId) {
+		httpService.addTemplate(templateId);
+		
+		return renderSuccess();
+	}
+	
 	@RequestMapping("detail")
 	@ResponseBody
 	public JsonResult detail(String id) {
@@ -72,15 +80,15 @@ public class HttpController extends BaseController {
 		List<Http> https = JSONUtil.toList(JSONUtil.parseArray(json), Http.class);
 
 		if (logStatus) {
-			Http http = new Http();
-			http.setName("log_format");
-			http.setValue("main escape=json '" + buildLogFormat() + "'");
-			http.setUnit("");
-			https.add(http);
+//			Http http = new Http();
+//			http.setName("log_format");
+//			http.setValue("main escape=json '" + buildLogFormat() + "'");
+//			http.setUnit("");
+//			https.add(http);
 
-			http = new Http();
+			Http http = new Http();
 			http.setName("access_log");
-			http.setValue(InitConfig.home + "log/access.log main");
+			http.setValue(InitConfig.home + "log/access.log");
 			http.setUnit("");
 			https.add(http);
 
@@ -99,23 +107,23 @@ public class HttpController extends BaseController {
 		return renderSuccess();
 	}
 
-	private String buildLogFormat() {
-		LogInfo logInfo = new LogInfo();
-		logInfo.setRemoteAddr("$remote_addr");
-		logInfo.setRemoteUser("$remote_user");
-		logInfo.setTimeLocal("$time_local");
-		logInfo.setRequest("$request");
-		logInfo.setHttpHost("$http_host");
-		logInfo.setStatus("$status");
-		logInfo.setRequestLength("$request_length");
-		logInfo.setBodyBytesDent("$body_bytes_sent");
-		logInfo.setHttpReferer("$http_referer");
-		logInfo.setHttpUserAgent("$http_user_agent");
-		logInfo.setRequestTime("$request_time");
-		logInfo.setUpstreamResponseTime("$upstream_response_time");
-
-		return JSONUtil.toJsonStr(logInfo);
-	}
+//	private String buildLogFormat() {
+//		LogInfo logInfo = new LogInfo();
+//		logInfo.setRemoteAddr("$remote_addr");
+//		logInfo.setRemoteUser("$remote_user");
+//		logInfo.setTimeLocal("$time_local");
+//		logInfo.setRequest("$request");
+//		logInfo.setHttpHost("$http_host");
+//		logInfo.setStatus("$status");
+//		logInfo.setRequestLength("$request_length");
+//		logInfo.setBodyBytesDent("$body_bytes_sent");
+//		logInfo.setHttpReferer("$http_referer");
+//		logInfo.setHttpUserAgent("$http_user_agent");
+//		logInfo.setRequestTime("$request_time");
+//		logInfo.setUpstreamResponseTime("$upstream_response_time");
+//
+//		return JSONUtil.toJsonStr(logInfo);
+//	}
 
 	@RequestMapping("setOrder")
 	@ResponseBody

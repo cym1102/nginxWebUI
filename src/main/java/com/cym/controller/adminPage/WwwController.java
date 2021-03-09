@@ -1,6 +1,5 @@
 package com.cym.controller.adminPage;
 
-import java.io.File;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -12,17 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cym.config.InitConfig;
 import com.cym.model.Www;
 import com.cym.service.WwwService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
-import com.cym.utils.SystemTool;
 
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 
 @RequestMapping("/adminPage/www")
@@ -41,29 +37,21 @@ public class WwwController extends BaseController {
 
 	@RequestMapping("addOver")
 	@ResponseBody
-	public JsonResult addOver(Www www) {
-		if (wwwService.hasName(www.getName())) {
-			return renderError(m.get("wwwStr.sameName"));
+	public JsonResult addOver(Www www, String dirTemp) {
+		if (wwwService.hasDir(www.getDir(),www.getId())) {
+			return renderError(m.get("wwwStr.sameDir"));
 		}
 
 		try {
-			String dir = InitConfig.home + "www/" + www.getName();
-			FileUtil.del(dir);
+			FileUtil.del(www.getDir());
 			try {
-				ZipUtil.unzip(www.getDir(), dir);
+				ZipUtil.unzip(dirTemp, www.getDir());
 			} catch (Exception e) {
 				// 默认UTF-8下不能解压中文字符, 尝试使用gbk
-				ZipUtil.unzip(www.getDir(), dir, Charset.forName("GBK"));
+				ZipUtil.unzip(dirTemp, www.getDir(), Charset.forName("GBK"));
 			}
 
-			FileUtil.del(www.getDir());
-			if (!SystemTool.isWindows()) {
-				www.setDir(dir);
-			} else {
-				String classPath = getClassPath();
-				www.setDir(classPath.split(":")[0] + ":" + dir);
-			}
-
+			FileUtil.del(dirTemp);
 			sqlHelper.insertOrUpdate(www);
 
 			return renderSuccess();
@@ -75,64 +63,12 @@ public class WwwController extends BaseController {
 		return renderError(m.get("wwwStr.zipError"));
 	}
 
-	@RequestMapping("rename")
-	@ResponseBody
-	public JsonResult rename(Www www) {
-		if (wwwService.hasName(www.getName())) {
-			return renderError(m.get("wwwStr.sameName"));
-		}
 
-		// 修改名称, 也要修改文件夹名
-		Www wwwOrg = sqlHelper.findById(www.getId(), Www.class);
-		FileUtil.rename(new File(wwwOrg.getDir()), InitConfig.home + "www/" + www.getName(), true);
-
-		www.setDir(InitConfig.home + "www/" + www.getName());
-		sqlHelper.insertOrUpdate(www);
-
-		return renderSuccess();
-
-	}
-
-	@RequestMapping("update")
-	@ResponseBody
-	public JsonResult update(Www www) {
-
-		try {
-			String dir = InitConfig.home + "www/" + www.getName();
-			FileUtil.del(dir);
-			try {
-				ZipUtil.unzip(www.getDir(), dir);
-			} catch (Exception e) {
-				// 默认UTF-8下不能解压中文字符, 尝试使用gbk
-				ZipUtil.unzip(www.getDir(), dir, Charset.forName("GBK"));
-			}
-
-			FileUtil.del(www.getDir());
-			if (!SystemTool.isWindows()) {
-				www.setDir(dir);
-			} else {
-				String classPath = getClassPath();
-				www.setDir(classPath.split(":")[0] + ":" + dir);
-			}
-			sqlHelper.insertOrUpdate(www);
-
-			return renderSuccess();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return renderError(m.get("wwwStr.zipError"));
-	}
 
 	@RequestMapping("del")
 	@ResponseBody
 	public JsonResult del(String id) {
-		Www www = sqlHelper.findById(id, Www.class);
 		sqlHelper.deleteById(id, Www.class);
-		if (StrUtil.isNotEmpty(www.getDir()) && www.getDir() != "/") {
-			FileUtil.del(www.getDir());
-		}
 
 		return renderSuccess();
 	}

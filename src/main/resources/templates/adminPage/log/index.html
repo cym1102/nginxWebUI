@@ -2,13 +2,7 @@
 <html>
 <head>
 <#include "/adminPage/common.html"/>
-<style type="text/css">
-.group{
-	width: 550px;
-	height: 300px;
-	float: left;
-}
-</style>
+
 </head>
 <body class="layui-layout-body">
 	<div class="layui-layout layui-layout-admin">
@@ -25,26 +19,9 @@
 
 				<form action="${ctx}/adminPage/log" id="searchForm" method="post">
 					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-danger" onclick="delAll()">${logStr.delAll}</button>
-						
-						<button type="button" class="layui-btn" onclick="analysis()">${logStr.analysis}</button>
+						<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${logStr.add}</button>
 					</div>
-					
-					<div class="layui-inline">
-						<input type="text" name="startDate" id="startDate" class="layui-input laydate" value="" placeholder="${logStr.startTime}">
-					</div>
-					
-					<div class="layui-inline">
-						<input type="text" name="endDate" id="endDate" class="layui-input laydate" value="" placeholder="${logStr.endTime}">
-					</div>
-					<div class="layui-inline">	
-						<button type="button" class="layui-btn" onclick="seeByTime()">${logStr.byTime}</button>
-					</div>
-					
-					
-					<div class="layui-inline">
-						<div class="layui-form-mid layui-word-aux">${logStr.tips}</div>
-					</div>
+
 					<input type="hidden" name="curr" value="${page.curr}">
 					<input type="hidden" name="limit" value="${page.limit}">
 				</form>
@@ -52,16 +29,20 @@
 				<table class="layui-table">
 					<thead>
 						<tr>
-							<th>${logStr.recordTime}</th>
+							<th>${logStr.path}</th>
 							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
 					<tbody>
 						<#list page.records as log>
 						<tr>
-							<td>${log.date}</td>
+							<td>${log.path}</td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="detail('${log.id}')">${logStr.detail}</button>
+								<#if isLinux>
+									<button class="layui-btn layui-btn-sm" onclick="tail('${log.id}','${log.path}')">${logStr.tail}</button>
+								</#if>
+								<button class="layui-btn layui-btn-sm" onclick="down('${log.id}')">${logStr.download}</button>
+								<button class="layui-btn layui-btn-sm" onclick="edit('${log.id}')">${commonStr.edit}</button>
 								<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="del('${log.id}')">${commonStr.del}</button>
 							</td>
 						</tr>
@@ -75,19 +56,32 @@
 
 	<div style="height: 0px; width: 0px; overflow: hidden;">
 		<!-- 弹出框 -->
-		<div id="windowDiv" style="padding: 15px;">
-		
-			<div id="statusDiv" class="group"></div>
-			
-			<div id="browser" class="group"></div>
-			
-			<div id="pvuv" class="group"></div>
-
-			<div id="httpReferer" class="group"></div>
+		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none">
+			<form id="addForm">
+				<input type="hidden" name="id" id="id">
+				<div id="nameDiv">
+					<div class="layui-form-item">
+						<label class="layui-form-label">${logStr.path}</label>
+						<div class="layui-input-inline">
+							<input type="text" name="path" id="path" class="layui-input">
+						</div>
+						<div class="layui-input-inline">
+							<i class="layui-icon layui-icon-export" onclick="selectRootCustom()"></i>
+						</div>
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
+				</div>
+				
+			</form>
 		</div>
 
 	</div>
 	<#include '/adminPage/script.html'/>
+	<#include '/adminPage/select_root.html'/>
 	<script src="${ctx}/js/adminPage/log/index.js?v=${jsrandom}" type="text/javascript"></script>
 	
 	

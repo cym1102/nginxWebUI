@@ -22,6 +22,8 @@
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${stream.add}</button> 
 							
+							<button type="button" class="layui-btn" onclick="selectTemplateAsStream()">${upstreamStr.selectTemplateAsParam}</button>
+							
 							<button type="button" class="layui-btn layui-btn-normal" onclick="preview(null,'stream')">${commonStr.preview}</button>
 							
 						</div>
@@ -87,6 +89,7 @@
 
 	<#include '/adminPage/script.html'/>
 	<#include '/adminPage/select_preview.html'/>
+	<#include '/adminPage/select_template.html'/>
 	<script src="${ctx}/js/adminPage/stream/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

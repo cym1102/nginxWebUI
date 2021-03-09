@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +31,7 @@ public class MonitorController extends BaseController {
 	MonitorService monitorService;
 	@Autowired
 	SettingService settingService;
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
@@ -62,7 +65,6 @@ public class MonitorController extends BaseController {
 	@RequestMapping("network")
 	@ResponseBody
 	public JsonResult network() {
-
 		NetworkInfo networkInfo = NetWorkUtil.getNetworkDownUp();
 		//System.err.println(JSONUtil.toJsonStr(networkInfo));
 		return renderSuccess(networkInfo);

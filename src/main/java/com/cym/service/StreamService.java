@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cym.model.Basic;
+import com.cym.model.Http;
+import com.cym.model.Param;
 import com.cym.model.Stream;
 import com.cym.utils.SnowFlakeUtils;
 
 import cn.craccd.sqlHelper.bean.Sort;
 import cn.craccd.sqlHelper.bean.Sort.Direction;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 
 @Service
@@ -55,6 +58,21 @@ public class StreamService {
 
 	public List<Stream> findAll() {
 		return sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
+	}
+
+
+	public void addTemplate(String templateId) {
+		List<Param> parmList = sqlHelper.findListByQuery(new ConditionAndWrapper().eq(Param::getTemplateId, templateId), Param.class);
+
+		for (Param param : parmList) {
+			Stream stream = new Stream();
+			stream.setName(param.getName());
+			stream.setValue(param.getValue());
+			stream.setSeq(SnowFlakeUtils.getId());
+			
+			sqlHelper.insert(stream);
+		}
+		
 	}
 
 	

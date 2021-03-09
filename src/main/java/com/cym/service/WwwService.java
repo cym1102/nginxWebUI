@@ -7,6 +7,7 @@ import com.cym.model.Www;
 
 import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
+import cn.hutool.core.util.StrUtil;
 
 @Service
 public class WwwService {
@@ -14,9 +15,12 @@ public class WwwService {
 	@Autowired
 	SqlHelper sqlHelper;
 
-	public Boolean hasName(String name) {
-
-		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("name", name), Www.class) > 0;
+	public Boolean hasDir(String dir, String id) {
+		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper().eq("dir", dir);
+		if(StrUtil.isNotEmpty(id)) {
+			conditionAndWrapper.ne("id", id);
+		}
+		return sqlHelper.findCountByQuery(conditionAndWrapper, Www.class) > 0;
 
 	}
 }

@@ -1,309 +1,120 @@
-$(function() {
-	pvuv = echarts.init(document.getElementById('pvuv'));
-	statusDiv = echarts.init(document.getElementById('statusDiv'));
-	browser = echarts.init(document.getElementById('browser'));
-	httpReferer = echarts.init(document.getElementById('httpReferer'));
-
-})
-
-function delAll() {
-	if (confirm(logStr.clearAll)) {
-		$.ajax({
-			type: 'GET',
-			url: ctx + '/adminPage/log/delAll',
-			dataType: 'json',
-
-			success: function(data) {
-				if (data.success) {
-					location.reload();
-				} else {
-					layer.msg(data.msg);
-				}
-			},
-			error: function() {
-				layer.closeAll();
-				layer.alert(commonStr.errorInfo);
-			}
-		});
-	}
-
+function search() {
+	$("input[name='curr']").val(1);
+	$("#searchForm").submit();
 }
 
-function detail(id) {
-	$.ajax({
-		type: 'GET',
-		url: ctx + '/adminPage/log/detail',
-		dataType: 'json',
-		data: {
-			id: id
-		},
-		success: function(data) {
-			if (data.success) {
-				showContent(JSON.parse(data.obj.json))
-			} else {
-				layer.msg(data.msg);
-			}
-		},
-		error: function() {
-			layer.closeAll();
-			layer.alert(commonStr.errorInfo);
-		}
+
+function add() {
+	$("#id").val(""); 
+	$("#path").val(""); 
+	
+	showWindow(adminStr.add);
+}
+
+
+function showWindow(title){
+	layer.open({
+		type : 1,
+		title : title,
+		area : [ '550px', '350px' ], // 宽高
+		content : $('#windowDiv')
 	});
 }
 
-
-function del(id) {
-	if (confirm(commonStr.confirmDel)) {
-		$.ajax({
-			type: 'GET',
-			url: ctx + '/adminPage/log/del',
-			dataType: 'json',
-			data: {
-				id: id
-			},
-			success: function(data) {
-				if (data.success) {
-					location.reload();
-				} else {
-					layer.msg(data.msg);
-				}
-			},
-			error: function() {
-				layer.closeAll();
-				layer.alert(commonStr.errorInfo);
-			}
-		});
-	}
-}
-
-function seeByTime(){
-	
-	var startDate = $("input[name='startDate']").val();
-	var endDate = $("input[name='endDate']").val();
-	
-	if(startDate == '' || endDate == ''){
-		layer.msg(loginStr.timeFill);
+function addOver() {
+	if($("#path").val() == ''){
+		alert(commonStr.noDir);
 		return;
 	}
 	
+	
 	$.ajax({
-		type: 'GET',
-		url: ctx + '/adminPage/log/detailByTIme',
-		dataType: 'json',
-		data: {
-			startDate: startDate,
-			endDate: endDate
-		},
-		success: function(data) {
+		type : 'POST',
+		url : ctx + '/adminPage/log/addOver',
+		data : $('#addForm').serialize(),
+		dataType : 'json',
+		success : function(data) {
 			if (data.success) {
-				showContent(data.obj)
+				location.reload();
 			} else {
 				layer.msg(data.msg);
 			}
 		},
-		error: function() {
-			layer.closeAll();
+		error : function() {
 			layer.alert(commonStr.errorInfo);
 		}
 	});
 }
 
-var pvuv, statusDiv, browser, httpReferer;
-function showContent(dataGroup) {
-	// 请求状态占比
-	var option = {
-		title: {
-			text: logStr.status,
-			left: 'center'
+function edit(id) {
+	$("#id").val(id); 
+	
+	$.ajax({
+		type : 'GET',
+		url : ctx + '/adminPage/log/detail',
+		dataType : 'json',
+		data : {
+			id : id
 		},
-		tooltip: {
-			trigger: 'item',
-			formatter(params) {
-				const item = params.data;
-				return item.name + " " + commonStr.status + ": " + item.value;
-			},
-		},
-		series: [{
-			type: 'pie',
-			radius: '55%',
-			data: dataGroup.status,
-			label: {
-				formatter: '{b} ' + commonStr.status + ' : {c} ({d}%)'
+		success : function(data) {
+			if (data.success) {
+				var log = data.obj;
+				$("#id").val(log.id); 
+				$("#path").val(log.path); 
+				
+				form.render();
+				showWindow(commonStr.edit);
+			}else{
+				layer.msg(data.msg);
 			}
-		}]
-	};
-
-	statusDiv.setOption(option);
-	// 系统占比
-	option = {
-		title: {
-			text: logStr.browser,
-			left: 'center'
 		},
-		tooltip: {
-			trigger: 'item'
-		},
-		series: [{
-			type: 'pie',
-			radius: '55%',
-			data: dataGroup.browser,
-			label: {
-				formatter: '{b} : {c} ({d}%)'
-			},
-		}]
-	};
-
-	browser.setOption(option);
-
-	// pv uv统计
-	var hour = [];
-	var pv = [];
-	var uv = [];
-	for (var i = 0; i < 24; i++) {
-		hour.push(i);
-
-		var hasPv = false;
-		for (var j = 0; j < dataGroup.pv.length; j++) {
-			if (parseInt(dataGroup.pv[j].name) == i) {
-				pv.push(dataGroup.pv[j].value);
-				hasPv = true;
-			} 
+		error : function() {
+			layer.alert(commonStr.errorInfo);
 		}
-		if(!hasPv){
-			pv.push(0);
-		}
-		
-		var hasUv = false;
-		for (var j = 0; j < dataGroup.uv.length; j++) {
-			if (parseInt(dataGroup.uv[j].name) == i) {
-				uv.push(dataGroup.uv[j].value);
-				hasUv = true;
-			}
-		}
-		if(!hasUv){
-			uv.push(0);
-		}
-	}
-
-	option = {
-		title: {
-			text: logStr.pvuv,
-			left: 'center'
-		},
-		tooltip: {
-			trigger: 'axis',
-			formatter(params) {
-				return `
-	            	${params[0].name} ${logStr.hour}<br>
-	            	pv: ${params[0].value}<br>
-	            	uv: ${params[1].value}
-	            `;
-			},
-		},
-		xAxis: {
-			name: logStr.hour,
-			type: 'category',
-			data: hour
-		},
-		yAxis: {
-			type: 'value'
-		},
-		series: [{
-			name: 'pv',
-			data: pv,
-			type: 'line',
-			showBackground: true,
-			backgroundStyle: {
-				color: 'rgba(108,80,243,0.3)'
-			}
-		}, {
-			name: 'uv',
-			data: uv,
-			type: 'line',
-			showBackground: true,
-			backgroundStyle: {
-				color: 'rgba(0,202,149,0.3)'
-			}
-		}
-
-		]
-	};
-
-	pvuv.setOption(option);
-
-
-	// 域名统计
-	var names = [];
-	var values = [];
-	for (var i = 0; i < dataGroup.httpReferer.length; i++) {
-		names.push(dataGroup.httpReferer[i].name);
-		values.push(dataGroup.httpReferer[i].value);
-	}
-
-	option = {
-		title: {
-			text: logStr.httpReferer,
-			left: 'center'
-		},
-		tooltip: {
-			trigger: 'axis',
-			axisPointer: {
-				type: 'shadow'
-			}
-		},
-		xAxis: {
-            name: logStr.times, //这里的域名统计，应该在x轴显示“次”，英文times
-			type: 'value'
-		},
-		yAxis: {
-			type: 'category',
-			data: names
-		},
-		grid: { // 控制图的大小，调整下面这些值就可以，
-			x: 150// x的值可以空值y轴与label标签的距离
-		},
-		series: [{
-			data: values,
-			type: 'bar',
-			showBackground: true,
-			backgroundStyle: {
-				color: 'rgba(220, 220, 220, 0.8)'
-			}
-		}]
-	};
-
-	httpReferer.setOption(option);
-
-	// 弹出框
-	layer.open({
-		type: 1,
-		title: logStr.statistics,
-		area: ['1150px', '700px'], // 宽高
-		content: $('#windowDiv')
 	});
 }
 
-
-function analysis() {
-	if (confirm(logStr.analysisStart)) {
-		layer.load();
+function del(id){
+	if(confirm(commonStr.confirmDel)){
 		$.ajax({
-			type: 'GET',
-			url: ctx + '/adminPage/log/analysis',
-			dataType: 'json',
-			success: function(data) {
-				layer.closeAll();
+			type : 'POST',
+			url : ctx + '/adminPage/log/del',
+			data : {
+				id : id
+			},
+			dataType : 'json',
+			success : function(data) {
 				if (data.success) {
 					location.reload();
-				} else {
-					layer.msg(data.msg);
+				}else{
+					layer.msg(data.msg)
 				}
 			},
-			error: function() {
-				layer.closeAll();
+			error : function() {
 				layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
+}
 
+
+function selectRootCustom(){
+	rootSelect.selectOne(function callBack(val){
+		$("#path").val(val);
+		//$("#fileName").html(val);
+	});
+}
+
+function tail(id,path){
+	layer.open({
+		  type: 2, 
+		  area : [ '1300px', '732px' ], // 宽高
+		  title : path,
+		  resize  : false,
+		  content: ctx + "adminPage/log/tail?id=" + id
+	}); 
+}
+
+function down(id){
+	window.open(ctx+"adminPage/log/down?id=" + id);
 }

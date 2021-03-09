@@ -1,10 +1,14 @@
 package com.cym.controller.adminPage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,12 +21,11 @@ import com.cym.service.LogService;
 import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
-import com.mysql.cj.xdevapi.JsonArray;
+import com.cym.utils.SystemTool;
 
 import cn.craccd.sqlHelper.bean.Page;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.URLUtil;
 
 @Controller
 @RequestMapping("/adminPage/log")
@@ -37,12 +40,34 @@ public class LogController extends BaseController {
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page) {
 		page = logService.search(page);
-
 		modelAndView.addObject("page", page);
+		
+		modelAndView.addObject("isLinux", SystemTool.isLinux());
 		modelAndView.setViewName("/adminPage/log/index");
 		return modelAndView;
 	}
-
+	
+	@RequestMapping("addOver")
+	@ResponseBody
+	public JsonResult addOver(Log log) {
+		if (logService.hasDir(log.getPath(),log.getId())) {
+			return renderError(m.get("logStr.sameDir"));
+		}
+		
+		if(FileUtil.isDirectory(log.getPath())) {
+			return renderError(m.get("logStr.notFile"));
+		}
+		
+		sqlHelper.insertOrUpdate(log);
+		return renderSuccess();
+	}
+	
+	@RequestMapping("detail")
+	@ResponseBody
+	public JsonResult detail(String id) {
+		return renderSuccess(sqlHelper.findById(id, Log.class));
+	}
+	
 	@RequestMapping("del")
 	@ResponseBody
 	public JsonResult del(String id) {
@@ -50,72 +75,35 @@ public class LogController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("delAll")
-	@ResponseBody
-	public JsonResult delAll(String id) {
-		sqlHelper.deleteByQuery(null, Log.class);
-		return renderSuccess();
+	@RequestMapping("tail")
+	public ModelAndView tail(ModelAndView modelAndView, String id) {
+		modelAndView.addObject("id", id);
+		modelAndView.setViewName("/adminPage/log/tail");
+		return modelAndView;
 	}
-
-	@RequestMapping("detail")
+	
+	
 	@ResponseBody
-	public JsonResult detail(String id) {
+	@RequestMapping("down")
+	public void down(ModelAndView modelAndView, String id, HttpServletResponse response) {
 		Log log = sqlHelper.findById(id, Log.class);
-		return renderSuccess(log);
-
+		outputStream(new File(log.getPath()), response);  
 	}
 
-	@RequestMapping("detailByTIme")
-	@ResponseBody
-	public JsonResult detailByTIme(String startDate, String endDate) {
-		List<Log> logAll = logService.findByDate(startDate, endDate);
+	
+	private void outputStream(File file, HttpServletResponse response) {
+		try {
+			response.setContentType("application/octet-stream");
+			String headerKey = "Content-Disposition";
+			String headerValue = "attachment; filename=" + URLUtil.encode(file.getName());
+			response.setHeader(headerKey, headerValue);
 
-		JSONObject jsonObjectFilter = new JSONObject();
-		jsonObjectFilter.set("uv", new JsonArray());
-		jsonObjectFilter.set("pv", new JsonArray());
-		jsonObjectFilter.set("browser", new JsonArray());
-		jsonObjectFilter.set("httpReferer", new JsonArray());
-		jsonObjectFilter.set("status", new JsonArray());
-
-		for (Log log : logAll) {
-			JSONObject jsonObject = JSONUtil.parseObj(log.getJson());
-
-			addToJsonArray(jsonObjectFilter.getJSONArray("uv"), jsonObject.getJSONArray("uv"));
-			addToJsonArray(jsonObjectFilter.getJSONArray("pv"), jsonObject.getJSONArray("pv"));
-			addToJsonArray(jsonObjectFilter.getJSONArray("browser"), jsonObject.getJSONArray("browser"));
-			addToJsonArray(jsonObjectFilter.getJSONArray("httpReferer"), jsonObject.getJSONArray("httpReferer"));
-			addToJsonArray(jsonObjectFilter.getJSONArray("status"), jsonObject.getJSONArray("status"));
-
-		}
-
-		return renderSuccess(jsonObjectFilter);
-
-	}
-
-	private void addToJsonArray(JSONArray jsonArrayFilter, JSONArray jsonArray) {
-		for (int i = 0; i < jsonArray.size(); i++) {
-			for (int j = 0; j < jsonArrayFilter.size(); j++) {
-				if (jsonArray.getJSONObject(i).getStr("name").equals(jsonArrayFilter.getJSONObject(j).getStr("name"))) {
-					Long count = jsonArray.getJSONObject(i).getLong("value") + jsonArrayFilter.getJSONObject(j).getLong("value");
-					jsonArrayFilter.getJSONObject(i).set("value", count);
-					return;
-				}
-			}
-
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.set("name", jsonArray.getJSONObject(i).getStr("name"));
-			jsonObject.set("value", jsonArray.getJSONObject(i).getStr("value"));
-			jsonArrayFilter.add(jsonObject);
+			InputStream inputStream = new FileInputStream(file);
+			IOUtils.copy(inputStream, response.getOutputStream());
+			response.flushBuffer();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 	}
-
-	@RequestMapping("analysis")
-	@ResponseBody
-	public JsonResult analysis() {
-		scheduleTask.diviLog();
-		return renderSuccess();
-
-	}
-
 }

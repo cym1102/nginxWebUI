@@ -20,7 +20,7 @@ $(function(){
 					}
 						
 					$("#fileName").html(path[path.length-1]);
-					$("#dir").val(res.obj);
+					$("#dirTemp").val(res.obj);
 				}
 
 			},
@@ -41,12 +41,12 @@ function search() {
 
 function add() {
 	$("#id").val(""); 
-	$("#name").val(""); 
-	$("#fileName").html(""); 
 	$("#dir").val(""); 
-	$("#zipDiv").show();
+	$("#dirTemp").html(""); 
+	$("#fileName").html(""); 
+	//$("#zipDiv").show();
 	
-	 $("#action").val("addOver");
+	// $("#action").val("addOver");
 
 	showWindow(wwwStr.add);
 }
@@ -62,14 +62,19 @@ function showWindow(title){
 }
 
 function addOver() {
-	if($("#id").val() == '' && ($("#name").val() == '' || $("#dir").val() == '')){
-		layer.alert(wwwStr.noFile);
+	if($("#dir").val() == ''){
+		layer.alert(wwwStr.noFill);
+		return;
+	}
+	
+	if($("#dirTemp").val() == ''){
+		layer.alert(wwwStr.noUpload);
 		return;
 	}
 	
 	$.ajax({
 		type : 'POST',
-		url : ctx + '/adminPage/www/' + $("#action").val(),
+		url : ctx + '/adminPage/www/addOver',
 		data : $('#addForm').serialize(),
 		dataType : 'json',
 		success : function(data) {
@@ -133,14 +138,13 @@ function edit(id){
 				var www = data.obj;
 				
 				$("#id").val(www.id); 
-				$("#name").val(www.name); 
-				$("#fileName").html(""); 
-				$("#dir").val(""); 
+				$("#dir").val(www.dir); 
+				$("#dirTemp").html(""); 
+				$("#fileName").html("");
+				//$("#nameDiv").show();
+				//$("#zipDiv").hide();
 				
-				$("#nameDiv").show();
-				$("#zipDiv").hide();
-				
-				$("#action").val("rename");
+				//$("#action").val("rename");
 				showWindow(commonStr.edit);
 			}else{
 				layer.msg(data.msg)
@@ -152,35 +156,11 @@ function edit(id){
 	});
 }
 
-function update(id){
-	$.ajax({
-		type : 'POST',
-		url : ctx + '/adminPage/www/detail',
-		data : {
-			id : id
-		},
-		dataType : 'json',
-		success : function(data) {
-			if (data.success) {
-				var www = data.obj;
-				
-				$("#id").val(www.id); 
-				$("#name").val(www.name); 
-				$("#fileName").html(""); 
-				$("#dir").val(""); 
-				
-				$("#nameDiv").hide();
-				$("#zipDiv").show();
-				
-					
-				$("#action").val("update");
-				showWindow(commonStr.update);
-			}else{
-				layer.msg(data.msg)
-			}
-		},
-		error : function() {
-			layer.alert(commonStr.errorInfo);
-		}
+
+
+function selectRootCustom(){
+	rootSelect.selectOne(function callBack(val){
+		$("#dir").val(val);
+		//$("#fileName").html(val);
 	});
 }

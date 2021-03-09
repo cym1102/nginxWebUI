@@ -22,10 +22,10 @@ public class NginxWebUI {
 
 	public static void main(String[] args) {
 
-		if (!SystemTool.hasRoot()) {
-			System.err.println("请使用root用户运行该程序。 Please use root to run this program ");
-			return;
-		}
+//		if (!SystemTool.hasRoot()) {
+//			System.err.println("请使用root用户运行该程序。 Please use root to run this program ");
+//			return;
+//		}
 
 		if (SystemTool.isLinux()) {
 			// 尝试杀掉旧版本

@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cym.ext.TreeNode;
 import com.cym.utils.BaseController;
+import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 
 @Controller
@@ -67,14 +69,20 @@ public class RootController extends BaseController {
 				if (o1.getIsParent().equals("false") && o2.getIsParent().equals("true")) {
 					return 1;
 				}
-				
-				
+
 				return o1.getName().compareToIgnoreCase(o2.getName());
 			}
 		});
 
-
 		return list;
 	}
 
+	@ResponseBody
+	@RequestMapping("mkdir")
+	public JsonResult mkdir(String dir, String name) {
+
+		FileUtil.mkdir(dir + File.separator + name);
+
+		return renderSuccess();
+	}
 }

@@ -40,6 +40,42 @@ var rootSelect = {
 		
 		layer.close(this.index);
 	},
+	addDir : function(){
+		var dir ="";
+		var nodes = rootSelect.zTreeObj.getSelectedNodes();
+		if(nodes.length > 0){
+			dir = nodes[0].id.replace(/\\/g,"/");
+		}
+		if(dir == ""){
+			alert(commonStr.noDir);
+			return;
+		}
+			
+		layer.prompt(function(value, index, elem){
+			$.ajax({
+				type: 'POST',
+				url: ctx + '/adminPage/root/mkdir',
+				data: {
+					name : value,
+					dir : dir
+				},
+				dataType: 'json',
+				success: function(data) {
+					if (data.success) {
+						layer.close(index);
+						//debugger
+						rootSelect.zTreeObj.reAsyncChildNodes(rootSelect.zTreeObj.getSelectedNodes()[0], "refresh", false);
+					} else {
+						layer.msg(data.msg)
+					}
+				},
+				error: function() {
+					layer.alert(commonStr.errorInfo);
+				}
+			});
+		  	
+		});
+	},
 	close : function() {
 		layer.close(this.index);
 	},

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<#include "/adminPage/common.html"/>
+
+</head>
+<body>
+	<div id="log-container" style="height: 635px; overflow-y: scroll; background: #333; color: #aaa; padding: 10px;">
+		<div></div>
+	</div>
+	
+	<div style="text-align: center;margin-top: 2px;">
+		<button style="width: 100px;" class="layui-btn layui-btn-sm" type="button" onclick="stop()">${loginStr.pause}</button>
+	 	<button style="width: 100px;" class="layui-btn layui-btn-sm layui-btn-normal" type="button" onclick="goon()">${loginStr.continue}</button>
+	</div>
+
+	<#include '/adminPage/script.html'/>
+
+	<script>
+		var run = true;
+		$(document).ready(function() {
+			// 指定websocket路径
+			//debugger
+			var websocket = new WebSocket(`ws:${ctx}/adminPage/logTail/${id}` );
+			websocket.onmessage = function(event) {
+				if(run){
+					// 接收服务端的实时日志并添加到HTML页面中
+					$("#log-container div").append(event.data);
+					// 滚动条滚动到最低部
+					$("#log-container").scrollTop($("#log-container div").height() - $("#log-container").height());
+
+					// 超过1000行, 清空
+					if ($("#log-container div").children().length > 1000) {
+						$("#log-container div").html("");
+					} 
+				}
+			};
+		});
+		
+		function stop(){
+			run = false;
+		}
+		
+		function goon(){
+			run = true;
+		}
+	</script>
+	
+</body>
+
+
+</body>
+</html>

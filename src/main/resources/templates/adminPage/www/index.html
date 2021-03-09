@@ -28,7 +28,6 @@
 				<table class="layui-table">
 					<thead>
 						<tr>
-							<th>${commonStr.name}</th>
 							<th>${commonStr.path}</th>
 							<th>${commonStr.operation}</th>
 						</tr>
@@ -36,11 +35,10 @@
 					<tbody>
 						<#list list as www>
 						<tr>
-							<td>${www.name}</td>
 							<td>${www.dir} &nbsp;&nbsp; <a style="color: blue;" href="javascript:copy('${www.dir}')">${commonStr.copy}</a></td>
 							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${www.id}')">${commonStr.edit}</button>
-								<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="update('${www.id}')">${commonStr.update}</button>
+								<!-- <button class="layui-btn layui-btn-sm layui-btn-normal" onclick="update('${www.id}')">${commonStr.update}</button> -->
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${www.id}')">${commonStr.del}</button>
 							</td>
 						</tr>
@@ -54,15 +52,18 @@
 	<div style="height: 0px; width: 0px; overflow: hidden;">
 		<!-- 弹出框 -->
 		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none">
-			<input type="hidden" name="action" id="action">
+			<!-- <input type="hidden" name="action" id="action"> -->
 		
 			<form id="addForm">
 				<input type="hidden" name="id" id="id">
 				<div id="nameDiv">
 					<div class="layui-form-item">
-						<label class="layui-form-label">${wwwStr.dirName}</label>
+						<label class="layui-form-label">${wwwStr.dir}</label>
 						<div class="layui-input-inline">
-							<input type="text" name="name" id="name" class="layui-input">
+							<input type="text" name="dir" id="dir" class="layui-input">
+						</div>
+						<div class="layui-input-inline">
+							<i class="layui-icon layui-icon-export" onclick="selectRootCustom()"></i>
 						</div>
 					</div>
 				</div>
@@ -74,16 +75,15 @@
 							<button type="button" class="layui-btn" id="upload">${wwwStr.select}</button>
 						</div>
 						<div class="layui-form-mid layui-word-aux" id="fileName"></div>
-						<input type="hidden" name="dir" id="dir" >
-						
+						<input type="hidden" name="dirTemp" id="dirTemp" >
+					
 					</div>
 	
 					<div class="layui-form-item">
 						<label class="layui-form-label">&nbsp;</label>
-						<div class="layui-form-mid layui-word-aux">${wwwStr.tips}</div>
+						<div class="layui-form-mid layui-word-aux" style="width: 300px;">${wwwStr.tips}</div>
 					</div>
 				</div>
-				
 				
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
@@ -95,7 +95,9 @@
 
 	</div>
 
+
 	<#include '/adminPage/script.html'/>
+	<#include '/adminPage/select_root.html'/>
 	<script src="${ctx}/js/adminPage/www/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

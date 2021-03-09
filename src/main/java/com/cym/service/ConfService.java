@@ -340,7 +340,11 @@ public class ConfService {
 				if (server.getRewrite() == 1) {
 					if (StrUtil.isNotEmpty(server.getRewriteListen())) {
 						ngxParam = new NgxParam();
-						ngxParam.addValue("listen " + server.getRewriteListen());
+						String reValue = "listen " + server.getRewriteListen();
+						if (server.getProxyProtocol() == 1) {
+							reValue += " proxy_protocol";
+						}
+						ngxParam.addValue(reValue);
 						ngxBlockServer.addEntry(ngxParam);
 					}
 
