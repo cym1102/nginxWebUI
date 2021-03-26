@@ -21,7 +21,12 @@
 		$(document).ready(function() {
 			// 指定websocket路径
 			//debugger
-			var websocket = new WebSocket(`ws:${ctx}/adminPage/logTail/${id}` );
+			if (window.location.protocol == 'https:') {
+				var protocol = 'wss:';
+			} else {
+				var protocol = 'ws:';
+			}
+			var websocket = new WebSocket(protocol + `${ctx}/adminPage/logTail/${id}` );
 			websocket.onmessage = function(event) {
 				if(run){
 					// 接收服务端的实时日志并添加到HTML页面中

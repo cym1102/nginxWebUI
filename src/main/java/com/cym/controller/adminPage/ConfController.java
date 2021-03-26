@@ -25,6 +25,7 @@ import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
+import com.cym.utils.ToolUtils;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
@@ -113,14 +114,14 @@ public class ConfController extends BaseController {
 		if (nginxPath == null) {
 			nginxPath = settingService.get("nginxPath");
 		}
-		
+
 		if (FileUtil.isDirectory(nginxPath)) {
 			// 是文件夹, 提示
 			return renderError(m.get("confStr.error2"));
 		}
-		
+
 		try {
-			confService.replace(nginxPath, nginxContent, subContent, subName);
+			confService.replace(nginxPath, nginxContent, subContent, subName, true);
 			return renderSuccess(m.get("confStr.replaceSuccess"));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -147,17 +148,19 @@ public class ConfController extends BaseController {
 		return jsonObject.toStringPretty();
 	}
 
-	@RequestMapping(value = "check")
+	/**
+	 * 检查数据库内部配置
+	 * 
+	 * @param nginxPath
+	 * @param nginxExe
+	 * @param nginxDir
+	 * @return
+	 */
+	@RequestMapping(value = "checkBase")
 	@ResponseBody
-	public JsonResult check(String nginxPath, String nginxExe, String nginxDir) {
-		if (nginxExe == null) {
-			nginxExe = settingService.get("nginxExe");
-		}
-		if (nginxDir == null) {
-			nginxDir = settingService.get("nginxDir");
-		}
-
-//		String decompose = settingService.get("decompose");
+	public JsonResult checkBase() {
+		String nginxExe = settingService.get("nginxExe");
+		String nginxDir = settingService.get("nginxDir");
 
 		String rs = null;
 		String cmd = null;
@@ -171,14 +174,6 @@ public class ConfController extends BaseController {
 
 			ClassPathResource resource = new ClassPathResource("mime.types");
 			FileUtil.writeFromStream(resource.getInputStream(), InitConfig.home + "temp/mime.types");
-
-//			for (int i = 0; i < confExt.getFileList().size(); i++) {
-//				String subName = confExt.getFileList().get(i).getName();
-//				String subContent = confExt.getFileList().get(i).getConf();
-//
-//				String tagert = (new File(fileTemp).getParent() + "/conf.d/" + subName).replace(" ", "_");
-//				FileUtil.writeString(subContent, tagert, StandardCharsets.UTF_8); // 清空
-//			}
 
 			if (SystemTool.isWindows()) {
 				cmd = nginxExe + " -t -c " + fileTemp + " -p " + nginxDir;
@@ -203,16 +198,86 @@ public class ConfController extends BaseController {
 
 	}
 
+	/**
+	 * 检查页面上的配置
+	 * 
+	 * @param nginxPath
+	 * @param nginxExe
+	 * @param nginxDir
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "check")
+	@ResponseBody
+	public JsonResult check(String nginxPath, String nginxExe, String nginxDir, String json) {
+		if (nginxExe == null) {
+			nginxExe = settingService.get("nginxExe");
+		}
+		if (nginxDir == null) {
+			nginxDir = settingService.get("nginxDir");
+		}
+
+		JSONObject jsonObject = JSONUtil.parseObj(json);
+		String nginxContent = Base64.decodeStr(jsonObject.getStr("nginxContent"), CharsetUtil.CHARSET_UTF_8);
+		nginxContent = URLDecoder.decode(nginxContent, CharsetUtil.CHARSET_UTF_8).replace("<wave>", "~");
+
+		File pathFile = new File(nginxPath);
+		File tempFile = new File(InitConfig.home + "temp");
+		nginxContent = nginxContent.replace("include " + ToolUtils.handlePath(pathFile.getParent()), "include " + ToolUtils.handlePath(tempFile.getPath()));
+
+		List<String> subContent = jsonObject.getJSONArray("subContent").toList(String.class);
+		for (int i = 0; i < subContent.size(); i++) {
+			String content = Base64.decodeStr(subContent.get(i), CharsetUtil.CHARSET_UTF_8);
+			content = URLDecoder.decode(content, CharsetUtil.CHARSET_UTF_8).replace("<wave>", "~");
+			subContent.set(i, content);
+		}
+		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
+
+		FileUtil.del(InitConfig.home + "temp");
+		String fileTemp = InitConfig.home + "temp" + File.separator + "nginx.conf";
+
+		confService.replace(fileTemp, nginxContent, subContent, subName, false);
+
+		String rs = null;
+		String cmd = null;
+
+		try {
+			ClassPathResource resource = new ClassPathResource("mime.types");
+			FileUtil.writeFromStream(resource.getInputStream(), InitConfig.home + "temp/mime.types");
+
+			if (SystemTool.isWindows()) {
+				cmd = nginxExe + " -t -c " + fileTemp + " -p " + nginxDir;
+			} else {
+				cmd = nginxExe + " -t -c " + fileTemp;
+				if (StrUtil.isNotEmpty(nginxDir)) {
+					cmd += " -p " + nginxDir;
+				}
+			}
+			rs = RuntimeUtil.execForStr(cmd);
+		} catch (Exception e) {
+			e.printStackTrace();
+			rs = e.getMessage().replace("\n", "<br>");
+		}
+
+		cmd = "<span class='blue'>" + cmd + "</span>";
+		if (rs.contains("successful")) {
+			return renderSuccess(cmd + "<br>" + m.get("confStr.verifySuccess") + "<br>" + rs.replace("\n", "<br>"));
+		} else {
+			return renderSuccess(cmd + "<br>" + m.get("confStr.verifyFail") + "<br>" + rs.replace("\n", "<br>"));
+		}
+
+	}
+
 	@RequestMapping(value = "saveCmd")
 	@ResponseBody
 	public JsonResult saveCmd(String nginxPath, String nginxExe, String nginxDir) {
-		nginxPath = nginxPath.replace("\\", "/");
+		nginxPath = ToolUtils.handlePath(nginxPath);
 		settingService.set("nginxPath", nginxPath);
 
-		nginxExe = nginxExe.replace("\\", "/");
+		nginxExe = ToolUtils.handlePath(nginxExe);
 		settingService.set("nginxExe", nginxExe);
 
-		nginxDir = nginxDir.replace("\\", "/");
+		nginxDir = ToolUtils.handlePath(nginxDir);
 		settingService.set("nginxDir", nginxDir);
 
 		return renderSuccess();
@@ -246,11 +311,11 @@ public class ConfController extends BaseController {
 					rs = rs + m.get("confStr.mayNotRun");
 				}
 
-				return renderError(cmd + "<br>" + m.get("confStr.reloadFail") + "<br>" + rs.replace("\n", "<br>"));
+				return renderSuccess(cmd + "<br>" + m.get("confStr.reloadFail") + "<br>" + rs.replace("\n", "<br>"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return renderError(m.get("confStr.reloadFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
+			return renderSuccess(m.get("confStr.reloadFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
 		}
 	}
 
@@ -343,11 +408,11 @@ public class ConfController extends BaseController {
 					|| rs.toLowerCase().contains("stopping")) {
 				return renderSuccess(cmd + "<br>" + m.get("confStr.runSuccess") + "<br>" + rs.replace("\n", "<br>"));
 			} else {
-				return renderError(cmd + "<br>" + m.get("confStr.runFail") + "<br>" + rs.replace("\n", "<br>"));
+				return renderSuccess(cmd + "<br>" + m.get("confStr.runFail") + "<br>" + rs.replace("\n", "<br>"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return renderError(m.get("confStr.runFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
+			return renderSuccess(m.get("confStr.runFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
 		}
 	}
 

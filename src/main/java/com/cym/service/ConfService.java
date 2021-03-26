@@ -14,7 +14,6 @@ import com.cym.ext.AsycPack;
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
 import com.cym.model.Basic;
-import com.cym.model.Cert;
 import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Param;
@@ -23,6 +22,7 @@ import com.cym.model.Server;
 import com.cym.model.Stream;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
+import com.cym.utils.ToolUtils;
 import com.github.odiszapc.nginxparser.NgxBlock;
 import com.github.odiszapc.nginxparser.NgxConfig;
 import com.github.odiszapc.nginxparser.NgxDumper;
@@ -228,8 +228,7 @@ public class ConfService {
 				ngxConfig.addEntry(ngxBlockStream);
 			}
 
-			String conf = new NgxDumper(ngxConfig).dump().replace("};", "  }");
-
+			String conf = ToolUtils.handleConf(new NgxDumper(ngxConfig).dump());
 			confExt.setConf(conf);
 
 			return confExt;
@@ -354,6 +353,7 @@ public class ConfService {
 					} else {
 						port = server.getListen();
 					}
+
 
 					NgxBlock ngxBlock = new NgxBlock();
 					ngxBlock.addValue("if ($scheme = http)");
@@ -553,7 +553,7 @@ public class ConfService {
 
 	private void addConfFile(ConfExt confExt, String name, NgxBlock ngxBlockServer) {
 		name = name.replace(" ", "_").replace("*", "-");
-		
+
 		boolean hasSameName = false;
 		for (ConfFile confFile : confExt.getFileList()) {
 			if (confFile.getName().equals(name)) {
@@ -575,23 +575,24 @@ public class ConfService {
 		NgxConfig ngxConfig = new NgxConfig();
 		ngxConfig.addEntry(ngxBlockServer);
 
-		return new NgxDumper(ngxConfig).dump().replace("};", "  }");
+		return ToolUtils.handleConf(new NgxDumper(ngxConfig).dump());
 	}
 
-	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName) {
+	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName, Boolean bak) {
 		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
-		// 备份主文件
-		if (FileUtil.exist(nginxPath)) {
-			FileUtil.mkdir(InitConfig.home + "bak");
-			FileUtil.copy(nginxPath, InitConfig.home + "bak/nginx.conf." + date + ".bak", true);
-		}
+		String confd = new File(nginxPath).getParent() + "/conf.d/" ;
 
-		// 备份conf.d文件夹
-		String confd = new File(nginxPath).getParent() + "/conf.d/";
-		if (!FileUtil.exist(confd)) {
-			FileUtil.mkdir(confd);
-		} else {
-			ZipUtil.zip(confd, InitConfig.home + "bak/nginx.conf." + date + ".zip");
+		// 备份主文件
+		if (bak) {
+			if (FileUtil.exist(nginxPath)) {
+				FileUtil.mkdir(InitConfig.home + "bak");
+				FileUtil.copy(nginxPath, InitConfig.home + "bak/nginx.conf." + date + ".bak", true);
+			}
+
+			// 备份conf.d文件夹
+			if (FileUtil.exist(confd)) {
+				ZipUtil.zip(confd, InitConfig.home + "bak/nginx.conf." + date + ".zip");
+			}
 		}
 
 		// 删除conf.d下全部文件
@@ -725,8 +726,9 @@ public class ConfService {
 				subName.add(confFile.getName());
 			}
 
-			replace(nginxPath, confExt.getConf(), subContent, subName);
+			replace(nginxPath, confExt.getConf(), subContent, subName, true);
 		}
 	}
+
 
 }

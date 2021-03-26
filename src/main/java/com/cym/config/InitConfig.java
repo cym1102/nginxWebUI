@@ -1,6 +1,7 @@
 package com.cym.config;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,7 +42,6 @@ public class InitConfig {
 	public static String acmeShDir;
 	public static String home;
 
-	
 	@Autowired
 	SettingService settingService;
 	@Autowired
@@ -52,7 +52,7 @@ public class InitConfig {
 	SqlHelper sqlHelper;
 	@Autowired
 	JdbcTemplate jdbcTemplate;
-	
+
 	@Value("${project.home}")
 	public void setHome(String home) {
 		InitConfig.home = home;
@@ -122,7 +122,6 @@ public class InitConfig {
 			FileUtil.writeLines(res, InitConfig.acmeSh, "UTF-8");
 			RuntimeUtil.exec("chmod a+x " + acmeSh);
 
-			
 			// 查找ngx_stream_module模块
 			if (!basicService.contain("ngx_stream_module.so")) {
 				List<String> list = RuntimeUtil.execForLines(CharsetUtil.systemCharset(), "find / -name ngx_stream_module.so");
@@ -145,14 +144,6 @@ public class InitConfig {
 			}
 		}
 
-		// 初始化http和stream的seq值
-//		jdbcTemplate.update("update server set seq = id where seq is null");
-//		jdbcTemplate.update("update http set seq = id where seq is null");
-//		jdbcTemplate.update("update upstream set seq = id where seq is null");
-		
-		
-		// 删除多余备份文件
-//		scheduleTask.delCache();
 	}
 
 	/**

@@ -9,6 +9,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -88,54 +90,49 @@ public class ScheduleTask {
 	}
 
 	// 分隔日志,每天
-//	@Scheduled(cron = "0 55 23 * * ?")
-//	public void diviLog() {
-//		Http http = httpService.getName("access_log");
-//		String path = null;
-//		if (http != null && StrUtil.isNotEmpty(http.getValue())) {
-//			path = http.getValue().split(" ")[0];
-//		}
-//
-//		if (StrUtil.isNotEmpty(path) && FileUtil.exist(path)) {
-//
-//			String date = DateUtil.format(new Date(), "yyyy-MM-dd");
-//			// 分隔日志
-//			File dist = new File(InitConfig.home + "log/access." + date + ".log");
-//			FileUtil.move(new File(InitConfig.home + "log/access.log"), dist, true);
-//			ZipUtil.zip(dist); // 打包
-//			FileUtil.del(dist); // 删除原文件
-//			// 重载Nginx。
-//			confController.reload(null, null, null);
-//			// 马上解析分隔出来的日志
-//			logInfoService.buildDataGroup(InitConfig.home + "log/access." + date + ".zip");
-//			logInfoService.clearDb();
-//		}
-//
-//		// 删除多余文件
-//		delCache();
-//	}
+	//@Scheduled(cron = "0/10 * * * * ?")
+	@Scheduled(cron = "0 55 23 * * ?")
+	public void diviLog() {
+		Http http = httpService.getName("access_log");
+		String path = http.getValue();
 
-//	private void delLog() {
-//		// 删掉7天前日志文件(zip)
-//		long time = System.currentTimeMillis();
-//		File dir = new File(InitConfig.home + "log/");
-//		if (dir.exists()) {
-//			for (File file : dir.listFiles()) {
-//				if (file.getName().contains("access.") && file.getName().endsWith(".zip")) {
-//					String dateStr = file.getName().replace("access.", "").replace(".zip", "");
-//					DateTime date = null;
-//					if (dateStr.length() != 10) {
-//						FileUtil.del(file);
-//					} else {
-//						date = DateUtil.parse(dateStr, "yyyy-MM-dd");
-//						if (time - date.getTime() > TimeUnit.DAYS.toMillis(8)) {
-//							FileUtil.del(file);
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
+		if (StrUtil.isNotEmpty(path) && FileUtil.exist(path)) {
+
+			String date = DateUtil.format(new Date(), "yyyy-MM-dd");
+			// 分隔日志
+			File dist = new File(InitConfig.home + "log/access." + date + ".log");
+			FileUtil.move(new File(InitConfig.home + "log/access.log"), dist, true);
+			ZipUtil.zip(dist); // 打包
+			FileUtil.del(dist); // 删除原文件
+			// 重载Nginx产生新的文件
+			confController.reload(null, null, null);
+		}
+
+		// 删除多余文件
+		delLog();
+	}
+
+	private void delLog() {
+		// 删掉7天前日志文件(zip)
+		long time = System.currentTimeMillis();
+		File dir = new File(InitConfig.home + "log/");
+		if (dir.exists()) {
+			for (File file : dir.listFiles()) {
+				if (file.getName().contains("access.") && file.getName().endsWith(".zip")) {
+					String dateStr = file.getName().replace("access.", "").replace(".zip", "");
+					DateTime date = null;
+					if (dateStr.length() != 10) {
+						FileUtil.del(file);
+					} else {
+						date = DateUtil.parse(dateStr, "yyyy-MM-dd");
+						if (time - date.getTime() > TimeUnit.DAYS.toMillis(8)) {
+							FileUtil.del(file);
+						}
+					}
+				}
+			}
+		}
+	}
 
 	@Scheduled(cron = "0 0 0 * * ?")
 	public void delBak() {

@@ -266,7 +266,7 @@ public class RemoteController extends BaseController {
 			JsonResult jsonResult = null;
 			if (id.equals("local")) {
 				if (cmd.contentEquals("check")) {
-					jsonResult = confController.check(null, null, null);
+					jsonResult = confController.checkBase();
 				}
 				if (cmd.contentEquals("reload")) {
 					jsonResult = confController.reload(null, null, null);

@@ -29,6 +29,7 @@ import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SnowFlakeUtils;
 import com.cym.utils.TelnetUtils;
+import com.cym.utils.ToolUtils;
 import com.github.odiszapc.nginxparser.NgxBlock;
 import com.github.odiszapc.nginxparser.NgxConfig;
 import com.github.odiszapc.nginxparser.NgxDumper;
@@ -276,7 +277,7 @@ public class ServerController extends BaseController {
 		NgxConfig ngxConfig = new NgxConfig();
 		ngxConfig.addEntry(ngxBlock);
 
-		String conf = new NgxDumper(ngxConfig).dump().replace("};", "  }");
+		String conf = ToolUtils.handleConf(new NgxDumper(ngxConfig).dump());
 
 		return renderSuccess(conf);
 	}

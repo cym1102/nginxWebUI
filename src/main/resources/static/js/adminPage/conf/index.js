@@ -45,14 +45,7 @@ function nginxStatus() {
 	});
 }
 
-
-function replace() {
-	if ($("#nginxPath").val() == '') {
-		layer.msg(confStr.jserror2);
-		return;
-	}
-
-
+function buildJson(){
 	var json = {};
 	json.nginxPath = $("#nginxPath").val();
 	json.nginxContent = Base64.encode(encodeURIComponent($("#nginxContent").val().replace(/\~/g, "<wave>")));
@@ -64,6 +57,16 @@ function replace() {
 	$("input[name='subName']").each(function(){
 		json.subName.push($(this).val());
 	})
+	return json;
+}
+
+function replace() {
+	if ($("#nginxPath").val() == '') {
+		layer.msg(confStr.jserror2);
+		return;
+	}
+
+	var json = buildJson();
 	
 	$.ajax({
 		type : 'POST',
@@ -190,6 +193,8 @@ function check() {
 		}
 	}
 	
+	var json = buildJson();
+	
 	layer.load();
 	$.ajax({
 		type : 'POST',
@@ -197,7 +202,8 @@ function check() {
 		data : {
 			nginxPath : $("#nginxPath").val(),
 			nginxExe : $("#nginxExe").val(),
-			nginxDir : $("#nginxDir").val()
+			nginxDir : $("#nginxDir").val(),
+			json : JSON.stringify(json) 
 		},
 		dataType : 'json',
 		success : function(data) {
@@ -207,12 +213,6 @@ function check() {
 					  type: 0, 
 					  area : [ '810px', '400px' ],
 					  content: data.obj
-				});
-			} else {
-				layer.open({
-					  type: 0, 
-					  area : [ '810px', '400px' ],
-					  content: data.msg
 				});
 			}
 		},
@@ -259,13 +259,7 @@ function reload() {
 					  area : [ '810px', '400px' ],
 					  content: data.obj
 				});
-			} else {
-				layer.open({
-					  type: 0, 
-					  area : [ '810px', '400px' ],
-					  content: data.msg
-				});
-			}
+			} 
 		},
 		error : function() {
 			layer.closeAll();
@@ -445,13 +439,7 @@ function runCmdOver(){
 					  area : [ '810px', '400px' ],
 					  content: data.obj
 				});
-			} else {
-				layer.open({
-					  type: 0, 
-					  area : [ '810px', '400px' ],
-					  content: data.msg
-				});
-			}
+			} 
 			
 			setTimeout(() => {
 				nginxStatus();
