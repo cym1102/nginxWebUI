@@ -342,7 +342,7 @@ public class ConfController extends BaseController {
 				if (StrUtil.isNotEmpty(nginxDir)) {
 					cmd += " -p " + nginxDir;
 				}
-				rs = RuntimeUtil.execForStr(cmd);
+				rs = RuntimeUtil.execForStr("/bin/sh", "-c", cmd);
 			}
 
 			cmd = "<span class='blue'>" + cmd + "</span>";
@@ -395,9 +395,9 @@ public class ConfController extends BaseController {
 		try {
 			String rs = "";
 			if (cmd.contains(".exe")) {
-				RuntimeUtil.exec(cmd);
+				RuntimeUtil.exec("cmd /c start " + cmd);
 			} else {
-				rs = RuntimeUtil.execForStr(cmd);
+				rs = RuntimeUtil.execForStr("/bin/sh", "-c", cmd);
 			}
 
 			cmd = "<span class='blue'>" + cmd + "</span>";

@@ -12,5 +12,4 @@ public class SqlConfig  {
 	@Autowired
 	SqlHelper sqlHelper;
 
-
 }

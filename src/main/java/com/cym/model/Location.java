@@ -22,6 +22,9 @@ public class Location extends BaseModel {
 	@ApiModelProperty("动态代理目标 (例:http://10.10.10.1:8080/)")
 	String value;
 
+	@ApiModelProperty("代理负载协议,http or https")
+	@InitValue("http")
+	String upstreamType;
 	@ApiModelProperty("代理负载均衡upstream的id")
 	String upstreamId; 
 	@ApiModelProperty("代理负载额外路径,默认为空")
@@ -41,6 +44,14 @@ public class Location extends BaseModel {
 	@ApiModelProperty("是否开启websocket支持 0否(默认) 1是")
 	@InitValue("0")
 	Integer websocket;
+
+	public String getUpstreamType() {
+		return upstreamType;
+	}
+
+	public void setUpstreamType(String upstreamType) {
+		this.upstreamType = upstreamType;
+	}
 
 	public Integer getWebsocket() {
 		return websocket;

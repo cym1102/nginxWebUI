@@ -34,7 +34,7 @@ public class HttpController extends BaseController {
 
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
-		List<Http> httpList = httpService.findAll(); 
+		List<Http> httpList = httpService.findAll();
 
 		modelAndView.addObject("httpList", httpList);
 		modelAndView.setViewName("/adminPage/http/index");
@@ -45,7 +45,7 @@ public class HttpController extends BaseController {
 	@ResponseBody
 	public JsonResult addOver(Http http) {
 		if (StrUtil.isEmpty(http.getId())) {
-			http.setSeq( SnowFlakeUtils.getId());
+			http.setSeq(SnowFlakeUtils.getId());
 		}
 		sqlHelper.insertOrUpdate(http);
 
@@ -56,10 +56,10 @@ public class HttpController extends BaseController {
 	@ResponseBody
 	public JsonResult addTemplate(String templateId) {
 		httpService.addTemplate(templateId);
-		
+
 		return renderSuccess();
 	}
-	
+
 	@RequestMapping("detail")
 	@ResponseBody
 	public JsonResult detail(String id) {
@@ -80,15 +80,16 @@ public class HttpController extends BaseController {
 		List<Http> https = JSONUtil.toList(JSONUtil.parseArray(json), Http.class);
 
 		if (logStatus) {
-//			Http http = new Http();
-//			http.setName("log_format");
-//			http.setValue("main escape=json '" + buildLogFormat() + "'");
-//			http.setUnit("");
-//			https.add(http);
 
 			Http http = new Http();
 			http.setName("access_log");
 			http.setValue(InitConfig.home + "log/access.log");
+			http.setUnit("");
+			https.add(http);
+
+			http = new Http();
+			http.setName("error_log");
+			http.setValue(InitConfig.home + "log/error.log");
 			http.setUnit("");
 			https.add(http);
 

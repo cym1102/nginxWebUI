@@ -235,7 +235,7 @@ function autoUpdate(url){
 			},
 			error : function() {
 				setTimeout(function(){
-					layer.layer.close(loaded);
+					layer.close(loaded);
 					layer.alert(baseStr.updateOver);
 				},10000)
 			}

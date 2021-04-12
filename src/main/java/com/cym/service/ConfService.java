@@ -340,6 +340,9 @@ public class ConfService {
 					if (StrUtil.isNotEmpty(server.getRewriteListen())) {
 						ngxParam = new NgxParam();
 						String reValue = "listen " + server.getRewriteListen();
+						if (server.getDef() == 1) {
+							reValue += " default";
+						}
 						if (server.getProxyProtocol() == 1) {
 							reValue += " proxy_protocol";
 						}
@@ -353,7 +356,6 @@ public class ConfService {
 					} else {
 						port = server.getListen();
 					}
-
 
 					NgxBlock ngxBlock = new NgxBlock();
 					ngxBlock.addValue("if ($scheme = http)");
@@ -391,7 +393,7 @@ public class ConfService {
 						Upstream upstream = sqlHelper.findById(location.getUpstreamId(), Upstream.class);
 						if (upstream != null) {
 							ngxParam = new NgxParam();
-							ngxParam.addValue("proxy_pass http://" + upstream.getName() + (location.getUpstreamPath() != null ? location.getUpstreamPath() : ""));
+							ngxParam.addValue("proxy_pass " + location.getUpstreamType() + "://" + upstream.getName() + (location.getUpstreamPath() != null ? location.getUpstreamPath() : ""));
 							ngxBlockLocation.addEntry(ngxParam);
 						}
 					}
@@ -580,7 +582,7 @@ public class ConfService {
 
 	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName, Boolean bak) {
 		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
-		String confd = new File(nginxPath).getParent() + "/conf.d/" ;
+		String confd = new File(nginxPath).getParent() + "/conf.d/";
 
 		// 备份主文件
 		if (bak) {
@@ -729,6 +731,5 @@ public class ConfService {
 			replace(nginxPath, confExt.getConf(), subContent, subName, true);
 		}
 	}
-
 
 }

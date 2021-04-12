@@ -145,7 +145,7 @@ function edit(id){
 				//$("#zipDiv").hide();
 				
 				//$("#action").val("rename");
-				showWindow(commonStr.edit);
+				showWindow(wwwStr.editOrUpdate); 
 			}else{
 				layer.msg(data.msg)
 			}

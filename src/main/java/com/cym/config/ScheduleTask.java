@@ -93,46 +93,54 @@ public class ScheduleTask {
 	//@Scheduled(cron = "0/10 * * * * ?")
 	@Scheduled(cron = "0 55 23 * * ?")
 	public void diviLog() {
-		Http http = httpService.getName("access_log");
-		String path = http.getValue();
-
-		if (StrUtil.isNotEmpty(path) && FileUtil.exist(path)) {
-
-			String date = DateUtil.format(new Date(), "yyyy-MM-dd");
-			// 分隔日志
-			File dist = new File(InitConfig.home + "log/access." + date + ".log");
-			FileUtil.move(new File(InitConfig.home + "log/access.log"), dist, true);
-			ZipUtil.zip(dist); // 打包
-			FileUtil.del(dist); // 删除原文件
-			// 重载Nginx产生新的文件
-			confController.reload(null, null, null);
+		Http access = httpService.getName("access_log");
+		if (access != null) {
+			cutLog(access);
 		}
-
-		// 删除多余文件
-		delLog();
+		
+		Http error = httpService.getName("error_log");
+		if (access != null) {
+			cutLog(error);
+		}
+		
 	}
 
-	private void delLog() {
-		// 删掉7天前日志文件(zip)
-		long time = System.currentTimeMillis();
-		File dir = new File(InitConfig.home + "log/");
-		if (dir.exists()) {
-			for (File file : dir.listFiles()) {
-				if (file.getName().contains("access.") && file.getName().endsWith(".zip")) {
-					String dateStr = file.getName().replace("access.", "").replace(".zip", "");
-					DateTime date = null;
-					if (dateStr.length() != 10) {
-						FileUtil.del(file);
-					} else {
-						date = DateUtil.parse(dateStr, "yyyy-MM-dd");
-						if (time - date.getTime() > TimeUnit.DAYS.toMillis(8)) {
+	private void cutLog(Http http) {
+		String path = http.getValue();
+
+		if (StrUtil.isNotEmpty(path) ) {
+			// 去掉格式化
+			path = path.split(" ")[0];
+			if(FileUtil.exist(path)) {
+				String date = DateUtil.format(new Date(), "yyyy-MM-dd");
+				// 分隔日志
+				File dist = new File(path + "." + date);
+				FileUtil.move(new File(path), dist, true);
+				ZipUtil.zip(dist.getPath(), dist.getPath() + ".zip", false); // 打包
+				FileUtil.del(dist); // 删除原文件
+				// 重载Nginx产生新的文件
+				confController.reload(null, null, null);
+				
+				// 删除多余文件
+				long time = System.currentTimeMillis();
+
+				File dir = new File(path).getParentFile();
+				for (File file : dir.listFiles()) {
+					if (file.getName().contains(new File(path).getName()) && file.getName().endsWith(".zip")) {
+						String[] array = file.getName().split("[.]");
+						String dateStr = array[array.length - 2];
+						DateTime dateTime = DateUtil.parse(dateStr, "yyyy-MM-dd");
+						if (time - dateTime.getTime() > TimeUnit.DAYS.toMillis(8)) {
 							FileUtil.del(file);
 						}
 					}
 				}
 			}
 		}
+
+		
 	}
+
 
 	@Scheduled(cron = "0 0 0 * * ?")
 	public void delBak() {
@@ -160,7 +168,7 @@ public class ScheduleTask {
 	// 检查远程服务器
 	@Scheduled(cron = "0/30 * * * * ?")
 	public void nginxTasks() {
-		
+
 		String lastNginxSend = settingService.get("lastNginxSend");
 		String mail = settingService.get("mail");
 		String nginxMonitor = settingService.get("nginxMonitor");

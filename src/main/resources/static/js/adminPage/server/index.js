@@ -274,6 +274,7 @@ function addOver() {
 		location.path = $(this).find("input[name='path']").val();
 		location.type = $(this).find("select[name='type']").val();
 		location.value = $(this).find("input[name='value']").val();
+		location.upstreamType = $(this).find("select[name='upstreamType']").val();
 		location.upstreamId = $(this).find("select[name='upstreamId']").val();
 		location.upstreamPath = $(this).find("input[name='upstreamPath']").val();
 		location.rootPath = $(this).find("input[name='rootPath']").val();
@@ -416,6 +417,7 @@ function edit(id, clone) {
 					$("#" + uuid + " input[name='rootPath']").val(location.rootPath);
 					$("#" + uuid + " input[name='rootPage']").val(location.rootPage);
 					$("#" + uuid + " select[name='rootType']").val(location.rootType);
+					$("#" + uuid + " select[name='upstreamType']").val(location.upstreamType);
 					$("#" + uuid + " select[name='upstreamId']").val(location.upstreamId);
 					$("#" + uuid + " input[name='upstreamPath']").val(location.upstreamPath);
 

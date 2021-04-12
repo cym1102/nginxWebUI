@@ -446,9 +446,14 @@
 		</div>
 
 		<div id="upstreamSelect" style="display: none;">
-			<div class="layui-inline" style="width: 150px;">
+			<div class="layui-inline" style="width: 90px;">
+				<select name="upstreamType">
+					<option value="http">http</option>
+					<option value="https">https</option>
+				</select>
+			</div>
+			<div class="layui-inline" style="width: 90px;">
 				<select name="upstreamId">
-
 					<#list upstreamList as upstream>
 					<option value="${upstream.id}">${upstream.name}</option>
 					</#list>
@@ -458,7 +463,7 @@
 					</#if>
 				</select>
 			</div>
-			<div class="layui-inline" style="width: 150px;">
+			<div class="layui-inline" style="width: 90px;">
 				<input type="text" name="upstreamPath" class="layui-input" placeholder="${serverStr.extPathTips}">
 			</div>
 		</div>
