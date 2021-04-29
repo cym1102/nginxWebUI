@@ -9,7 +9,7 @@ public class ToolUtils {
 	 * @return
 	 */
 	public static String handleConf(String path) {
-		return path.replace("\\", "/").replace("};", "  }");
+		return path.replace("};", "  }");
 	}
 	
 	/**
@@ -18,6 +18,6 @@ public class ToolUtils {
 	 * @return
 	 */
 	public static String handlePath(String path) {
-		return path.replace("\\", "/").replace("};", "  }");
+		return path.replace("\\", "/");
 	}
 }

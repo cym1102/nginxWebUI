@@ -33,6 +33,10 @@ public class ParamApiController extends BaseController {
 	public JsonResult<List<Param>> getList(@ApiParam("所属反向代理id") String serverId, //
 			@ApiParam("所属代理目标id") String locationId, //
 			@ApiParam("所属负载均衡id") String upstreamId) {
+		if (StrUtil.isEmpty(serverId) && StrUtil.isEmpty(locationId) && StrUtil.isEmpty(upstreamId)) {
+			return renderError(m.get("apiStr.paramError"));
+		}
+		
 		List<Param> list = paramService.getList(serverId, locationId, upstreamId);
 		return renderSuccess(list);
 	}
@@ -41,7 +45,7 @@ public class ParamApiController extends BaseController {
 	@PostMapping("insertOrUpdate")
 	public JsonResult<?> insertOrUpdate(Param param) throws IOException {
 		if (StrUtil.isEmpty(param.getServerId()) || StrUtil.isEmpty(param.getLocationId()) || StrUtil.isEmpty(param.getUpstreamId())) {
-			renderError(m.get("apiStr.paramError"));
+			return renderError(m.get("apiStr.paramError"));
 		}
 
 		sqlHelper.insertOrUpdate(param);

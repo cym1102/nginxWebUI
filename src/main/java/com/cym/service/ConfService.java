@@ -320,11 +320,11 @@ public class ConfService {
 			if (server.getSsl() == 1) {
 				if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getKey())) {
 					ngxParam = new NgxParam();
-					ngxParam.addValue("ssl_certificate " + server.getPem());
+					ngxParam.addValue("ssl_certificate " + ToolUtils.handlePath(server.getPem()));
 					ngxBlockServer.addEntry(ngxParam);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("ssl_certificate_key " + server.getKey());
+					ngxParam.addValue("ssl_certificate_key " + ToolUtils.handlePath(server.getKey()));
 					ngxBlockServer.addEntry(ngxParam);
 
 					if (StrUtil.isNotEmpty(server.getProtocols())) {
@@ -442,11 +442,11 @@ public class ConfService {
 
 					if (location.getRootType() != null && location.getRootType().equals("alias")) {
 						ngxParam = new NgxParam();
-						ngxParam.addValue("alias " + location.getRootPath());
+						ngxParam.addValue("alias " + ToolUtils.handlePath(location.getRootPath()));
 						ngxBlockLocation.addEntry(ngxParam);
 					} else {
 						ngxParam = new NgxParam();
-						ngxParam.addValue("root " + location.getRootPath());
+						ngxParam.addValue("root " + ToolUtils.handlePath(location.getRootPath()));
 						ngxBlockLocation.addEntry(ngxParam);
 					}
 

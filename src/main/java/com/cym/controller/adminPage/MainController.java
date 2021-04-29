@@ -34,7 +34,7 @@ import cn.hutool.json.JSONUtil;
 @Controller
 public class MainController extends BaseController {
 	@Autowired
-	UpdateUtils asyncUtils;
+	UpdateUtils updateUtils;
 
 	private static final Logger LOG = LoggerFactory.getLogger(MainController.class);
 
@@ -89,7 +89,7 @@ public class MainController extends BaseController {
 		String path = jar.getParent() + "/nginxWebUI.jar.update";
 		LOG.info("download:" + path);
 		HttpUtil.downloadFile(url, path);
-		asyncUtils.run(path);
+		updateUtils.run(path);
 		return renderSuccess();
 	}
 

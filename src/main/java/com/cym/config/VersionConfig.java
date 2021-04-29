@@ -24,7 +24,7 @@ public class VersionConfig {
 				version = JSONUtil.toBean(json, Version.class);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 		
 	}

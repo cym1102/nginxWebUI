@@ -41,6 +41,10 @@ public class RootController extends BaseController {
 
 			TreeNode treeNode = new TreeNode();
 			treeNode.setId(temp.getPath());
+			if(FileUtil.isDirectory(treeNode.getId())) {
+				// 文件夹要加个/
+				treeNode.setId(treeNode.getId() + "/");
+			}
 			if (StrUtil.isNotEmpty(temp.getName())) {
 				treeNode.setName(temp.getName());
 			} else {

@@ -56,16 +56,9 @@ public class LoginController extends BaseController {
 	@Autowired
 	SettingService settingService;
 
-//	@RequestMapping("map")
-//	public ModelAndView map(ModelAndView modelAndView) {
-//
-//		modelAndView.setViewName("/adminPage/login/map");
-//		return modelAndView;
-//	}
 
 	@RequestMapping("")
 	public ModelAndView admin(ModelAndView modelAndView, HttpServletRequest request, HttpSession httpSession, String adminId) {
-
 		modelAndView.addObject("adminCount", sqlHelper.findAllCount(Admin.class));
 		modelAndView.setViewName("/adminPage/login/index");
 		return modelAndView;

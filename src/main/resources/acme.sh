@@ -3900,7 +3900,7 @@ _ns_is_available_cf() {
 _ns_lookup_google() {
   _cf_ld="$1"
   _cf_ld_type="$2"
-  _cf_ep="https://dns.google/resolve"
+  _cf_ep="https://dns.alidns.com/resolve"
   _ns_lookup_impl "$_cf_ep" "$_cf_ld" "$_cf_ld_type"
 }
 

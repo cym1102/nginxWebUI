@@ -48,13 +48,13 @@ public class ParamService {
 
 	public List<Param> getList(String serverId, String locationId, String upstreamId) {
 		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper();
-		if(StrUtil.isEmpty(serverId)) {
+		if(StrUtil.isNotEmpty(serverId)) {
 			conditionAndWrapper.eq("serverId", serverId);
 		}
-		if(StrUtil.isEmpty(locationId)) {
+		if(StrUtil.isNotEmpty(locationId)) {
 			conditionAndWrapper.eq("locationId", locationId);
 		}
-		if(StrUtil.isEmpty(upstreamId)) {
+		if(StrUtil.isNotEmpty(upstreamId)) {
 			conditionAndWrapper.eq("upstreamId", upstreamId);
 		}
 		

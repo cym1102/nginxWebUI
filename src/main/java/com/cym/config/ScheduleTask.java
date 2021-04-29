@@ -74,7 +74,7 @@ public class ScheduleTask {
 	@Autowired
 	MessageUtils m;
 
-	// 使用TimeUnit.DAYS.toMillis()进行时间粒度转换。Modified by Sai on 2020-6-17.
+	// 续签证书
 	@Scheduled(cron = "0 0 2 * * ?")
 	public void certTasks() {
 		List<Cert> certList = sqlHelper.findAll(Cert.class);
@@ -85,6 +85,9 @@ public class ScheduleTask {
 			// 大于50天的续签
 			if (cert.getMakeTime() != null && cert.getAutoRenew() == 1 && time - cert.getMakeTime() > TimeUnit.DAYS.toMillis(50)) {
 				certController.apply(cert.getId(), "renew");
+				
+				//重载nginx使证书生效
+				confController.reload(null, null, null);
 			}
 		}
 	}
@@ -141,10 +144,10 @@ public class ScheduleTask {
 		
 	}
 
-
+	// 删除7天前的备份
 	@Scheduled(cron = "0 0 0 * * ?")
 	public void delBak() {
-		// 删除7天前的备份
+		
 		long time = System.currentTimeMillis();
 		File dir = new File(InitConfig.home + "bak/");
 		if (dir.exists()) {

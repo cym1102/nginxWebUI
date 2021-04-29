@@ -2,6 +2,7 @@ package com.cym.config;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -10,15 +11,20 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,6 +33,7 @@ import com.cym.service.CreditService;
 import com.cym.utils.MessageUtils;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
@@ -80,11 +87,28 @@ public class AdminInterceptor implements HandlerInterceptor {
 		if (localType != null && localType.equals("remote") && !request.getRequestURL().toString().contains("adminPage/remote")) {
 			// 转发到远程服务器
 			Remote remote = (Remote) request.getSession().getAttribute("remote");
-
 			String url = buildUrl(ctx, request, remote);
-			String body = buldBody(request.getParameterMap(), remote);
+
 			try {
-				String rs = HttpUtil.post(url, body);
+				String rs = null;
+				if (url.contains("main/upload")) {
+					// 上传文件
+					Map<String, Object> map = new HashMap<>();
+					map.put("creditKey", remote.getCreditKey());
+					MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+					MultipartFile multipartFile = multipartRequest.getFile("file");
+					File temp = new File(FileUtil.getTmpDir() + "/" + multipartFile.getOriginalFilename());
+					multipartFile.transferTo(temp);
+					map.put("file", temp);
+
+					rs = HttpUtil.post(url, map);
+
+				} else {
+					// 普通请求
+					String body = buldBody(request.getParameterMap(), remote);
+					rs = HttpUtil.post(url, body);
+				}
+
 				rs = rs.replace("'//" + remote.getIp() + ":" + remote.getPort() + "/'", //
 						"'//" + request.getServerName() + ":" + request.getServerPort() + "/'")//
 						.replace("//" + remote.getIp() + ":" + remote.getPort() + "/adminPage", //
@@ -98,7 +122,6 @@ public class AdminInterceptor implements HandlerInterceptor {
 						.replace("//" + remote.getIp() + ":" + remote.getPort() + "/img", //
 								"//" + request.getServerName() + ":" + request.getServerPort() + "/img")//
 				;
-
 				response.setCharacterEncoding("utf-8");
 				response.setContentType("text/html;charset=utf-8");
 
@@ -124,7 +147,6 @@ public class AdminInterceptor implements HandlerInterceptor {
 				e.printStackTrace();
 				response.sendRedirect(ctx + "/adminPage/login/noServer");
 			}
-
 			return false;
 		}
 

@@ -26,6 +26,9 @@
 							<div class="layui-form-mid layui-word-aux proxyHttp">${certStr.tips}</div>
 						</div>
 					</div>
+					
+					<input type="hidden" name="curr" value="${page.curr}">
+					<input type="hidden" name="limit" value="${page.limit}">
 				</form>
 
 				<table class="layui-table layui-form">
@@ -42,7 +45,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<#list certs as cert>
+						<#list page.records as cert>
 						<tr>
 							<td>${cert.domain}</td>
 							<td>
@@ -74,11 +77,11 @@
 							</td>
 							<td>
 								<#if cert.type == 0>
-									<#if cert.pem== null>
+									<#if cert.pem == null || cert.pem == "">
 									<button class="layui-btn layui-btn-sm" onclick="issue('${cert.id}')">${commonStr.apply}</button>
 									</#if>
 									 
-									<#if cert.pem !=null>
+									<#if cert.pem != null && cert.pem != "">
 									<button class="layui-btn layui-btn-sm" onclick="renew('${cert.id}')">${certStr.renew}</button>
 									</#if>
 								</#if>
@@ -95,6 +98,7 @@
 						</#list>
 					</tbody>
 				</table>
+				<div id="pageInfo"></div>
 			</div>
 		</div>
 	</div>

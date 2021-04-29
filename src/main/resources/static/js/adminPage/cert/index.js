@@ -130,8 +130,12 @@ function edit(id, clone) {
 				var cert = data.obj;
 				if (!clone) {
 					$("#id").val(cert.id);
+					$("#pem").val(cert.pem);
+					$("#key").val(cert.key);
 				} else {
 					$("#id").val("");
+					$("#pem").val("");
+					$("#key").val("");
 				}
 				$("#domain").val(cert.domain);
 				$("#type").val(cert.type);
@@ -144,8 +148,7 @@ function edit(id, clone) {
 				$("#cfKey").val(cert.cfKey);
 				$("#gdKey").val(cert.gdKey);
 				$("#gdSecret").val(cert.gdSecret);
-				$("#pem").val(cert.pem);
-				$("#key").val(cert.key);
+				
 				$("#pemPath").html(cert.pem);
 				$("#keyPath").html(cert.key);
 

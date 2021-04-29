@@ -86,7 +86,7 @@
 					<tbody>
 						<#list page.records as ext>
 						<tr>
-							<td><#if ext.upstream.proxyType==0>http</#if> 
+							<td><#if ext.upstream.proxyType==0>http/https</#if> 
 								<#if ext.upstream.proxyType==1>TCP/UDP</#if>
 							</td>
 							<td>${ext.upstream.name}</td>
@@ -96,6 +96,9 @@
 								<#if ext.upstream.tactics=="sticky"> ${upstreamStr.sticky} </#if> 
 								<#if ext.upstream.tactics=="least_conn"> ${upstreamStr.leastConn} </#if> 
 								<#if ext.upstream.tactics=="least_time"> ${upstreamStr.leastTime} </#if>
+								
+								<#if ext.upstream.tactics=="fair"> ${upstreamStr.fair} </#if>
+								<#if ext.upstream.tactics=="url_hash"> ${upstreamStr.urlHash} </#if>
 							</td>
 							<td style="padding: 0px;">
 								<table class="server">${ext.serverStr}
@@ -133,7 +136,7 @@
 					<label class="layui-form-label">${upstreamStr.proxyType}</label>
 					<div class="layui-input-inline">
 						<select name="proxyType" id="proxyType" lay-filter="proxyType">
-							<option value="0">http</option>
+							<option value="0">http/https</option>
 							<option value="1">TCP/UDP</option>
 						</select>
 					</div>
@@ -154,6 +157,9 @@
 								<option value="ip_hash">${upstreamStr.ipHash}</option>
 								<option value="least_conn">${upstreamStr.leastConn}</option>
 								<option value="least_time">${upstreamStr.leastTime}</option>
+								
+								<option value="fair">${upstreamStr.fair}</option>
+								<option value="url_hash">${upstreamStr.urlHash}</option>
 							</select>
 						</div>
 						<div class="layui-form-mid layui-word-aux proxyHttp">${upstreamStr.proxyTips}</div>

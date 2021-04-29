@@ -51,8 +51,8 @@ public class AdminService {
 		return token;
 	}
 
-	public boolean checkToken(String token) {
-		return sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("api", true).eq("token", token), Admin.class) > 0;
+	public Admin getByToken(String token) {
+		return sqlHelper.findOneByQuery(new ConditionAndWrapper().eq("token", token), Admin.class);
 	}
 
 }
