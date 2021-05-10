@@ -44,7 +44,7 @@ public class ParamApiController extends BaseController {
 	@ApiOperation("添加或编辑参数")
 	@PostMapping("insertOrUpdate")
 	public JsonResult<?> insertOrUpdate(Param param) throws IOException {
-		if (StrUtil.isEmpty(param.getServerId()) || StrUtil.isEmpty(param.getLocationId()) || StrUtil.isEmpty(param.getUpstreamId())) {
+		if (StrUtil.isEmpty(param.getServerId()) && StrUtil.isEmpty(param.getLocationId()) && StrUtil.isEmpty(param.getUpstreamId())) {
 			return renderError(m.get("apiStr.paramError"));
 		}
 

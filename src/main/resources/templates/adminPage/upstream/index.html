@@ -61,7 +61,7 @@
 							<label class="layui-form-label">${upstreamStr.keywords}</label>
 						</div>
 						<div class="layui-input-inline">
-							<input type="text" name="keywords" class="layui-input" value="${keywords}">
+							<input type="text" name="keywords" class="layui-input" value="${keywords}" onkeydown="if(event.keyCode==13)return false;">
 						</div>
 
 						<button type="button" class="layui-btn" onclick="search()">${commonStr.search}</button>

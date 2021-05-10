@@ -212,10 +212,19 @@ public class ConfService {
 				NgxBlock ngxBlockServer = bulidBlockServer(server);
 
 				if (decompose) {
-					addConfFile(confExt, "stream." + server.getListen() + ".conf", ngxBlockServer);
+					String type = "";
+					if (server.getProxyType() == 0) {
+						type = "http";
+					} else if (server.getProxyType() == 1) {
+						type = "tcp";
+					} else if (server.getProxyType() == 2) {
+						type = "udp";
+					}
+
+					addConfFile(confExt, type + "." + server.getListen() + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + new File(nginxPath).getParent() + "/conf.d/stream." + server.getListen() + ".conf");
+					ngxParam.addValue("include " + new File(nginxPath).getParent() + "/conf.d/" + type + "." + server.getListen() + ".conf");
 					ngxBlockStream.addEntry(ngxParam);
 				} else {
 					ngxBlockStream.addEntry(ngxBlockServer);
