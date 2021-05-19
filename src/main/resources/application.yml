@@ -31,6 +31,7 @@ project:
 logging: 
   file:
     name: ${project.home}log/nginxWebUI.log
+    max-size: 1024MB
   level: 
     root: info
 

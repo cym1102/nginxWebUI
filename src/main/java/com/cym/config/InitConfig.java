@@ -160,6 +160,10 @@ public class InitConfig {
 				logger.info("I am in docker");
 				return true;
 			}
+			if (str.contains("kubepods")) {
+				logger.info("I am in k8s");
+				return true;
+			}
 		}
 		logger.info("I am not in docker");
 		return false;

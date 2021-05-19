@@ -394,7 +394,7 @@ public class ConfController extends BaseController {
 
 		try {
 			String rs = "";
-			if (cmd.contains(".exe")) {
+			if (SystemTool.isWindows()) {
 				RuntimeUtil.exec("cmd /c start " + cmd);
 			} else {
 				rs = RuntimeUtil.execForStr("/bin/sh", "-c", cmd);

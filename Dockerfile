@@ -1,5 +1,5 @@
 FROM ubuntu:20.04
-MAINTAINER Chenyimeng "cym1102@qq.com"
+LABEL maintainer="cym1102@qq.com"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Shanghai
 RUN apt-get clean && apt-get update &&\

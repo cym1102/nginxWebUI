@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cym.model.Location;
 import com.cym.model.Server;
+import com.cym.service.ParamService;
 import com.cym.service.ServerService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
@@ -27,7 +28,9 @@ import io.swagger.annotations.ApiParam;
 public class ServerApiController extends BaseController {
 	@Autowired
 	ServerService serverService;
-
+	@Autowired
+	ParamService paramService;
+	
 	@SuppressWarnings("unchecked")
 	@ApiOperation("获取server分页列表")
 	@PostMapping("getPage")
@@ -68,7 +71,10 @@ public class ServerApiController extends BaseController {
 	@PostMapping("getLocationByServerId")
 	public JsonResult<List<Location>> getLocationByServerId(String serverId) {
 		List<Location> locationList = serverService.getLocationByServerId(serverId);
-
+		for (Location location : locationList) {
+			String json = paramService.getJsonByTypeId(location.getId(), "location");
+			location.setLocationParamJson(json != null ? json : null);
+		}
 		return renderSuccess(locationList);
 	}
 
