@@ -125,7 +125,7 @@ public class ConfService {
 					addConfFile(confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + new File(nginxPath).getParent() + "/conf.d/upstreams." + upstream.getName() + ".conf");
+					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/upstreams." + upstream.getName() + ".conf");
 					ngxBlockHttp.addEntry(ngxParam);
 
 				} else {
@@ -155,7 +155,7 @@ public class ConfService {
 					addConfFile(confExt, name + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + new File(nginxPath).getParent() + "/conf.d/" + name + ".conf");
+					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/" + name + ".conf");
 
 					if (noContain(ngxBlockHttp, ngxParam)) {
 						ngxBlockHttp.addEntry(ngxParam);
@@ -193,7 +193,7 @@ public class ConfService {
 					addConfFile(confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + new File(nginxPath).getParent() + "/conf.d/upstreams." + upstream.getName() + ".conf");
+					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/upstreams." + upstream.getName() + ".conf");
 					ngxBlockStream.addEntry(ngxParam);
 				} else {
 					ngxBlockStream.addEntry(ngxBlockServer);
@@ -224,7 +224,7 @@ public class ConfService {
 					addConfFile(confExt, type + "." + server.getListen() + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + new File(nginxPath).getParent() + "/conf.d/" + type + "." + server.getListen() + ".conf");
+					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/" + type + "." + server.getListen() + ".conf");
 					ngxBlockStream.addEntry(ngxParam);
 				} else {
 					ngxBlockStream.addEntry(ngxBlockServer);
@@ -293,7 +293,7 @@ public class ConfService {
 
 			// 监听端口
 			ngxParam = new NgxParam();
-			String value = "listen " + server.getListen();
+			String value = "listen [::]:" + server.getListen();
 			if (server.getDef() == 1) {
 				value += " default";
 			}
@@ -348,7 +348,7 @@ public class ConfService {
 				if (server.getRewrite() == 1) {
 					if (StrUtil.isNotEmpty(server.getRewriteListen())) {
 						ngxParam = new NgxParam();
-						String reValue = "listen " + server.getRewriteListen();
+						String reValue = "listen [::]:" + server.getRewriteListen();
 						if (server.getDef() == 1) {
 							reValue += " default";
 						}
@@ -591,7 +591,7 @@ public class ConfService {
 
 	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName, Boolean bak) {
 		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
-		String confd = new File(nginxPath).getParent() + "/conf.d/";
+		String confd = new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/";
 
 		// 备份主文件
 		if (bak) {
@@ -618,7 +618,7 @@ public class ConfService {
 			// 写入conf.d文件
 			if (subContent != null) {
 				for (int i = 0; i < subContent.size(); i++) {
-					String tagert = (new File(nginxPath).getParent() + "/conf.d/" + subName.get(i)).replace(" ", "_");
+					String tagert = (new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/" + subName.get(i)).replace(" ", "_");
 					FileUtil.writeString(subContent.get(i), tagert, StandardCharsets.UTF_8); // 清空
 				}
 			}
@@ -671,7 +671,7 @@ public class ConfService {
 			for (ConfFile confFile : confExt.getFileList()) {
 				confFile.setConf("");
 
-				String filePath = new File(nginxPath).getParent() + "/conf.d/" + confFile.getName();
+				String filePath = new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/" + confFile.getName();
 				if (FileUtil.exist(filePath)) {
 					confFile.setConf(FileUtil.readString(filePath, StandardCharsets.UTF_8));
 				}
@@ -706,19 +706,23 @@ public class ConfService {
 		sqlHelper.insertAll(asycPack.getParamList());
 		sqlHelper.insertAll(asycPack.getPasswordList());
 
-		for (Server server : asycPack.getServerList()) {
-			if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getPemStr())) {
-				FileUtil.writeString(server.getPemStr(), server.getPem(), StandardCharsets.UTF_8);
+		try {
+			for (Server server : asycPack.getServerList()) {
+				if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getPemStr())) {
+					FileUtil.writeString(server.getPemStr(), server.getPem(), StandardCharsets.UTF_8);
+				}
+				if (StrUtil.isNotEmpty(server.getKey()) && StrUtil.isNotEmpty(server.getKeyStr())) {
+					FileUtil.writeString(server.getKeyStr(), server.getKey(), StandardCharsets.UTF_8);
+				}
 			}
-			if (StrUtil.isNotEmpty(server.getKey()) && StrUtil.isNotEmpty(server.getKeyStr())) {
-				FileUtil.writeString(server.getKeyStr(), server.getKey(), StandardCharsets.UTF_8);
-			}
-		}
 
-		for (Password password : asycPack.getPasswordList()) {
-			if (StrUtil.isNotEmpty(password.getPath()) && StrUtil.isNotEmpty(password.getPathStr())) {
-				FileUtil.writeString(password.getPathStr(), password.getPath(), StandardCharsets.UTF_8);
+			for (Password password : asycPack.getPasswordList()) {
+				if (StrUtil.isNotEmpty(password.getPath()) && StrUtil.isNotEmpty(password.getPathStr())) {
+					FileUtil.writeString(password.getPathStr(), password.getPath(), StandardCharsets.UTF_8);
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		settingService.set("decompose", asycPack.getDecompose());

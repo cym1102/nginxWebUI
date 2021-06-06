@@ -58,7 +58,7 @@ yum install nginx
 2.下载最新版发行包jar
 
 ```
-wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.5.8.jar
+wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.6.0.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -135,7 +135,7 @@ docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.p
 version: "3.2"
 services:
   nginxWebUi-server:
-    image: cym1102/nginxwebui:2.5.8
+    image: cym1102/nginxwebui:2.6.0
     volumes:
       - type: bind
         source: "/home/nginxWebUI"
@@ -158,7 +158,7 @@ mvn clean package
 2. 使用docker构建镜像
 
 ```
-docker build -t nginxwebui:2.5.8 .
+docker build -t nginxwebui:2.6.0 .
 ```
 
 #### 添加开机启动
@@ -240,10 +240,6 @@ systemctl start nginxwebui.service
 
 最终生成conf文件,可在此进行进一步手动修改,确认修改无误后,可覆盖本机conf文件,并进行效验和重启, 可以选择生成单一nginx.conf文件还是按域名将各个配置文件分开放在conf.d下
  
-![输入图片说明](http://www.nginxwebui.cn/img/log.jpeg "log.jpg")
-
-log管理, 在http配置中如果开启了log监控的话, 会每天在这里生成日志分析报告.
-
 ![输入图片说明](http://www.nginxwebui.cn/img/remote.jpeg "remote.jpg")
 
 远程服务器管理, 如果有多台nginx服务器, 可以都部署上nginxWebUI, 然后登录其中一台, 在远程管理中添加其他服务器的ip和用户名密码, 就可以在一台机器上管理所有的nginx服务器了.

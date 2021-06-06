@@ -86,10 +86,10 @@ public class BakController extends BaseController {
 	@RequestMapping("replace")
 	@ResponseBody
 	public JsonResult replace(String path) {
-		if(!FileUtil.exist(path)) {
+		if (!FileUtil.exist(path)) {
 			return renderError(m.get("bakStr.fileNotExist"));
 		}
-		
+
 		String nginxPath = settingService.get("nginxPath");
 
 		if (StrUtil.isNotEmpty(nginxPath)) {
@@ -97,12 +97,20 @@ public class BakController extends BaseController {
 
 			FileUtil.copy(path, nginxPath, true);
 			FileUtil.del(pathFile.getParent() + "/conf.d");
-			ZipUtil.unzip(path.replace(".bak", ".zip"), pathFile.getParent() + "/conf.d");
+			
+			if(FileUtil.exist(path.replace(".bak", ".zip"))) {
+				ZipUtil.unzip(path.replace(".bak", ".zip"), pathFile.getParent() + "/conf.d");
+			}
 			return renderSuccess();
 		} else {
 			return renderError(m.get("bakStr.pathNotice"));
 		}
 
+	}
+	
+	public static void main(String[] args) {
+		String path = new BakController().getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+		System.out.println(path);
 	}
 
 	@RequestMapping("del")

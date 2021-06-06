@@ -64,6 +64,7 @@ public class InitConfig {
 		if (count == 0) {
 			List<Basic> basics = new ArrayList<Basic>();
 			basics.add(new Basic("worker_processes", "auto", 1l));
+			basics.add(new Basic("pid", InitConfig.home + "nginx.pid", 1l));
 			basics.add(new Basic("events", "{\r\n" + "    worker_connections  1024;\r\n    accept_mutex on;\r\n" + "}", 2l));
 			sqlHelper.insertAll(basics);
 		}
@@ -141,7 +142,7 @@ public class InitConfig {
 					// 启动nginx
 					String cmd = nginxExe + " -c " + nginxPath;
 					RuntimeUtil.execForStr("/bin/sh", "-c", cmd);
-				} 
+				}
 			}
 		}
 

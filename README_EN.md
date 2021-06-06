@@ -54,7 +54,7 @@ yum install nginx
 2.Download the latest release of the distribution jar
 
 ```
-wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.5.8.jar
+wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.6.0.jar
 ```
 
 With a new version, you just need to change the version in the path
@@ -104,13 +104,13 @@ yum install docker
 2.Download images:
 
 ```
-docker pull cym1102/nginxwebui:2.5.8
+docker pull cym1102/nginxwebui:2.6.0
 ```
 
 3.start container
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.5.8 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.6.0 /bin/bash
 ```
 
 notice: 
@@ -131,7 +131,7 @@ moreover: The following configuration file is used when using docker-compose
 version: "3.2"
 services:
   nginxWebUi-server:
-    image: cym1102/nginxwebui:2.5.8
+    image: cym1102/nginxwebui:2.6.0
     volumes:
       - type: bind
         source: "/home/nginxWebUI"
@@ -154,7 +154,7 @@ mvn clean package
 2. Compile the image with Docker
 
 ```
-docker build -t nginxwebui:2.5.8 .
+docker build -t nginxwebui:2.6.0 .
 ```
 
 #### Add boot up run
@@ -235,10 +235,6 @@ Backup file management. Here you can see the backup history version of Nginx.cnF
 
 Finally, the conF file can be generated, which can be further modified manually. After the modification is confirmed to be correct, the native conF file can be overwritten, and the effectiveness and restart can be carried out. You can choose to generate a single Nginx.conf file or separate each configuration file under conF.d by domain name
  
-![输入图片说明](http://www.nginxwebui.cn/img/log.jpeg "log.jpg")
-
-Log management, if log monitoring is on in the HTTP configuration, log analysis reports are generated here every day.
-
 ![输入图片说明](http://www.nginxwebui.cn/img/remote.jpeg "remote.jpg")
 
 Remote server management. If you have multiple Nginx servers, you can deploy nginxWebUI, log in to one of them, add the IP and username and password of other servers to the remote management, and then you can manage all Nginx servers on one machine.
