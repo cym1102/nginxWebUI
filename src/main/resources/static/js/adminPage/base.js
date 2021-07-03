@@ -248,7 +248,7 @@ function autoUpdate(url){
 function changeLang() {
 	$.ajax({
 		type: 'POST',
-		url: ctx + '/adminPage/login/changeLang',
+		url: ctx + '/adminPage/main/changeLang',
 		data: $("#adminForm").serialize(),
 		dataType: 'json',
 		success: function(data) {

@@ -9,6 +9,7 @@ import com.cym.model.Param;
 import com.cym.model.Password;
 import com.cym.model.Server;
 import com.cym.model.Stream;
+import com.cym.model.Template;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
 
@@ -20,6 +21,7 @@ public class AsycPack {
 	List<Upstream> upstreamList;
 	List<UpstreamServer> upstreamServerList;
 	List<Stream> streamList;
+	List<Template> templateList;
 	List<Param> paramList;
 	List<Password> passwordList;
 	
@@ -27,6 +29,15 @@ public class AsycPack {
 
 	String decompose;
 
+
+	
+	public List<Template> getTemplateList() {
+		return templateList;
+	}
+
+	public void setTemplateList(List<Template> templateList) {
+		this.templateList = templateList;
+	}
 
 	public List<Password> getPasswordList() {
 		return passwordList;

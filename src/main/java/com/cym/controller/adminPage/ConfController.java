@@ -234,7 +234,7 @@ public class ConfController extends BaseController {
 		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
 
 		FileUtil.del(InitConfig.home + "temp");
-		String fileTemp = InitConfig.home + "temp" + File.separator + "nginx.conf";
+		String fileTemp = InitConfig.home + "temp/nginx.conf";
 
 		confService.replace(fileTemp, nginxContent, subContent, subName, false);
 

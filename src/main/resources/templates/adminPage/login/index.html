@@ -2,13 +2,14 @@
 <html>
 <head>
 <#include '/adminPage/common.html'/>
+<style type="text/css">
+.layui-form-label{
+	width: 120px;
+}
 
+</style>
 </head>
 <body style="background-image: url('${ctx}/img/background.svg'); background-size: cover;">
-	<div style="position: fixed;top: 10px;right: 10px;font-size: 18px;">
-		<a href="javascript:changeLang()">${langType}</a>
-	</div>
-
 	<div style="height: 0px; width: 0px; overflow: hidden;">
 		<!-- 弹出框 -->
 		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none;">
@@ -26,32 +27,34 @@
 						<input type="password" name="pass" id="pass" class="layui-input" value="" onkeyup="getKey()">
 					</div>
 				</div>
-				
+
 				<div class="layui-form-item">
 					<label class="layui-form-label">${loginStr.code}</label>
 					<div class="layui-input-inline" style="width: 240px;">
-						<input type="text" name="code" id="code" class="layui-input" style="width: 100px;display: inline-block;" onkeyup="getKey()">
-						<img src="${ctx}/adminPage/login/getCode?t=${jsrandom}" id="codeImg" onclick="refreshCode('codeImg')">
+						<input type="text" name="code" id="code" class="layui-input" style="width: 100px; display: inline-block;" onkeyup="getKey()"> <img src="${ctx}/adminPage/login/getCode?t=${jsrandom}"
+							id="codeImg" onclick="refreshCode('codeImg')">
 					</div>
 				</div>
-				
+
 				<div class="layui-form-item">
 					<label class="layui-form-label"> </label>
 					<div class="layui-input-inline">
-						<input type="checkbox" name="remember" id="remember"  title="${loginStr.remember}" lay-skin="primary">
+						<input type="checkbox" name="remember" id="remember" title="${loginStr.remember}" lay-skin="primary">
 					</div>
 				</div>
-				
+
 				<div class="layui-form-item" style="text-align: center;">
-					<input type="hidden" name="authCode" id="authCode" >
+					<input type="hidden" name="authCode" id="authCode">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="getAuth()">${loginStr.login}</button>
 				</div>
 			</form>
 		</div>
-		
+
 		<input type="hidden" id="adminCount" value="${adminCount}">
 		<div class="layui-form" id="addUserDiv" style="padding: 15px; display: none;">
 			<form id="adminForm">
+
+
 				<div class="layui-form-item">
 					<label class="layui-form-label">${loginStr.name}</label>
 					<div class="layui-input-inline">
@@ -61,39 +64,41 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label">${loginStr.pass}</label>
 					<div class="layui-input-inline">
-						<input type="password" name="pass" id="adminPass" class="layui-input" value="" >
+						<input type="password" name="pass" id="adminPass" class="layui-input" value="">
 					</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">${loginStr.repeatPass}</label>
 					<div class="layui-input-inline">
-						<input type="password" id="repeatPass" class="layui-input" value="" >
+						<input type="password" id="repeatPass" class="layui-input" value="">
 						<div class="layui-form-mid layui-word-aux">${loginStr.tips}</div>
 					</div>
 				</div>
 				<div class="layui-form-item" style="text-align: center;">
+					
+					<button type="button" class="layui-btn layui-btn-primary" onclick="changeLangLogin()">${langType}</button>
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addAdmin()">${loginStr.add}</button>
 				</div>
 			</form>
 		</div>
-		
+
 		<div class="layui-form" id="codeDiv" style="padding: 15px; display: none">
 			<div class="layui-form-item">
 				<label class="layui-form-label">${loginStr.authCode}</label>
-				<div class="layui-input-inline" >
+				<div class="layui-input-inline">
 					<input type="number" id="codeInput" class="layui-input" onkeyup="getKey()">
 				</div>
 			</div>
-			
+
 			<div class="layui-form-item" style="text-align: right;">
 				<button type="button" class="layui-btn layui-btn-normal" onclick="login()">${commonStr.submit}</button>
 				<button type="button" class="layui-btn" onclick="layer.close(codeIndex)">${commonStr.close}</button>
 			</div>
 		</div>
-		
+
 	</div>
-	
-<#include '/adminPage/script.html'/>
-<script src="${ctx}/js/adminPage/login/index.js?v=${jsrandom}" type="text/javascript"></script>
+
+	<#include '/adminPage/script.html'/>
+	<script src="${ctx}/js/adminPage/login/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 </html>

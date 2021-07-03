@@ -43,8 +43,8 @@ public class WebConfig implements WebMvcConfigurer {
 //		registry.addInterceptor(new LocaleInterceptor()).addPathPatterns("/**");
 	}
 
-	@Bean
-	public LocaleResolver localeResolver(MyLocaleResolver myLocaleResolver) {
-		return myLocaleResolver;
-	}
+//	@Bean
+//	public LocaleResolver localeResolver(MyLocaleResolver myLocaleResolver) {
+//		return myLocaleResolver;
+//	}
 }

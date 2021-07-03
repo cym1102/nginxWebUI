@@ -200,8 +200,8 @@ public class CertController extends BaseController {
 
 			File pem = new File(cert.getPem());
 			File key = new File(cert.getKey());
-			FileUtil.copy(pem, new File(dir + File.separator + pem.getName()), true);
-			FileUtil.copy(key, new File(dir + File.separator + key.getName()), true);
+			FileUtil.copy(pem, new File(dir + "/" + pem.getName()), true);
+			FileUtil.copy(key, new File(dir + "/" + key.getName()), true);
 
 			ZipUtil.zip(dir);
 			FileUtil.del(dir);

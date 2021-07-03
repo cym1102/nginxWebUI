@@ -100,7 +100,7 @@ input[name='param']{
 			</form>
 		</div>
 
-		<div class="layui-form" id="guideDiv" style="padding: 15px; display: none">
+		<div class="layui-form" id="guideDiv" style="padding: 15px; display: none;">
 			<form id="addForm">
 				<div class="layui-form-item">
 					<label class="layui-form-label long">keepalive_timeout</label>
@@ -121,7 +121,7 @@ input[name='param']{
 				<div class="layui-form-item">
 					<label class="layui-form-label long">gzip_min_length</label>
 					<div class="layui-input-inline short">
-						<input type="text" name="param" id="gzip_min_length" class="layui-input" value="8" lang="k">
+						<input type="text" name="param" id="gzip_min_length" class="layui-input" value="4" lang="k">
 					</div>
 					<div class="layui-form-mid layui-word-aux">KB，${httpStr.gzipMinLength}</div>
 				</div>
@@ -129,9 +129,19 @@ input[name='param']{
 				<div class="layui-form-item">
 					<label class="layui-form-label long">gzip_comp_level</label>
 					<div class="layui-input-inline short">
-						<input type="text" name="param" id="gzip_comp_level" class="layui-input" value="2" lang="">
+						<input type="text" name="param" id="gzip_comp_level" class="layui-input" value="4" lang="">
 					</div>
 					<div class="layui-form-mid layui-word-aux">${httpStr.gzipCompLevel}</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label long">gzip_types</label>
+					<div class="layui-input-inline" style="width: 130px;">
+						<input type="checkbox" name="type" value="js" lay-skin="primary" checked title="js">
+						<input type="checkbox" name="type" value="css" lay-skin="primary" checked title="css">
+						
+					</div>
+					<div class="layui-form-mid layui-word-aux">${httpStr.gzipType}</div>
 				</div>
 				
 				<div class="layui-form-item">
@@ -206,7 +216,7 @@ input[name='param']{
 					<div class="layui-form-mid layui-word-aux">${httpStr.webSocketTips}</div>
 				</div>
 				
-				<div class="layui-form-item">
+				<div class="layui-form-item" style="margin-bottom:0px;">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addGiudeOver()">${commonStr.submit}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>

@@ -288,6 +288,10 @@ public class RemoteController extends BaseController {
 				Remote remote = sqlHelper.findById(id, Remote.class);
 				rs.append("<span class='blue'>").append(remote.getIp()).append("> </span>");
 
+				if (cmd.contentEquals("check")) {
+					cmd = "checkBase";
+				}
+				
 				try {
 					String json = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/conf/" + cmd + "?creditKey=" + remote.getCreditKey());
 					jsonResult = JSONUtil.toBean(json, JsonResult.class);

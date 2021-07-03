@@ -85,7 +85,7 @@ public class RootController extends BaseController {
 	@RequestMapping("mkdir")
 	public JsonResult mkdir(String dir, String name) {
 
-		FileUtil.mkdir(dir + File.separator + name);
+		FileUtil.mkdir(dir + name);
 
 		return renderSuccess();
 	}

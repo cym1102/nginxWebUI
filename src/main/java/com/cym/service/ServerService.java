@@ -39,8 +39,6 @@ public class ServerService {
 	@Autowired
 	SqlHelper sqlHelper;
 
-	
-
 	public Page search(Page page, String keywords) {
 		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper();
 		if (StrUtil.isNotEmpty(keywords)) {
@@ -144,8 +142,6 @@ public class ServerService {
 		Sort sort = new Sort().add("seq", Direction.DESC);
 		return sqlHelper.findListByQuery(new ConditionAndWrapper().in("proxyType", proxyType), sort, Server.class);
 	}
-
-
 
 	public void importServer(String nginxPath) throws Exception {
 		String initNginxPath = initNginx(nginxPath);
@@ -251,7 +247,7 @@ public class ServerService {
 			}
 
 			server.setDef(0);
-			server.setSeq( SnowFlakeUtils.getId());
+			server.setSeq(SnowFlakeUtils.getId());
 			addOver(server, "", locations);
 		}
 
@@ -309,10 +305,10 @@ public class ServerService {
 			}
 
 			if (tagert != null) {
-				
+
 				System.err.println("tagert:" + tagert.getServerName() + tagert.getListen());
 				System.err.println("server:" + server.getServerName() + server.getListen());
-				
+
 				// 交换seq
 				Long seq = tagert.getSeq();
 				tagert.setSeq(server.getSeq());
@@ -321,9 +317,40 @@ public class ServerService {
 				sqlHelper.updateById(tagert);
 				sqlHelper.updateById(server);
 			}
-
 		}
-
 	}
 
+	public void moveLocation(String locationId, Integer seqAdd) {
+		Location location = sqlHelper.findById(locationId, Location.class);
+
+		List<Location> locationList = sqlHelper.findListByQuery(new ConditionAndWrapper().eq(Location::getServerId, location.getServerId()), new Sort("id", Direction.DESC), Location.class);
+		if (locationList.size() > 0) {
+			Location tagert = null;
+			if (seqAdd > 0) {
+				// 上移
+				for (int i = 0; i < locationList.size(); i++) {
+					if (Long.parseLong(locationList.get(i).getId()) < Long.parseLong(location.getId())) {
+						tagert = locationList.get(i);
+					}
+				}
+			} else {
+				// 下移
+				for (int i = locationList.size() - 1; i >= 0; i--) {
+					if (Long.parseLong(locationList.get(i).getId()) > Long.parseLong(location.getId())) {
+						tagert = locationList.get(i);
+					}
+				}
+			}
+
+			if (tagert != null) {
+				// 交换seq
+				String id = tagert.getId();
+				tagert.setId(location.getId());
+				location.setId(id);
+
+				sqlHelper.updateById(tagert);
+				sqlHelper.updateById(location);
+			}
+		}
+	}
 }

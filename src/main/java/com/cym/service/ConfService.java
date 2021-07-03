@@ -20,6 +20,7 @@ import com.cym.model.Param;
 import com.cym.model.Password;
 import com.cym.model.Server;
 import com.cym.model.Stream;
+import com.cym.model.Template;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
 import com.cym.utils.ToolUtils;
@@ -293,7 +294,7 @@ public class ConfService {
 
 			// 监听端口
 			ngxParam = new NgxParam();
-			String value = "listen [::]:" + server.getListen();
+			String value = "listen " + server.getListen();
 			if (server.getDef() == 1) {
 				value += " default";
 			}
@@ -348,7 +349,7 @@ public class ConfService {
 				if (server.getRewrite() == 1) {
 					if (StrUtil.isNotEmpty(server.getRewriteListen())) {
 						ngxParam = new NgxParam();
-						String reValue = "listen [::]:" + server.getRewriteListen();
+						String reValue = "listen " + server.getRewriteListen();
 						if (server.getDef() == 1) {
 							reValue += " default";
 						}
@@ -550,13 +551,21 @@ public class ConfService {
 	private void setSameParam(Param param, NgxBlock ngxBlock) {
 		if (StrUtil.isEmpty(param.getTemplateValue())) {
 			NgxParam ngxParam = new NgxParam();
-			ngxParam.addValue(param.getName().trim() + " " + param.getValue().trim());
+			if (StrUtil.isNotEmpty(param.getName().trim())) {
+				param.setName(param.getName().trim() + " ");
+			}
+
+			ngxParam.addValue(param.getName() + param.getValue().trim());
 			ngxBlock.addEntry(ngxParam);
 		} else {
 			List<Param> params = templateService.getParamList(param.getTemplateValue());
 			for (Param paramSub : params) {
 				NgxParam ngxParam = new NgxParam();
-				ngxParam.addValue(paramSub.getName().trim() + " " + paramSub.getValue().trim());
+				if (StrUtil.isNotEmpty(paramSub.getName().trim())) {
+					paramSub.setName(paramSub.getName().trim() + " ");
+				}
+
+				ngxParam.addValue(paramSub.getName() + paramSub.getValue().trim());
 				ngxBlock.addEntry(ngxParam);
 			}
 		}
@@ -656,7 +665,7 @@ public class ConfService {
 		asycPack.setUpstreamList(sqlHelper.findAll(Upstream.class));
 		asycPack.setUpstreamServerList(sqlHelper.findAll(UpstreamServer.class));
 		asycPack.setStreamList(sqlHelper.findAll(Stream.class));
-
+		asycPack.setTemplateList(sqlHelper.findAll(Template.class));
 		asycPack.setParamList(sqlHelper.findAll(Param.class));
 
 		String nginxPath = settingService.get("nginxPath");
@@ -695,6 +704,7 @@ public class ConfService {
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), UpstreamServer.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Stream.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Param.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Template.class);
 
 		sqlHelper.insertAll(asycPack.getBasicList());
 		sqlHelper.insertAll(asycPack.getHttpList());
@@ -703,6 +713,7 @@ public class ConfService {
 		sqlHelper.insertAll(asycPack.getUpstreamList());
 		sqlHelper.insertAll(asycPack.getUpstreamServerList());
 		sqlHelper.insertAll(asycPack.getStreamList());
+		sqlHelper.insertAll(asycPack.getTemplateList());
 		sqlHelper.insertAll(asycPack.getParamList());
 		sqlHelper.insertAll(asycPack.getPasswordList());
 

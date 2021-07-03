@@ -56,7 +56,6 @@ public class LoginController extends BaseController {
 	@Autowired
 	SettingService settingService;
 
-
 	@RequestMapping("")
 	public ModelAndView admin(ModelAndView modelAndView, HttpServletRequest request, HttpSession httpSession, String adminId) {
 		modelAndView.addObject("adminCount", sqlHelper.findAllCount(Admin.class));
@@ -204,18 +203,6 @@ public class LoginController extends BaseController {
 		return renderSuccess("");
 	}
 
-	@ResponseBody
-	@RequestMapping("changeLang")
-	public JsonResult changeLang() {
-		if (settingService.get("lang") != null && settingService.get("lang").equals("en_US")) {
-			settingService.set("lang", "");
-		} else {
-			settingService.set("lang", "en_US");
-		}
-
-		return renderSuccess();
-	}
-
 	@RequestMapping("addAdmin")
 	@ResponseBody
 	public JsonResult addAdmin(String name, String pass) {
@@ -259,5 +246,21 @@ public class LoginController extends BaseController {
 		settingService.set("remoteCode", createText);
 
 		captcha.write(httpServletResponse.getOutputStream());
+	}
+
+	@ResponseBody
+	@RequestMapping("/changeLang")
+	public JsonResult changeLang() {
+		Long adminCount = sqlHelper.findAllCount(Admin.class);
+		if (adminCount == 0) {
+			// 只有初始化时允许修改语言
+			if (settingService.get("lang") != null && settingService.get("lang").equals("en_US")) {
+				settingService.set("lang", "");
+			} else {
+				settingService.set("lang", "en_US");
+			}
+		}
+
+		return renderSuccess();
 	}
 }

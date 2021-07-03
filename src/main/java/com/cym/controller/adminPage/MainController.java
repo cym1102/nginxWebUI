@@ -2,7 +2,6 @@ package com.cym.controller.adminPage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
@@ -20,12 +19,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.config.InitConfig;
 import com.cym.model.Remote;
-import com.cym.utils.UpdateUtils;
+import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
+import com.cym.utils.UpdateUtils;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
@@ -35,6 +34,8 @@ import cn.hutool.json.JSONUtil;
 public class MainController extends BaseController {
 	@Autowired
 	UpdateUtils updateUtils;
+	@Autowired
+	SettingService settingService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(MainController.class);
 
@@ -90,6 +91,19 @@ public class MainController extends BaseController {
 		LOG.info("download:" + path);
 		HttpUtil.downloadFile(url, path);
 		updateUtils.run(path);
+		return renderSuccess();
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping("/adminPage/main/changeLang")
+	public JsonResult changeLang() {
+		if (settingService.get("lang") != null && settingService.get("lang").equals("en_US")) {
+			settingService.set("lang", "");
+		} else {
+			settingService.set("lang", "en_US");
+		}
+
 		return renderSuccess();
 	}
 
