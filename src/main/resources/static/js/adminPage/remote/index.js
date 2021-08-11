@@ -253,7 +253,7 @@ function contentLocal(){
 		url : ctx + '/adminPage/remote/readContent',
 		success : function(data) {
 			if (data) {
-				$("#content").val(data);
+				/*$("#content").val(data);
 				$("#content").setTextareaCount();
 				
 				form.render();
@@ -263,7 +263,17 @@ function contentLocal(){
 					title :remoteStr.content,
 					area : [ '1200px', '745px' ], // 宽高
 					content : $('#contentDiv')
+				});*/
+				
+				$("#preview").val(data);
+				layer.open({
+					type: 1,
+					title: commonStr.preview,
+					area: ['800px', '600px'], // 宽高
+					content: $('#previewDiv')
 				});
+				
+				
 			}else{
 				layer.msg(data.msg);
 			}
@@ -284,7 +294,7 @@ function content(id) {
 		},
 		success : function(data) {
 			if (data.success) {
-				$("#content").val(data.obj);
+				/*$("#content").val(data.obj);
 				$("#content").setTextareaCount();
 				
 				form.render();
@@ -294,6 +304,14 @@ function content(id) {
 					title :remoteStr.content,
 					area : [ '1200px', '745px' ], // 宽高
 					content : $('#contentDiv')
+				});*/
+				
+				$("#preview").val(data.obj);
+				layer.open({
+					type: 1,
+					title: commonStr.preview,
+					area: ['800px', '600px'], // 宽高
+					content: $('#previewDiv')
 				});
 			}else{
 				layer.msg(data.msg);

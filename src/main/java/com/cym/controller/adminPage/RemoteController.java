@@ -27,6 +27,7 @@ import com.cym.ext.AsycPack;
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
 import com.cym.ext.Tree;
+import com.cym.model.Admin;
 import com.cym.model.Group;
 import com.cym.model.Remote;
 import com.cym.service.ConfService;
@@ -84,7 +85,8 @@ public class RemoteController extends BaseController {
 	}
 
 	@RequestMapping("")
-	public ModelAndView index(ModelAndView modelAndView) {
+	public ModelAndView index(ModelAndView modelAndView, HttpSession httpSession) {
+		
 		modelAndView.setViewName("/adminPage/remote/index");
 		modelAndView.addObject("projectVersion", projectVersion);
 		return modelAndView;
@@ -92,7 +94,8 @@ public class RemoteController extends BaseController {
 
 	@RequestMapping("allTable")
 	@ResponseBody
-	public List<Remote> allTable() {
+	public List<Remote> allTable(HttpServletRequest request) {
+		Admin admin = getAdmin(request);
 		List<Remote> remoteList = sqlHelper.findAll(Remote.class);
 
 		for (Remote remote : remoteList) {
@@ -134,12 +137,12 @@ public class RemoteController extends BaseController {
 		remoteLocal.setSystem(SystemTool.getSystem());
 		remoteList.add(0, remoteLocal);
 
-		List<Group> groupList = sqlHelper.findAll(Group.class);
+		List<Group> groupList = remoteService.getGroupByAdmin(admin);
 		for (Group group : groupList) {
 			Remote remoteGroup = new Remote();
 			remoteGroup.setDescr(group.getName());
 			remoteGroup.setId(group.getId());
-			remoteGroup.setParentId(group.getParentId() != null ? group.getParentId() : "");
+			remoteGroup.setParentId(checkParent(group.getParentId(), groupList));
 			remoteGroup.setType(1);
 
 			remoteGroup.setIp("");
@@ -151,6 +154,21 @@ public class RemoteController extends BaseController {
 		}
 
 		return remoteList;
+	}
+
+	private String checkParent(String parentId, List<Group> groupList) {
+		
+		if(parentId == null) {
+			return "";
+		}
+		
+		for(Group group:groupList) {
+			if(group.getId().equals(parentId)) {
+				return parentId;
+			}
+		}
+		
+		return "";
 	}
 
 	@RequestMapping("addGroupOver")
@@ -180,9 +198,10 @@ public class RemoteController extends BaseController {
 
 	@RequestMapping("getGroupTree")
 	@ResponseBody
-	public JsonResult getGroupTree() {
-
-		List<Group> groups = groupService.getListByParent(null);
+	public JsonResult getGroupTree(HttpServletRequest request) {
+		Admin admin = getAdmin(request);
+		
+		List<Group> groups = remoteService.getGroupByAdmin(admin);
 		List<Tree> treeList = new ArrayList<>();
 		fillTree(groups, treeList);
 
@@ -195,7 +214,7 @@ public class RemoteController extends BaseController {
 		return renderSuccess(treeList);
 	}
 
-	private void fillTree(List<Group> groups, List<Tree> treeList) {
+	public void fillTree(List<Group> groups, List<Tree> treeList) {
 		for (Group group : groups) {
 			Tree tree = new Tree();
 			tree.setName(group.getName());
@@ -208,13 +227,14 @@ public class RemoteController extends BaseController {
 			treeList.add(tree);
 		}
 
-	}
+	} 
 
 	@RequestMapping("getCmdRemote")
 	@ResponseBody
-	public JsonResult getCmdRemote() {
-
-		List<Group> groups = groupService.getListByParent(null);
+	public JsonResult getCmdRemote(HttpServletRequest request) {
+		Admin admin = getAdmin(request);
+		
+		List<Group> groups = remoteService.getGroupByAdmin(admin);
 		List<Remote> remotes = remoteService.getListByParent(null);
 
 		List<Tree> treeList = new ArrayList<>();
@@ -256,7 +276,7 @@ public class RemoteController extends BaseController {
 
 	@RequestMapping("cmdOver")
 	@ResponseBody
-	public JsonResult cmdOver(String[] remoteId, String cmd, Integer interval) {
+	public JsonResult cmdOver(String[] remoteId, String cmd, Integer interval, HttpServletRequest request) {
 		if (remoteId == null || remoteId.length == 0) {
 			return renderSuccess(m.get("remoteStr.noSelect"));
 		}
@@ -272,7 +292,7 @@ public class RemoteController extends BaseController {
 					jsonResult = confController.reload(null, null, null);
 				}
 				if (cmd.contentEquals("replace")) {
-					jsonResult = confController.replace(confController.getReplaceJson());
+					jsonResult = confController.replace(confController.getReplaceJson(), request, null);
 				}
 				if (cmd.contentEquals("start")) {
 					jsonResult = confController.start(null, null, null);
@@ -323,7 +343,7 @@ public class RemoteController extends BaseController {
 
 	@RequestMapping("asyc")
 	@ResponseBody
-	public JsonResult asyc(String fromId, String[] remoteId) {
+	public JsonResult asyc(String fromId, String[] remoteId, HttpServletRequest request, String adminName) {
 		if (StrUtil.isEmpty(fromId) || remoteId == null || remoteId.length == 0) {
 			return renderSuccess(m.get("remoteStr.noChoice"));
 		}
@@ -340,7 +360,7 @@ public class RemoteController extends BaseController {
 
 		for (String remoteToId : remoteId) {
 			if (remoteToId.equals("local") || remoteToId.equals("本地")) {
-				setAsycPack(json);
+				setAsycPack(json, request, adminName);
 			} else {
 				Remote remoteTo = sqlHelper.findById(remoteToId, Remote.class);
 				try {
@@ -371,10 +391,13 @@ public class RemoteController extends BaseController {
 
 	@RequestMapping("setAsycPack")
 	@ResponseBody
-	public JsonResult setAsycPack(String json) {
+	public JsonResult setAsycPack(String json, HttpServletRequest request, String adminName) {
 		AsycPack asycPack = JSONUtil.toBean(json, AsycPack.class);
-
-		confService.setAsycPack(asycPack);
+		if(StrUtil.isEmpty(adminName)) {
+			Admin admin = getAdmin(request);
+			adminName = admin.getName();
+		}
+		confService.setAsycPack(asycPack, adminName);
 
 		return renderSuccess();
 	}

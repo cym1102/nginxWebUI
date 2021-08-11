@@ -18,7 +18,7 @@
 	padding-left: 5px;
 	padding-right: 5px;
 	background-color: #CFFFBF;
-	max-width: 100px;
+	max-width: 300px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -135,7 +135,7 @@
 								<th>${serverStr.proxyTarget}</th>
 								<th>${serverStr.status}</th>
 
-								<th style="width: 200px;">${serverStr.descr}</th>
+								<th>${serverStr.descr}</th>
 								<th>${commonStr.operation}</th>
 							</tr>
 						</thead>
@@ -187,7 +187,7 @@
 									<input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="ON|OFF" lay-skin="switch"${(ext.server.enable)?string('checked','')}>
 								</td>
 
-								<td>
+								<td style="max-width: 150px;">
 									${ext.server.descr}
 									<a href="javascript:editDescr('${ext.server.id}','${ext.server.descr}')" style="color: blue; text-decoration: underline;">${commonStr.edit}</a>
 								</td>
@@ -249,27 +249,16 @@
 								</div>
 							</div>
 
-							<div class="proxyHttp">
-								<div class="layui-form-item">
-									<label class="layui-form-label">${serverStr.serverName}</label>
-									<div class="layui-input-inline">
-										<input type="text" name="serverName" id="serverName" class="layui-input" placeholder="${serverStr.example}: www.baidu.com">
-									</div>
-								</div>
-
-								<div class="layui-form-item">
-									<label class="layui-form-label">${serverStr.ssl}</label>
-									<div class="layui-input-inline">
-										<select name="ssl" id="ssl" lay-filter="ssl">
-											<option value="0">${commonStr.no}</option>
-											<option value="1">${commonStr.yes}</option>
-										</select>
-									</div>
+						
+							<div class="layui-form-item proxyHttp">
+								<label class="layui-form-label">${serverStr.serverName}</label>
+								<div class="layui-input-inline">
+									<input type="text" name="serverName" id="serverName" class="layui-input" placeholder="${serverStr.example}: www.baidu.com">
 								</div>
 							</div>
 							
 							
-							<div class="layui-form-item">
+							<div class="layui-form-item proxyHttp">
 								<label class="layui-form-label">${serverStr.pass}</label>
 								<div class="layui-input-inline">
 									<select name="passwordId" id="passwordId" >
@@ -280,38 +269,48 @@
 									</select>
 								</div>
 							</div>
+							
+							<div class="layui-form-item proxyTcp">
+								<label class="layui-form-label">${serverStr.toUpstream}</label>
+								<div class="layui-input-inline">
+									<select name="proxyUpstreamId" id="proxyUpstreamId">
+										<#list upstreamTcpList as upstream>
+										<option value="${upstream.id}">${upstream.name}</option>
+										</#list>
+			
+										<#if upstreamTcpSize==0>
+										<option value="">${serverStr.noUpstream}</option>
+										</#if>
+									</select>
+								</div>
+							</div>
+							
+							<div class="layui-form-item">
+								<label class="layui-form-label">${serverStr.ssl}</label>
+								<div class="layui-input-inline">
+									<select name="ssl" id="ssl" lay-filter="ssl">
+										<option value="0">${commonStr.no}</option>
+										<option value="1">${commonStr.yes}</option>
+									</select>
+								</div>
+							</div>
+							
+							
+							
 						</div>
 
-						<div class="layui-col-md8">
+						<div class="layui-col-md8 pemDiv">
 							<div class="layui-form-item">
-								<div class="proxyTcp">
-									<label class="layui-form-label">${serverStr.toUpstream}</label>
-									<div class="layui-input-inline">
-										<select name="proxyUpstreamId" id="proxyUpstreamId">
-											<#list upstreamTcpList as upstream>
-											<option value="${upstream.id}">${upstream.name}</option>
-											</#list>
-
-											<#if upstreamTcpSize==0>
-											<option value="">${serverStr.noUpstream}</option>
-											</#if>
-										</select>
-									</div>
-								</div>
-
-								<div class="pemDiv proxyHttp">
-									<div class="proxyHttp">
-										<label class="layui-form-label">&nbsp;</label>
-										<div class="layui-input-block">
-											<button type="button" class="layui-btn layui-btn-normal" onclick="selectCert()">${serverStr.selectCert}</button>
-											<div class="layui-form-mid layui-word-aux"></div>
-										</div>
-									</div>
+								
+								<label class="layui-form-label">&nbsp;</label>
+								<div class="layui-input-block">
+									<button type="button" class="layui-btn layui-btn-normal" onclick="selectCert()">${serverStr.selectCert}</button>
+									<div class="layui-form-mid layui-word-aux"></div>
 								</div>
 							</div>
 
 
-							<div class="layui-form-item pemDiv proxyHttp" style="margin-bottom: 0px;">
+							<div class="layui-form-item" style="margin-bottom: 0px;">
 								<label class="layui-form-label">${serverStr.pemPath}</label>
 								<div class="layui-input-block">
 									<button type="button" class="layui-btn layui-btn-sm liteBtn" id="pemBtn">${serverStr.uploadPem}</button>
@@ -323,7 +322,7 @@
 
 								</div>
 							</div>
-							<div class="layui-form-item pemDiv proxyHttp" style="margin-bottom: 5px;">
+							<div class="layui-form-item" style="margin-bottom: 5px;">
 								<label class="layui-form-label">${serverStr.keyPath}</label>
 								<div class="layui-input-block">
 									<button type="button" class="layui-btn layui-btn-sm liteBtn" id="keyBtn">${serverStr.uploadKey}</button>
@@ -335,7 +334,7 @@
 								</div>
 							</div>
 
-							<div class="layui-form-item pemDiv proxyHttp">
+							<div class="layui-form-item">
 
 								<label class="layui-form-label">${serverStr.http2}</label>
 								<div class="layui-input-inline" style="width: 100px;">
@@ -346,7 +345,7 @@
 								</div>
 							</div>
 
-							<div class="layui-form-item pemDiv proxyHttp">
+							<div class="layui-form-item">
 								<label class="layui-form-label">${serverStr.protocols}</label>
 
 								<div class="layui-input-inline" style="width: 400px;">
@@ -357,7 +356,7 @@
 								</div>
 							</div>
 							
-							<div class="layui-form-item pemDiv proxyHttp">
+							<div class="layui-form-item proxyHttp">
 								<label class="layui-form-label">${serverStr.httpToHttps}</label>
 								<div class="layui-input-inline" style="width: 100px;">
 									<select name="rewrite" id="rewrite" lay-filter="rewrite">
@@ -383,11 +382,14 @@
 					<button type="button" class="layui-btn layui-btn-sm" style="margin-left: 195px;" onclick="serverParam()">${serverStr.extParm}</button>
 					<textarea style="display: none;" id="serverParamJson" name="serverParamJson"></textarea>
 				</div>
-
+				
+		
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal proxyHttp" onclick="addItem()">${serverStr.addLocation}</button>
 				</div>
-
+				
+				
+							
 				<div class="layui-form-item proxyHttp">
 					<table class="layui-table">
 						<thead>

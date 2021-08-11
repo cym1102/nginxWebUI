@@ -105,8 +105,8 @@ function guide() {
 
 	layer.open({
 		type: 1,
-		title: false,
-		area: ['800px', '760px'], // 宽高
+		title: httpStr.guide,
+		area: ['800px', '90%'], // 宽高
 		content: $('#guideDiv')
 	});
 
@@ -142,14 +142,17 @@ function addGiudeOver() {
 	$("input[name='type']").each(function() {
 
 		if ($(this).val() == 'js' && $(this).prop("checked")) {
-			http.value += "application/javascript application/x-javascript ";
+			http.value += "application/javascript application/x-javascript text/javascript ";
 		}
 		if ($(this).val() == 'css' && $(this).prop("checked")) {
 			http.value += "text/css ";
 		}
-		/*if ($(this).val() == 'html' && $(this).prop("checked")) {
-			http.value += "text/html ";
-		}*/
+		if ($(this).val() == 'json' && $(this).prop("checked")) {
+			http.value += "application/json ";
+		}
+		if ($(this).val() == 'xml' && $(this).prop("checked")) {
+			http.value += "application/xml ";
+		}
 	})
 
 	if (http.value != "") {

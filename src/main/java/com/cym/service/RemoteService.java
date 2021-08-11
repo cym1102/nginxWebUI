@@ -7,12 +7,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cym.model.Admin;
+import com.cym.model.AdminGroup;
 import com.cym.model.Group;
 import com.cym.model.Remote;
 
 import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
-import cn.craccd.sqlHelper.utils.ConditionWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
@@ -22,6 +23,8 @@ import cn.hutool.json.JSONObject;
 public class RemoteService {
 	@Autowired
 	SqlHelper sqlHelper;
+	@Autowired
+	AdminService adminService;
 
 	public void getCreditKey(Remote remote, String code, String auth) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -31,7 +34,8 @@ public class RemoteService {
 		paramMap.put("code", code);
 		paramMap.put("auth", auth);
 		try {
-			String rs = HttpUtil.post(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/login/getCredit", paramMap, 2000);
+			String rs = HttpUtil.post(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort()
+					+ "/adminPage/login/getCredit", paramMap, 2000);
 
 			if (StrUtil.isNotEmpty(rs)) {
 				JSONObject jsonObject = new JSONObject(rs);
@@ -68,16 +72,28 @@ public class RemoteService {
 	public boolean hasSame(Remote remote) {
 		Long count = 0l;
 		if (StrUtil.isEmpty(remote.getId())) {
-			count = sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("ip", remote.getIp()).eq("port", remote.getPort()), Remote.class);
+			count = sqlHelper.findCountByQuery(
+					new ConditionAndWrapper().eq("ip", remote.getIp()).eq("port", remote.getPort()), Remote.class);
 		} else {
-			count = sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("ip", remote.getIp()).eq("port", remote.getPort()).ne("id", remote.getId()), Remote.class);
+			count = sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("ip", remote.getIp())
+					.eq("port", remote.getPort()).ne("id", remote.getId()), Remote.class);
 		}
-		
+
 		if (count > 0) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	public List<Group> getGroupByAdmin(Admin admin) {
+		if (admin.getType() == 0) {
+			return sqlHelper.findAll(Group.class);
+		} else {
+			List<String> groupIds = adminService.getGroupIds(admin.getId());
+			return sqlHelper.findListByIds(groupIds, Group.class);
+		}
+
 	}
 
 }

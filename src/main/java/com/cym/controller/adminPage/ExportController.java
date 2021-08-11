@@ -23,11 +23,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.config.InitConfig;
 import com.cym.ext.AsycPack;
+import com.cym.model.Admin;
 import com.cym.service.ConfService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
 @Controller
@@ -65,10 +67,13 @@ public class ExportController extends BaseController {
 
 	@RequestMapping(value = "dataImport")
 	@ResponseBody
-	public JsonResult dataImport(String json) {
+	public JsonResult dataImport(String json, HttpServletRequest request, String adminName) {
 		AsycPack asycPack = JSONUtil.toBean(json, AsycPack.class);
-
-		confService.setAsycPack(asycPack);
+		if(StrUtil.isEmpty(adminName)) {
+			Admin admin = getAdmin(request);
+			adminName = admin.getName();
+		}
+		confService.setAsycPack(asycPack, adminName);
 
 		return renderSuccess();
 	}

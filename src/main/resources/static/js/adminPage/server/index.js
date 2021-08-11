@@ -173,7 +173,7 @@ function showWindow(title) {
 	layer.open({
 		type: 1,
 		title: title,
-		area: ['1350px', '700px'], // 宽高
+		area: ['1350px', '90%'], // 宽高
 		content: $('#windowDiv')
 	});
 }
@@ -184,10 +184,10 @@ function addOver() {
 		return;
 	}
 
-	if ($("#ssl").val() == 1 && $("#serverName").val() == '') {
+	/*if ($("#ssl").val() == 1 && $("#serverName").val() == '') {
 		layer.msg(serverStr.sslTips);
 		return;
-	}
+	}*/
 
 	var over = true;
 	$("input[name='path']").each(function() {
@@ -487,8 +487,6 @@ function addItem() {
 
 }
 
-
-
 function buildHtml(uuid, location, upstreamSelect) {
 	if (location == null) {
 		location = {
@@ -497,7 +495,8 @@ function buildHtml(uuid, location, upstreamSelect) {
 			locationParamJson: ""
 		};
 	}
-
+	//将双引号转义
+	location.path = location.path.replace(/\"/g, "&quot;");
 
 	var str = `<tr id='${uuid}'>
 				<td>

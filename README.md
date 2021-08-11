@@ -58,7 +58,7 @@ yum install nginx
 2.下载最新版发行包jar
 
 ```
-wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.6.3.jar
+wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.6.5.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -84,6 +84,8 @@ nohup java -jar -Xmx64m /home/nginxWebUI/nginxWebUI.jar --server.port=8080 --pro
 --spring.datasource.username=root  数据库用户
 
 --spring.datasource.password=pass  数据库密码
+
+--knife4j.production=false  false:打开接口调试页面 true:关闭接口调试页面
 
 注意命令最后加一个&号, 表示项目后台运行
 
@@ -135,7 +137,7 @@ docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.p
 version: "3.2"
 services:
   nginxWebUi-server:
-    image: cym1102/nginxwebui:2.6.3
+    image: cym1102/nginxwebui:2.6.5
     volumes:
       - type: bind
         source: "/home/nginxWebUI"
@@ -158,7 +160,7 @@ mvn clean package
 2. 使用docker构建镜像
 
 ```
-docker build -t nginxwebui:2.6.3 .
+docker build -t nginxwebui:2.6.5 .
 ```
 
 #### 添加开机启动
@@ -210,7 +212,7 @@ systemctl start nginxwebui.service
 
 ![输入图片说明](http://www.nginxwebui.cn/img/http.jpeg "http.jpg")
 
-在http参数配置中可以配置nginx的http项目,进行http转发, 默认会给出几个常用配置, 其他需要的配置可自由增删改查. 可以勾选开启日志跟踪, 生成日志跟踪配置项, 每天0点时刻可生成上一天的日志分析报告. 由于日志文件access.log文件过大, 默认只保留7天的log文件, 但分析报告可一直保留.
+在http参数配置中可以配置nginx的http项目,进行http转发, 默认会给出几个常用配置, 其他需要的配置可自由增删改查. 可以勾选开启日志跟踪, 生成日志文件。
 
 ![输入图片说明](http://www.nginxwebui.cn/img/tcp.jpeg "tcp.jpg")
 
@@ -248,13 +250,11 @@ systemctl start nginxwebui.service
 
 #### 接口开发
 
-本系统提供http接口调用, 只要打开 http://xxx.xxx.xxx.xxx:8080/doc.html 即可查看knife4j接口页面.
+本系统提供http接口调用, 只要在启动参数添加 --knife4j.production=false, 再打开 http://xxx.xxx.xxx.xxx:8080/doc.html 即可查看knife4j接口页面.
 
 接口调用需要在header中添加token, 其中token的获取需要在管理员管理中, 打开用户的接口调用权限, 然后通过用户名密码调用获取token接口, 才能得到token, 然后在knife4j的文档管理中设置全局token. 
 
 注意: 参数说明中, 带*前缀的均是必填项
-
-如要屏蔽knife4j界面展示, 只要在启动参数添加 --knife4j.production=true 即可屏蔽
 
 ![输入图片说明](http://www.nginxwebui.cn/img/knife4j.png "knife4j.png")
 

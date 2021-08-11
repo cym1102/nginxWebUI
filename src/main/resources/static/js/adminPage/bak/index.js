@@ -1,16 +1,4 @@
 
-
-
-function showWindow(title){
-	layer.open({
-		type : 1,
-		title : title,
-		area : [ '1000px', '700px' ], // 宽高
-		content : $('#windowDiv')
-	});
-}
-
-
 function content(path) {
 	$.ajax({
 		type : 'GET',
@@ -21,13 +9,13 @@ function content(path) {
 		},
 		success : function(data) {
 			if (data.success) {
-				$("#content").val(data.obj);
-
-				//$("#content").setTextareaCount();
-				
-				form.render();
-				
-				showWindow(bakStr.content);
+				$("#preview").val(data.obj);
+				layer.open({
+					type: 1,
+					title: commonStr.preview,
+					area: ['800px', '600px'], // 宽高
+					content: $('#previewDiv')
+				});
 			}else{
 				layer.msg(data.msg);
 			}

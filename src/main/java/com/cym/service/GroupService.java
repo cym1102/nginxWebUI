@@ -49,4 +49,12 @@ public class GroupService {
 		return sqlHelper.findListByQuery(conditionAndWrapper, Group.class);
 	}
 
+	public List<Group> getListByAdmin(String adminId) {
+		
+		
+		
+		
+		return null;
+	}
+
 }

@@ -104,13 +104,13 @@ public class ServerController extends BaseController {
 		List<Location> locations = serverService.getLocationByServerId(id);
 		for (Location location : locations) {
 			if (location.getType() == 0) {
-				str.add("<span class='path'>" + location.getPath() + "</span><span class='value'>" + location.getValue() + "</span>");
+				str.add("<span class='path'>" + location.getPath() + "</span><br><span class='value'>" + location.getValue() + "</span>");
 			} else if (location.getType() == 1) {
-				str.add("<span class='path'>" + location.getPath() + "</span><span class='value'>" + location.getRootPath() + "</span>");
+				str.add("<span class='path'>" + location.getPath() + "</span><br><span class='value'>" + location.getRootPath() + "</span>");
 			} else if (location.getType() == 2) {
 				Upstream upstream = sqlHelper.findById(location.getUpstreamId(), Upstream.class);
 				if (upstream != null) {
-					str.add("<span class='path'>" + location.getPath() + "</span><span class='value'>http://" + upstream.getName()
+					str.add("<span class='path'>" + location.getPath() + "</span><br><span class='value'>http://" + upstream.getName()
 							+ (location.getUpstreamPath() != null ? location.getUpstreamPath() : "") + "</span>");
 				}
 			} else if (location.getType() == 3) {

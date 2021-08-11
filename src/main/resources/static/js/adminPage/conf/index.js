@@ -342,7 +342,7 @@ function diffUsingJS() {
     layer.open({
 		type : 1,
 		title: false,
-		area : [ '1000px', '700px' ], //宽高
+		area : [ '1000px', '90%' ], //宽高
 		content : $('#diffoutput')
 	});
 }
@@ -457,7 +457,7 @@ function showBak(){
 	layer.open({
 		  type: 2, 
 		  title: bakStr.bakFile,
-		  area : [ '1200px', '800px' ],
+		  area : [ '1200px', '90%' ],
 		  content: ctx + "/adminPage/bak"
 	});
 }

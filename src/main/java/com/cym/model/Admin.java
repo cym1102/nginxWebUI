@@ -23,6 +23,10 @@ public class Admin extends BaseModel {
 
 	String token;
 
+	// 类型 0 超管 1 受限用户
+	@InitValue("0")
+	Integer type;
+	
 	public String getToken() {
 		return token;
 	}
@@ -69,6 +73,14 @@ public class Admin extends BaseModel {
 
 	public void setPass(String pass) {
 		this.pass = pass;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 }

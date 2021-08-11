@@ -28,8 +28,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cym.model.Admin;
 import com.cym.model.Remote;
 import com.cym.service.CreditService;
+import com.cym.utils.BaseController;
 import com.cym.utils.MessageUtils;
 
 import cn.hutool.core.date.DateUtil;
@@ -105,7 +107,8 @@ public class AdminInterceptor implements HandlerInterceptor {
 
 				} else {
 					// 普通请求
-					String body = buldBody(request.getParameterMap(), remote);
+					Admin admin = new BaseController().getAdmin(request);
+					String body = buldBody(request.getParameterMap(), remote, admin);
 					rs = HttpUtil.post(url, body);
 				}
 
@@ -153,10 +156,13 @@ public class AdminInterceptor implements HandlerInterceptor {
 		return true;
 	}
 
-	private String buldBody(Map<String, String[]> parameterMap, Remote remote) throws UnsupportedEncodingException {
+	private String buldBody(Map<String, String[]> parameterMap, Remote remote, Admin admin) throws UnsupportedEncodingException {
 		List<String> body = new ArrayList<>();
 		body.add("creditKey=" + remote.getCreditKey());
-
+		if (admin != null) {
+			body.add("adminName=" + admin.getName());
+		}
+		
 		for (Iterator itr = parameterMap.entrySet().iterator(); itr.hasNext();) {
 			Map.Entry me = (Map.Entry) itr.next();
 

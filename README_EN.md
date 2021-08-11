@@ -54,7 +54,7 @@ yum install nginx
 2.Download the latest release of the distribution jar
 
 ```
-wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.6.3.jar
+wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.6.5.jar
 ```
 
 With a new version, you just need to change the version in the path
@@ -81,6 +81,8 @@ Parameter description (both non-required)
 
 --spring.datasource.password=pass  Databases password
 
+--knife4j.production=false  false:Open interface debugging page. true:Close interface debugging page.
+
 Note that the command ends with an & to indicate that the project is running in the background
 
 #### docker installation instructions 
@@ -104,13 +106,13 @@ yum install docker
 2.Download images:
 
 ```
-docker pull cym1102/nginxwebui:2.6.3
+docker pull cym1102/nginxwebui:2.6.5
 ```
 
 3.start container
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.6.3 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.6.5 /bin/bash
 ```
 
 notice: 
@@ -131,7 +133,7 @@ moreover: The following configuration file is used when using docker-compose
 version: "3.2"
 services:
   nginxWebUi-server:
-    image: cym1102/nginxwebui:2.6.3
+    image: cym1102/nginxwebui:2.6.5
     volumes:
       - type: bind
         source: "/home/nginxWebUI"
@@ -154,7 +156,7 @@ mvn clean package
 2. Compile the image with Docker
 
 ```
-docker build -t nginxwebui:2.6.3 .
+docker build -t nginxwebui:2.6.5 .
 ```
 
 #### Add boot up run
@@ -205,7 +207,7 @@ After entering the system, you can add and modify the administrator account in t
 
 ![输入图片说明](http://www.nginxwebui.cn/img/http.jpeg "http.jpg")
 
-In the HTTP parameters can be configured in the configuration of nginx HTTP project forward HTTP, the default will give several commonly used configuration, other configuration are free to add and delete. You can check the open log to track and generate log, configuration items every day zero moment log analysis report can be generated on a day. Due to the log file access. The log file is too large, the default keep only 7 days of the log file, but can keep analysis report.
+In the HTTP parameters can be configured in the configuration of nginx HTTP project forward HTTP, the default will give several commonly used configuration, other configuration are free to add and delete. You can check the open log to track and generate log.
 
 ![输入图片说明](http://www.nginxwebui.cn/img/tcp.jpeg "tcp.jpg")
 
@@ -243,13 +245,12 @@ Provides one-click synchronization to synchronize data configuration and certifi
 
 #### Interface development 
 
-This system provides the HTTP interface call, as long as the open http://xxx.xxx.xxx.xxx:8080/doc.html to view page knife4j interface.
+This system provides the HTTP interface to invoke, as long as the boot parameters added --knife4j.production=false, then open the page http://xxx.xxx.xxx.xxx:8080/doc.html to view the knife4j interface.  
 
-The interface call needs to add the token in the header, where the token acquisition needs to be managed by the administrator, open the user's interface call authority, and then get the token interface through the user name and password call to get the token, and then set the global token in the document management of knife4j.
+Interface invocation needs to add a token in the header. To obtain the token, you need to open the interface invocation permission of the user in the administrator management, and then invoke the token interface through the user name and password to get the token. Then set the global token in the document management of Knife4j.  
 
 Note: In the parameter description, all fields with * prefix are required.
 
-To block knife4j display, simply add --knife4j. Production =true to the startup parameter.
 
 ![输入图片说明](http://www.nginxwebui.cn/img/knife4j.png "knife4j.png")
 

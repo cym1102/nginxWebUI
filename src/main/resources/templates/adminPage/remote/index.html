@@ -27,10 +27,11 @@
 				<form action="${ctx}/adminPage/remote" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${remoteStr.add}</button>
-
-							<button type="button" class="layui-btn" onclick="addGroup()">${remoteStr.addGroup}</button>
-
+							<#if admin.type==0>
+								<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${remoteStr.add}</button>
+								<button type="button" class="layui-btn" onclick="addGroup()">${remoteStr.addGroup}</button>
+							</#if>
+							
 							<button type="button" class="layui-btn" onclick="cmdGroup()">${remoteStr.cmdGroup}</button>
 							
 							<button type="button" class="layui-btn layui-btn-normal" onclick="asycSelect()">${remoteStr.asycSelect}</button>
@@ -145,18 +146,11 @@
 					</div>
 				</div>
 
-
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addGroupOver()">${commonStr.submit}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
-		</div>
-
-		<!-- 弹出框 -->
-		<div class="layui-form" id="contentDiv" style="display: none">
-			<input type="hidden" id="path" value="path">
-			<textarea class="layui-textarea" id="content" style="height: 700px; width: 1200px; resize: none; background-color: #ededed;" readonly="readonly" spellcheck="false"></textarea>
 		</div>
 
 
@@ -281,7 +275,7 @@
 	
 	<#include '/adminPage/script.html'/>
 	<#include '/adminPage/select_mail.html'/>
-	<script src="${ctx}/lib/auto-line-number/auto-line-number.js" type="text/javascript"></script>
+	<#include '/adminPage/select_preview.html'/>
 	<script src="${ctx}/js/adminPage/remote/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

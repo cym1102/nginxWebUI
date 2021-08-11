@@ -2,6 +2,15 @@
 <html>
 <head>
 <#include "/adminPage/common.html"/>
+<style type="text/css">
+.layui-form-label {
+	width: 140px;
+}
+
+.layui-input-block {
+	margin-left: 170px;
+}
+</style>
 
 </head>
 <body class="layui-layout-body">
@@ -51,6 +60,7 @@
 							<th>${adminStr.twoStep}</th>
 							<th>${adminStr.privateKey} (${adminStr.remember})</th>
 							<th>${adminStr.api}</th>
+							<th>类型</th>
 							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
@@ -62,6 +72,7 @@
 							<td><#if admin.auth> ${admin.key} <a href="javascript:qr('${admin.name}','${admin.key}')" style="color: blue; text-decoration: underline;">${adminStr.qr}</a> <a
 									href="javascript:test('${admin.key}')" style="color: blue; text-decoration: underline;">${commonStr.test}</a> </#if></td>
 							<td><#if admin.api> ${commonStr.yes} </#if> <#if !admin.api> ${commonStr.no} </#if></td>
+							<td><#if admin.type==0> 管理员 </#if> <#if admin.type==1> 受限用户 </#if> </td>
 							<td>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${admin.id}')">${commonStr.edit}</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${admin.id}')">${commonStr.del}</button>
@@ -112,6 +123,24 @@
 							<option value="false">${commonStr.no}</option>
 							<option value="true">${commonStr.yes}</option>
 						</select>
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">用户类型</label>
+					<div class="layui-input-block">
+						<select id="type" name="type" lay-filter="type">
+							<option value="0">管理员</option>
+							<option value="1">受限用户</option>
+						</select>
+					</div>
+				</div>
+				
+				<div class="layui-form-item" id="remoteTree" style="display: none;">
+					<label class="layui-form-label">远程分组权限</label>
+					<div class="layui-input-block">
+
+						<div id="parentId"></div>
 					</div>
 				</div>
 

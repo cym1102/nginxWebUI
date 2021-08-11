@@ -1,11 +1,17 @@
 package com.cym.controller.api;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cym.controller.adminPage.ConfController;
+import com.cym.model.Admin;
+import com.cym.service.AdminService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.NginxUtils;
@@ -19,7 +25,9 @@ import io.swagger.annotations.ApiOperation;
 public class NginxApiController extends BaseController {
 	@Autowired
 	ConfController confController;
-
+	@Autowired
+	AdminService adminService;
+	
 	@ApiOperation("获取nginx状态")
 	@PostMapping("nginxStatus")
 	public JsonResult<?> nginxStatus() {
@@ -32,8 +40,8 @@ public class NginxApiController extends BaseController {
 
 	@ApiOperation("替换conf文件")
 	@PostMapping("replace")
-	public JsonResult<?> replace() {
-		JsonResult jsonResult =  confController.replace(confController.getReplaceJson());
+	public JsonResult<?> replace(@RequestHeader String token, HttpServletRequest request) {
+		JsonResult jsonResult =  confController.replace(confController.getReplaceJson(), request, null);
 		if (jsonResult.isSuccess()) {
 			return renderSuccess("替换成功");
 		} else {

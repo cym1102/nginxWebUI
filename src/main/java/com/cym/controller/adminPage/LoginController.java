@@ -100,6 +100,7 @@ public class LoginController extends BaseController {
 		// 登录成功
 		httpSession.setAttribute("localType", "local");
 		httpSession.setAttribute("isLogin", true);
+		httpSession.setAttribute("admin", admin);
 		httpSession.removeAttribute("imgCode"); // 立刻销毁验证码
 
 		// 检查更新
@@ -118,6 +119,7 @@ public class LoginController extends BaseController {
 			// 登录成功
 			httpSession.setAttribute("localType", "local");
 			httpSession.setAttribute("isLogin", true);
+			httpSession.setAttribute("admin", admin);
 			httpSession.removeAttribute("imgCode"); // 立刻销毁验证码
 
 			// 检查更新
@@ -177,7 +179,7 @@ public class LoginController extends BaseController {
 		settingService.remove("remoteCode"); // 立刻销毁验证码
 
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("creditKey", creditService.make());
+		map.put("creditKey", creditService.make(admin.getId()));
 		map.put("system", SystemTool.getSystem());
 		return renderSuccess(map);
 
@@ -220,7 +222,8 @@ public class LoginController extends BaseController {
 		admin.setName(name);
 		admin.setPass(pass);
 		admin.setAuth(false);
-
+		admin.setType(0);
+		
 		sqlHelper.insert(admin);
 
 		return renderSuccess();

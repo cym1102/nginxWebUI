@@ -43,7 +43,6 @@ public class WwwController extends BaseController {
 		}
 
 		try {
-			FileUtil.del(www.getDir());
 			try {
 				ZipUtil.unzip(dirTemp, www.getDir());
 			} catch (Exception e) {

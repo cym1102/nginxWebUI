@@ -42,21 +42,21 @@
 					<dd>
 						<a href="${ctx}/adminPage/conf">${menuStr.conf}</a>
 					</dd>
-					<!-- <dd>
-						<a href="${ctx}/adminPage/bak">${menuStr.bak}</a>
-					</dd> -->
 					<dd>
 						<a href="${ctx}/adminPage/log">${menuStr.log}</a>
 					</dd>
 					<dd>
-						<a href="${ctx}/adminPage/admin">${menuStr.admin}</a>
+						<a href="${ctx}/adminPage/operateLog">${menuStr.operateLog}</a>
 					</dd>
 					<dd>
 						<a href="${ctx}/adminPage/export">${menuStr.export}</a>
 					</dd>
-					<!-- <dd>
-						<a href="${ctx}/adminPage/ssh">${menuStr.ssh}</a>
-					</dd> -->
+					
+					<#if admin.type==0>
+					<dd>
+						<a href="${ctx}/adminPage/admin">${menuStr.admin}</a>
+					</dd>
+					</#if>
 				</dl>
 			</li>
 			

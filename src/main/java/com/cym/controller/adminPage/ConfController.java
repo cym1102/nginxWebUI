@@ -5,6 +5,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -17,6 +20,7 @@ import com.cym.config.InitConfig;
 import com.cym.config.VersionConfig;
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
+import com.cym.model.Admin;
 import com.cym.service.ConfService;
 import com.cym.service.ServerService;
 import com.cym.service.SettingService;
@@ -91,7 +95,7 @@ public class ConfController extends BaseController {
 
 	@RequestMapping(value = "replace")
 	@ResponseBody
-	public JsonResult replace(String json) {
+	public JsonResult replace(String json, HttpServletRequest request, String adminName) {
 
 		if (StrUtil.isEmpty(json)) {
 			json = getReplaceJson();
@@ -121,7 +125,12 @@ public class ConfController extends BaseController {
 		}
 
 		try {
-			confService.replace(nginxPath, nginxContent, subContent, subName, true);
+			if(StrUtil.isEmpty(adminName)) {
+				Admin admin = getAdmin(request);
+				adminName = admin.getName();
+			}
+			
+			confService.replace(nginxPath, nginxContent, subContent, subName, true, adminName); 
 			return renderSuccess(m.get("confStr.replaceSuccess"));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -236,7 +245,7 @@ public class ConfController extends BaseController {
 		FileUtil.del(InitConfig.home + "temp");
 		String fileTemp = InitConfig.home + "temp/nginx.conf";
 
-		confService.replace(fileTemp, nginxContent, subContent, subName, false);
+		confService.replace(fileTemp, nginxContent, subContent, subName, false, null);
 
 		String rs = null;
 		String cmd = null;

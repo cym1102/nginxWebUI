@@ -37,3 +37,4 @@ logging:
 
 knife4j:
   enable: true
+  production: true # 生产环境屏蔽

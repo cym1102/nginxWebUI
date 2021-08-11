@@ -1,8 +1,10 @@
 package com.cym.controller.adminPage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
@@ -15,8 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cym.ext.AdminExt;
+import com.cym.ext.Tree;
 import com.cym.model.Admin;
+import com.cym.model.Group;
 import com.cym.service.AdminService;
+import com.cym.service.GroupService;
 import com.cym.service.SettingService;
 import com.cym.utils.AuthUtils;
 import com.cym.utils.BaseController;
@@ -43,6 +49,10 @@ public class AdminController extends BaseController {
 	SendMailUtils sendCloudUtils;
 	@Autowired
 	AuthUtils authUtils;
+	@Autowired
+	GroupService groupService;
+	@Autowired
+	RemoteController remoteController;
 
 	@RequestMapping("")
 	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page) {
@@ -55,7 +65,7 @@ public class AdminController extends BaseController {
 
 	@RequestMapping("addOver")
 	@ResponseBody
-	public JsonResult addOver(Admin admin) {
+	public JsonResult addOver(Admin admin, String[] parentId) {
 		if (StrUtil.isEmpty(admin.getId())) {
 			Long count = adminService.getCountByName(admin.getName());
 			if (count > 0) {
@@ -73,8 +83,8 @@ public class AdminController extends BaseController {
 		} else {
 			admin.setKey("");
 		}
-
-		sqlHelper.insertOrUpdate(admin);
+		
+		adminService.addOver(admin, parentId);
 
 		return renderSuccess();
 	}
@@ -82,7 +92,11 @@ public class AdminController extends BaseController {
 	@RequestMapping("detail")
 	@ResponseBody
 	public JsonResult detail(String id) {
-		return renderSuccess(sqlHelper.findById(id, Admin.class));
+		AdminExt adminExt = new AdminExt();
+		adminExt.setAdmin(sqlHelper.findById(id, Admin.class));
+		adminExt.setGroupIds(adminService.getGroupIds(adminExt.getAdmin().getId()));
+
+		return renderSuccess(adminExt);
 	}
 
 	@RequestMapping("del")
@@ -176,5 +190,17 @@ public class AdminController extends BaseController {
 				}
 			}
 		}
+	}
+	
+
+	@RequestMapping("getGroupTree")
+	@ResponseBody
+	public JsonResult getGroupTree() {
+
+		List<Group> groups = groupService.getListByParent(null);
+		List<Tree> treeList = new ArrayList<>();
+		remoteController.fillTree(groups, treeList);
+
+		return renderSuccess(treeList);
 	}
 }

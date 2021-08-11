@@ -16,10 +16,10 @@ public class CreditService {
 	SqlHelper sqlHelper;
 
 	
-	public String make() {
+	public String make(String adminId) {
 		Credit credit = new Credit();
 		credit.setKey(UUID.randomUUID().toString());
-
+		credit.setAdminId(adminId); 
 		sqlHelper.insertOrUpdate(credit);
 		
 		return credit.getKey();

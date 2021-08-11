@@ -38,17 +38,9 @@
 		</div>
 
 
-	<div style="height: 0px; width: 0px; overflow: hidden;">
-		<!-- 弹出框 -->
-		<div class="layui-form" id="windowDiv" style=" display: none">
-			<input type="hidden" id="path" value="path">
-			
-			<textarea class="layui-textarea" id="content" style=" height: 655px; width:1000px;resize: none;"  readonly="readonly" spellcheck="false"></textarea>
-		</div>
-
-	</div>
 
 	<#include '/adminPage/script.html'/>
+	<#include '/adminPage/select_preview.html'/>
 	<script src="${ctx}/js/adminPage/bak/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import com.cym.config.InitConfig;
 import com.cym.ext.AsycPack;
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
+import com.cym.model.Admin;
 import com.cym.model.Basic;
 import com.cym.model.Http;
 import com.cym.model.Location;
@@ -41,24 +43,22 @@ import cn.hutool.core.util.ZipUtil;
 
 @Service
 public class ConfService {
-	final UpstreamService upstreamService;
-	final SettingService settingService;
-	final ServerService serverService;
-	final LocationService locationService;
-	final ParamService paramService;
-	final SqlHelper sqlHelper;
-	final TemplateService templateService;
-
-	public ConfService(TemplateService templateService, UpstreamService upstreamService, SettingService settingService, ServerService serverService, LocationService locationService,
-			ParamService paramService, SqlHelper sqlHelper) {
-		this.upstreamService = upstreamService;
-		this.settingService = settingService;
-		this.serverService = serverService;
-		this.locationService = locationService;
-		this.paramService = paramService;
-		this.sqlHelper = sqlHelper;
-		this.templateService = templateService;
-	}
+	@Autowired
+	UpstreamService upstreamService;
+	@Autowired
+	SettingService settingService;
+	@Autowired
+	ServerService serverService;
+	@Autowired
+	LocationService locationService;
+	@Autowired
+	ParamService paramService;
+	@Autowired
+	SqlHelper sqlHelper;
+	@Autowired
+	TemplateService templateService;
+	@Autowired
+	OperateLogService operateLogService;
 
 	public synchronized ConfExt buildConf(Boolean decompose, Boolean check) {
 		ConfExt confExt = new ConfExt();
@@ -327,57 +327,7 @@ public class ConfService {
 			}
 
 			// ssl配置
-			if (server.getSsl() == 1) {
-				if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getKey())) {
-					ngxParam = new NgxParam();
-					ngxParam.addValue("ssl_certificate " + ToolUtils.handlePath(server.getPem()));
-					ngxBlockServer.addEntry(ngxParam);
-
-					ngxParam = new NgxParam();
-					ngxParam.addValue("ssl_certificate_key " + ToolUtils.handlePath(server.getKey()));
-					ngxBlockServer.addEntry(ngxParam);
-
-					if (StrUtil.isNotEmpty(server.getProtocols())) {
-						ngxParam = new NgxParam();
-						ngxParam.addValue("ssl_protocols " + server.getProtocols());
-						ngxBlockServer.addEntry(ngxParam);
-					}
-
-				}
-
-				// https添加80端口重写
-				if (server.getRewrite() == 1) {
-					if (StrUtil.isNotEmpty(server.getRewriteListen())) {
-						ngxParam = new NgxParam();
-						String reValue = "listen " + server.getRewriteListen();
-						if (server.getDef() == 1) {
-							reValue += " default";
-						}
-						if (server.getProxyProtocol() == 1) {
-							reValue += " proxy_protocol";
-						}
-						ngxParam.addValue(reValue);
-						ngxBlockServer.addEntry(ngxParam);
-					}
-
-					String port = "";
-					if (server.getListen().contains(":")) {
-						port = server.getListen().split(":")[1];
-					} else {
-						port = server.getListen();
-					}
-
-					NgxBlock ngxBlock = new NgxBlock();
-					ngxBlock.addValue("if ($scheme = http)");
-					ngxParam = new NgxParam();
-
-					ngxParam.addValue("return 301 https://$host:" + port + "$request_uri");
-					ngxBlock.addEntry(ngxParam);
-
-					ngxBlockServer.addEntry(ngxBlock);
-
-				}
-			}
+			setServerSsl(server, ngxBlockServer);
 
 			// 自定义参数
 			List<Param> paramList = paramService.getListByTypeId(server.getId(), "server");
@@ -470,8 +420,8 @@ public class ConfService {
 
 					ngxBlockLocation.addValue("location");
 					ngxBlockLocation.addValue(location.getPath());
-
 				}
+			
 
 				// 自定义参数
 				paramList = paramService.getListByTypeId(location.getId(), "location");
@@ -489,9 +439,16 @@ public class ConfService {
 			// 监听端口
 			ngxParam = new NgxParam();
 			String value = "listen " + server.getListen();
+			if (server.getProxyProtocol() == 1) {
+				value += " proxy_protocol";
+			}
 			if (server.getProxyType() == 2) {
 				value += " udp reuseport";
 			}
+			if (server.getSsl() != null && server.getSsl() == 1) {
+				value += " ssl";
+			}
+			
 			ngxParam.addValue(value);
 			ngxBlockServer.addEntry(ngxParam);
 
@@ -503,6 +460,10 @@ public class ConfService {
 				ngxBlockServer.addEntry(ngxParam);
 			}
 
+			
+			// ssl配置
+			setServerSsl(server, ngxBlockServer);
+			
 			// 自定义参数
 			List<Param> paramList = paramService.getListByTypeId(server.getId(), "server");
 			for (Param param : paramList) {
@@ -511,6 +472,66 @@ public class ConfService {
 		}
 
 		return ngxBlockServer;
+	}
+
+	/**
+	 * 配置ssl
+	 * @param server
+	 * @param ngxBlockServer
+	 */
+	private void setServerSsl(Server server, NgxBlock ngxBlockServer) {
+		NgxParam ngxParam = null;
+		if (server.getSsl() == 1) {
+			if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getKey())) {
+				ngxParam = new NgxParam();
+				ngxParam.addValue("ssl_certificate " + ToolUtils.handlePath(server.getPem()));
+				ngxBlockServer.addEntry(ngxParam);
+
+				ngxParam = new NgxParam();
+				ngxParam.addValue("ssl_certificate_key " + ToolUtils.handlePath(server.getKey()));
+				ngxBlockServer.addEntry(ngxParam);
+
+				if (StrUtil.isNotEmpty(server.getProtocols())) {
+					ngxParam = new NgxParam();
+					ngxParam.addValue("ssl_protocols " + server.getProtocols());
+					ngxBlockServer.addEntry(ngxParam);
+				}
+
+			}
+
+			// https添加80端口重写
+			if (server.getProxyType() == 0 && server.getRewrite() == 1) {
+				if (StrUtil.isNotEmpty(server.getRewriteListen())) {
+					ngxParam = new NgxParam();
+					String reValue = "listen " + server.getRewriteListen();
+					if (server.getDef() == 1) {
+						reValue += " default";
+					}
+					if (server.getProxyProtocol() == 1) {
+						reValue += " proxy_protocol";
+					}
+					ngxParam.addValue(reValue);
+					ngxBlockServer.addEntry(ngxParam);
+				}
+
+				String port = "";
+				if (server.getListen().contains(":")) {
+					port = server.getListen().split(":")[1];
+				} else {
+					port = server.getListen();
+				}
+
+				NgxBlock ngxBlock = new NgxBlock();
+				ngxBlock.addValue("if ($scheme = http)");
+				ngxParam = new NgxParam();
+
+				ngxParam.addValue("return 301 https://$host:" + port + "$request_uri");
+				ngxBlock.addEntry(ngxParam);
+
+				ngxBlockServer.addEntry(ngxBlock);
+
+			}
+		}
 	}
 
 	/**
@@ -598,7 +619,7 @@ public class ConfService {
 		return ToolUtils.handleConf(new NgxDumper(ngxConfig).dump());
 	}
 
-	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName, Boolean bak) {
+	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName, Boolean bak, String adminName) {
 		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
 		String confd = new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/";
 
@@ -613,6 +634,13 @@ public class ConfService {
 			if (FileUtil.exist(confd)) {
 				ZipUtil.zip(confd, InitConfig.home + "bak/nginx.conf." + date + ".zip");
 			}
+
+			// 写入操作日志
+			if(StrUtil.isNotEmpty(adminName)) {
+				String beforeConf = FileUtil.readString(nginxPath, "UTF-8");
+				operateLogService.addLog(beforeConf, nginxContent, adminName);
+			}
+			
 		}
 
 		// 删除conf.d下全部文件
@@ -693,7 +721,7 @@ public class ConfService {
 	}
 
 	@Transactional
-	public void setAsycPack(AsycPack asycPack) {
+	public void setAsycPack(AsycPack asycPack, String adminName) {
 		// 不要同步Cert表
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Password.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Basic.class);
@@ -752,7 +780,7 @@ public class ConfService {
 				subName.add(confFile.getName());
 			}
 
-			replace(nginxPath, confExt.getConf(), subContent, subName, true);
+			replace(nginxPath, confExt.getConf(), subContent, subName, true, adminName);
 		}
 	}
 
