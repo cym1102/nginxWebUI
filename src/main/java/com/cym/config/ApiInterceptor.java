@@ -46,10 +46,6 @@ public class ApiInterceptor implements HandlerInterceptor {
 	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object obj) throws Exception {
-		if(true) {
-			return true;
-		}
-		
 		String token = request.getHeader("token");
 		Admin admin = adminService.getByToken(token);
 

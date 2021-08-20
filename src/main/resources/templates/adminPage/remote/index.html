@@ -59,6 +59,8 @@
 	<div style="height: 0px; width: 0px; overflow: hidden;">
 		<!-- 弹出框 -->
 		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none">
+		
+			<!-- 添加远程服务器 -->
 			<form id="addForm">
 				<input type="hidden" name="id" id="id">
 				<input type="hidden" name="remote" value="1">
@@ -129,6 +131,7 @@
 		</div>
 
 		<div class="layui-form" id="groupDiv" style="padding: 15px; display: none">
+			<!-- 添加分组 -->
 			<form id="addGroupForm">
 				<input type="hidden" name="id" id="groupId">
 
@@ -155,6 +158,7 @@
 
 
 		<div class="layui-form" id="selectDiv" style="padding: 15px; display: none">
+			<!-- 同步配置文件 -->
 			<form id="asycForm">
 				<div class="layui-form-item">
 					<label class="layui-form-label">${remoteStr.serverFrom}</label>
@@ -179,6 +183,7 @@
 		
 		
 		<div class="layui-form" id="nginxDiv" style="padding: 15px; display: none">
+			<!-- nginx监控 -->
 			<div class="layui-form-item">
 				<label class="layui-form-label">${remoteStr.email}</label>
 				<div class="layui-input-inline">

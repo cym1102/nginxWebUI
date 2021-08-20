@@ -4,14 +4,13 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Shanghai
 RUN apt-get clean && apt-get update &&\
 	apt-get install -y nginx &&\
-	#apt-get install -y openjdk-11-jre &&\
 	apt-get install -y net-tools &&\
 	apt-get install -y curl &&\
 	apt-get install -y wget &&\
 	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &&\
 	apt-get install tzdata
 ENV LANG C.UTF-8
-ADD jre.tar.gz /home/
+ADD jre.tar.xz /home/
 RUN chmod 777 /home/jre/bin/java
 ADD nginxWebUI.sh /home/
 RUN chmod 777 /home/nginxWebUI.sh

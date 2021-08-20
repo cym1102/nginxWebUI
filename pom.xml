@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cym</groupId>
 	<artifactId>nginxWebUI</artifactId>
-	<version>2.6.5</version>
+	<version>2.6.6</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.6</version>
+		<version>2.4.9</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 

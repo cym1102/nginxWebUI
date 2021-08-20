@@ -1,6 +1,5 @@
 package com.cym.config;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,7 +64,12 @@ public class FrontInterceptor implements HandlerInterceptor {
 	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object obj) throws Exception {
-		String ctx = getIP(request.getRequestURL().toString());
+		String httpHost = request.getHeader("X-Forwarded-Host");
+		String realPort = request.getHeader("X-Forwarded-Port");
+		String host = request.getHeader("Host");
+
+		String ctx = AdminInterceptor.getCtx(httpHost, host, realPort);
+		
 		request.setAttribute("ctx", ctx);
 
 		request.setAttribute("jsrandom", currentVersion);
@@ -128,24 +132,6 @@ public class FrontInterceptor implements HandlerInterceptor {
 		return true;
 	}
 
-	private static String getIP(String url) {
-		URI effectiveURI = null;
-
-		try {
-			URI uri = new URI(url);
-			effectiveURI = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
-			//System.err.println(effectiveURI.toString().replace("http:", "").replace("https:", ""));
-			return effectiveURI.toString().replace("http:", "").replace("https:", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 
 	
-//	private static String getIP(String url) {
-//		String str = "//" + url.split("adminPage")[0].replace("http:", "").replace("https:", "").replace("/", "");
-//		System.err.println(str); 
-//		return str;
-//	}
 }

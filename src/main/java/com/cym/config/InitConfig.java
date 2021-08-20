@@ -21,6 +21,7 @@ import com.cym.model.Basic;
 import com.cym.model.Http;
 import com.cym.service.BasicService;
 import com.cym.service.SettingService;
+import com.cym.utils.MessageUtils;
 import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
 
@@ -34,7 +35,9 @@ import cn.hutool.core.util.ZipUtil;
 @Component
 public class InitConfig {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	@Autowired
+	protected MessageUtils m;
+	
 	public static String acmeSh;
 	public static String acmeShDir;
 	public static String home;
@@ -97,7 +100,7 @@ public class InitConfig {
 		}
 
 		if (SystemTool.isLinux()) {
-			// 释放全新包
+			// 释放acme全新包
 			ClassPathResource resource = new ClassPathResource("acme.zip");
 			InputStream inputStream = resource.getInputStream();
 			FileUtil.writeFromStream(inputStream, InitConfig.home + "acme.zip");
@@ -122,6 +125,7 @@ public class InitConfig {
 
 			// 查找ngx_stream_module模块
 			if (!basicService.contain("ngx_stream_module.so")) {
+				logger.info(m.get("commonStr.ngxStream"));
 				List<String> list = RuntimeUtil.execForLines(CharsetUtil.systemCharset(), "find / -name ngx_stream_module.so");
 				for (String path : list) {
 					if (path.contains("ngx_stream_module.so") && path.length() < 80) {

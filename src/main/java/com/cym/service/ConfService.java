@@ -360,7 +360,7 @@ public class ConfService {
 
 					if (location.getHeader() == 1) { // 设置header
 						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header Host $host:$server_port");
+						ngxParam.addValue("proxy_set_header Host $host");
 						ngxBlockLocation.addEntry(ngxParam);
 
 						ngxParam = new NgxParam();
@@ -370,7 +370,15 @@ public class ConfService {
 						ngxParam = new NgxParam();
 						ngxParam.addValue("proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for");
 						ngxBlockLocation.addEntry(ngxParam);
-
+						
+						ngxParam = new NgxParam();
+						ngxParam.addValue("proxy_set_header X-Forwarded-Host $http_host");
+						ngxBlockLocation.addEntry(ngxParam);
+						
+						ngxParam = new NgxParam();
+						ngxParam.addValue("proxy_set_header X-Forwarded-Port $server_port");
+						ngxBlockLocation.addEntry(ngxParam);
+						
 						ngxParam = new NgxParam();
 						ngxParam.addValue("proxy_set_header X-Forwarded-Proto $scheme");
 						ngxBlockLocation.addEntry(ngxParam);

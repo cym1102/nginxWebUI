@@ -45,7 +45,7 @@ public class NginxWebUI {
 
 		List<String> pids = new ArrayList<String>();
 		for (String line : list) {
-			if (line.contains("nginxWebUI")) {
+			if (line.contains("java") && line.contains("nginxWebUI") && line.contains(".jar") ) {
 				String[] strs = line.split("\\s+");
 				if (!strs[1].equals(myPid)) {
 					pids.add(strs[1]);

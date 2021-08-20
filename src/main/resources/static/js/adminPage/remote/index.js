@@ -1,5 +1,7 @@
 var parentId;
-var groupParentId
+var groupParentId;
+var remoteFromId;
+var remoteSelectId;
 
 $(function(){
 	// 加载组件
@@ -7,60 +9,155 @@ $(function(){
 		base: ctx + 'lib/layui/exts/xmSelect/'
 	}).extend({
 		xmSelect: 'xm-select'
-	}).use(['xmSelect'], function(){
+	}).use(['xmSelect'], function() {
 		var xmSelect = layui.xmSelect;
-		
+
+		// 每个下拉控件单独请求ajax, 防止产生绑定关联
 		$.ajax({
-			type : 'GET',
-			url : ctx + '/adminPage/remote/getGroupTree',
-			success : function(data) {
-				if (data) {
-					// 渲染多选
+			type: 'GET',
+			url: ctx + '/adminPage/remote/getGroupTree',
+			success: function(data) {
+				if (data.success) {
 					parentId = xmSelect.render({
-					    el: '#parentId', 
-					    name : 'parentId',
-					    // 显示为text模式
-					    model: { label: { type: 'text' } },
-					    // 单选模式
-					    radio: true,
-					    // 选中关闭
-					    clickClose: true,
-					    // 树
-					    tree: {
-					    	show: true,
-					    	// 非严格模式
-					    	strict: false,
-					    	// 默认展开节点
-					    	expandedKeys: true,
-					    },
-					    data: data.obj
+						el: '#parentId',
+						name: 'parentId',
+						// 显示为text模式
+						model: { label: { type: 'text' } },
+						// 单选模式
+						radio: true,
+						// 选中关闭
+						clickClose: true,
+						// 树
+						tree: {
+							show: true,
+							// 非严格模式
+							strict: false,
+							// 默认展开节点
+							expandedKeys: true,
+						},
+						data: data.obj
 					})
-					
-					groupParentId = xmSelect.render({
-					    el: '#groupParentId', 
-					    name : 'parentId',
-					    // 显示为text模式
-					    model: { label: { type: 'text' } },
-					    // 单选模式
-					    radio: true,
-					    // 选中关闭
-					    clickClose: true,
-					    // 树
-					    tree: {
-					    	show: true,
-					    	// 非严格模式
-					    	strict: false,
-					    	// 默认展开节点
-					    	expandedKeys: true,
-					    	
-					    },
-					    data: data.obj
-					})
-				}else{
+
+				} else {
 					layer.msg(data.msg);
 				}
 			},
-			error : function() {
+			error: function() {
+				layer.alert(commonStr.errorInfo);
+			}
+		});
+
+
+		$.ajax({
+			type: 'GET',
+			url: ctx + '/adminPage/remote/getGroupTree',
+			success: function(data) {
+				if (data.success) {
+					groupParentId = xmSelect.render({
+						el: '#groupParentId',
+						name: 'parentId',
+						// 显示为text模式
+						model: { label: { type: 'text' } },
+						// 单选模式
+						radio: true,
+						// 选中关闭
+						clickClose: true,
+						// 树
+						tree: {
+							show: true,
+							// 非严格模式
+							strict: false,
+							// 默认展开节点
+							expandedKeys: true,
+
+						},
+						data: data.obj
+					})
+				} else {
+					layer.msg(data.msg);
+				}
+			},
+			error: function() {
+				layer.alert(commonStr.errorInfo);
+			}
+		});
+
+
+		$.ajax({
+			type: 'GET',
+			url: ctx + '/adminPage/remote/getCmdRemote',
+			dataType: 'json',
+			success: function(data) {
+				if (data.success) {
+					// 渲染多选
+					remoteFromId = xmSelect.render({
+						el: '#remoteFromId',
+						name: 'fromId',
+						// 显示为text模式
+						model: { label: { type: 'text' } },
+						// 单选模式
+						radio: true,
+						// 高度
+						height: '400px',
+						// 选中关闭
+						clickClose: true,
+						// 树
+						tree: {
+							show: true,
+							// 非严格模式
+							strict: true,
+							// 默认展开节点
+							expandedKeys: true,
+						},
+						data: data.obj
+					})
+
+				} else {
+					layer.msg(data.msg)
+				}
+			},
+			error: function() {
+				layer.closeAll();
+				layer.alert(commonStr.errorInfo);
+			}
+		});
+
+
+		$.ajax({
+			type: 'GET',
+			url: ctx + '/adminPage/remote/getCmdRemote',
+			dataType: 'json',
+			success: function(data) {
+				if (data.success) {
+					// 渲染多选
+					remoteSelectId = xmSelect.render({
+						el: '#remoteSelectId',
+						name: 'remoteId',
+						// 显示为text模式
+						model: { label: { type: 'text' } },
+						// 单选模式
+						radio: false,
+						// 高度
+						height: '400px',
+						// 选中关闭
+						clickClose: false,
+						// 树
+						tree: {
+							show: true,
+							// 非严格模式
+							strict: true,
+							// 默认展开节点
+							expandedKeys: true,
+						},
+						data: data.obj
+					})
+
+				} else {
+					layer.msg(data.msg)
+				}
+			},
+			error: function() {
+				layer.closeAll();
 				layer.alert(commonStr.errorInfo);
 			}
 		});
@@ -408,82 +505,12 @@ function change(id){
 
 function asycSelect(){
 	
-	$.ajax({
-		type : 'POST',
-		url : ctx + '/adminPage/remote/getCmdRemote',
-		data : {
-			
-		},
-		dataType : 'json',
-		success : function(data) {
-			layer.closeAll();
-			if (data.success) {
-
-				// 渲染多选
-				xmSelect.render({
-				    el: '#remoteFromId', 
-				    name : 'fromId',
-				    // 显示为text模式
-				    model: { label: { type: 'text' } },
-				    // 单选模式
-				    radio: true,
-				    // 高度
-				    height: '400px',
-				    // 选中关闭
-				    clickClose: true,
-				    // 树
-				    tree: {
-				    	show: true,
-				    	// 非严格模式
-				    	strict: true,
-				    	// 默认展开节点
-				    	expandedKeys: true,
-				    },
-				    data: data.obj
-				})
-				
-				
-				// 渲染多选
-				xmSelect.render({
-				    el: '#remoteSelectId', 
-				    name : 'remoteId',
-				    // 显示为text模式
-				    model: { label: { type: 'text' } },
-				    // 单选模式
-				    radio: false,
-				    // 高度
-				    height: '400px',
-				    // 选中关闭
-				    clickClose: false,
-				    // 树
-				    tree: {
-				    	show: true,
-				    	// 非严格模式
-				    	strict: true,
-				    	// 默认展开节点
-				    	expandedKeys: true,
-				    },
-				    data: data.obj
-				})
-				
-				form.render();
-				
-				layer.open({
-					type : 1,
-					title : remoteStr.asycSelect,
-					area : [ '600px', '500px' ], // 宽高
-					content : $('#selectDiv')
-				});
-			} else {
-				layer.msg(data.msg)
-			}
-		},
-		error : function() {
-			layer.closeAll();
-			layer.alert(commonStr.errorInfo);
-		}
+	layer.open({
+		type : 1,
+		title : remoteStr.asycSelect,
+		area : [ '600px', '500px' ], // 宽高
+		content : $('#selectDiv')
 	});
-	
 }
 
 
