@@ -376,7 +376,7 @@ public class ConfController extends BaseController {
 		try {
 			String cmd;
 			if (SystemTool.isWindows()) {
-				cmd = "taskkill /im /f nginx.exe ";
+				cmd = "taskkill /im nginx.exe /f";
 			} else {
 				cmd = "pkill nginx";
 			}
