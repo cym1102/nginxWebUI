@@ -12,13 +12,13 @@ official website: http://www.nginxwebui.cn
 
 #### Function description
 
-This project can use WebUI to configure various functions of Nginx, including HTTP protocol forwarding, TCP protocol forwarding, reverse proxy, load balancing, SSL certificate automatic application, renewal, configuration, etc., and finally generate nginx.conf file and overwrite the default configuration file of Nginx to complete the final functional configuration of Nginx.
-
-This project can manage multiple Nginx server clusters, switch to the corresponding server for Nginx configuration at any time with one key, or synchronize the configuration of one server to other servers with one key, so as to facilitate cluster management
-
-Nginx itself has complex functions, so this project cannot cover all functions of Nginx, only common functions can be configured, and more advanced functional configurations still need to be manually written in the final generated Nginx.conf.
-
-After deploying this project, nginx can be configured without searching on the Internet or manually applying for and configuring SSL certificates. Only adding, deleting, modifying and checking in this project can facilitate the configuration of Nginx.
+NginxWebuUI is a graphical management tool for nginx configuration. You can use web pages to quickly configure various functions of nginx, including HTTP forwarding, TCP forwarding, reverse proxy, load balancing, static HTML server, SSL certificate automatic application, renewal, configuration, etc.  Nginx. conf file can be generated after configuration, and nginx can be controlled to use this file for startup and reload, complete the graphical control of nginx closed loop.  
+ 
+The nginx webui allows you to manage multiple Nginx server clusters. You can switch to the corresponding server for nginx configuration at any time. You can also synchronize the configuration of a server to other servers with one click, facilitating cluster management.  
+ 
+The nginx web user interface (webui) does not cover all nginx functions, but covers 90% of the daily nginx configuration. If nginx configuration items are not covered by the platform, you can use custom parameter templates to generate unique configuration parameters in the CONF file.  
+ 
+After the deployment of this project, the configuration of nginx no longer need to search the web configuration code, no longer need to manually apply for and configure SSL certificates, just need to add, delete, change and check in this project can easily configure and start nginx.  
 
 #### Technical note
 
@@ -54,7 +54,7 @@ yum install nginx
 2.Download the latest release of the distribution jar
 
 ```
-wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.6.6.jar
+wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.6.7.jar
 ```
 
 With a new version, you just need to change the version in the path
@@ -106,13 +106,13 @@ yum install docker
 2.Download images:
 
 ```
-docker pull cym1102/nginxwebui:2.6.6
+docker pull cym1102/nginxwebui:2.6.7
 ```
 
 3.start container
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.6.6 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.6.7 /bin/bash
 ```
 
 notice: 
@@ -133,7 +133,7 @@ moreover: The following configuration file is used when using docker-compose
 version: "3.2"
 services:
   nginxWebUi-server:
-    image: cym1102/nginxwebui:2.6.6
+    image: cym1102/nginxwebui:2.6.7
     volumes:
       - type: bind
         source: "/home/nginxWebUI"
@@ -156,7 +156,7 @@ mvn clean package
 2. Compile the image with Docker
 
 ```
-docker build -t nginxwebui:2.6.6 .
+docker build -t nginxwebui:2.6.7 .
 ```
 
 #### Add boot up run

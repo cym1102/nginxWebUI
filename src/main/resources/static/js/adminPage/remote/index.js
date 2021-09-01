@@ -2,6 +2,7 @@ var parentId;
 var groupParentId;
 var remoteFromId;
 var remoteSelectId;
+var remoteCmdId;
 
 $(function(){
 	// 加载组件
@@ -551,7 +552,7 @@ function cmdGroup(){
 			if (data.success) {
 				
 				// 渲染多选
-				xmSelect.render({
+				remoteCmdId = xmSelect.render({
 				    el: '#remoteCmdSelectId', 
 				    name : 'remoteId',
 				    // 显示为text模式
@@ -596,7 +597,7 @@ function cmdGroup(){
 
 
 function cmdOver(){
-	if($("input[name='remoteId']").val()==''){
+	if(remoteCmdId.getValue().length == 0){
 		layer.msg(remoteStr.noSelect);
 		return;
 	}

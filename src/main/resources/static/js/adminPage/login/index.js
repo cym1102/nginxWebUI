@@ -66,7 +66,10 @@ function login() {
 				location.href = ctx + "adminPage/monitor";
 			} else {
 				layer.msg(data.msg);
+				refreshCode('codeImg');
 			}
+			
+		
 			
 		},
 		error: function() {
@@ -101,6 +104,7 @@ function getAuth() {
 				}
 			} else {
 				layer.msg(data.msg);
+				refreshCode('codeImg');
 			}
 			
 		},

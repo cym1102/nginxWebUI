@@ -51,8 +51,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 	 * 视图渲染之后的操作
 	 */
 	@Override
-	public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3)
-			throws Exception {
+	public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3) throws Exception {
 
 	}
 
@@ -60,8 +59,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 	 * 处理请求完成后视图渲染之前的处理操作
 	 */
 	@Override
-	public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, ModelAndView arg3)
-			throws Exception {
+	public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, ModelAndView arg3) throws Exception {
 
 	}
 
@@ -90,8 +88,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 		}
 
 		String localType = (String) request.getSession().getAttribute("localType");
-		if (localType != null && localType.equals("remote")
-				&& !request.getRequestURL().toString().contains("adminPage/remote")) {
+		if (localType != null && localType.equals("remote") && !request.getRequestURL().toString().contains("adminPage/remote")) {
 			// 转发到远程服务器
 			Remote remote = (Remote) request.getSession().getAttribute("remote");
 			String url = buildUrl(ctx, request, remote);
@@ -136,12 +133,10 @@ public class AdminInterceptor implements HandlerInterceptor {
 				if (JSONUtil.isJson(rs)) {
 					String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
 					response.addHeader("Content-Type", "application/octet-stream");
-					response.setHeader("content-disposition",
-							"attachment;filename=" + URLEncoder.encode(date + ".json", "UTF-8")); // 设置文件名
+					response.setHeader("content-disposition", "attachment;filename=" + URLEncoder.encode(date + ".json", "UTF-8")); // 设置文件名
 
 					byte[] buffer = new byte[1024];
-					BufferedInputStream bis = new BufferedInputStream(
-							new ByteArrayInputStream(rs.getBytes(Charset.forName("UTF-8"))));
+					BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(rs.getBytes(Charset.forName("UTF-8"))));
 					OutputStream os = response.getOutputStream();
 					int i = bis.read(buffer);
 					while (i != -1) {
@@ -163,8 +158,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 		return true;
 	}
 
-	private String buldBody(Map<String, String[]> parameterMap, Remote remote, Admin admin)
-			throws UnsupportedEncodingException {
+	private String buldBody(Map<String, String[]> parameterMap, Remote remote, Admin admin) throws UnsupportedEncodingException {
 		List<String> body = new ArrayList<>();
 		body.add("creditKey=" + remote.getCreditKey());
 		if (admin != null) {
@@ -184,8 +178,11 @@ public class AdminInterceptor implements HandlerInterceptor {
 	}
 
 	private String buildUrl(String ctx, HttpServletRequest request, Remote remote) {
-		String url = request.getRequestURL().toString().replace(ctx,
-				remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/");
+		String url = request.getRequestURL().toString().replace(ctx,  "//" + remote.getIp() + ":" + remote.getPort() + "/");
+
+		if (!url.startsWith("http")) {
+			url = remote.getProtocol() + ":" + url;
+		}
 
 		return url + "?jsrandom=" + System.currentTimeMillis();
 	}
