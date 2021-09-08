@@ -85,36 +85,36 @@ public class ScheduleTask {
 			// 大于50天的续签
 			if (cert.getMakeTime() != null && cert.getAutoRenew() == 1 && time - cert.getMakeTime() > TimeUnit.DAYS.toMillis(50)) {
 				certController.apply(cert.getId(), "renew");
-				
-				//重载nginx使证书生效
+
+				// 重载nginx使证书生效
 				confController.reload(null, null, null);
 			}
 		}
 	}
 
 	// 分隔日志,每天
-	//@Scheduled(cron = "0/10 * * * * ?")
+	// @Scheduled(cron = "0/10 * * * * ?")
 	@Scheduled(cron = "0 55 23 * * ?")
 	public void diviLog() {
 		Http access = httpService.getName("access_log");
 		if (access != null) {
 			cutLog(access);
 		}
-		
+
 		Http error = httpService.getName("error_log");
 		if (access != null) {
 			cutLog(error);
 		}
-		
+
 	}
 
 	private void cutLog(Http http) {
 		String path = http.getValue();
 
-		if (StrUtil.isNotEmpty(path) ) {
+		if (StrUtil.isNotEmpty(path)) {
 			// 去掉格式化
 			path = path.split(" ")[0];
-			if(FileUtil.exist(path)) {
+			if (FileUtil.exist(path)) {
 				String date = DateUtil.format(new Date(), "yyyy-MM-dd");
 				// 分隔日志
 				File dist = new File(path + "." + date);
@@ -123,7 +123,7 @@ public class ScheduleTask {
 				FileUtil.del(dist); // 删除原文件
 				// 重载Nginx产生新的文件
 				confController.reload(null, null, null);
-				
+
 				// 删除多余文件
 				long time = System.currentTimeMillis();
 
@@ -141,13 +141,12 @@ public class ScheduleTask {
 			}
 		}
 
-		
 	}
 
 	// 删除7天前的备份
 	@Scheduled(cron = "0 0 0 * * ?")
 	public void delBak() {
-		
+
 		long time = System.currentTimeMillis();
 		File dir = new File(InitConfig.home + "bak/");
 		if (dir.exists()) {
@@ -218,7 +217,7 @@ public class ScheduleTask {
 
 	}
 
-	// 检查节点情况
+	// 检查负载节点情况
 	@Scheduled(cron = "0/30 * * * * ?")
 	public void nodeTasks() {
 		String lastUpstreamSend = settingService.get("lastUpstreamSend");

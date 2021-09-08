@@ -79,7 +79,9 @@
 							<th>${commonStr.name}</th>
 							<th>${upstreamStr.strategy}</th>
 							<th>${upstreamStr.server}</th>
-							<th>${upstreamStr.mailNotice}</th>
+							<#if upstreamMonitor == 'true'>
+								<th>${upstreamStr.mailNotice}</th>
+							</#if>
 							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
@@ -104,7 +106,9 @@
 								<table class="server">${ext.serverStr}
 								</table>
 							</td>
-							<td><input type="checkbox" name="switch" lay-filter="monitor" value="${ext.upstream.id}" ${(ext.upstream.monitor==1)?string( 'checked','')}  lay-text="ON|OFF" lay-skin="switch"></td>
+							<#if upstreamMonitor == 'true'>
+								<td><input type="checkbox" name="switch" lay-filter="monitor" value="${ext.upstream.id}" ${(ext.upstream.monitor==1)?string( 'checked','')}  lay-text="ON|OFF" lay-skin="switch"></td>
+							</#if>
 							<td>
 								<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="preview('${ext.upstream.id}','upstream')">${commonStr.preview}</button>
 									

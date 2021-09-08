@@ -390,10 +390,11 @@ function upstreamMonitor() {
 
 
 function upstreamOver() {
-	if ($("#mail").val().indexOf("@") == -1) {
-		layer.alert(remoteStr.emailTips);
-		return;
-	}
+	//if ($("#mail").val().indexOf("@") == -1) {
+	//	layer.alert(remoteStr.emailTips);
+	//	return;
+	//}
+	
 	loadIndex = layer.load();
 	$.ajax({
 		type: 'POST',

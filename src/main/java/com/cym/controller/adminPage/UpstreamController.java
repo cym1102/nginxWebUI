@@ -66,6 +66,8 @@ public class UpstreamController extends BaseController {
 
 		modelAndView.addObject("page", page);
 		modelAndView.addObject("keywords", keywords);
+		
+		modelAndView.addObject("upstreamMonitor", settingService.get("upstreamMonitor"));
 		modelAndView.setViewName("/adminPage/upstream/index");
 		return modelAndView;
 	}

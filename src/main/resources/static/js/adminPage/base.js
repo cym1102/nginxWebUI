@@ -18,12 +18,12 @@ $(function() {
 
 	// 执行一个laypage实例
 	laypage.render({
-		elem : 'pageInfo', // 渲染节点
-		count : page.count, // 总记录数
-		curr : page.curr, // 起始页
-		limit : page.limit, // 每页记录数
-		layout : ['count', 'prev', 'page', 'next',  'skip' ,'limit'],
-		jump : function(obj, first) {
+		elem: 'pageInfo', // 渲染节点
+		count: page.count, // 总记录数
+		curr: page.curr, // 起始页
+		limit: page.limit, // 每页记录数
+		layout: ['count', 'prev', 'page', 'next', 'skip', 'limit'],
+		jump: function(obj, first) {
 			// 首次不执行
 			if (!first) {
 				// do something
@@ -33,22 +33,22 @@ $(function() {
 			}
 		}
 	});
-	
+
 	// 日期控件
 	layui.use('laydate', function() {
 		laydate = layui.laydate;
 
 		// 执行laydate实例
-		$(".laydate").each(function(){
+		$(".laydate").each(function() {
 			$(this).attr("id", "date_" + guid());
-			$(this).attr("readonly",true);
-			
+			$(this).attr("readonly", true);
+
 			laydate.render({
-				elem : "#" + $(this).attr("id"), // 指定元素
-				type : 'date',
+				elem: "#" + $(this).attr("id"), // 指定元素
+				type: 'date',
 				trigger: 'click',
-				format : 'yyyy-MM-dd' // 可任意组合
-			}); 
+				format: 'yyyy-MM-dd' // 可任意组合
+			});
 		})
 	});
 
@@ -56,42 +56,42 @@ $(function() {
 
 	// 关闭input自动填充
 	$("input").attr("autocomplete", "off");
-	
+
 	// 菜单选中
 	var url = location.pathname + location.search;
 	$("a[href='" + ctx + url.substr(1) + "']").parent().addClass("layui-this");
-	
-	
+
+
 	$.ajax({
-		type : 'POST',
-		url : ctx + 'adminPage/login/getLocalType',
-		dataType : 'json',
-		success : function(data) {
+		type: 'POST',
+		url: ctx + 'adminPage/login/getLocalType',
+		dataType: 'json',
+		success: function(data) {
 			if (data.success) {
 				$("#localType").html(data.obj);
-			} 
+			}
 		},
-		error : function() {
+		error: function() {
 			layer.alert(commonStr.errorInfo);
 		}
 	});
-	
+
 	// 判断屏幕分辨率, 给table加上lay-size="sm"
 	//alert(document.body.clientWidth);
-	if(document.body.clientWidth  <= 1600){
-		$(".layui-table").attr("lay-size","sm");
+	if (document.body.clientWidth <= 1600) {
+		$(".layui-table").attr("lay-size", "sm");
 	}
 })
 
 // 关闭AJAX相应的缓存
 $.ajaxSetup({
-	cache : false
+	cache: false
 });
 
 
 function gohref(url) {
 	location.href = url;
-	
+
 }
 
 // 退出登录
@@ -105,22 +105,22 @@ function loginOut() {
 // 日期格式化
 Date.prototype.format = function(format) {
 	var date = {
-		"M+" : this.getMonth() + 1,
-		"d+" : this.getDate(),
-		"H+" : this.getHours(),
-		"m+" : this.getMinutes(),
-		"s+" : this.getSeconds(),
-		"q+" : Math.floor((this.getMonth() + 3) / 3),
-		"S+" : this.getMilliseconds()
+		"M+": this.getMonth() + 1,
+		"d+": this.getDate(),
+		"H+": this.getHours(),
+		"m+": this.getMinutes(),
+		"s+": this.getSeconds(),
+		"q+": Math.floor((this.getMonth() + 3) / 3),
+		"S+": this.getMilliseconds()
 	};
 	if (/(y+)/i.test(format)) {
 		format = format.replace(RegExp.$1, (this.getFullYear() + '')
-				.substr(4 - RegExp.$1.length));
+			.substr(4 - RegExp.$1.length));
 	}
-	for ( var k in date) {
+	for (var k in date) {
 		if (new RegExp("(" + k + ")").test(format)) {
 			format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? date[k]
-					: ("00" + date[k]).substr(("" + date[k]).length));
+				: ("00" + date[k]).substr(("" + date[k]).length));
 		}
 	}
 	return format;
@@ -145,14 +145,14 @@ function S4() {
 }
 function guid() {
 	return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4()
-			+ S4() + S4());
+		+ S4() + S4());
 }
 
 // 时间字符串转时间戳
 function strToTime(str) {
 	var str = str.replace(/-/g, '/');
 	var timestamp = new Date(str).getTime();
-	
+
 	return timestamp
 }
 
@@ -168,10 +168,10 @@ function getQueryString(name) {
 // 下载文件
 function downloadFile(url, name) {
 	window.open(ctx + "downloadFile?url=" + encodeURIComponent(url) + "&name="
-			+ encodeURIComponent(name));
+		+ encodeURIComponent(name));
 }
 
-function showUpdate(version, url, docker,update){
+function showUpdate(version, url, docker, update) {
 	var str = `
 		<div style="font-size: 16px; font-weight: bolder;">${commonStr.newVersion} ${version}</div>
 		<div>${baseStr.updateContent}: ${update}</div>
@@ -182,66 +182,66 @@ function showUpdate(version, url, docker,update){
 			<button type="button" class="layui-btn layui-btn-sm" onclick="autoUpdate('${url}')">${baseStr.click}</button>
 		</div>
 	`;
-	
+
 	layer.open({
-		  type: 0, 
-		  title : commonStr.update,
-		  btn: [commonStr.close],
-		  yes: function(index, layero){
-		       layer.closeAll();
-		  },
-		  area : [ '600px', '400px' ],
-		  content: str
+		type: 0,
+		title: commonStr.update,
+		btn: [commonStr.close],
+		yes: function(index, layero) {
+			layer.closeAll();
+		},
+		area: ['600px', '400px'],
+		content: str
 	});
-	
+
 }
 
 // form转json
 function form2JsonString(formId) {
-	var paramArray = $('#' + formId).serializeArray();  
-	/* 请求参数转json对象 */  
-	var jsonObj={};  
-	$(paramArray).each(function(){  
-		jsonObj[this.name]=this.value;  
-	});  
+	var paramArray = $('#' + formId).serializeArray();
+	/* 请求参数转json对象 */
+	var jsonObj = {};
+	$(paramArray).each(function() {
+		jsonObj[this.name] = this.value;
+	});
 	return JSON.stringify(jsonObj);
-	
+
 }
 
 var loaded;
-function autoUpdate(url){
-	if(confirm(baseStr.confirmUpdate)){
-		loaded =	layer.load();
+function autoUpdate(url) {
+	if (confirm(baseStr.confirmUpdate)) {
+		loaded = layer.load();
 		$.ajax({
-			type : 'POST',
-			url : ctx + '/adminPage/main/autoUpdate',
-			data:{
-				url : url
+			type: 'POST',
+			url: ctx + '/adminPage/main/autoUpdate',
+			data: {
+				url: url
 			},
-			dataType : 'json',
-			success : function(data) {
-				if(!data.success){
+			dataType: 'json',
+			success: function(data) {
+				if (!data.success) {
 					layer.close(loaded);
 					layer.alert(data.msg);
 					return;
 				}
-				
-				setTimeout(function(){
+
+				setTimeout(function() {
 					layer.close(loaded);
 					layer.alert(baseStr.updateOver);
-				},10000)
-				
-				
+				}, 10000)
+
+
 			},
-			error : function() {
-				setTimeout(function(){
+			error: function() {
+				setTimeout(function() {
 					layer.close(loaded);
 					layer.alert(baseStr.updateOver);
-				},10000)
+				}, 10000)
 			}
 		});
 	}
-	
+
 }
 
 
@@ -265,12 +265,12 @@ function changeLang() {
 }
 
 
-function  setParamOrder(id, seq){
-	if(seq == -1){
+function setParamOrder(id, seq) {
+	if (seq == -1) {
 		// 前移
 		var prev = $("#" + id).prev();
 		$("#" + id).after(prev);
-	}else{
+	} else {
 		// 后移
 		var next = $("#" + id).next();
 		$("#" + id).before(next);
@@ -284,4 +284,25 @@ function showLoad() {
 }
 function closeLoad() {
 	layer.close(loadIndex);
+}
+
+// 显示使用流程
+function showHelp() {
+	
+	var src = ctx + "/img/向导.png";
+	var width = document.body.clientWidth - 100; 
+	var height = width / 2.5; 
+	
+	var imgHtml = `<img src='${src}' style="width: ${width}px;height: ${height}px;" />`;
+	//弹出层
+	layer.open({
+		type: 1,
+		offset: 'auto',
+		area: [width + 'px', height + 'px'],
+		title : false,
+		content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响  
+		cancel: function() {
+			//layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });  
+		}
+	});
 }

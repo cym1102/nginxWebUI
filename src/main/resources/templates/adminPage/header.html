@@ -1,14 +1,19 @@
 <div class="layui-header">
 	<div class="layui-logo" >${projectName} ${currentVersion}</div>
 	<ul class="layui-nav layui-layout-right">
-	
+		
 		<li class="layui-nav-item">
-			${admin.name}
+			<a href="javascript:" style="color: white;">${commonStr.currentUser}：${admin.name}</a>
 		</li>
 	
 		<li class="layui-nav-item">
-			<a href="javascript:changeLang()"> ${langType}</a>
+			<a href="javascript:changeLang()">${langType}</a>
 		</li>
+		
+		<li class="layui-nav-item">
+			<a href="javascript:showHelp()">${commonStr.userTutorial}</a>
+		</li>
+		
 		
 		<li class="layui-nav-item">
 			<#if hasNewVersion == 1 && newVersion != null>

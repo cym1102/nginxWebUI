@@ -106,8 +106,7 @@ public class RemoteController extends BaseController {
 			}
 
 			try {
-				String json = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort()
-						+ "/adminPage/remote/version?creditKey=" + remote.getCreditKey(), 1000);
+				String json = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/remote/version?creditKey=" + remote.getCreditKey(), 1000);
 				if (StrUtil.isNotEmpty(json)) {
 					Map<String, Object> map = JSONUtil.toBean(json, new TypeReference<Map<String, Object>>() {
 					}.getType(), false);
@@ -134,8 +133,7 @@ public class RemoteController extends BaseController {
 		remoteLocal.setPort(port);
 		remoteLocal.setStatus(1);
 		remoteLocal.setType(0);
-		remoteLocal.setMonitor(
-				settingService.get("monitorLocal") != null ? Integer.parseInt(settingService.get("monitorLocal")) : 0);
+		remoteLocal.setMonitor(settingService.get("monitorLocal") != null ? Integer.parseInt(settingService.get("monitorLocal")) : 0);
 		remoteLocal.setSystem(SystemTool.getSystem());
 		remoteList.add(0, remoteLocal);
 
@@ -176,8 +174,7 @@ public class RemoteController extends BaseController {
 	@RequestMapping("addGroupOver")
 	@ResponseBody
 	public JsonResult addGroupOver(Group group) {
-		if (StrUtil.isNotEmpty(group.getParentId()) && StrUtil.isNotEmpty(group.getId())
-				&& group.getId().equals(group.getParentId())) {
+		if (StrUtil.isNotEmpty(group.getParentId()) && StrUtil.isNotEmpty(group.getId()) && group.getId().equals(group.getParentId())) {
 			return renderError(m.get("remoteStr.parentGroupMsg"));
 		}
 		sqlHelper.insertOrUpdate(group);
@@ -271,8 +268,7 @@ public class RemoteController extends BaseController {
 
 				List<Tree> treeSubList = new ArrayList<>();
 
-				fillTreeRemote(groupService.getListByParent(group.getId()),
-						remoteService.getListByParent(group.getId()), treeSubList);
+				fillTreeRemote(groupService.getListByParent(group.getId()), remoteService.getListByParent(group.getId()), treeSubList);
 
 				tree.setChildren(treeSubList);
 
@@ -329,8 +325,7 @@ public class RemoteController extends BaseController {
 				}
 
 				try {
-					String json = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort()
-							+ "/adminPage/conf/" + cmd + "?creditKey=" + remote.getCreditKey());
+					String json = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/conf/" + cmd + "?creditKey=" + remote.getCreditKey());
 					jsonResult = JSONUtil.toBean(json, JsonResult.class);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -360,7 +355,7 @@ public class RemoteController extends BaseController {
 
 	@RequestMapping("asyc")
 	@ResponseBody
-	public JsonResult asyc(String fromId, String[] remoteId, HttpServletRequest request, String adminName) {
+	public JsonResult asyc(String fromId, String[] remoteId, HttpServletRequest request) {
 		if (StrUtil.isEmpty(fromId) || remoteId == null || remoteId.length == 0) {
 			return renderSuccess(m.get("remoteStr.noChoice"));
 		}
@@ -372,9 +367,10 @@ public class RemoteController extends BaseController {
 			json = getAsycPack();
 		} else {
 			// 远程
-			json = HttpUtil.get(remoteFrom.getProtocol() + "://" + remoteFrom.getIp() + ":" + remoteFrom.getPort()
-					+ "/adminPage/remote/getAsycPack?creditKey=" + remoteFrom.getCreditKey(), 1000);
+			json = HttpUtil.get(remoteFrom.getProtocol() + "://" + remoteFrom.getIp() + ":" + remoteFrom.getPort() + "/adminPage/remote/getAsycPack?creditKey=" + remoteFrom.getCreditKey(), 1000);
 		}
+
+		String adminName = getAdmin(request).getName();
 
 		for (String remoteToId : remoteId) {
 			if (remoteToId.equals("local") || remoteToId.equals("本地")) {
@@ -382,15 +378,14 @@ public class RemoteController extends BaseController {
 			} else {
 				Remote remoteTo = sqlHelper.findById(remoteToId, Remote.class);
 				try {
-					String version = HttpUtil.get(remoteTo.getProtocol() + "://" + remoteTo.getIp() + ":"
-							+ remoteTo.getPort() + "/adminPage/remote/version?creditKey=" + remoteTo.getCreditKey(),
+					String version = HttpUtil.get(remoteTo.getProtocol() + "://" + remoteTo.getIp() + ":" + remoteTo.getPort() + "/adminPage/remote/version?creditKey=" + remoteTo.getCreditKey(),
 							1000);
 					if (StrUtil.isNotEmpty(version)) {
 						// 在线
 						Map<String, Object> map = new HashMap<>();
 						map.put("json", json);
-						HttpUtil.post(remoteTo.getProtocol() + "://" + remoteTo.getIp() + ":" + remoteTo.getPort()
-								+ "/adminPage/remote/setAsycPack?creditKey=" + remoteTo.getCreditKey(), map);
+						HttpUtil.post(remoteTo.getProtocol() + "://" + remoteTo.getIp() + ":" + remoteTo.getPort() + "/adminPage/remote/setAsycPack?creditKey=" + remoteTo.getCreditKey()
+								+ "&adminName=" + adminName, map);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -451,9 +446,7 @@ public class RemoteController extends BaseController {
 			map.put("pass", remote.getPass());
 			map.put("remote", 1);
 
-			String rs = HttpUtil.post(
-					remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/login/getAuth",
-					map, 3000);
+			String rs = HttpUtil.post(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/login/getAuth", map, 3000);
 
 			if (StrUtil.isNotEmpty(rs)) {
 				JsonResult jsonResult = JSONUtil.toBean(rs, JsonResult.class);
@@ -491,8 +484,7 @@ public class RemoteController extends BaseController {
 
 		Remote remote = sqlHelper.findById(id, Remote.class);
 
-		String rs = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort()
-				+ "/adminPage/remote/readContent?creditKey=" + remote.getCreditKey());
+		String rs = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/remote/readContent?creditKey=" + remote.getCreditKey());
 
 		return renderSuccess(rs);
 	}
