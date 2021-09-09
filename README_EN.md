@@ -20,6 +20,12 @@ The nginx web user interface (webui) does not cover all nginx functions, but cov
  
 After the deployment of this project, the configuration of nginx no longer need to search the web configuration code, no longer need to manually apply for and configure SSL certificates, just need to add, delete, change and check in this project can easily configure and start nginx.  
 
+```
+Demo address: http://154.31.21.178:8080 
+User: admin
+password: Admin123
+```
+
 #### Technical note
 
 This project is a Web system based on springBoot. The database use SQLite, so there is no need to install any database on the server.
@@ -54,7 +60,7 @@ yum install nginx
 2.Download the latest release of the distribution jar
 
 ```
-wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.6.7.jar
+wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.6.8.jar
 ```
 
 With a new version, you just need to change the version in the path
@@ -106,13 +112,13 @@ yum install docker
 2.Download images:
 
 ```
-docker pull cym1102/nginxwebui:2.6.7
+docker pull cym1102/nginxwebui:2.6.8
 ```
 
 3.start container
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.6.7 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.6.8 /bin/bash
 ```
 
 notice: 
@@ -133,7 +139,7 @@ moreover: The following configuration file is used when using docker-compose
 version: "3.2"
 services:
   nginxWebUi-server:
-    image: cym1102/nginxwebui:2.6.7
+    image: cym1102/nginxwebui:2.6.8
     volumes:
       - type: bind
         source: "/home/nginxWebUI"
@@ -156,7 +162,7 @@ mvn clean package
 2. Compile the image with Docker
 
 ```
-docker build -t nginxwebui:2.6.7 .
+docker build -t nginxwebui:2.6.8 .
 ```
 
 #### Add boot up run
