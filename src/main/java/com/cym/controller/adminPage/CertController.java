@@ -115,7 +115,7 @@ public class CertController extends BaseController {
 		String rs = "";
 		String cmd = "";
 		// 设置dns账号
-		setEnv(cert);
+		String[] env = getEnv(cert);
 
 		if (type.equals("issue") || StrUtil.isEmpty(cert.getPem())) {
 			// 申请
@@ -128,9 +128,11 @@ public class CertController extends BaseController {
 				dnsType = "dns_cf";
 			} else if (cert.getDnsType().equals("gd")) {
 				dnsType = "dns_gd";
+			} else if (cert.getDnsType().equals("hw")) {
+				dnsType = "dns_huaweicloud";
 			}
 
-			cmd = InitConfig.acmeSh + " --issue --dns " + dnsType + " -d " + cert.getDomain();
+			cmd = InitConfig.acmeSh + " --issue --dns " + dnsType + " -d " + cert.getDomain() + " --server letsencrypt";
 		} else if (type.equals("renew")) {
 			// 续签,以第一个域名为证书名
 			String domain = cert.getDomain().split(",")[0];
@@ -138,7 +140,7 @@ public class CertController extends BaseController {
 		}
 		logger.info(cmd);
 
-		rs = timeExeUtils.execCMD(cmd, null, 2 * 60 * 1000);
+		rs = timeExeUtils.execCMD(cmd, env, 2 * 60 * 1000);
 		logger.info(rs);
 
 		if (rs.contains("Your cert is in")) {
@@ -164,9 +166,9 @@ public class CertController extends BaseController {
 		}
 	}
 
-	private void setEnv(Cert cert) {
+	private String[] getEnv(Cert cert) {
 		List<String> list = new ArrayList<>();
-		list.add("UPGRADE_HASH='" + UUID.randomUUID().toString().replace("-", "") + "'");
+//		list.add("UPGRADE_HASH='" + UUID.randomUUID().toString().replace("-", "") + "'");
 		if (cert.getDnsType().equals("ali")) {
 			list.add("SAVED_Ali_Key='" + cert.getAliKey() + "'");
 			list.add("SAVED_Ali_Secret='" + cert.getAliSecret() + "'");
@@ -183,11 +185,22 @@ public class CertController extends BaseController {
 			list.add("SAVED_GD_Key='" + cert.getGdKey() + "'");
 			list.add("SAVED_GD_Secret='" + cert.getGdSecret() + "'");
 		}
-
-		list.add("USER_PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin'");
-
-		FileUtil.writeLines(list, new File(InitConfig.acmeSh.replace("/acme.sh", "/account.conf")), Charset.defaultCharset());
+		if (cert.getDnsType().equals("hw")) {
+			list.add("SAVED_HUAWEICLOUD_Username='" + cert.getHwUsername() + "'");
+			list.add("SAVED_HUAWEICLOUD_Password='" + cert.getHwPassword() + "'");
+			list.add("SAVED_HUAWEICLOUD_ProjectID='" + cert.getHwProjectID() + "'");
+		}
+		
+		return list.toArray(new String[] {});
+		
+//		list.add("USER_PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin'");
+//		FileUtil.writeLines(list, new File(InitConfig.acmeSh.replace("/acme.sh", "/account.conf")), Charset.defaultCharset());
+		
+		
+		
 	}
+	
+	
 
 	@RequestMapping("download")
 	public void download(String id, HttpServletResponse response) throws IOException {

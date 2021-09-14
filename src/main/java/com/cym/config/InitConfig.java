@@ -1,9 +1,7 @@
 package com.cym.config;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +35,7 @@ public class InitConfig {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	protected MessageUtils m;
-	
+
 	public static String acmeSh;
 	public static String acmeShDir;
 	public static String home;
@@ -104,23 +102,19 @@ public class InitConfig {
 			ClassPathResource resource = new ClassPathResource("acme.zip");
 			InputStream inputStream = resource.getInputStream();
 			FileUtil.writeFromStream(inputStream, InitConfig.home + "acme.zip");
-			FileUtil.mkdir(InitConfig.acmeShDir);
-			ZipUtil.unzip(InitConfig.home + "acme.zip", InitConfig.acmeShDir);
-			FileUtil.del(InitConfig.home + "acme.zip");
+			FileUtil.mkdir(acmeShDir);
+			ZipUtil.unzip(home + "acme.zip", acmeShDir);
+			FileUtil.del(home + "acme.zip");
 
-			// 释放新的.acme.sh文件
-			resource = new ClassPathResource("acme.sh");
-			List<String> res = new ArrayList<>();
-			BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream(), "UTF-8"));
-			String str = "";
-			while ((str = br.readLine()) != null) {
-				if (str.contains("${acmeShDir}")) {
-					str = str.replace("${acmeShDir}", InitConfig.acmeShDir);
+			// 修改acme.sh文件
+			List<String> res = FileUtil.readUtf8Lines(acmeSh);
+			for (int i=0;i<res.size();i++) {
+				if (res.get(i).contains("DEFAULT_INSTALL_HOME=\"$HOME/.$PROJECT_NAME\"")) {
+					res.set(i, "DEFAULT_INSTALL_HOME=\"" + acmeShDir + "\"");
 				}
-				res.add(str);
 			}
 
-			FileUtil.writeLines(res, InitConfig.acmeSh, "UTF-8");
+			FileUtil.writeUtf8Lines(res, acmeSh);
 			RuntimeUtil.exec("chmod a+x " + acmeSh);
 
 			// 查找ngx_stream_module模块

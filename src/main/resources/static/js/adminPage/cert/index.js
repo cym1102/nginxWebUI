@@ -74,6 +74,7 @@ function checkDnsType(value) {
 	$("#dp").hide();
 	$("#cf").hide();
 	$("#gd").hide();
+	$("#hw").hide();
 		
 	$("#" + value).show();
 }
@@ -102,6 +103,11 @@ function add() {
 	$("#cfKey").val("");
 	$("#gdKey").val("");
 	$("#gdSecret").val("");
+	
+	$("#hwUsername").val("");
+	$("#hwPassword").val("");
+	$("#hwProjectID").val("");
+	
 	$("#pem").val("");
 	$("#key").val("");
 	$("#pemPath").html("");
@@ -149,6 +155,10 @@ function edit(id, clone) {
 				$("#gdKey").val(cert.gdKey);
 				$("#gdSecret").val(cert.gdSecret);
 				
+				$("#hwUsername").val(cert.hwUsername);
+				$("#hwPassword").val(cert.hwPassword);
+				$("#hwProjectID").val(cert.hwProjectID);
+	
 				$("#pemPath").html(cert.pem);
 				$("#keyPath").html(cert.key);
 
@@ -172,7 +182,7 @@ function showWindow(title) {
 	layer.open({
 		type: 1,
 		title: title,
-		area: ['700px', '450px'], // 宽高
+		area: ['700px', '500px'], // 宽高
 		content: $('#windowDiv')
 	});
 }
@@ -204,6 +214,12 @@ function addOver() {
 		}
 		if ($("#dnsType").val() == 'gd') {
 			if ($("#gdKey").val() == '' || $("#gdSecret").val() == '') {
+				layer.msg(commonStr.IncompleteEntry);
+				return;
+			}
+		}
+		if ($("#dnsType").val() == 'hw') {
+			if ($("#hwUsername").val() == '' || $("#hwPassword").val() == '' || $("#hwProjectID").val() == '') {
 				layer.msg(commonStr.IncompleteEntry);
 				return;
 			}

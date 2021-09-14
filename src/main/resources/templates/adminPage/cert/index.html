@@ -2,7 +2,15 @@
 <html>
 <head>
 <#include "/adminPage/common.html"/>
+<style type="text/css">
+.layui-form-label {
+	width: 150px;
+}
 
+.layui-input-block {
+	margin-left: 180px;
+}
+</style>
 </head>
 <body class="layui-layout-body">
 	<div class="layui-layout layui-layout-admin">
@@ -138,6 +146,7 @@
 								<option value="dp">${certStr.dnsPod}</option>
 								<option value="cf">Cloudflare </option>
 								<option value="gd">Godaddy </option>
+								<option value="hw">${certStr.huawei}</option>
 							</select>
 						</div>
 					</div>
@@ -204,6 +213,30 @@
 							<label class="layui-form-label">GD_Secret</label>
 							<div class="layui-input-block">
 								<input type="text" name="gdSecret" id="gdSecret" class="layui-input">
+							</div>
+						</div>
+					</div>
+					
+					
+					<div id="hw">
+						<div class="layui-form-item">
+							<label class="layui-form-label">HW_Username</label>
+							<div class="layui-input-block">
+								<input type="text" name="hwUsername" id="hwUsername" class="layui-input">
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">HW_Password</label>
+							<div class="layui-input-block">
+								<input type="text" name="hwPassword" id="hwPassword" class="layui-input">
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">HW_ProjectID</label>
+							<div class="layui-input-block">
+								<input type="text" name="hwProjectID" id="hwProjectID" class="layui-input">
 							</div>
 						</div>
 					</div>

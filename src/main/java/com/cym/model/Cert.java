@@ -53,6 +53,39 @@ public class Cert extends BaseModel {
 	@ApiModelProperty("gdSecret(Godaddy需要的参数)")
 	String gdSecret;
 	
+	@ApiModelProperty("hwUsername(华为云需要的参数)")
+	String hwUsername;
+	@ApiModelProperty("hwPassword(华为云需要的参数)")
+	String hwPassword;
+	@ApiModelProperty("hwProjectID(华为云需要的参数)")
+	String hwProjectID;
+	
+	
+	
+	public String getHwUsername() {
+		return hwUsername;
+	}
+
+	public void setHwUsername(String hwUsername) {
+		this.hwUsername = hwUsername;
+	}
+
+	public String getHwPassword() {
+		return hwPassword;
+	}
+
+	public void setHwPassword(String hwPassword) {
+		this.hwPassword = hwPassword;
+	}
+
+	public String getHwProjectID() {
+		return hwProjectID;
+	}
+
+	public void setHwProjectID(String hwProjectID) {
+		this.hwProjectID = hwProjectID;
+	}
+
 	public String getGdKey() {
 		return gdKey;
 	}
