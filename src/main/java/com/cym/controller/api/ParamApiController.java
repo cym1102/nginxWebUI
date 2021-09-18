@@ -50,7 +50,7 @@ public class ParamApiController extends BaseController {
 
 		sqlHelper.insertOrUpdate(param);
 
-		return renderSuccess();
+		return renderSuccess(param);
 	}
 
 	@ApiOperation("删除")

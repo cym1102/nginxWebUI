@@ -1,6 +1,8 @@
 package com.cym.test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import com.cym.utils.TimeExeUtils;
 import com.cym.utils.MessageUtils;
 
 import cn.craccd.sqlHelper.utils.SqlHelper;
+import cn.hutool.core.util.RuntimeUtil;
 
 @SpringBootTest(classes = NginxWebUI.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class MainTest {
@@ -31,9 +34,21 @@ public class MainTest {
 	@Test
 	public void testStartUp() throws InterruptedException, IOException {
 
-		String rs = exeUtils.execCMD("ping www.baidu.com", null, 10000);
+		List<String> list = RuntimeUtil.execForLines("wmic process get commandline,ProcessId /value");
+		List<String> pids = new ArrayList<String>();
+
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).contains("java") && list.get(i).contains("nginxWebUI") && list.get(i).contains(".jar")) {
+				String pid = list.get(i + 2).split("=")[1];
+				pids.add(pid);
+			}
+		}
 		
-		System.err.println(rs);
+		for (String pid : pids) {
+			logger.info("杀掉进程:" + pid);
+			RuntimeUtil.exec("taskkill /im " + pid + " /f");
+		}
+		
 	}
 
 }

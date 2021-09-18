@@ -6,6 +6,8 @@ import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.system.ApplicationHome;
@@ -19,43 +21,60 @@ import cn.hutool.core.util.RuntimeUtil;
 @EnableTransactionManagement
 @SpringBootApplication
 public class NginxWebUI {
+	static Logger logger = LoggerFactory.getLogger(NginxWebUI.class);
 
 	public static void main(String[] args) {
 
-//		if (!SystemTool.hasRoot()) {
-//			System.err.println("请使用root用户运行该程序。 Please use root to run this program ");
-//			return;
-//		}
+		// 尝试杀掉旧版本
+		killSelf();
 
-		if (SystemTool.isLinux()) {
-			// 尝试杀掉旧版本
-			killSelf();
+		// 删掉多余的jar
+		removeJar();
 
-			// 删掉多余的jar
-			removeJar();
-		}
-
+		// 启动springboot
 		SpringApplication.run(NginxWebUI.class, args);
 	}
 
 	public static void killSelf() {
 		RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
 		String myPid = runtimeMXBean.getName().split("@")[0];
-		List<String> list = RuntimeUtil.execForLines("ps -ef");
 
+		List<String> list = new ArrayList<String>();
 		List<String> pids = new ArrayList<String>();
-		for (String line : list) {
-			if (line.contains("java") && line.contains("nginxWebUI") && line.contains(".jar") ) {
-				String[] strs = line.split("\\s+");
-				if (!strs[1].equals(myPid)) {
-					pids.add(strs[1]);
+
+		if (SystemTool.isWindows()) {
+			list = RuntimeUtil.execForLines("wmic process get commandline,ProcessId /value");
+			pids = new ArrayList<String>();
+
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).contains("java") && list.get(i).contains("nginxWebUI") && list.get(i).contains(".jar")) {
+					String pid = list.get(i + 2).split("=")[1];
+					if (!pid.equals(myPid)) {
+						pids.add(pid);
+					}
+				}
+			}
+		} else {
+			list = RuntimeUtil.execForLines("ps -ef");
+			for (String line : list) {
+				if (line.contains("java") && line.contains("nginxWebUI") && line.contains(".jar")) {
+					String[] strs = line.split("\\s+");
+					String pid = strs[1];
+
+					if (!pid.equals(myPid)) {
+						pids.add(pid);
+					}
 				}
 			}
 		}
 
 		for (String pid : pids) {
-			// System.out.println("杀掉进程:" + pid);
-			RuntimeUtil.exec("kill -9 " + pid);
+			logger.info("杀掉进程:" + pid);
+			if (SystemTool.isWindows()) {
+				RuntimeUtil.exec("taskkill /im " + pid + " /f");
+			} else {
+				RuntimeUtil.exec("kill -9 " + pid);
+			}
 		}
 
 	}
@@ -66,10 +85,9 @@ public class NginxWebUI {
 
 		File[] list = jar.getParentFile().listFiles();
 		for (File file : list) {
-			System.out.println(file);
 			if (file.getName().startsWith("nginxWebUI") && file.getName().endsWith(".jar") && !file.getName().equals(jar.getName())) {
-				boolean rs = FileUtil.del(file);
-				System.err.println("del " + file + " " + rs);
+				FileUtil.del(file);
+				logger.info("删除文件:" + file);
 			}
 		}
 	}
