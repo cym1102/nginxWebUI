@@ -1,105 +1,75 @@
 package com.cym.controller.adminPage;
 
 import java.io.File;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cym.config.InitConfig;
-import com.cym.config.ScheduleTask;
 import com.cym.model.Bak;
+import com.cym.model.BakSub;
+import com.cym.service.BakService;
 import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
+import cn.craccd.sqlHelper.bean.Page;
+import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.ZipUtil;
 
 @Controller
 @RequestMapping("/adminPage/bak")
 public class BakController extends BaseController {
 	@Autowired
 	SettingService settingService;
+	@Autowired
+	BakService bakService;
 
 	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
-		List<Bak> bakList = getBakList();
+	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page) {
+		page = bakService.getList(page);
 
-		CollectionUtil.sort(bakList, new Comparator<Bak>() {
-
-			@Override
-			public int compare(Bak o1, Bak o2) {
-				return StrUtil.compare(o2.getTime(), o1.getTime(), true);
-			}
-		});
-
-		modelAndView.addObject("bakList", bakList);
+		modelAndView.addObject("page", page);
 		modelAndView.setViewName("/adminPage/bak/index");
 		return modelAndView;
 	}
 
-	private List<Bak> getBakList() {
-		List<Bak> list = new ArrayList<Bak>();
-
-		String bakPath = InitConfig.home + "/bak";
-		if (StrUtil.isNotEmpty(bakPath) && FileUtil.exist(bakPath)) {
-			File dir = new File(bakPath);
-
-			File[] fileList = dir.listFiles();
-			if (fileList != null) {
-				for (File file : fileList) {
-					if (file.getName().contains("nginx.conf") && file.getName().endsWith(".bak")) {
-						Bak bak = new Bak();
-						bak.setPath(file.getPath().replace("\\", "/"));
-						DateTime date = DateUtil.parse(file.getName().replace("nginx.conf.", "").replace(".bak", ""), "yyyy-MM-dd_HH-mm-ss");
-						bak.setTime(DateUtil.format(date, "yyyy-MM-dd HH:mm:ss"));
-
-						list.add(bak);
-					}
-				}
-			}
-		}
-
-		return list;
-	}
 
 	@RequestMapping("content")
 	@ResponseBody
-	public JsonResult content(String path) {
-		String str = FileUtil.readString(path, Charset.forName("UTF-8"));
-		return renderSuccess(str);
+	public JsonResult content(String id) {
+		Bak bak = sqlHelper.findById(id, Bak.class);
+		return renderSuccess(bak);
 	}
 
 	@RequestMapping("replace")
 	@ResponseBody
-	public JsonResult replace(String path) {
-		if (!FileUtil.exist(path)) {
-			return renderError(m.get("bakStr.fileNotExist"));
-		}
+	public JsonResult replace(String id) {
+		Bak bak = sqlHelper.findById(id, Bak.class);
 
 		String nginxPath = settingService.get("nginxPath");
 
 		if (StrUtil.isNotEmpty(nginxPath)) {
 			File pathFile = new File(nginxPath);
+			// 写入主文件
+			FileUtil.writeString(bak.getContent(), pathFile, StandardCharsets.UTF_8);
 
-			FileUtil.copy(path, nginxPath, true);
-			FileUtil.del(pathFile.getParent() + "/conf.d");
-			
-			if(FileUtil.exist(path.replace(".bak", ".zip"))) {
-				ZipUtil.unzip(path.replace(".bak", ".zip"), pathFile.getParent() + "/conf.d");
+			// 写入子文件
+			String confd = pathFile.getParent() + File.separator + "conf.d" + File.separator;
+			FileUtil.del(confd);
+			FileUtil.mkdir(confd);
+
+			List<BakSub> subList = bakService.getSubList(bak.getId());
+			for (BakSub bakSub : subList) {
+				FileUtil.writeString(bakSub.getContent(), confd + bakSub.getName(), StandardCharsets.UTF_8);
 			}
 			return renderSuccess();
 		} else {
@@ -107,28 +77,20 @@ public class BakController extends BaseController {
 		}
 
 	}
-	
-	public static void main(String[] args) {
-		String path = new BakController().getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-		System.out.println(path);
-	}
 
+	@Transactional
 	@RequestMapping("del")
 	@ResponseBody
-	public JsonResult del(String path) {
-		FileUtil.del(path);
-		FileUtil.del(path.replace(".bak", ".zip"));
+	public JsonResult del(String id) {
+		bakService.del(id);
 		return renderSuccess();
 	}
 
 	@RequestMapping("delAll")
 	@ResponseBody
 	public JsonResult delAll() {
-		List<Bak> list = getBakList();
-		for (Bak bak : list) {
-			del(bak.getPath());
-		}
-
+		bakService.delAll();
+		
 		return renderSuccess();
 	}
 

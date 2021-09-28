@@ -4,8 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,9 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cym.controller.api.NginxApiController;
 import com.cym.ext.AsycPack;
-import com.cym.ext.ConfExt;
-import com.cym.ext.ConfFile;
 import com.cym.ext.Tree;
 import com.cym.model.Admin;
 import com.cym.model.Group;
@@ -39,13 +36,10 @@ import com.cym.utils.JsonResult;
 import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
 
-import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
 @Controller
@@ -63,6 +57,8 @@ public class RemoteController extends BaseController {
 	ConfController confController;
 	@Autowired
 	MainController mainController;
+	@Autowired
+	NginxApiController nginxApiController;
 
 	@Value("${project.version}")
 	String projectVersion;
@@ -87,8 +83,15 @@ public class RemoteController extends BaseController {
 	@RequestMapping("")
 	public ModelAndView index(ModelAndView modelAndView, HttpSession httpSession) {
 
-		modelAndView.setViewName("/adminPage/remote/index");
+		JsonResult<List<String>> jsonResult = nginxApiController.getNginxStartCmd();
+		modelAndView.addObject("startCmds", jsonResult.getObj());
+
+		jsonResult = nginxApiController.getNginxStopCmd();
+		modelAndView.addObject("stopCmds", jsonResult.getObj());
+
 		modelAndView.addObject("projectVersion", projectVersion);
+		modelAndView.setViewName("/adminPage/remote/index");
+
 		return modelAndView;
 	}
 
@@ -306,11 +309,8 @@ public class RemoteController extends BaseController {
 				if (cmd.contentEquals("replace")) {
 					jsonResult = confController.replace(confController.getReplaceJson(), request, null);
 				}
-				if (cmd.contentEquals("start")) {
-					jsonResult = confController.start(null, null, null);
-				}
-				if (cmd.contentEquals("stop")) {
-					jsonResult = confController.stop(null, null);
+				if (cmd.startsWith("start") || cmd.startsWith("stop")) {
+					jsonResult = confController.runCmd(cmd.replace("start ", "").replace("stop ", ""), null);
 				}
 				if (cmd.contentEquals("update")) {
 					jsonResult = renderError(m.get("remoteStr.notAllow"));
@@ -318,14 +318,26 @@ public class RemoteController extends BaseController {
 				rs.append("<span class='blue'>" + m.get("remoteStr.local") + "> </span>");
 			} else {
 				Remote remote = sqlHelper.findById(id, Remote.class);
-				rs.append("<span class='blue'>").append(remote.getIp()).append("> </span>");
+				rs.append("<span class='blue'>").append(remote.getIp() + ":" + remote.getPort()).append("> </span>");
 
 				if (cmd.contentEquals("check")) {
 					cmd = "checkBase";
 				}
 
 				try {
-					String json = HttpUtil.get(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/conf/" + cmd + "?creditKey=" + remote.getCreditKey());
+					String action = cmd;
+					if (cmd.startsWith("start") || cmd.startsWith("stop")) {
+						action = "runCmd";
+					}
+
+					String url = remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/conf/" + action + "?creditKey=" + remote.getCreditKey();
+
+					Map<String, Object> map = new HashMap<>();
+					if (cmd.startsWith("start") || cmd.startsWith("stop")) {
+						map.put("cmd", cmd.replace("start ", "").replace("stop ", ""));
+					}
+
+					String json = HttpUtil.post(url, map);
 					jsonResult = JSONUtil.toBean(json, JsonResult.class);
 				} catch (Exception e) {
 					e.printStackTrace();

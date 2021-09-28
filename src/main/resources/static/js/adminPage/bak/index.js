@@ -1,15 +1,16 @@
 
-function content(path) {
+function content(id) {
 	$.ajax({
 		type : 'GET',
 		url : ctx + '/adminPage/bak/content',
 		dataType : 'json',
 		data : {
-			path : path
+			id : id
 		},
 		success : function(data) {
 			if (data.success) {
-				$("#preview").val(data.obj);
+				var bak = data.obj;
+				$("#preview").val(bak.content);
 				layer.open({
 					type: 1,
 					title: commonStr.preview,
@@ -26,13 +27,13 @@ function content(path) {
 	});
 }
 
-function del(path){
+function del(id){
 	if(confirm(commonStr.confirmDel)){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/bak/del',
 			data : {
-				path : path
+				id : id
 			},
 			dataType : 'json',
 			success : function(data) {
@@ -51,13 +52,13 @@ function del(path){
 
 
 
-function replace(path){
+function replace(id){
 	if(confirm(bakStr.restoreNotice)){
 		$.ajax({
 			type : 'POST',
 			url : ctx + '/adminPage/bak/replace',
 			data : {
-				path : path
+				id : id
 			},
 			dataType : 'json',
 			success : function(data) {

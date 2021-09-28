@@ -1,27 +1,25 @@
 package com.cym.model;
 
-public class Bak {
-	String path;
+import cn.craccd.sqlHelper.bean.BaseModel;
+import cn.craccd.sqlHelper.config.Table;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel("备份文件")
+@Table
+public class Bak extends BaseModel{
+	@ApiModelProperty("时间")
 	String time;
+	@ApiModelProperty("主文件内容")
+	String content;
 
-	String mark;
-	
-	
-	public String getMark() {
-		return mark;
+
+	public String getContent() {
+		return content;
 	}
 
-	public void setMark(String mark) {
-		this.mark = mark;
-	}
-	
-	
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	public String getTime() {

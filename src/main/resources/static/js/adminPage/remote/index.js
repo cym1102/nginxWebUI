@@ -351,17 +351,6 @@ function contentLocal(){
 		url : ctx + '/adminPage/remote/readContent',
 		success : function(data) {
 			if (data) {
-				/*$("#content").val(data);
-				$("#content").setTextareaCount();
-				
-				form.render();
-				
-				layer.open({
-					type : 1,
-					title :remoteStr.content,
-					area : [ '1200px', '745px' ], // 宽高
-					content : $('#contentDiv')
-				});*/
 				
 				$("#preview").val(data);
 				layer.open({
@@ -392,17 +381,6 @@ function content(id) {
 		},
 		success : function(data) {
 			if (data.success) {
-				/*$("#content").val(data.obj);
-				$("#content").setTextareaCount();
-				
-				form.render();
-				
-				layer.open({
-					type : 1,
-					title :remoteStr.content,
-					area : [ '1200px', '745px' ], // 宽高
-					content : $('#contentDiv')
-				});*/
 				
 				$("#preview").val(data.obj);
 				layer.open({
@@ -579,7 +557,7 @@ function cmdGroup(){
 				layer.open({
 					type : 1,
 					title : remoteStr.cmdOver,
-					area : [ '600px', '500px' ], // 宽高
+					area : [ '700px', '500px' ], // 宽高
 					content : $('#cmdDiv')
 				});
 			} else {

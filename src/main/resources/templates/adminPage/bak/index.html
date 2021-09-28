@@ -11,30 +11,32 @@
 				<div class="layui-inline">
 					<button type="button" class="layui-btn layui-btn-danger" onclick="delAll()">${bakStr.clear}</button>
 				</div>
+				
+				<input type="hidden" name="curr" value="${page.curr}">
+				<input type="hidden" name="limit" value="${page.limit}">
 			</form>
 
 			<table class="layui-table">
 				<thead>
 					<tr>
-						<th>${bakStr.path}</th>
 						<th>${commonStr.createTime}</th>
 						<th>${commonStr.operation}</th>
 					</tr>
 				</thead>
 				<tbody>
-					<#list bakList as bak>
+					<#list page.records as bak>
 					<tr>
-						<td>${bak.path}</td>
 						<td>${bak.time}</td>
 						<td>
-							<button class="layui-btn layui-btn-sm" onclick="content('${bak.path}')">${bakStr.content}</button>
-							<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="replace('${bak.path}')">${bakStr.restore}</button>
-							<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="del('${bak.path}')">${commonStr.del}</button>
+							<button class="layui-btn layui-btn-sm" onclick="content('${bak.id}')">${bakStr.content}</button>
+							<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="replace('${bak.id}')">${bakStr.restore}</button>
+							<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="del('${bak.id}')">${commonStr.del}</button>
 						</td>
 					</tr>
 					</#list>
 				</tbody>
 			</table>
+			<div id="pageInfo"></div>
 		</div>
 
 

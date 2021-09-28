@@ -326,79 +326,81 @@ public class ConfController extends BaseController {
 		}
 	}
 
-	@RequestMapping(value = "start")
-	@ResponseBody
-	public JsonResult start(String nginxPath, String nginxExe, String nginxDir) {
-		if (nginxPath == null) {
-			nginxPath = settingService.get("nginxPath");
-		}
-		if (nginxExe == null) {
-			nginxExe = settingService.get("nginxExe");
-		}
-		if (nginxDir == null) {
-			nginxDir = settingService.get("nginxDir");
-		}
-		try {
-			String rs = "";
-			String cmd;
-			if (SystemTool.isWindows()) {
-				cmd = "cmd /c start nginx.exe" + " -c " + nginxPath + " -p " + nginxDir;
-				RuntimeUtil.exec(new String[] {}, new File(nginxDir), cmd);
-			} else {
-				cmd = nginxExe + " -c " + nginxPath;
-				if (StrUtil.isNotEmpty(nginxDir)) {
-					cmd += " -p " + nginxDir;
-				}
-				rs = RuntimeUtil.execForStr("/bin/sh", "-c", cmd);
-			}
-
-			cmd = "<span class='blue'>" + cmd + "</span>";
-			if (StrUtil.isEmpty(rs) || rs.contains("signal process started")) {
-				return renderSuccess(cmd + "<br>" + m.get("confStr.startSuccess") + "<br>" + rs.replace("\n", "<br>"));
-			} else {
-				return renderError(cmd + "<br>" + m.get("confStr.startFail") + "<br>" + rs.replace("\n", "<br>"));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return renderError(m.get("confStr.startFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
-		}
-	}
-
-	@RequestMapping(value = "stop")
-	@ResponseBody
-	public JsonResult stop(String nginxExe, String nginxDir) {
-		if (nginxExe == null) {
-			nginxExe = settingService.get("nginxExe");
-		}
-		if (nginxDir == null) {
-			nginxDir = settingService.get("nginxDir");
-		}
-		try {
-			String cmd;
-			if (SystemTool.isWindows()) {
-				cmd = "taskkill /im nginx.exe /f";
-			} else {
-				cmd = "pkill nginx";
-			}
-			String rs = RuntimeUtil.execForStr(cmd);
-
-			cmd = "<span class='blue'>" + cmd + "</span>";
-			if (StrUtil.isEmpty(rs) || rs.contains("已终止进程") || rs.toLowerCase().contains("terminated process")) {
-				return renderSuccess(cmd + "<br>" + m.get("confStr.stopSuccess") + "<br>" + rs.replace("\n", "<br>"));
-			} else {
-				return renderError(cmd + "<br>" + m.get("confStr.stopFail") + "<br>" + rs.replace("\n", "<br>"));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return renderError(m.get("confStr.stopFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
-		}
-	}
+//	@RequestMapping(value = "start")
+//	@ResponseBody
+//	public JsonResult start(String nginxPath, String nginxExe, String nginxDir) {
+//		if (nginxPath == null) {
+//			nginxPath = settingService.get("nginxPath");
+//		}
+//		if (nginxExe == null) {
+//			nginxExe = settingService.get("nginxExe");
+//		}
+//		if (nginxDir == null) {
+//			nginxDir = settingService.get("nginxDir");
+//		}
+//		try {
+//			String rs = "";
+//			String cmd;
+//			if (SystemTool.isWindows()) {
+//				cmd = "cmd /c start nginx.exe" + " -c " + nginxPath + " -p " + nginxDir;
+//				RuntimeUtil.exec(new String[] {}, new File(nginxDir), cmd);
+//			} else {
+//				cmd = nginxExe + " -c " + nginxPath;
+//				if (StrUtil.isNotEmpty(nginxDir)) {
+//					cmd += " -p " + nginxDir;
+//				}
+//				rs = RuntimeUtil.execForStr("/bin/sh", "-c", cmd);
+//			}
+//
+//			cmd = "<span class='blue'>" + cmd + "</span>";
+//			if (StrUtil.isEmpty(rs) || rs.contains("signal process started")) {
+//				return renderSuccess(cmd + "<br>" + m.get("confStr.startSuccess") + "<br>" + rs.replace("\n", "<br>"));
+//			} else {
+//				return renderError(cmd + "<br>" + m.get("confStr.startFail") + "<br>" + rs.replace("\n", "<br>"));
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return renderError(m.get("confStr.startFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
+//		}
+//	}
+//
+//	@RequestMapping(value = "stop")
+//	@ResponseBody
+//	public JsonResult stop(String nginxExe, String nginxDir) {
+//		if (nginxExe == null) {
+//			nginxExe = settingService.get("nginxExe");
+//		}
+//		if (nginxDir == null) {
+//			nginxDir = settingService.get("nginxDir");
+//		}
+//		try {
+//			String cmd;
+//			if (SystemTool.isWindows()) {
+//				cmd = "taskkill /im nginx.exe /f";
+//			} else {
+//				cmd = "pkill nginx";
+//			}
+//			String rs = RuntimeUtil.execForStr(cmd);
+//
+//			cmd = "<span class='blue'>" + cmd + "</span>";
+//			if (StrUtil.isEmpty(rs) || rs.contains("已终止进程") || rs.toLowerCase().contains("terminated process")) {
+//				return renderSuccess(cmd + "<br>" + m.get("confStr.stopSuccess") + "<br>" + rs.replace("\n", "<br>"));
+//			} else {
+//				return renderError(cmd + "<br>" + m.get("confStr.stopFail") + "<br>" + rs.replace("\n", "<br>"));
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return renderError(m.get("confStr.stopFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
+//		}
+//	}
 
 	@RequestMapping(value = "runCmd")
 	@ResponseBody
 	public JsonResult runCmd(String cmd, String type) {
-		settingService.set(type, cmd);
-
+		if(StrUtil.isNotEmpty(type)) {
+			settingService.set(type, cmd);
+		}
+		
 		try {
 			String rs = "";
 			if (SystemTool.isWindows()) {

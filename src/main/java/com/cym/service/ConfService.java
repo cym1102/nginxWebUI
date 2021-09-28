@@ -14,7 +14,8 @@ import com.cym.config.InitConfig;
 import com.cym.ext.AsycPack;
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
-import com.cym.model.Admin;
+import com.cym.model.Bak;
+import com.cym.model.BakSub;
 import com.cym.model.Basic;
 import com.cym.model.Http;
 import com.cym.model.Location;
@@ -627,20 +628,33 @@ public class ConfService {
 		return ToolUtils.handleConf(new NgxDumper(ngxConfig).dump());
 	}
 
-	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName, Boolean bak, String adminName) {
-		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
+	@Transactional
+	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName, Boolean isBak, String adminName) {
 		String confd = new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/";
 
-		// 备份主文件
-		if (bak) {
+		// 备份文件
+		if (isBak) {
+			FileUtil.mkdir(InitConfig.home + "bak");
+			
+			Bak bak = new Bak();
+			bak.setTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+			
 			if (FileUtil.exist(nginxPath)) {
-				FileUtil.mkdir(InitConfig.home + "bak");
-				FileUtil.copy(nginxPath, InitConfig.home + "bak/nginx.conf." + date + ".bak", true);
+				bak.setContent(FileUtil.readString(nginxPath, StandardCharsets.UTF_8)); 
 			}
-
+			sqlHelper.insert(bak);
+			
 			// 备份conf.d文件夹
 			if (FileUtil.exist(confd)) {
-				ZipUtil.zip(confd, InitConfig.home + "bak/nginx.conf." + date + ".zip");
+				List<String> list = FileUtil.listFileNames(confd);
+				for(String name : list) {
+					BakSub bakSub = new BakSub();
+					bakSub.setBakId(bak.getId());
+					
+					bakSub.setName(name);
+					bakSub.setContent(FileUtil.readString(confd + name, StandardCharsets.UTF_8));
+					sqlHelper.insert(bakSub);
+				}
 			}
 
 			// 写入操作日志

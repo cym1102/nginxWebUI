@@ -12,7 +12,6 @@ import java.util.StringTokenizer;
 import com.cym.ext.NetworkInfo;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.NumberUtil;
 
 public class NetWorkUtil {
 	private static final int SLEEP_TIME = 2 * 1000;
@@ -21,7 +20,7 @@ public class NetWorkUtil {
 	public static NetworkInfo getNetworkDownUp() {
 		Properties props = System.getProperties();
 		String os = props.getProperty("os.name").toLowerCase();
-		os = os.startsWith("win") ? "windows" : "linux";
+		os = os.toLowerCase().startsWith("win") ? "windows" : "linux";
 		Process pro = null;
 		Runtime r = Runtime.getRuntime();
 		BufferedReader input = null;

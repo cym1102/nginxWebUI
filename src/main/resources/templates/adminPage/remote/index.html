@@ -231,9 +231,18 @@
 							<option value="check">${remoteStr.check}</option>
 							<option value="replace">${remoteStr.replace}</option>
 							<option value="reload">${remoteStr.reload}</option>
-							<option value="start">${remoteStr.start}</option>
-							<option value="stop">${remoteStr.stop}</option>
 							<option value="update">${remoteStr.update}</option>
+								
+							<optgroup label="${remoteStr.nginxStart}">
+								<#list startCmds as cmd>
+									<option value="start ${cmd}">${cmd}</option>
+								</#list>
+							</optgroup>
+							<optgroup label="${remoteStr.nginxStop}">
+								<#list stopCmds as cmd>
+									<option value="stop ${cmd}">${cmd}</option>
+								</#list>
+							</optgroup>
 						</select>
 					</div>
 				</div>

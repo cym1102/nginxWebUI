@@ -3,7 +3,6 @@ package com.cym.controller.adminPage;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -27,7 +26,6 @@ import com.cym.utils.JsonResult;
 import com.cym.utils.PwdCheckUtil;
 import com.cym.utils.SystemTool;
 
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.ShearCaptcha;
 import cn.hutool.captcha.generator.RandomGenerator;
@@ -83,6 +81,7 @@ public class LoginController extends BaseController {
 		// 验证码
 		String imgCode = (String) httpSession.getAttribute("imgCode");
 		if (StrUtil.isEmpty(imgCode) || StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
+			httpSession.removeAttribute("imgCode"); // 销毁验证码
 			return renderError(m.get("loginStr.backError1")); // 验证码不正确
 		}
 
@@ -139,6 +138,7 @@ public class LoginController extends BaseController {
 		if (remote == null) {
 			String imgCode = (String) httpSession.getAttribute("imgCode");
 			if (StrUtil.isEmpty(imgCode) || StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
+				httpSession.removeAttribute("imgCode");	// 销毁验证码
 				return renderError(m.get("loginStr.backError1")); // 验证码不正确
 			}
 		}
