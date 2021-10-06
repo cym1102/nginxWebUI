@@ -36,7 +36,7 @@ public class ParamApiController extends BaseController {
 		if (StrUtil.isEmpty(serverId) && StrUtil.isEmpty(locationId) && StrUtil.isEmpty(upstreamId)) {
 			return renderError(m.get("apiStr.paramError"));
 		}
-		
+
 		List<Param> list = paramService.getList(serverId, locationId, upstreamId);
 		return renderSuccess(list);
 	}
@@ -44,7 +44,18 @@ public class ParamApiController extends BaseController {
 	@ApiOperation("添加或编辑参数")
 	@PostMapping("insertOrUpdate")
 	public JsonResult<?> insertOrUpdate(Param param) throws IOException {
-		if (StrUtil.isEmpty(param.getServerId()) && StrUtil.isEmpty(param.getLocationId()) && StrUtil.isEmpty(param.getUpstreamId())) {
+		Integer count = 0;
+		if (StrUtil.isNotEmpty(param.getLocationId())) {
+			count++;
+		}
+		if (StrUtil.isNotEmpty(param.getServerId())) {
+			count++;
+		}
+		if (StrUtil.isNotEmpty(param.getUpstreamId())) {
+			count++;
+		}
+
+		if (count != 1) {
 			return renderError(m.get("apiStr.paramError"));
 		}
 

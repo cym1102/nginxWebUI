@@ -25,7 +25,7 @@ nginx本身功能复杂, nginxWebUI并不能涵盖nginx所有功能, 但能覆�
 部署此项目后, 配置nginx再也不用上网各种搜索配置代码, 再也不用手动申请和配置ssl证书, 只需要在本项目中进行增删改查就可方便的配置和启动nginx。
 
 ```
-演示地址: http://154.31.21.178:8080
+演示地址: http://test.nginxwebui.cn:8080
 用户名: admin
 密码: Admin123
 ```
@@ -66,7 +66,7 @@ yum install nginx
 2.下载最新版发行包jar
 
 ```
-wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.7.1.jar
+wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.7.2.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -145,7 +145,7 @@ docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.p
 version: "3.2"
 services:
   nginxWebUi-server:
-    image: cym1102/nginxwebui:2.7.1
+    image: cym1102/nginxwebui:2.7.2
     volumes:
       - type: bind
         source: "/home/nginxWebUI"
@@ -168,7 +168,7 @@ mvn clean package
 2. 使用docker构建镜像
 
 ```
-docker build -t nginxwebui:2.7.1 .
+docker build -t nginxwebui:2.7.2 .
 ```
 
 #### 添加开机启动

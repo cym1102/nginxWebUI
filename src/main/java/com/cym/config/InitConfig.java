@@ -53,6 +53,12 @@ public class InitConfig {
 
 	@Value("${project.home}")
 	public void setHome(String home) {
+
+		if (SystemTool.isMacOS() && home.equals("/home/nginxWebUI/")) {
+			// 配置macos的home
+			home = "~/nginxWebUI/";
+		}
+
 		InitConfig.home = home;
 		InitConfig.acmeShDir = home + ".acme.sh/";
 		InitConfig.acmeSh = home + ".acme.sh/acme.sh";
@@ -108,7 +114,7 @@ public class InitConfig {
 
 			// 修改acme.sh文件
 			List<String> res = FileUtil.readUtf8Lines(acmeSh);
-			for (int i=0;i<res.size();i++) {
+			for (int i = 0; i < res.size(); i++) {
 				if (res.get(i).contains("DEFAULT_INSTALL_HOME=\"$HOME/.$PROJECT_NAME\"")) {
 					res.set(i, "DEFAULT_INSTALL_HOME=\"" + acmeShDir + "\"");
 				}
@@ -132,15 +138,23 @@ public class InitConfig {
 
 			// 判断是否是容器中
 			if (inDocker()) {
-				if (!NginxUtils.isRun()) {
+				// 设置nginx执行文件
+				settingService.set("nginxExe", "nginx");
+			}
 
-					String nginxExe = "nginx";
-					// 设置nginx执行文件
-					settingService.set("nginxExe", nginxExe);
-					// 启动nginx
-					String cmd = nginxExe + " -c " + nginxPath;
-					RuntimeUtil.execForStr("/bin/sh", "-c", cmd);
+			// 尝试启动nginx
+			String nginxExe = settingService.get("nginxExe");
+			String nginxDir = settingService.get("nginxDir");
+
+			logger.info("nginxIsRun:" + NginxUtils.isRun());
+			if (!NginxUtils.isRun() && StrUtil.isNotEmpty(nginxExe) && StrUtil.isNotEmpty(nginxPath)) {
+				String cmd = nginxExe + " -c " + nginxPath;
+
+				if (StrUtil.isNotEmpty(nginxDir)) {
+					cmd += " -p " + nginxDir;
 				}
+				logger.info("runCmd:" + cmd);
+				RuntimeUtil.execForStr("/bin/sh", "-c", cmd);
 			}
 		}
 
