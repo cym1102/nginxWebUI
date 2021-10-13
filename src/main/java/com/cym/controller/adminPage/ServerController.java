@@ -66,7 +66,12 @@ public class ServerController extends BaseController {
 			if (server.getEnable() == null) {
 				server.setEnable(false);
 			}
-
+			
+			// 描述回车转<br>
+			if(StrUtil.isNotEmpty(server.getDescr())) {
+				server.setDescr(server.getDescr().replace("\n", "<br>"));
+			}
+			
 			serverExt.setServer(server);
 			if (server.getProxyType() == 0) {
 				serverExt.setLocationStr(buildLocationStr(server.getId()));
@@ -75,6 +80,7 @@ public class ServerController extends BaseController {
 				serverExt.setLocationStr(m.get("serverStr.server") + ": " + (upstream != null ? upstream.getName() : ""));
 			}
 
+			
 			exts.add(serverExt);
 		}
 		page.setRecords(exts);
@@ -287,5 +293,13 @@ public class ServerController extends BaseController {
 	public JsonResult setOrder(String id, Integer count) {
 		serverService.setSeq(id, count);
 		return renderSuccess();
+	}
+	
+	@RequestMapping("getDescr")
+	@ResponseBody
+	public JsonResult getDescr(String id) {
+		Server server = sqlHelper.findById(id, Server.class);
+		
+		return renderSuccess(server.getDescr());
 	}
 }

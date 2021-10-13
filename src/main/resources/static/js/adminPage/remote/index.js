@@ -4,6 +4,7 @@ var remoteFromId;
 var remoteSelectId;
 var remoteCmdId;
 
+var load;
 $(function(){
 	// 加载组件
 	layui.config({
@@ -495,14 +496,27 @@ function asycSelect(){
 
 function asycOver(){
 	
-	layer.load();
+	$(".asycData")
+	var asycData = [];
+	$(".asycData").each(function() {
+		if ($(this).prop("checked")) {
+			asycData.push($(this).val());
+		}
+	});
+	if(asycData.length == 0){
+		layer.msg(remoteStr.noData);
+		return;
+	}
+	
+	
+    load = layer.load();
 	$.ajax({
 		type : 'POST',
 		url : ctx + '/adminPage/remote/asyc',
 		data : $("#asycForm").serialize(),
 		dataType : 'json',
 		success : function(data) {
-			layer.closeAll();
+			layer.close(load);
 			if (data.success) {
 				layer.msg(remoteStr.asycSuccess)
 			}else{

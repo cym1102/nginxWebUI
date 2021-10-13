@@ -49,7 +49,7 @@ public class ExportController extends BaseController {
 	public void dataExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
 
-		AsycPack asycPack = confService.getAsycPack();
+		AsycPack asycPack = confService.getAsycPack(new String[] {"all"});
 		String json = JSONUtil.toJsonPrettyStr(asycPack);
 
 		response.addHeader("Content-Type", "application/octet-stream");

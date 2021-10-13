@@ -54,7 +54,7 @@ public class NginxWebUI {
 					}
 				}
 			}
-		} else {
+		} else if (SystemTool.isLinux()) {
 			list = RuntimeUtil.execForLines("ps -ef");
 			for (String line : list) {
 				if (line.contains("java") && line.contains("nginxWebUI") && line.contains(".jar")) {
@@ -72,7 +72,7 @@ public class NginxWebUI {
 			logger.info("杀掉进程:" + pid);
 			if (SystemTool.isWindows()) {
 				RuntimeUtil.exec("taskkill /im " + pid + " /f");
-			} else {
+			} else if (SystemTool.isLinux()) {
 				RuntimeUtil.exec("kill -9 " + pid);
 			}
 		}

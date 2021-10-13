@@ -38,9 +38,9 @@
 						<tr>
 							<td>${log.path}</td>
 							<td>
-								<#if isLinux>
-									<button class="layui-btn layui-btn-sm" onclick="tail('${log.id}','${log.path}')">${logStr.tail}</button>
-								</#if>
+								
+								<button class="layui-btn layui-btn-sm" onclick="tail('${log.id}','${log.path}')">${logStr.tail}</button>
+								
 								<button class="layui-btn layui-btn-sm" onclick="down('${log.id}')">${logStr.download}</button>
 								<button class="layui-btn layui-btn-sm" onclick="edit('${log.id}')">${commonStr.edit}</button>
 								<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="del('${log.id}')">${commonStr.del}</button>

@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -367,19 +368,21 @@ public class RemoteController extends BaseController {
 
 	@RequestMapping("asyc")
 	@ResponseBody
-	public JsonResult asyc(String fromId, String[] remoteId, HttpServletRequest request) {
+	public JsonResult asyc(String fromId, String[] remoteId, String[] asycData, HttpServletRequest request) {
 		if (StrUtil.isEmpty(fromId) || remoteId == null || remoteId.length == 0) {
-			return renderSuccess(m.get("remoteStr.noChoice"));
+			return renderError(m.get("remoteStr.noChoice"));
 		}
 
 		Remote remoteFrom = sqlHelper.findById(fromId, Remote.class);
 		String json;
 		if (remoteFrom == null) {
 			// 本地
-			json = getAsycPack();
+			json = getAsycPack(asycData);
 		} else {
 			// 远程
-			json = HttpUtil.get(remoteFrom.getProtocol() + "://" + remoteFrom.getIp() + ":" + remoteFrom.getPort() + "/adminPage/remote/getAsycPack?creditKey=" + remoteFrom.getCreditKey(), 1000);
+			json = HttpUtil.get(remoteFrom.getProtocol() + "://" + remoteFrom.getIp() + ":" + remoteFrom.getPort() + "/adminPage/remote/getAsycPack?creditKey=" + remoteFrom.getCreditKey()
+				+ "&asycData=" + StrUtil.join(",", Arrays.asList(asycData))
+			, 1000);
 		}
 
 		String adminName = getAdmin(request).getName();
@@ -410,8 +413,8 @@ public class RemoteController extends BaseController {
 
 	@RequestMapping("getAsycPack")
 	@ResponseBody
-	public String getAsycPack() {
-		AsycPack asycPack = confService.getAsycPack();
+	public String getAsycPack(String[] asycData) {
+		AsycPack asycPack = confService.getAsycPack(asycData);
 
 		return JSONUtil.toJsonPrettyStr(asycPack);
 	}

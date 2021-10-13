@@ -9,7 +9,7 @@
 		<div></div>
 	</div>
 	
-	<div style="text-align: center;margin-top: 2px;">
+	<div style="text-align: center;margin-top: 5px;">
 		<button style="width: 100px;" class="layui-btn layui-btn-sm" type="button" onclick="stop()">${loginStr.pause}</button>
 	 	<button style="width: 100px;" class="layui-btn layui-btn-sm layui-btn-normal" type="button" onclick="goon()">${loginStr.continue}</button>
 	</div>
@@ -26,7 +26,9 @@
 			} else {
 				var protocol = 'ws:';
 			}
-			var websocket = new WebSocket(protocol + `${ctx}/adminPage/logTail/${id}` );
+			debugger
+			var guid = Math.random();
+			var websocket = new WebSocket(protocol + `${ctx}/adminPage/logTail/${id}/` + guid);
 			websocket.onmessage = function(event) {
 				if(run){
 					// 接收服务端的实时日志并添加到HTML页面中
@@ -49,6 +51,8 @@
 		function goon(){
 			run = true;
 		}
+		
+		
 	</script>
 	
 </body>

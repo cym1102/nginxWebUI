@@ -173,6 +173,19 @@
 						<div id="remoteSelectId"></div>
 					</div>
 				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">同步数据</label>
+					<div class="layui-input-block">
+						<input type="checkbox" class="asycData" name="asycData" id="basic" lay-skin="primary" value="basic" title="基本参数">
+						<input type="checkbox" class="asycData" name="asycData" id="http" lay-skin="primary" value="http" title="http参数">
+						<input type="checkbox" class="asycData" name="asycData" id="stream" lay-skin="primary" value="stream" title="stream参数">
+						<input type="checkbox" class="asycData" name="asycData" id="server" lay-skin="primary" value="server" title="反向代理server">
+						<input type="checkbox" class="asycData" name="asycData" id="upstream" lay-skin="primary" value="upstream" title="负载均衡upstream">
+						<input type="checkbox" class="asycData" name="asycData" id="password" lay-skin="primary" value="password" title="密码文件">
+						<input type="checkbox" class="asycData" name="asycData" id="param" lay-skin="primary" value="param" title="额外参数及模板">
+					</div>
+				</div>
 
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="asycOver()">${remoteStr.asyc}</button>

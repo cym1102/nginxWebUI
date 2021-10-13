@@ -108,7 +108,7 @@ function selectRootCustom(){
 function tail(id,path){
 	layer.open({
 		  type: 2, 
-		  area : [ '1300px', '732px' ], // 宽高
+		  area : [ '1300px', '90%' ], // 宽高
 		  title : path,
 		  resize  : false,
 		  content: ctx + "adminPage/log/tail?id=" + id

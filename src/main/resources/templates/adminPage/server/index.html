@@ -189,7 +189,7 @@
 
 								<td style="max-width: 150px;">
 									${ext.server.descr}
-									<a href="javascript:editDescr('${ext.server.id}','${ext.server.descr}')" style="color: blue; text-decoration: underline;">${commonStr.edit}</a>
+									<a href="javascript:editDescr('${ext.server.id}')" style="color: blue; text-decoration: underline;">${commonStr.edit}</a>
 								</td>
 
 
@@ -516,8 +516,8 @@
 		<div class="layui-form" id="descrDiv" style="padding: 15px; display: none">
 			<input type="hidden" id="serverId" name="serverId">
 			<div class="layui-form-item">
-				<div class="layui-input-inline" style="width: 100%">
-					<textarea type="text" id="descr" name="descr" class="layui-textarea"></textarea>
+				<div class="layui-input-inline" style="width: 100%;">
+					<textarea type="text" id="descr" name="descr" class="layui-textarea" style="height: 200px;"></textarea>
 				</div>
 			</div>
 			<div class="layui-form-item">

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -54,11 +55,6 @@ public class InitConfig {
 	@Value("${project.home}")
 	public void setHome(String home) {
 
-		if (SystemTool.isMacOS() && home.equals("/home/nginxWebUI/")) {
-			// 配置macos的home
-			home = "~/nginxWebUI/";
-		}
-
 		InitConfig.home = home;
 		InitConfig.acmeShDir = home + ".acme.sh/";
 		InitConfig.acmeSh = home + ".acme.sh/acme.sh";
@@ -66,6 +62,8 @@ public class InitConfig {
 
 	@PostConstruct
 	public void init() throws IOException {
+		
+		
 		// 初始化base值
 		Long count = sqlHelper.findAllCount(Basic.class);
 		if (count == 0) {
@@ -168,7 +166,7 @@ public class InitConfig {
 	private Boolean inDocker() {
 		List<String> rs = RuntimeUtil.execForLines("cat /proc/1/cgroup");
 		for (String str : rs) {
-			logger.info(str);
+//			logger.info(str);
 			if (str.contains("docker")) {
 				logger.info("I am in docker");
 				return true;

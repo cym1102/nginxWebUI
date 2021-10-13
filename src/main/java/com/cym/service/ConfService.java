@@ -3,6 +3,7 @@ package com.cym.service;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -371,15 +372,15 @@ public class ConfService {
 						ngxParam = new NgxParam();
 						ngxParam.addValue("proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for");
 						ngxBlockLocation.addEntry(ngxParam);
-						
+
 						ngxParam = new NgxParam();
 						ngxParam.addValue("proxy_set_header X-Forwarded-Host $http_host");
 						ngxBlockLocation.addEntry(ngxParam);
-						
+
 						ngxParam = new NgxParam();
 						ngxParam.addValue("proxy_set_header X-Forwarded-Port $server_port");
 						ngxBlockLocation.addEntry(ngxParam);
-						
+
 						ngxParam = new NgxParam();
 						ngxParam.addValue("proxy_set_header X-Forwarded-Proto $scheme");
 						ngxBlockLocation.addEntry(ngxParam);
@@ -430,7 +431,6 @@ public class ConfService {
 					ngxBlockLocation.addValue("location");
 					ngxBlockLocation.addValue(location.getPath());
 				}
-			
 
 				// 自定义参数
 				paramList = paramService.getListByTypeId(location.getId(), "location");
@@ -457,7 +457,7 @@ public class ConfService {
 			if (server.getSsl() != null && server.getSsl() == 1) {
 				value += " ssl";
 			}
-			
+
 			ngxParam.addValue(value);
 			ngxBlockServer.addEntry(ngxParam);
 
@@ -469,10 +469,9 @@ public class ConfService {
 				ngxBlockServer.addEntry(ngxParam);
 			}
 
-			
 			// ssl配置
 			setServerSsl(server, ngxBlockServer);
-			
+
 			// 自定义参数
 			List<Param> paramList = paramService.getListByTypeId(server.getId(), "server");
 			for (Param param : paramList) {
@@ -485,6 +484,7 @@ public class ConfService {
 
 	/**
 	 * 配置ssl
+	 * 
 	 * @param server
 	 * @param ngxBlockServer
 	 */
@@ -635,22 +635,22 @@ public class ConfService {
 		// 备份文件
 		if (isBak) {
 			FileUtil.mkdir(InitConfig.home + "bak");
-			
+
 			Bak bak = new Bak();
 			bak.setTime(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
-			
+
 			if (FileUtil.exist(nginxPath)) {
-				bak.setContent(FileUtil.readString(nginxPath, StandardCharsets.UTF_8)); 
+				bak.setContent(FileUtil.readString(nginxPath, StandardCharsets.UTF_8));
 			}
 			sqlHelper.insert(bak);
-			
+
 			// 备份conf.d文件夹
 			if (FileUtil.exist(confd)) {
 				List<String> list = FileUtil.listFileNames(confd);
-				for(String name : list) {
+				for (String name : list) {
 					BakSub bakSub = new BakSub();
 					bakSub.setBakId(bak.getId());
-					
+
 					bakSub.setName(name);
 					bakSub.setContent(FileUtil.readString(confd + name, StandardCharsets.UTF_8));
 					sqlHelper.insert(bakSub);
@@ -658,11 +658,11 @@ public class ConfService {
 			}
 
 			// 写入操作日志
-			if(StrUtil.isNotEmpty(adminName)) {
+			if (StrUtil.isNotEmpty(adminName)) {
 				String beforeConf = FileUtil.readString(nginxPath, "UTF-8");
 				operateLogService.addLog(beforeConf, nginxContent, adminName);
 			}
-			
+
 		}
 
 		// 删除conf.d下全部文件
@@ -685,125 +685,171 @@ public class ConfService {
 
 	}
 
-	public AsycPack getAsycPack() {
+	public AsycPack getAsycPack(String[] asycData) {
+		String data = StrUtil.join(",", Arrays.asList(asycData));
+
 		AsycPack asycPack = new AsycPack();
-		asycPack.setBasicList(sqlHelper.findAll(Basic.class));
-
-		asycPack.setHttpList(sqlHelper.findAll(Http.class));
-		List<Server> serverList = sqlHelper.findAll(Server.class);
-		for (Server server : serverList) {
-			if (StrUtil.isNotEmpty(server.getPem()) && FileUtil.exist(server.getPem())) {
-				server.setPemStr(FileUtil.readString(server.getPem(), StandardCharsets.UTF_8));
-			}
-
-			if (StrUtil.isNotEmpty(server.getKey()) && FileUtil.exist(server.getKey())) {
-				server.setKeyStr(FileUtil.readString(server.getKey(), StandardCharsets.UTF_8));
-			}
+		if (data.contains("basic") || data.contains("all")) {
+			asycPack.setBasicList(sqlHelper.findAll(Basic.class));
 		}
-		asycPack.setServerList(serverList);
 
-		List<Password> passwordList = sqlHelper.findAll(Password.class);
-		for (Password password : passwordList) {
-			if (StrUtil.isNotEmpty(password.getPath()) && FileUtil.exist(password.getPath())) {
-				password.setPathStr(FileUtil.readString(password.getPath(), StandardCharsets.UTF_8));
-			}
-
+		if (data.contains("http") || data.contains("all")) {
+			asycPack.setHttpList(sqlHelper.findAll(Http.class));
 		}
-		asycPack.setPasswordList(passwordList);
 
-		asycPack.setLocationList(sqlHelper.findAll(Location.class));
-		asycPack.setUpstreamList(sqlHelper.findAll(Upstream.class));
-		asycPack.setUpstreamServerList(sqlHelper.findAll(UpstreamServer.class));
-		asycPack.setStreamList(sqlHelper.findAll(Stream.class));
-		asycPack.setTemplateList(sqlHelper.findAll(Template.class));
-		asycPack.setParamList(sqlHelper.findAll(Param.class));
+		if (data.contains("server") || data.contains("all")) {
+			List<Server> serverList = sqlHelper.findAll(Server.class);
+			for (Server server : serverList) {
+				if (StrUtil.isNotEmpty(server.getPem()) && FileUtil.exist(server.getPem())) {
+					server.setPemStr(FileUtil.readString(server.getPem(), StandardCharsets.UTF_8));
+				}
 
-		String nginxPath = settingService.get("nginxPath");
-		String decompose = settingService.get("decompose");
-
-		ConfExt confExt = buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"), false);
-
-		if (FileUtil.exist(nginxPath)) {
-			String orgStr = FileUtil.readString(nginxPath, StandardCharsets.UTF_8);
-			confExt.setConf(orgStr);
-
-			for (ConfFile confFile : confExt.getFileList()) {
-				confFile.setConf("");
-
-				String filePath = new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/" + confFile.getName();
-				if (FileUtil.exist(filePath)) {
-					confFile.setConf(FileUtil.readString(filePath, StandardCharsets.UTF_8));
+				if (StrUtil.isNotEmpty(server.getKey()) && FileUtil.exist(server.getKey())) {
+					server.setKeyStr(FileUtil.readString(server.getKey(), StandardCharsets.UTF_8));
 				}
 			}
+			asycPack.setServerList(serverList);
+			asycPack.setLocationList(sqlHelper.findAll(Location.class));
 		}
 
-		asycPack.setDecompose(decompose);
-		asycPack.setConfExt(confExt);
+		if (data.contains("password") || data.contains("all")) {
+			List<Password> passwordList = sqlHelper.findAll(Password.class);
+			for (Password password : passwordList) {
+				if (StrUtil.isNotEmpty(password.getPath()) && FileUtil.exist(password.getPath())) {
+					password.setPathStr(FileUtil.readString(password.getPath(), StandardCharsets.UTF_8));
+				}
+
+			}
+			asycPack.setPasswordList(passwordList);
+		}
+
+		if (data.contains("upstream") || data.contains("all")) {
+			asycPack.setUpstreamList(sqlHelper.findAll(Upstream.class));
+			asycPack.setUpstreamServerList(sqlHelper.findAll(UpstreamServer.class));
+		}
+
+		if (data.contains("stream") || data.contains("all")) {
+			asycPack.setStreamList(sqlHelper.findAll(Stream.class));
+		}
+
+		if (data.contains("param") || data.contains("all")) {
+			asycPack.setTemplateList(sqlHelper.findAll(Template.class));
+			asycPack.setParamList(sqlHelper.findAll(Param.class));
+		}
+
+//		if (data.contains("nginx") || data.contains("all")) {
+//			String nginxPath = settingService.get("nginxPath");
+//			String decompose = settingService.get("decompose");
+//			ConfExt confExt = buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"), false);
+//
+//			if (FileUtil.exist(nginxPath)) {
+//				String orgStr = FileUtil.readString(nginxPath, StandardCharsets.UTF_8);
+//				confExt.setConf(orgStr);
+//
+//				for (ConfFile confFile : confExt.getFileList()) {
+//					confFile.setConf("");
+//
+//					String filePath = new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/" + confFile.getName();
+//					if (FileUtil.exist(filePath)) {
+//						confFile.setConf(FileUtil.readString(filePath, StandardCharsets.UTF_8));
+//					}
+//				}
+//			}
+//			asycPack.setDecompose(decompose);
+//			asycPack.setConfExt(confExt);
+//		}
+
+		
+
 		return asycPack;
 	}
 
 	@Transactional
 	public void setAsycPack(AsycPack asycPack, String adminName) {
 		// 不要同步Cert表
-		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Password.class);
-		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Basic.class);
-		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Http.class);
-		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Server.class);
-		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Location.class);
-		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Upstream.class);
-		sqlHelper.deleteByQuery(new ConditionAndWrapper(), UpstreamServer.class);
-		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Stream.class);
-		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Param.class);
-		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Template.class);
-
-		sqlHelper.insertAll(asycPack.getBasicList());
-		sqlHelper.insertAll(asycPack.getHttpList());
-		sqlHelper.insertAll(asycPack.getServerList());
-		sqlHelper.insertAll(asycPack.getLocationList());
-		sqlHelper.insertAll(asycPack.getUpstreamList());
-		sqlHelper.insertAll(asycPack.getUpstreamServerList());
-		sqlHelper.insertAll(asycPack.getStreamList());
-		sqlHelper.insertAll(asycPack.getTemplateList());
-		sqlHelper.insertAll(asycPack.getParamList());
-		sqlHelper.insertAll(asycPack.getPasswordList());
-
 		try {
-			for (Server server : asycPack.getServerList()) {
-				if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getPemStr())) {
-					FileUtil.writeString(server.getPemStr(), server.getPem(), StandardCharsets.UTF_8);
-				}
-				if (StrUtil.isNotEmpty(server.getKey()) && StrUtil.isNotEmpty(server.getKeyStr())) {
-					FileUtil.writeString(server.getKeyStr(), server.getKey(), StandardCharsets.UTF_8);
+
+			if (asycPack.getBasicList() != null) {
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Basic.class);
+				sqlHelper.insertAll(asycPack.getBasicList());
+			}
+
+			if (asycPack.getHttpList() != null) {
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Http.class);
+				sqlHelper.insertAll(asycPack.getHttpList());
+			}
+
+			if (asycPack.getServerList() != null) {
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Server.class);
+				sqlHelper.insertAll(asycPack.getServerList());
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Location.class);
+				sqlHelper.insertAll(asycPack.getLocationList());
+
+				for (Server server : asycPack.getServerList()) {
+					if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getPemStr())) {
+						FileUtil.writeString(server.getPemStr(), server.getPem(), StandardCharsets.UTF_8);
+					}
+					if (StrUtil.isNotEmpty(server.getKey()) && StrUtil.isNotEmpty(server.getKeyStr())) {
+						FileUtil.writeString(server.getKeyStr(), server.getKey(), StandardCharsets.UTF_8);
+					}
 				}
 			}
 
-			for (Password password : asycPack.getPasswordList()) {
-				if (StrUtil.isNotEmpty(password.getPath()) && StrUtil.isNotEmpty(password.getPathStr())) {
-					FileUtil.writeString(password.getPathStr(), password.getPath(), StandardCharsets.UTF_8);
+			if (asycPack.getUpstreamList() != null) {
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Upstream.class);
+				sqlHelper.insertAll(asycPack.getUpstreamList());
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), UpstreamServer.class);
+				sqlHelper.insertAll(asycPack.getUpstreamServerList());
+			}
+
+			if (asycPack.getStreamList() != null) {
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Stream.class);
+				sqlHelper.insertAll(asycPack.getStreamList());
+			}
+
+			if (asycPack.getTemplateList() != null) {
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Template.class);
+				sqlHelper.insertAll(asycPack.getTemplateList());
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Param.class);
+				sqlHelper.insertAll(asycPack.getParamList());
+			}
+
+			if (asycPack.getPasswordList() != null) {
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Password.class);
+				sqlHelper.insertAll(asycPack.getPasswordList());
+
+				for (Password password : asycPack.getPasswordList()) {
+					if (StrUtil.isNotEmpty(password.getPath()) && StrUtil.isNotEmpty(password.getPathStr())) {
+						FileUtil.writeString(password.getPathStr(), password.getPath(), StandardCharsets.UTF_8);
+					}
 				}
 			}
+
+//			if (asycPack.getDecompose() != null) {
+//				settingService.set("decompose", asycPack.getDecompose());
+//			}
+//
+//			if (asycPack.getConfExt() != null) {
+//				ConfExt confExt = asycPack.getConfExt();
+//				String nginxPath = settingService.get("nginxPath");
+//				if (FileUtil.exist(nginxPath)) {
+//
+//					List<String> subContent = new ArrayList<>();
+//					List<String> subName = new ArrayList<>();
+//
+//					for (ConfFile confFile : confExt.getFileList()) {
+//						subContent.add(confFile.getConf());
+//						subName.add(confFile.getName());
+//					}
+//
+//					replace(nginxPath, confExt.getConf(), subContent, subName, true, adminName);
+//				}
+//			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		settingService.set("decompose", asycPack.getDecompose());
-
-		ConfExt confExt = asycPack.getConfExt();
-
-		String nginxPath = settingService.get("nginxPath");
-
-		if (FileUtil.exist(nginxPath)) {
-
-			List<String> subContent = new ArrayList<>();
-			List<String> subName = new ArrayList<>();
-
-			for (ConfFile confFile : confExt.getFileList()) {
-				subContent.add(confFile.getConf());
-				subName.add(confFile.getName());
-			}
-
-			replace(nginxPath, confExt.getConf(), subContent, subName, true, adminName);
-		}
 	}
 
 }

@@ -25,9 +25,9 @@ public class AsycPack {
 	List<Param> paramList;
 	List<Password> passwordList;
 	
-	ConfExt confExt;
+//	ConfExt confExt;
 
-	String decompose;
+//	String decompose;
 
 
 	
@@ -63,21 +63,21 @@ public class AsycPack {
 		this.paramList = paramList;
 	}
 
-	public String getDecompose() {
-		return decompose;
-	}
-
-	public void setDecompose(String decompose) {
-		this.decompose = decompose;
-	}
-
-	public ConfExt getConfExt() {
-		return confExt;
-	}
-
-	public void setConfExt(ConfExt confExt) {
-		this.confExt = confExt;
-	}
+//	public String getDecompose() {
+//		return decompose;
+//	}
+//
+//	public void setDecompose(String decompose) {
+//		this.decompose = decompose;
+//	}
+//
+//	public ConfExt getConfExt() {
+//		return confExt;
+//	}
+//
+//	public void setConfExt(ConfExt confExt) {
+//		this.confExt = confExt;
+//	}
 
 	public List<Stream> getStreamList() {
 		return streamList;
