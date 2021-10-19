@@ -14,6 +14,10 @@ QQ技术交流群2: 560797506
 
 github: https://github.com/cym1102/nginxWebUI
 
+微信捐赠二维码
+
+<img src="http://www.nginxwebui.cn/img/weixin.png"  height="200" width="200">
+
 #### 功能说明
 
 nginxWebUI是一款图形化管理nginx配置得工具, 可以使用网页来快速配置nginx的各项功能, 包括http协议转发, tcp协议转发, 反向代理, 负载均衡, 静态html服务器, ssl证书自动申请、续签、配置等, 配置好后可一建生成nginx.conf文件, 同时可控制nginx使用此文件进行启动与重载, 完成对nginx的图形化控制闭环.
@@ -66,7 +70,7 @@ yum install nginx
 2.下载最新版发行包jar
 
 ```
-wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.7.3.jar
+wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.7.5.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -145,7 +149,7 @@ docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.p
 version: "3.2"
 services:
   nginxWebUi-server:
-    image: cym1102/nginxwebui:2.7.3
+    image: cym1102/nginxwebui:2.7.5
     volumes:
       - type: bind
         source: "/home/nginxWebUI"
@@ -168,7 +172,7 @@ mvn clean package
 2. 使用docker构建镜像
 
 ```
-docker build -t nginxwebui:2.7.3 .
+docker build -t nginxwebui:2.7.5 .
 ```
 
 #### 添加开机启动
@@ -293,8 +297,3 @@ select * from admin;
 ```
 .quit
 ```
-
-
-#### 捐款二维码
-
-<img src="http://www.nginxwebui.cn/img/weixin.png"  height="300" width="300">

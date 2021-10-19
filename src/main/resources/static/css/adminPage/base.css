@@ -52,3 +52,7 @@ textarea {
     -o-text-overflow:ellipsis;
     overflow: hidden;
  }  
+ 
+ .center{
+ 	text-align: center;
+ }

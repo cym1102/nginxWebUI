@@ -5,9 +5,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -21,17 +22,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.config.InitConfig;
+import com.cym.ext.CertExt;
 import com.cym.model.Cert;
 import com.cym.service.CertService;
 import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
-import com.cym.utils.TimeExeUtils;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
+import com.cym.utils.TimeExeUtils;
 
 import cn.craccd.sqlHelper.bean.Page;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
@@ -61,12 +62,13 @@ public class CertController extends BaseController {
 
 	@RequestMapping("addOver")
 	@ResponseBody
-	public JsonResult addOver(Cert cert) {
+	public JsonResult addOver(Cert cert, String[] domains, String[] types, String[] values) {
 		if (certService.hasSame(cert)) {
 			return renderError(m.get("certStr.same"));
 		}
 
-		sqlHelper.insertOrUpdate(cert);
+		certService.insertOrUpdate(cert, domains, types, values);
+		
 		return renderSuccess();
 	}
 
@@ -80,7 +82,10 @@ public class CertController extends BaseController {
 	@RequestMapping("detail")
 	@ResponseBody
 	public JsonResult detail(String id) {
-		return renderSuccess(sqlHelper.findById(id, Cert.class));
+		CertExt certExt = new CertExt();
+		certExt.setCert(sqlHelper.findById(id, Cert.class));
+		certExt.setCertCodes(certService.getCertCodes(id));
+		return renderSuccess(certExt);
 	}
 
 	@RequestMapping("del")
@@ -118,25 +123,34 @@ public class CertController extends BaseController {
 		String[] env = getEnv(cert);
 
 		if (type.equals("issue") || StrUtil.isEmpty(cert.getPem())) {
-			// 申请
-			String dnsType = "";
-			if (cert.getDnsType().equals("ali")) {
-				dnsType = "dns_ali";
-			} else if (cert.getDnsType().equals("dp")) {
-				dnsType = "dns_dp";
-			} else if (cert.getDnsType().equals("cf")) {
-				dnsType = "dns_cf";
-			} else if (cert.getDnsType().equals("gd")) {
-				dnsType = "dns_gd";
-			} else if (cert.getDnsType().equals("hw")) {
-				dnsType = "dns_huaweicloud";
-			}
 
-			cmd = InitConfig.acmeSh + " --issue --dns " + dnsType + " -d " + cert.getDomain() + " --server letsencrypt";
+			// 申请
+			if (cert.getType() == 0) {
+				String dnsType = "";
+				if (cert.getDnsType().equals("ali")) {
+					dnsType = "dns_ali";
+				} else if (cert.getDnsType().equals("dp")) {
+					dnsType = "dns_dp";
+				} else if (cert.getDnsType().equals("cf")) {
+					dnsType = "dns_cf";
+				} else if (cert.getDnsType().equals("gd")) {
+					dnsType = "dns_gd";
+				} else if (cert.getDnsType().equals("hw")) {
+					dnsType = "dns_huaweicloud";
+				}
+
+				cmd = InitConfig.acmeSh + " --issue --dns " + dnsType + " -d " + cert.getDomain() + " --server letsencrypt";
+			} else if (cert.getType() == 2) {
+				cmd = InitConfig.acmeSh + " --renew -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+			}
 		} else if (type.equals("renew")) {
 			// 续签,以第一个域名为证书名
-			String domain = cert.getDomain().split(",")[0];
-			cmd = InitConfig.acmeSh + " --renew --force -d " + domain;
+			if (cert.getType() == 0) {
+				String domain = cert.getDomain().split(",")[0];
+				cmd = InitConfig.acmeSh + " --renew --force -d " + domain;
+			} else if (cert.getType() == 2) {
+				cmd = InitConfig.acmeSh + " --renew --force -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+			}
 		}
 		logger.info(cmd);
 
@@ -168,39 +182,69 @@ public class CertController extends BaseController {
 
 	private String[] getEnv(Cert cert) {
 		List<String> list = new ArrayList<>();
-//		list.add("UPGRADE_HASH='" + UUID.randomUUID().toString().replace("-", "") + "'");
 		if (cert.getDnsType().equals("ali")) {
-			list.add("SAVED_Ali_Key='" + cert.getAliKey() + "'");
-			list.add("SAVED_Ali_Secret='" + cert.getAliSecret() + "'");
+			list.add("Ali_Key=" + cert.getAliKey());
+			list.add("Ali_Secret=" + cert.getAliSecret());
 		}
 		if (cert.getDnsType().equals("dp")) {
-			list.add("SAVED_DP_Id='" + cert.getDpId() + "'");
-			list.add("SAVED_DP_Key='" + cert.getDpKey() + "'");
+			list.add("DP_Id=" + cert.getDpId());
+			list.add("DP_Key=" + cert.getDpKey());
 		}
 		if (cert.getDnsType().equals("cf")) {
-			list.add("SAVED_CF_Email='" + cert.getCfEmail() + "'");
-			list.add("SAVED_CF_Key='" + cert.getCfKey() + "'");
+			list.add("CF_Email=" + cert.getCfEmail());
+			list.add("CF_Key=" + cert.getCfKey());
 		}
 		if (cert.getDnsType().equals("gd")) {
-			list.add("SAVED_GD_Key='" + cert.getGdKey() + "'");
-			list.add("SAVED_GD_Secret='" + cert.getGdSecret() + "'");
+			list.add("GD_Key=" + cert.getGdKey());
+			list.add("GD_Secret=" + cert.getGdSecret());
 		}
 		if (cert.getDnsType().equals("hw")) {
-			list.add("SAVED_HUAWEICLOUD_Username='" + cert.getHwUsername() + "'");
-			list.add("SAVED_HUAWEICLOUD_Password='" + cert.getHwPassword() + "'");
-			list.add("SAVED_HUAWEICLOUD_ProjectID='" + cert.getHwProjectID() + "'");
+			list.add("HUAWEICLOUD_Username=" + cert.getHwUsername());
+			list.add("HUAWEICLOUD_Password=" + cert.getHwPassword());
+			list.add("HUAWEICLOUD_ProjectID=" + cert.getHwProjectID());
 		}
-		
+
 		return list.toArray(new String[] {});
-		
-//		list.add("USER_PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin'");
-//		FileUtil.writeLines(list, new File(InitConfig.acmeSh.replace("/acme.sh", "/account.conf")), Charset.defaultCharset());
-		
-		
-		
 	}
-	
-	
+
+	@RequestMapping("getTxtValue")
+	@ResponseBody
+	public JsonResult getTxtValue(String domain) {
+		if (!SystemTool.isLinux()) {
+			return renderError(m.get("certStr.error2"));
+		}
+
+		String cmd = InitConfig.acmeSh + " --issue --force --dns -d " + domain + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+		logger.info(cmd);
+		List<String> rs = RuntimeUtil.execForLines("/bin/sh", "-c", cmd);
+		List<Map<String, String>> mapList = new ArrayList<>();
+
+		Map<String, String> map1 = null;
+		Map<String, String> map2 = null;
+		for (String str : rs) {
+			logger.info(str);
+			if (str.contains("Domain:")) {
+				map1 = new HashMap<>();
+				map1.put("domain", str.split("'")[1]);
+				map1.put("type", "TXT");
+
+				map2 = new HashMap<>();
+				map2.put("domain", map1.get("domain").replace("_acme-challenge.", ""));
+				map2.put("type", m.get("certStr.any"));
+
+			}
+
+			if (str.contains("TXT value:")) {
+				map1.put("value", str.split("'")[1]);
+				mapList.add(map1);
+
+				map2.put("value", m.get("certStr.any"));
+				mapList.add(map2);
+			}
+		}
+
+		return renderSuccess(mapList);
+	}
 
 	@RequestMapping("download")
 	public void download(String id, HttpServletResponse response) throws IOException {

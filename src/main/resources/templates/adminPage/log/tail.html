@@ -26,7 +26,6 @@
 			} else {
 				var protocol = 'ws:';
 			}
-			debugger
 			var guid = Math.random();
 			var websocket = new WebSocket(protocol + `${ctx}/adminPage/logTail/${id}/` + guid);
 			websocket.onmessage = function(event) {

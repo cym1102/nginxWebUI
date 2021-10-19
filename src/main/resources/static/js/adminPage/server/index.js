@@ -599,7 +599,7 @@ function selectCertOver() {
 		dataType: 'json',
 		success: function(data) {
 			if (data.success) {
-				var cert = data.obj;
+				var cert = data.obj.cert;
 				$("#pem").val(cert.pem);
 				$("#pemPath").html(cert.pem);
 				$("#key").val(cert.key);

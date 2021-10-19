@@ -7,12 +7,17 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TimeExeUtils {
-	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	MessageUtils m;
+	
+
 	/**
 	 * 命令执行
 	 * 
@@ -49,12 +54,12 @@ public class TimeExeUtils {
 						process.exitValue();
 						break;
 					} catch (IllegalThreadStateException e) {
-						//e.printStackTrace();
+						System.err.println(e.getMessage());
 					}
 				}
 
 				if (System.currentTimeMillis()  - start > timeout) {
-					line = "命令执行超时退出";
+					line = m.get("certStr.timeout"); 
 					
 					sbStd.append(line + "\n");
 					logger.info(line);

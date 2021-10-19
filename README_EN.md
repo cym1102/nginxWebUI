@@ -10,6 +10,10 @@ Email: cym1102@qq.com
 
 official website: http://www.nginxwebui.cn
 
+WeChat Donate: 
+
+<img src="http://www.nginxwebui.cn/img/weixin.png"  height="200" width="200">
+
 #### Function description
 
 NginxWebuUI is a graphical management tool for nginx configuration. You can use web pages to quickly configure various functions of nginx, including HTTP forwarding, TCP forwarding, reverse proxy, load balancing, static HTML server, SSL certificate automatic application, renewal, configuration, etc.  Nginx. conf file can be generated after configuration, and nginx can be controlled to use this file for startup and reload, complete the graphical control of nginx closed loop.  
@@ -60,7 +64,7 @@ yum install nginx
 2.Download the latest release of the distribution jar
 
 ```
-wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.7.3.jar
+wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.7.5.jar
 ```
 
 With a new version, you just need to change the version in the path
@@ -112,13 +116,13 @@ yum install docker
 2.Download images:
 
 ```
-docker pull cym1102/nginxwebui:2.7.3
+docker pull cym1102/nginxwebui:2.7.5
 ```
 
 3.start container
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.7.3 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.7.5 /bin/bash
 ```
 
 notice: 
@@ -139,7 +143,7 @@ moreover: The following configuration file is used when using docker-compose
 version: "3.2"
 services:
   nginxWebUi-server:
-    image: cym1102/nginxwebui:2.7.3
+    image: cym1102/nginxwebui:2.7.5
     volumes:
       - type: bind
         source: "/home/nginxWebUI"
@@ -162,7 +166,7 @@ mvn clean package
 2. Compile the image with Docker
 
 ```
-docker build -t nginxwebui:2.7.3 .
+docker build -t nginxwebui:2.7.5 .
 ```
 
 #### Add boot up run
@@ -288,6 +292,4 @@ select * from admin;
 .quit
 ```
 
-#### Qr code for donation
 
-<img src="http://www.nginxwebui.cn/img/weixin.png"  height="300" width="300">

@@ -1,10 +1,13 @@
 package com.cym.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 
 import com.cym.model.Cert;
+import com.cym.model.CertCode;
 
 import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
@@ -29,5 +32,28 @@ public class CertService {
 		}
 
 		return false;
+	}
+
+	public List<CertCode> getCertCodes(String certId) {
+
+		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq(CertCode::getCertId, certId), CertCode.class);
+	}
+
+	public void insertOrUpdate(Cert cert, String[] domain, String[] type, String[] value) {
+		sqlHelper.insertOrUpdate(cert);
+
+		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq(CertCode::getCertId, cert.getId()), CertCode.class);
+
+		if (domain != null && type != null && value != null) {
+			for (int i = 0; i < domain.length; i++) {
+				CertCode certCode = new CertCode();
+				certCode.setCertId(cert.getId());
+				certCode.setDomain(domain[i]);
+				certCode.setType(type[i]);
+				certCode.setValue(value[i]);
+				sqlHelper.insert(certCode);
+			}
+		}
+
 	}
 }

@@ -341,7 +341,7 @@ function showWindow(title){
 	layer.open({
 		type : 1,
 		title : title,
-		area : [ '500px', '600px' ], // 宽高
+		area : [ '500px', '550px' ], // 宽高
 		content : $('#windowDiv')
 	});
 }
@@ -629,7 +629,7 @@ function addGroup(){
 	layer.open({
 		type : 1,
 		title :remoteStr.addGroup,
-		area : [ '400px', '500px' ], // 宽高
+		area : [ '400px', '450px' ], // 宽高
 		content : $('#groupDiv')
 	});
 	

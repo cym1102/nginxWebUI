@@ -24,7 +24,7 @@ function showSelectMail() {
 				mailIndex = layer.open({
 					type: 1,
 					title: remoteStr.setSmtp,
-					area: ['400px', '500px'], // 宽高
+					area: ['400px', '520px'], // 宽高
 					content: $('#mailSelectDiv')
 				});
 			}

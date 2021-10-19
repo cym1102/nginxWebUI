@@ -75,18 +75,23 @@ function checkDnsType(value) {
 	$("#cf").hide();
 	$("#gd").hide();
 	$("#hw").hide();
-		
+
 	$("#" + value).show();
 }
 
 function checkType(value) {
+	$("#type0").hide();
+	$("#type1").hide();
+	$("#type2").hide();
+
 	if (value == 0) {
 		$("#type0").show();
-		$("#type1").hide();
 	}
 	if (value == 1) {
-		$("#type0").hide();
 		$("#type1").show();
+	}
+	if (value == 2) {
+		$("#type2").show();
 	}
 }
 
@@ -103,15 +108,18 @@ function add() {
 	$("#cfKey").val("");
 	$("#gdKey").val("");
 	$("#gdSecret").val("");
-	
+
 	$("#hwUsername").val("");
 	$("#hwPassword").val("");
 	$("#hwProjectID").val("");
-	
+
 	$("#pem").val("");
 	$("#key").val("");
 	$("#pemPath").html("");
 	$("#keyPath").html("");
+
+	$("#notice").html("");
+
 	checkType(0);
 	checkDnsType('ali');
 
@@ -123,6 +131,7 @@ function add() {
 function edit(id, clone) {
 	$("#id").val(id);
 
+
 	$.ajax({
 		type: 'GET',
 		url: ctx + '/adminPage/cert/detail',
@@ -133,7 +142,7 @@ function edit(id, clone) {
 		success: function(data) {
 			if (data.success) {
 
-				var cert = data.obj;
+				var cert = data.obj.cert;
 				if (!clone) {
 					$("#id").val(cert.id);
 					$("#pem").val(cert.pem);
@@ -154,13 +163,30 @@ function edit(id, clone) {
 				$("#cfKey").val(cert.cfKey);
 				$("#gdKey").val(cert.gdKey);
 				$("#gdSecret").val(cert.gdSecret);
-				
+
 				$("#hwUsername").val(cert.hwUsername);
 				$("#hwPassword").val(cert.hwPassword);
 				$("#hwProjectID").val(cert.hwProjectID);
-	
+
 				$("#pemPath").html(cert.pem);
 				$("#keyPath").html(cert.key);
+
+
+				var html = ``;
+				if (data.obj.certCodes != null) {
+					for (let i = 0; i < data.obj.certCodes.length; i++) {
+						var map = data.obj.certCodes[i]
+						html += `
+						<tr>
+							<td>${map.domain} <input type="hidden" name="domains" value="${map.domain}"> </td>
+							<td>${map.type} <input type="hidden" name="types" value="${map.type}"> </td>
+							<td>${map.value} <input type="hidden" name="values" value="${map.value}"> </td>
+						</tr>
+					`;
+					}
+				}
+				$("#notice").html(html);
+
 
 				checkType(cert.type);
 				checkDnsType(cert.dnsType != null ? cert.dnsType : 'ali');
@@ -182,7 +208,7 @@ function showWindow(title) {
 	layer.open({
 		type: 1,
 		title: title,
-		area: ['700px', '500px'], // 宽高
+		area: ['1000px', '550px'], // 宽高
 		content: $('#windowDiv')
 	});
 }
@@ -289,7 +315,7 @@ function issue(id) {
 						layer.close(index);
 						location.reload();
 					});
-					
+
 				} else {
 					layer.open({
 						type: 0,
@@ -362,8 +388,51 @@ function download(id) {
 	window.open(ctx + "/adminPage/cert/download?id=" + id);
 }
 
-function clone(id){
+function clone(id) {
 	if (confirm(serverStr.confirmClone)) {
 		edit(id, true);
 	}
+}
+
+var load;
+function getTxtValue() {
+	if ($("#domain").val() == "") {
+		layer.msg(certStr.error1);
+		return;
+	}
+
+	load = layer.load();
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/cert/getTxtValue',
+		data: {
+			domain: $("#domain").val()
+		},
+		dataType: 'json',
+		success: function(data) {
+			layer.close(load);
+			if (data.success) {
+				var html = ``;
+
+				for (let i = 0; i < data.obj.length; i++) {
+					var map = data.obj[i]
+					html += `
+						<tr>
+							<td>${map.domain} <input type="hidden" name="domains" value="${map.domain}"> </td>
+							<td>${map.type} <input type="hidden" name="types" value="${map.type}"> </td>
+							<td>${map.value} <input type="hidden" name="values" value="${map.value}"> </td>
+						</tr>
+					`;
+				}
+
+				$("#notice").html(html);
+			} else {
+				layer.msg(data.msg);
+			}
+		},
+		error: function() {
+			layer.closeAll();
+			layer.alert(commonStr.errorInfo);
+		}
+	});
 }

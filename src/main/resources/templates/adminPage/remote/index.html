@@ -82,7 +82,13 @@
 					</div>
 				</div>
 
-
+				<div class="layui-form-item">
+					<label class="layui-form-label">${remoteStr.group}</label>
+					<div class="layui-input-block">
+						<div id="parentId"></div>
+					</div>
+				</div>
+				
 				<div class="layui-form-item">
 					<label class="layui-form-label">${remoteStr.ip}</label>
 					<div class="layui-input-block">
@@ -112,16 +118,9 @@
 				</div>
 				
 
-				<div class="layui-form-item">
-					<label class="layui-form-label">${remoteStr.group}</label>
-					<div class="layui-input-block">
+			
 
-
-						<div id="parentId"></div>
-					</div>
-				</div>
-
-				<div class="layui-form-item">
+				<div class="layui-form-item center">
 					<input type="hidden" name="code" id="code"> 
 					<input type="hidden" name="auth" id="auth"> 
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
@@ -149,7 +148,7 @@
 					</div>
 				</div>
 
-				<div class="layui-form-item">
+				<div class="layui-form-item center">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addGroupOver()">${commonStr.submit}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
@@ -187,7 +186,7 @@
 					</div>
 				</div>
 
-				<div class="layui-form-item">
+				<div class="layui-form-item center">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="asycOver()">${remoteStr.asyc}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
@@ -220,7 +219,7 @@
 				</div>
 			</div>
 
-			<div class="layui-form-item">
+			<div class="layui-form-item center">
 				<button type="button" class="layui-btn layui-btn-normal" onclick="nginxOver()">${commonStr.ok}</button>
 				<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 			</div>
@@ -268,7 +267,7 @@
 				</div>
 				
 				
-				<div class="layui-form-item">
+				<div class="layui-form-item center">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="cmdOver()">${remoteStr.execute}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
@@ -291,7 +290,7 @@
 				</div>
 			</div>
 			
-			<div class="layui-form-item" style="text-align: right;">
+			<div class="layui-form-item center" style="text-align: right;">
 				<button type="button" class="layui-btn layui-btn-normal" onclick="addOverSubmit()">${commonStr.submit}</button>
 				<button type="button" class="layui-btn" onclick="layer.close(codeIndex)">${commonStr.close}</button>
 			</div>
