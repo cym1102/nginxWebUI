@@ -120,6 +120,9 @@ function add() {
 
 	$("#notice").html("");
 
+	$("#domain").attr("disabled", false);
+	$("#domain").removeClass("disabled");
+
 	checkType(0);
 	checkDnsType('ali');
 
@@ -171,6 +174,8 @@ function edit(id, clone) {
 				$("#pemPath").html(cert.pem);
 				$("#keyPath").html(cert.key);
 
+				$("#domain").attr("disabled", true);
+				$("#domain").addClass("disabled");
 
 				var html = ``;
 				if (data.obj.certCodes != null) {

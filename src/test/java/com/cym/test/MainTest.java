@@ -12,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.cym.NginxWebUI;
 import com.cym.controller.adminPage.ConfController;
-import com.cym.utils.TimeExeUtils;
 import com.cym.utils.MessageUtils;
+import com.cym.utils.TimeExeUtils;
 
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.util.RuntimeUtil;
@@ -43,12 +43,13 @@ public class MainTest {
 				pids.add(pid);
 			}
 		}
-		
+
 		for (String pid : pids) {
 			logger.info("杀掉进程:" + pid);
 			RuntimeUtil.exec("taskkill /im " + pid + " /f");
 		}
-		
+
 	}
+
 
 }

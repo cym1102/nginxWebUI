@@ -66,7 +66,7 @@ public class CertController extends BaseController {
 		if (certService.hasSame(cert)) {
 			return renderError(m.get("certStr.same"));
 		}
-
+		
 		certService.insertOrUpdate(cert, domains, types, values);
 		
 		return renderSuccess();
