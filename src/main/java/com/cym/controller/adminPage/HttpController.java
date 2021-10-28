@@ -98,7 +98,9 @@ public class HttpController extends BaseController {
 		if (webSocket) {
 			Http http = new Http();
 			http.setName("map");
-			http.setValue("$http_upgrade $connection_upgrade {\r\n" + "    default upgrade;\r\n" + "    '' close;\r\n" + "}\r\n" + "");
+			http.setValue("$http_upgrade $connection_upgrade {\r\n" //
+					+ "    default upgrade;\r\n" //
+					+ "    '' close;\r\n" + "}\r\n" + "");//
 			http.setUnit("");
 			https.add(http);
 		}
@@ -108,23 +110,7 @@ public class HttpController extends BaseController {
 		return renderSuccess();
 	}
 
-//	private String buildLogFormat() {
-//		LogInfo logInfo = new LogInfo();
-//		logInfo.setRemoteAddr("$remote_addr");
-//		logInfo.setRemoteUser("$remote_user");
-//		logInfo.setTimeLocal("$time_local");
-//		logInfo.setRequest("$request");
-//		logInfo.setHttpHost("$http_host");
-//		logInfo.setStatus("$status");
-//		logInfo.setRequestLength("$request_length");
-//		logInfo.setBodyBytesDent("$body_bytes_sent");
-//		logInfo.setHttpReferer("$http_referer");
-//		logInfo.setHttpUserAgent("$http_user_agent");
-//		logInfo.setRequestTime("$request_time");
-//		logInfo.setUpstreamResponseTime("$upstream_response_time");
-//
-//		return JSONUtil.toJsonStr(logInfo);
-//	}
+
 
 	@RequestMapping("setOrder")
 	@ResponseBody

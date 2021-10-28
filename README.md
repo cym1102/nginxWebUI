@@ -52,7 +52,7 @@ nginx本身功能复杂, nginxWebUI并不能涵盖nginx所有功能, 但能覆�
 
 1.安装java运行环境和nginx
 
-ubuntu:
+Ubuntu:
 
 ```
 apt update
@@ -60,17 +60,30 @@ apt install openjdk-11-jdk
 apt install nginx
 ```
 
-centos:
+Centos:
 
 ```
 yum install java-11-openjdk
 yum install nginx
 ```
 
+Windows:
+
+```
+下载JDK安装包 https://www.oracle.com/java/technologies/downloads/
+配置JAVA运行环境 
+JAVA_HOME : JDK安装目录
+Path : JDK安装目录\bin
+重启电脑
+```
+
+
 2.下载最新版发行包jar
 
 ```
-wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.7.5.jar
+Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.7.7.jar
+
+Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-2.7.7.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -78,7 +91,9 @@ wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.7
 3.启动程序
 
 ```
-nohup java -jar -Xmx64m /home/nginxWebUI/nginxWebUI.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+Linux: nohup java -jar -Xmx64m /home/nginxWebUI/nginxWebUI.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+
+Windows: java -jar -Xmx64m D:/home/nginxWebUI/nginxWebUI.jar --server.port=8080 --project.home=D:/home/nginxWebUI/
 ```
 
 参数说明(都是非必填)
@@ -107,13 +122,13 @@ nohup java -jar -Xmx64m /home/nginxWebUI/nginxWebUI.jar --server.port=8080 --pro
 
 1.安装docker容器环境
 
-ubuntu:
+Ubuntu:
 
 ```
 apt install docker.io
 ```
 
-centos:
+Centos:
 
 ```
 yum install docker
@@ -149,7 +164,7 @@ docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.p
 version: "3.2"
 services:
   nginxWebUi-server:
-    image: cym1102/nginxwebui:2.7.5
+    image: cym1102/nginxwebui:2.7.7
     volumes:
       - type: bind
         source: "/home/nginxWebUI"
@@ -172,7 +187,7 @@ mvn clean package
 2. 使用docker构建镜像
 
 ```
-docker build -t nginxwebui:2.7.5 .
+docker build -t nginxwebui:2.7.7 .
 ```
 
 #### 添加开机启动

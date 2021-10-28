@@ -52,9 +52,10 @@ public class CertController extends BaseController {
 	Boolean isInApply = false;
 
 	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page) {
-		page = sqlHelper.findPage(page, Cert.class);
+	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String keywords) {
+		page = certService.getPage(keywords, page);
 
+		modelAndView.addObject("keywords", keywords);
 		modelAndView.addObject("page", page);
 		modelAndView.setViewName("/adminPage/cert/index");
 		return modelAndView;
@@ -66,10 +67,10 @@ public class CertController extends BaseController {
 		if (certService.hasSame(cert)) {
 			return renderError(m.get("certStr.same"));
 		}
-		
+
 		certService.insertOrUpdate(cert, domains, types, values);
-		
-		return renderSuccess();
+
+		return renderSuccess(cert);
 	}
 
 	@RequestMapping("setAutoRenew")

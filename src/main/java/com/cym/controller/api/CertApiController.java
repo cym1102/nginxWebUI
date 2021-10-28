@@ -36,16 +36,16 @@ public class CertApiController extends BaseController {
 	@Autowired
 	CertService certService;
 
-	@SuppressWarnings("unchecked")
 	@ApiOperation("获取证书分页列表")
 	@PostMapping("getPage")
 	public JsonResult<Page<Cert>> getPage(@ApiParam("当前页数(从1开始)") @RequestParam(defaultValue = "1") Integer current, //
-			@ApiParam("每页数量(默认为10)") @RequestParam(defaultValue = "10") Integer limit) {
+			@ApiParam("每页数量(默认为10)") @RequestParam(defaultValue = "10") Integer limit, //
+			@ApiParam("查询关键字") String keywords) {
 		Page page = new Page();
 		page.setCurr(current);
 		page.setLimit(limit);
-		page = sqlHelper.findPage(page, Cert.class);
-
+		page = certService.getPage(keywords, page);
+				
 		return renderSuccess(page);
 	}
 
@@ -55,20 +55,24 @@ public class CertApiController extends BaseController {
 		if (StrUtil.isEmpty(cert.getDomain())) {
 			return renderError("域名为空");
 		}
-		if (StrUtil.isEmpty(cert.getDnsType())) {
-			return renderError("dns提供商为空");
-		}
-		if (cert.getDnsType().equals("ali") && (StrUtil.isEmpty(cert.getAliKey()) || StrUtil.isEmpty(cert.getAliSecret()))) {
-			return renderError("aliKey 或 aliSecret为空");
-		}
-		if (cert.getDnsType().equals("dp") && (StrUtil.isEmpty(cert.getDpId()) || StrUtil.isEmpty(cert.getDpKey()))) {
-			return renderError("dpId 或 dpKey为空");
-		}
-		if (cert.getDnsType().equals("cf") && (StrUtil.isEmpty(cert.getCfEmail()) || StrUtil.isEmpty(cert.getCfKey()))) {
-			return renderError("cfEmail 或 cfKey为空");
-		}
-		if (cert.getDnsType().equals("gd") && (StrUtil.isEmpty(cert.getGdKey()) || StrUtil.isEmpty(cert.getGdSecret()))) {
-			return renderError("gdKey 或 gdSecret为空");
+
+		if (cert.getType() == 0) {
+			if (StrUtil.isEmpty(cert.getDnsType())) {
+				return renderError("dns提供商为空");
+			}
+
+			if (cert.getDnsType().equals("ali") && (StrUtil.isEmpty(cert.getAliKey()) || StrUtil.isEmpty(cert.getAliSecret()))) {
+				return renderError("aliKey 或 aliSecret为空");
+			}
+			if (cert.getDnsType().equals("dp") && (StrUtil.isEmpty(cert.getDpId()) || StrUtil.isEmpty(cert.getDpKey()))) {
+				return renderError("dpId 或 dpKey为空");
+			}
+			if (cert.getDnsType().equals("cf") && (StrUtil.isEmpty(cert.getCfEmail()) || StrUtil.isEmpty(cert.getCfKey()))) {
+				return renderError("cfEmail 或 cfKey为空");
+			}
+			if (cert.getDnsType().equals("gd") && (StrUtil.isEmpty(cert.getGdKey()) || StrUtil.isEmpty(cert.getGdSecret()))) {
+				return renderError("gdKey 或 gdSecret为空");
+			}
 		}
 		return certController.addOver(cert, null, null, null);
 	}
@@ -90,7 +94,7 @@ public class CertApiController extends BaseController {
 
 		List<Map<String, String>> list = (List<Map<String, String>>) jsonResult.getObj();
 		if (list != null && list.size() > 0) {
-			for(Map<String, String> map:list) {
+			for (Map<String, String> map : list) {
 				domains.add(map.get("domain"));
 				types.add(map.get("type"));
 				values.add(map.get("value"));

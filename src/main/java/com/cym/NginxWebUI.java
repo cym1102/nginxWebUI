@@ -62,6 +62,7 @@ public class NginxWebUI {
 					String pid = strs[1];
 
 					if (!pid.equals(myPid)) {
+						logger.info("找到进程:" + line);
 						pids.add(pid);
 					}
 				}

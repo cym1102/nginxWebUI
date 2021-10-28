@@ -36,13 +36,20 @@
 							<button type="button" class="layui-btn layui-btn-normal"
 								onclick="add()">${certStr.add}</button>
 						</div>
+						
+						<div class="layui-inline">
+							<input type="text" name="keywords" class="layui-input" value="${keywords}" onkeydown="if(event.keyCode==13)return false;">
+						</div>
+
+						<button type="button" class="layui-btn" onclick="search()">${commonStr.search}</button>
+						
 						<div class="layui-inline">
 							<div class="layui-form-mid layui-word-aux proxyHttp">${certStr.tips}</div>
 						</div>
 					</div>
 
-					<input type="hidden" name="curr" value="${page.curr}"> <input
-						type="hidden" name="limit" value="${page.limit}">
+					<input type="hidden" name="curr" value="${page.curr}"> 
+					<input type="hidden" name="limit" value="${page.limit}">
 				</form>
 
 				<table class="layui-table layui-form">

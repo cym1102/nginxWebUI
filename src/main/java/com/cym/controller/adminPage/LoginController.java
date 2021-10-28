@@ -62,10 +62,11 @@ public class LoginController extends BaseController {
 	}
 
 	@RequestMapping("loginOut")
-	public String loginOut(HttpSession httpSession, HttpServletRequest request) {
+	public ModelAndView loginOut(ModelAndView modelAndView, HttpSession httpSession, HttpServletRequest request) {
 
 		httpSession.removeAttribute("isLogin");
-		return "redirect:/adminPage/login";
+		modelAndView.setViewName("/adminPage/index");
+		return modelAndView;
 	}
 
 	@RequestMapping("noServer")

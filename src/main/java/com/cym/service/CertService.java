@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.cym.model.Cert;
 import com.cym.model.CertCode;
 
+import cn.craccd.sqlHelper.bean.Page;
 import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.util.StrUtil;
@@ -55,5 +56,14 @@ public class CertService {
 			}
 		}
 
+	}
+
+	public Page getPage(String keywords, Page page) {
+		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper();
+		if (StrUtil.isNotEmpty(keywords)) {
+			conditionAndWrapper.like(Cert::getDomain, keywords);
+		}
+
+		return sqlHelper.findPage(conditionAndWrapper, page, Cert.class);
 	}
 }

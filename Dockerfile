@@ -7,6 +7,9 @@ RUN apt-get clean && apt-get update &&\
 	apt-get install -y net-tools &&\
 	apt-get install -y curl &&\
 	apt-get install -y wget &&\
+	apt-get install -y ttf-dejavu &&\
+	apt-get install -y fontconfig &&\
+	fc-cache -f -v &&\
 	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &&\
 	apt-get install tzdata
 ENV LANG C.UTF-8

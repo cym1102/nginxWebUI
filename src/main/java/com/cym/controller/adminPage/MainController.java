@@ -41,8 +41,7 @@ public class MainController extends BaseController {
 
 	@RequestMapping("")
 	public ModelAndView index(ModelAndView modelAndView, String keywords) {
-
-		modelAndView.setViewName("redirect:/adminPage/login/");
+		modelAndView.setViewName("/adminPage/index");
 		return modelAndView;
 	}
 

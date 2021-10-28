@@ -68,6 +68,9 @@ $(function() {
 	});
 })
 
+function search(){
+	$("#searchForm").submit();
+}
 
 function checkDnsType(value) {
 	$("#ali").hide();
