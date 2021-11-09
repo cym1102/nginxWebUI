@@ -79,11 +79,6 @@ function addOver() {
 			over = false;
 		}
 	})
-	$("input[name='weight']").each(function() {
-		if ($(this).val().trim() == '') {
-			over = false;
-		}
-	})
 
 	if (!over) {
 		layer.msg(upstreamStr.noFill);
@@ -108,6 +103,7 @@ function addOver() {
 		upstreamServer.port = $(this).find("input[name='port']").val();
 		upstreamServer.weight = $(this).find("input[name='weight']").val();
 		upstreamServer.maxFails = $(this).find("input[name='maxFails']").val();
+		upstreamServer.maxConns = $(this).find("input[name='maxConns']").val();
 		upstreamServer.failTimeout = $(this).find("input[name='failTimeout']").val();
 		upstreamServer.status = $(this).find("select[name='status']").val();
 
@@ -185,6 +181,7 @@ function edit(id,clone) {
 									<td><input type="number" name="port" class="layui-input" value="${upstreamServer.port}"></td>
 									<td><input type="number" name="weight" class="layui-input" value="${upstreamServer.weight}"></td>
 									<td><input type="number" name="maxFails" class="layui-input" value="${upstreamServer.maxFails}"></td>
+									<td><input type="number" name="maxConns" class="layui-input" value="${upstreamServer.maxConns}"></td>
 									<td><input type="number" name="failTimeout" class="layui-input" value="${upstreamServer.failTimeout}"></td>
 									<td>
 										<select name="status">
@@ -239,11 +236,12 @@ function del(id) {
 function addItem() {
 	var uuid = guid();
 	var html = `<tr id='${uuid}'>
-						<td><input type="text" name="server" class="layui-input" value=""></td>
-						<td><input type="number" name="port" class="layui-input" value=""></td>
-						<td><input type="number" name="weight" class="layui-input" value="1"></td>
-						<td><input type="number" name="maxFails" class="layui-input" value="1"></td>
-						<td><input type="number" name="failTimeout" class="layui-input" value="10"></td>
+						<td><input type="text" name="server" class="layui-input"></td>
+						<td><input type="number" name="port" class="layui-input"></td>
+						<td><input type="number" name="weight" class="layui-input"></td>
+						<td><input type="number" name="maxFails" class="layui-input"></td>
+						<td><input type="number" name="maxConns" class="layui-input"></td>
+						<td><input type="number" name="failTimeout" class="layui-input"></td>
 						<td>
 							<select name="status">
 								<option value="none">${upstreamStr.none}</option>
@@ -477,9 +475,10 @@ function addBatchOver(){
 		html += `<tr id='${uuid}'>
 						<td><input type="text" name="server" class="layui-input" value="${ip}"></td>
 						<td><input type="number" name="port" class="layui-input" value="${port}"></td>
-						<td><input type="number" name="weight" class="layui-input" value="1"></td>
-						<td><input type="number" name="maxFails" class="layui-input" value="1"></td>
-						<td><input type="number" name="failTimeout" class="layui-input" value="10"></td>
+						<td><input type="number" name="weight" class="layui-input"></td>
+						<td><input type="number" name="maxFails" class="layui-input"></td>
+						<td><input type="number" name="maxConns" class="layui-input"></td>
+						<td><input type="number" name="failTimeout" class="layui-input"></td>
 						<td>
 							<select name="status">
 								<option value="none">${upstreamStr.none}</option>

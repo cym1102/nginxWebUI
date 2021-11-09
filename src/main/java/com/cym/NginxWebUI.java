@@ -24,13 +24,16 @@ public class NginxWebUI {
 	static Logger logger = LoggerFactory.getLogger(NginxWebUI.class);
 
 	public static void main(String[] args) {
+		try {
+			// 尝试杀掉旧版本
+			killSelf();
 
-		// 尝试杀掉旧版本
-		killSelf();
-
-		// 删掉多余的jar
-		removeJar();
-
+			// 删掉多余的jar
+			removeJar();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		// 启动springboot
 		SpringApplication.run(NginxWebUI.class, args);
 	}

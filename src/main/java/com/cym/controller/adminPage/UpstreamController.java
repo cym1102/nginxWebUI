@@ -82,7 +82,7 @@ public class UpstreamController extends BaseController {
 
 		String upstreamMonitor = settingService.get("upstreamMonitor");
 		if ("true".equals(upstreamMonitor)) {
-			monitorStatus += "<td>";
+			monitorStatus += "<td class='short50'>";
 			if (upstreamServer.getMonitorStatus() == -1) {
 				monitorStatus += "<span class='gray'>" + m.get("upstreamStr.gray") + "</span>";
 			} else if (upstreamServer.getMonitorStatus() == 1) {
@@ -97,13 +97,22 @@ public class UpstreamController extends BaseController {
 			upstreamServer.setServer("[" + upstreamServer.getServer() + "]");
 		}
 
-		return "<tr><td>" + upstreamServer.getServer() + ":" + upstreamServer.getPort() + "</td>"//
-				+ "<td>weight=" + upstreamServer.getWeight() + "</td>"//
-				+ "<td>fail_timeout=" + upstreamServer.getFailTimeout() + "s</td>"//
-				+ "<td>max_fails=" + upstreamServer.getMaxFails() + "</td>"//
-				+ "<td>" + status + "</td>" //
-				+ monitorStatus + "</tr>";
-
+		String html = "<tr><td class='short100'>" + upstreamServer.getServer() + ":" + upstreamServer.getPort() + "</td><td>";
+				
+		if(upstreamServer.getWeight()!=null) {
+			html += "weight=" + upstreamServer.getWeight() + " ";
+		}
+		if(upstreamServer.getFailTimeout()!=null) {
+			html += "fail_timeout=" + upstreamServer.getFailTimeout() + "s ";
+		}
+		if(upstreamServer.getMaxFails()!=null) {
+			html += "max_fails=" + upstreamServer.getMaxFails() + " ";
+		}
+		if(upstreamServer.getMaxConns()!=null) {
+			html += "max_conns=" + upstreamServer.getMaxConns() + " ";
+		}
+		html+=  "</td><td class='short50'>" + status + "</td>" + monitorStatus + "</tr>";
+		return html;
 	}
 
 	@RequestMapping("addOver")

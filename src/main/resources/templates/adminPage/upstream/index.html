@@ -20,9 +20,16 @@
 }
 
 .server td {
-	text-align: center;
-	width: 16.66%;
 	height: 30px;
+}
+
+.server .short100{
+	width: 100px;
+	text-align: center;
+}
+.server .short50{
+	width: 50px;
+	text-align: center;
 }
 
 .layui-table td{
@@ -103,7 +110,8 @@
 								<#if ext.upstream.tactics=="url_hash"> ${upstreamStr.urlHash} </#if>
 							</td>
 							<td style="padding: 0px;">
-								<table class="server">${ext.serverStr}
+								<table class="server">
+									${ext.serverStr}
 								</table>
 							</td>
 							<#if upstreamMonitor == 'true'>
@@ -183,10 +191,11 @@
 					<table class="layui-table">
 						<thead>
 							<tr>
-								<th>ip</th>
-								<th>${upstreamStr.port}</th>
+								<th>ip <span class="red">*</span></th>
+								<th>${upstreamStr.port} <span class="red">*</span></th>
 								<th>${upstreamStr.weight}</th>
 								<th>${upstreamStr.maxFail}</th>
+								<th>${upstreamStr.maxConns}</th>
 								<th>${upstreamStr.failWait}</th>
 								<th>${upstreamStr.status}</th>
 								<th>${commonStr.operation}</th>

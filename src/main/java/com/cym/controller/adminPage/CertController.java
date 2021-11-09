@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.cym.config.InitConfig;
 import com.cym.ext.CertExt;
 import com.cym.model.Cert;
+import com.cym.model.CertCode;
 import com.cym.service.CertService;
 import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
@@ -83,10 +84,7 @@ public class CertController extends BaseController {
 	@RequestMapping("detail")
 	@ResponseBody
 	public JsonResult detail(String id) {
-		CertExt certExt = new CertExt();
-		certExt.setCert(sqlHelper.findById(id, Cert.class));
-		certExt.setCertCodes(certService.getCertCodes(id));
-		return renderSuccess(certExt);
+		return renderSuccess(sqlHelper.findById(id, Cert.class));
 	}
 
 	@RequestMapping("del")
@@ -123,7 +121,7 @@ public class CertController extends BaseController {
 		// 设置dns账号
 		String[] env = getEnv(cert);
 
-		if (type.equals("issue") || StrUtil.isEmpty(cert.getPem())) {
+		if (type.equals("issue")) {
 
 			// 申请
 			if (cert.getType() == 0) {
@@ -140,9 +138,14 @@ public class CertController extends BaseController {
 					dnsType = "dns_huaweicloud";
 				}
 
-				cmd = InitConfig.acmeSh + " --issue --dns " + dnsType + " -d " + cert.getDomain() + " --server letsencrypt";
+				cmd = InitConfig.acmeSh + " --issue --force --dns " + dnsType + " -d " + cert.getDomain() + " --server letsencrypt";
 			} else if (cert.getType() == 2) {
-				cmd = InitConfig.acmeSh + " --renew -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+				if (certService.hasCode(cert.getId())) {
+					cmd = InitConfig.acmeSh + " --renew --force --dns -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+				} else {
+					cmd = InitConfig.acmeSh + " --issue --force --dns -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+				}
+
 			}
 		} else if (type.equals("renew")) {
 			// 续签,以第一个域名为证书名
@@ -159,7 +162,7 @@ public class CertController extends BaseController {
 		logger.info(rs);
 
 		if (rs.contains("Your cert is in")) {
-			// 将证书复制到/home/nginxWebUI
+			// 申请成功, 将证书复制到/home/nginxWebUI
 			String domain = cert.getDomain().split(",")[0];
 			String certDir = InitConfig.acmeShDir + domain + "/";
 
@@ -175,6 +178,35 @@ public class CertController extends BaseController {
 			sqlHelper.updateById(cert);
 			isInApply = false;
 			return renderSuccess();
+		} else if (rs.contains("TXT value")) {
+			// 获取到dns配置txt, 显示出来, 并保存到数据库
+			List<CertCode> mapList = new ArrayList<>();
+
+			CertCode map1 = null;
+			CertCode map2 = null;
+			for (String str : rs.split("\n")) {
+				logger.info(str);
+				if (str.contains("Domain:")) {
+					map1 = new CertCode();
+					map1.setDomain(str.split("'")[1]);
+					map1.setType("TXT");
+
+					map2 = new CertCode();
+					map2.setDomain(map1.getDomain().replace("_acme-challenge.", ""));
+					map2.setType(m.get("certStr.any"));
+				}
+
+				if (str.contains("TXT value:")) {
+					map1.setValue(str.split("'")[1]);
+					mapList.add(map1);
+
+					map2.setValue(m.get("certStr.any"));
+					mapList.add(map2);
+				}
+			}
+			certService.saveCertCode(id, mapList);
+			isInApply = false;
+			return renderSuccess(mapList);
 		} else {
 			isInApply = false;
 			return renderError("<span class='blue'>" + cmd + "</span><br>" + m.get("certStr.applyFail") + "<br>" + rs.replace("\n", "<br>"));
@@ -210,41 +242,10 @@ public class CertController extends BaseController {
 
 	@RequestMapping("getTxtValue")
 	@ResponseBody
-	public JsonResult getTxtValue(String domain) {
-		if (!SystemTool.isLinux()) {
-			return renderError(m.get("certStr.error2"));
-		}
+	public JsonResult getTxtValue(String id) {
 
-		String cmd = InitConfig.acmeSh + " --issue --force --dns -d " + domain + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
-		logger.info(cmd);
-		List<String> rs = RuntimeUtil.execForLines("/bin/sh", "-c", cmd);
-		List<Map<String, String>> mapList = new ArrayList<>();
-
-		Map<String, String> map1 = null;
-		Map<String, String> map2 = null;
-		for (String str : rs) {
-			logger.info(str);
-			if (str.contains("Domain:")) {
-				map1 = new HashMap<>();
-				map1.put("domain", str.split("'")[1]);
-				map1.put("type", "TXT");
-
-				map2 = new HashMap<>();
-				map2.put("domain", map1.get("domain").replace("_acme-challenge.", ""));
-				map2.put("type", m.get("certStr.any"));
-
-			}
-
-			if (str.contains("TXT value:")) {
-				map1.put("value", str.split("'")[1]);
-				mapList.add(map1);
-
-				map2.put("value", m.get("certStr.any"));
-				mapList.add(map2);
-			}
-		}
-
-		return renderSuccess(mapList);
+		List<CertCode> certCodes = certService.getCertCodes(id);
+		return renderSuccess(certCodes);
 	}
 
 	@RequestMapping("download")

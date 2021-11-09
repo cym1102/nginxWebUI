@@ -570,12 +570,19 @@ public class ConfService {
 			upstreamServer.setServer("[" + upstreamServer.getServer() + "]");
 		}
 
-		return upstreamServer.getServer() + ":" + upstreamServer.getPort() //
-				+ " weight=" + upstreamServer.getWeight() //
-				+ " fail_timeout=" + upstreamServer.getFailTimeout() + "s"//
-				+ " max_fails=" + upstreamServer.getMaxFails() //
-				+ " " + status;
+		String conf = upstreamServer.getServer() + ":" + upstreamServer.getPort();
+		if (upstreamServer.getWeight() != null) {
+			conf += " weight=" + upstreamServer.getWeight();
+		}
+		if (upstreamServer.getFailTimeout() != null) {
+			conf += " fail_timeout=" + upstreamServer.getFailTimeout() + "s";
+		}
+		if (upstreamServer.getMaxFails() != null) {
+			conf += " max_fails=" + upstreamServer.getMaxFails();
+		}
 
+		conf += " " + status;
+		return conf;
 	}
 
 	private void setSameParam(Param param, NgxBlock ngxBlock) {
@@ -758,8 +765,6 @@ public class ConfService {
 //			asycPack.setDecompose(decompose);
 //			asycPack.setConfExt(confExt);
 //		}
-
-		
 
 		return asycPack;
 	}

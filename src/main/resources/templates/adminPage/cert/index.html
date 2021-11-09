@@ -116,9 +116,15 @@
 
 								<button class="layui-btn layui-btn-sm" onclick="edit('${cert.id}')">${commonStr.edit}</button> 
 								
+								<#if cert.type == 2>
+									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="getTxtValue('${cert.id}')">${certStr.hostRecords}</button>
+								</#if>
+								
 								<#if cert.pem!=null && cert.pem!='' && cert.key!=null&& cert.key!=''>
 									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="download('${cert.id}')">${certStr.download}</button>
 								</#if>
+								
+								
 
 								<button class="layui-btn layui-btn-sm" onclick="clone('${cert.id}')">${commonStr.clone}</button>
 								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">${commonStr.del}</button></td>
@@ -290,35 +296,6 @@
 				</div>
 
 
-				<div id="type2">
-					<div class="layui-form-item">
-						<label class="layui-form-label"> &nbsp; </label>
-						<div class="layui-input-block">
-							<button type="button" class="layui-btn layui-btn-sm" onclick="getTxtValue()">${certStr.generateCode}</button>
-						</div>
-					</div>
-
-					<div class="layui-form-item">
-						<label class="layui-form-label"> &nbsp; </label>
-						<div class="layui-input-block">
-							<div>${certStr.dnsDescr}</div>
-							<table class="layui-table layui-form">
-								<thead>
-									<tr>
-										<th>${certStr.hostRecords}</th>
-										<th>${certStr.recordsType}</th>
-										<th>${certStr.recordsValue}</th>
-									</tr>
-								</thead>
-								<tbody id="notice">
-									
-								</tbody>
-							</table>
-						</div>
-					</div>
-
-				</div>
-
 				<div class="layui-form-item center">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
@@ -326,7 +303,26 @@
 			</form>
 		</div>
 
-	
+		<div class="layui-form" id="txtDiv" style="padding: 15px; display: none">
+			<div>
+
+				<div class="layui-form-item">
+					<div>${certStr.dnsDescr}</div>
+					<table class="layui-table layui-form">
+						<thead>
+							<tr>
+								<th>${certStr.hostRecords}</th>
+								<th>${certStr.recordsType}</th>
+								<th>${certStr.recordsValue}</th>
+							</tr>
+						</thead>
+						<tbody id="notice">
+							
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<#include '/adminPage/script.html'/>

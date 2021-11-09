@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cym.controller.adminPage.CertController;
 import com.cym.model.Cert;
+import com.cym.model.CertCode;
 import com.cym.service.CertService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
@@ -79,31 +80,9 @@ public class CertApiController extends BaseController {
 
 	@ApiOperation("获取域名解析码")
 	@PostMapping("getTxtValue")
-	public JsonResult getTxtValue(String certId) {
-		if (!SystemTool.isLinux()) {
-			return renderError(m.get("certStr.error2"));
-		}
-
-		Cert cert = sqlHelper.findById(certId, Cert.class);
-
-		JsonResult jsonResult = certController.getTxtValue(cert.getDomain());
-
-		List<String> domains = new ArrayList<>();
-		List<String> types = new ArrayList<>();
-		List<String> values = new ArrayList<>();
-
-		List<Map<String, String>> list = (List<Map<String, String>>) jsonResult.getObj();
-		if (list != null && list.size() > 0) {
-			for (Map<String, String> map : list) {
-				domains.add(map.get("domain"));
-				types.add(map.get("type"));
-				values.add(map.get("value"));
-			}
-		}
-
-		certService.insertOrUpdate(cert, domains.toArray(new String[] {}), types.toArray(new String[] {}), values.toArray(new String[] {}));
-
-		return jsonResult;
+	public JsonResult<List<CertCode>> getTxtValue(String certId) {
+		List<CertCode> certCodes = certService.getCertCodes(certId);
+		return renderSuccess(certCodes);
 	}
 
 	@ApiOperation("设置证书自动续签")
@@ -125,9 +104,15 @@ public class CertApiController extends BaseController {
 
 	@ApiOperation("执行申请")
 	@PostMapping("apply")
-	public JsonResult apply(@ApiParam("主键id") String id, @ApiParam("申请类型 issue:申请 renew:续签") String type) {
+	public JsonResult<List<CertCode>> apply(@ApiParam("主键id") String id, @ApiParam("申请类型 issue:申请 renew:续签") String type) {
 
-		return certController.apply(id, type);
+		JsonResult jsonResult = certController.apply(id, type);
+		
+		if(jsonResult.isSuccess() && jsonResult.getObj()!=null) {
+			jsonResult.setMsg(m.get("certStr.dnsDescr"));
+		}
+		
+		return jsonResult;
 	}
 
 	@ApiOperation("下载证书文件")
