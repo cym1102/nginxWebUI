@@ -65,6 +65,7 @@ Windows:
 
 ```
 Download the JDK installation package https://www.oracle.com/java/technologies/downloads/
+Download the nginx http://nginx.org/en/download.html
 Configure the JAVA runtime environment 
 JAVA_HOME : JDK installation directory
 Path : JDK installation directory\bin
@@ -74,9 +75,9 @@ reboot
 2.Download the latest release of the distribution jar
 
 ```
-Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.7.9.jar
+Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.8.1.jar
 
-Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-2.7.9.jar
+Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-2.8.1.jar
 ```
 
 With a new version, you just need to change the version in the path
@@ -111,7 +112,7 @@ Note that the command ends with an & to indicate that the project is running in 
 
 #### docker installation instructions 
 
-Note that an & sign is added at the end of the command, indicating that the docker image of this project has been produced by the background operation of the project, including nginx and nginxWebUI, for integrated management and operation of Nginx.
+Docker image supports AMD64 / ARM64 / ARMV7 platforms. Note that an & sign is added at the end of the command, indicating that the docker image of this project has been produced by the background operation of the project, including nginx and nginxWebUI, for integrated management and operation of Nginx.
 
 1.Install the Docker environment
 
@@ -130,13 +131,13 @@ yum install docker
 2.Download images:
 
 ```
-docker pull cym1102/nginxwebui:2.7.9
+docker pull cym1102/nginxwebui:latest
 ```
 
 3.start container
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:2.7.9 /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:latest
 ```
 
 notice: 
@@ -157,7 +158,7 @@ moreover: The following configuration file is used when using docker-compose
 version: "3.2"
 services:
   nginxWebUi-server:
-    image: cym1102/nginxwebui:2.7.9
+    image: cym1102/nginxwebui:latest
     volumes:
       - type: bind
         source: "/home/nginxWebUI"
@@ -171,16 +172,10 @@ services:
 
 #### Compile 
 
-1. Compile the package with Maven
+Compile the package with Maven
 
 ```
 mvn clean package
-```
-
-2. Compile the image with Docker
-
-```
-docker build -t nginxwebui:2.7.9 .
 ```
 
 #### Add boot up run
@@ -282,7 +277,7 @@ Note: In the parameter description, all fields with * prefix are required.
 
 If you forget your login password, follow the following tutorial to retrieve it
 
-1. install sqlite3
+1. install sqlite3 (docker image has already included)
 
 ```
 apt install sqlite3

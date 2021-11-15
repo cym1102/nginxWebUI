@@ -29,12 +29,11 @@ public class LogTailController {
 	Map<String, Process> processMap = new HashMap<>();
 	Map<String, InputStream> inputStreamMap = new HashMap<>();
 
-
 	/**
 	 * 新的WebSocket请求开启
 	 */
 	@OnOpen
-	public void onOpen(Session session, @PathParam("id") String id,  @PathParam("guid") String guid) {
+	public void onOpen(Session session, @PathParam("id") String id, @PathParam("guid") String guid) {
 
 		ApplicationContext act = ApplicationContextRegister.getApplicationContext();
 		SqlHelper sqlHelper = act.getBean(SqlHelper.class);
@@ -42,7 +41,10 @@ public class LogTailController {
 		try {
 			// 执行tail -f命令
 			Log log = sqlHelper.findById(id, Log.class);
-
+			if (log == null) {
+				return;
+			}
+			
 			Process process = null;
 			InputStream inputStream = null;
 
@@ -76,14 +78,14 @@ public class LogTailController {
 			if (inputStream != null) {
 				inputStream.close();
 			}
-			
+
 			if (process != null) {
 				process.destroy();
 			}
-			
+
 			inputStreamMap.remove(guid);
 			processMap.remove(guid);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

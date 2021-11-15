@@ -71,6 +71,7 @@ Windows:
 
 ```
 下载JDK安装包 https://www.oracle.com/java/technologies/downloads/
+下载nginx http://nginx.org/en/download.html
 配置JAVA运行环境 
 JAVA_HOME : JDK安装目录
 Path : JDK安装目录\bin
@@ -81,9 +82,9 @@ Path : JDK安装目录\bin
 2.下载最新版发行包jar
 
 ```
-Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.7.9.jar
+Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.8.1.jar
 
-Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-2.7.9.jar
+Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-2.8.1.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -118,7 +119,7 @@ Windows: java -jar -Xmx64m D:/home/nginxWebUI/nginxWebUI.jar --server.port=8080 
 
 #### docker安装说明
 
-本项目制作了docker镜像, 同时包含nginx和nginxWebUI在内, 一体化管理与运行nginx. 
+本项目制作了docker镜像, 支持 amd64/arm64/armv7 三大平台，同时包含nginx和nginxWebUI在内, 一体化管理与运行nginx. 
 
 1.安装docker容器环境
 
@@ -143,7 +144,7 @@ docker pull cym1102/nginxwebui:latest
 3.启动容器: 
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host  cym1102/nginxwebui:latest /bin/bash
+docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host cym1102/nginxwebui:latest
 ```
 
 注意: 
@@ -164,7 +165,7 @@ docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.p
 version: "3.2"
 services:
   nginxWebUi-server:
-    image: cym1102/nginxwebui:2.7.9
+    image: cym1102/nginxwebui:latest
     volumes:
       - type: bind
         source: "/home/nginxWebUI"
@@ -178,16 +179,10 @@ services:
 
 #### 编译说明
 
-1. 使用maven编译打包
+使用maven编译打包
 
 ```
 mvn clean package
-```
-
-2. 使用docker构建镜像
-
-```
-docker build -t nginxwebui:2.7.9 .
 ```
 
 #### 添加开机启动
@@ -289,7 +284,7 @@ systemctl start nginxwebui.service
 
 如果忘记了登录密码，可按如下教程找回密码
 
-1. 安装sqlite3命令
+1. 安装sqlite3命令（Docker镜像已经安装好了）
 
 ```
 apt install sqlite3

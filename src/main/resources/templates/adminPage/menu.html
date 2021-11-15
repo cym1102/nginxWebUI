@@ -58,11 +58,7 @@
 						<a href="${ctx}/adminPage/export">${menuStr.export}</a>
 					</dd>
 					
-					<#if admin.type==0>
-					<dd>
-						<a href="${ctx}/adminPage/admin">${menuStr.admin}</a>
-					</dd>
-					</#if>
+					
 				</dl>
 			</li>
 			
@@ -74,9 +70,12 @@
 					<dd>
 						<a href="${ctx}/adminPage/remote">${menuStr.remote}</a>
 					</dd>
-				</dl>
+					<#if admin.type == 0 || showAdmin == 'true'>
+						<dd>
+							<a href="${ctx}/adminPage/admin">${menuStr.admin}</a>
+						</dd>
+					</#if>
 			
-				<dl class="layui-nav-child">
 					<dd>
 						<a href="${ctx}/adminPage/abort">${menuStr.abort}</a>
 					</dd>

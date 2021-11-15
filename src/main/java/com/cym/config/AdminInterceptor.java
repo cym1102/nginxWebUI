@@ -33,6 +33,7 @@ import com.cym.service.CreditService;
 import com.cym.utils.BaseController;
 import com.cym.utils.MessageUtils;
 
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
@@ -88,7 +89,12 @@ public class AdminInterceptor implements HandlerInterceptor {
 		}
 
 		String localType = (String) request.getSession().getAttribute("localType");
-		if (localType != null && localType.equals("remote") && !request.getRequestURL().toString().contains("adminPage/remote")) {
+		if (localType != null //
+				&& localType.equals("remote") //
+				&& !request.getRequestURL().toString().contains("adminPage/remote") //
+				&& !request.getRequestURL().toString().contains("adminPage/admin") //
+				&& !request.getRequestURL().toString().contains("adminPage/abort") //
+		) {
 			// 转发到远程服务器
 			Remote remote = (Remote) request.getSession().getAttribute("remote");
 			String url = buildUrl(ctx, request, remote);
@@ -114,19 +120,23 @@ public class AdminInterceptor implements HandlerInterceptor {
 					rs = HttpUtil.post(url, body);
 				}
 
-				rs = rs.replace("'//" + remote.getIp() + ":" + remote.getPort() + "/'", //
-						"'//" + request.getServerName() + ":" + request.getServerPort() + "/'")//
-						.replace("//" + remote.getIp() + ":" + remote.getPort() + "/adminPage", //
-								"//" + request.getServerName() + ":" + request.getServerPort() + "/adminPage")//
-						.replace("//" + remote.getIp() + ":" + remote.getPort() + "/lib", //
-								"//" + request.getServerName() + ":" + request.getServerPort() + "/lib")//
-						.replace("//" + remote.getIp() + ":" + remote.getPort() + "/js", //
-								"//" + request.getServerName() + ":" + request.getServerPort() + "/js")//
-						.replace("//" + remote.getIp() + ":" + remote.getPort() + "/css", //
-								"//" + request.getServerName() + ":" + request.getServerPort() + "/css")//
-						.replace("//" + remote.getIp() + ":" + remote.getPort() + "/img", //
-								"//" + request.getServerName() + ":" + request.getServerPort() + "/img")//
-				;
+//				String remoteDomain = "//" + remote.getIp() + ":" + remote.getPort();
+//				String remoteDomainNoPort = "//" + remote.getIp();
+//				String localDomain = "//" + request.getServerName() + ":" + request.getServerPort();
+//
+//				rs = rs.replace(remoteDomain + "/", localDomain + "/")//
+//						.replace(remoteDomainNoPort + "/", localDomain + "/")//
+//						.replace(remoteDomain + "/adminPage", localDomain + "/adminPage")//
+//						.replace(remoteDomainNoPort + "/adminPage", localDomain + "/adminPage")//
+//						.replace(remoteDomain + "/lib", localDomain + "/lib")//
+//						.replace(remoteDomainNoPort + "/lib", localDomain + "/lib")//
+//						.replace(remoteDomain + "/js", localDomain + "/js")//
+//						.replace(remoteDomainNoPort + "/js", localDomain + "/js")//
+//						.replace(remoteDomain + "/css", localDomain + "/css")//
+//						.replace(remoteDomainNoPort + "/css", localDomain + "/css")//
+//						.replace(remoteDomain + "/img", localDomain + "/img")//
+//						.replace(remoteDomainNoPort + "/img", localDomain + "/img")//
+//				;
 				response.setCharacterEncoding("utf-8");
 				response.setContentType("text/html;charset=utf-8");
 
@@ -178,13 +188,23 @@ public class AdminInterceptor implements HandlerInterceptor {
 	}
 
 	private String buildUrl(String ctx, HttpServletRequest request, Remote remote) {
-		String url = request.getRequestURL().toString().replace(ctx,  "//" + remote.getIp() + ":" + remote.getPort() + "/");
+		String url = request.getRequestURL().toString().replace(ctx, "//" + remote.getIp() + ":" + remote.getPort() + "/");
 
-		if (!url.startsWith("http")) {
-			url = remote.getProtocol() + ":" + url;
+		if (url.startsWith("http")) {
+			url = url.replace("http:", "").replace("https:", "");
+
 		}
+		url = remote.getProtocol() + ":" + url;
 
-		return url + "?jsrandom=" + System.currentTimeMillis();
+		Admin admin = (Admin) request.getSession().getAttribute("admin");
+		String showAdmin = "false";
+		if (admin != null && admin.getType() == 0) {
+			showAdmin = "true";
+		}
+		return url + "?jsrandom=" + System.currentTimeMillis() + //
+				"&protocol=" + remote.getProtocol() + //
+				"&showAdmin=" + showAdmin + //
+				"&ctx=" + Base64.encode(ctx);
 	}
 
 	public static String getCtx(String httpHost, String host, String realPort) {

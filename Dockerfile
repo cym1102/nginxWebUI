@@ -1,21 +1,40 @@
-FROM ubuntu:20.04
-LABEL maintainer="cym1102@qq.com"
-ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Asia/Shanghai
-RUN apt-get clean && apt-get update &&\
-	apt-get install -y nginx &&\
-	apt-get install -y net-tools &&\
-	apt-get install -y curl &&\
-	apt-get install -y wget &&\
-	apt-get install -y ttf-dejavu &&\
-	apt-get install -y fontconfig &&\
-	fc-cache -f -v &&\
-	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &&\
-	apt-get install tzdata
-ENV LANG C.UTF-8
-ADD jre.tar.xz /home/
-RUN chmod 777 /home/jre/bin/java
-ADD nginxWebUI.sh /home/
-RUN chmod 777 /home/nginxWebUI.sh
-COPY target/nginxWebUI-*.jar /home/nginxWebUI.jar
-ENTRYPOINT ["sh","-c", "/home/nginxWebUI.sh ${BOOT_OPTIONS} && tail -f /dev/null"]
+FROM alpine:3.14 AS builder
+COPY . /build
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk add --update --no-cache maven \
+    && cd /build \
+    && if [[ -s settings.xml ]]; then \
+           mkdir -p /root/.m2; \
+           cp -fv settings.xml /root/.m2/settings.xml; \
+       fi \
+    && mvn clean package \
+    && mkdir -p /out/home \
+    && cp target/nginxWebUI-*.jar /out/home/nginxWebUI.jar
+COPY entrypoint.sh /out/usr/local/bin/entrypoint.sh
+
+FROM alpine:3.14
+ENV LANG=zh_CN.UTF-8 \
+    TZ=Asia/Shanghai \
+    PS1="\u@\h:\w \$ "
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk add --update --no-cache \
+       nginx \
+       nginx-mod-stream \
+       openjdk8-jre \
+       net-tools \
+       curl \
+       wget \
+       ttf-dejavu \
+       fontconfig \
+       tzdata \
+       tini \
+       acme.sh \
+       sqlite \
+    && fc-cache -f -v \
+    && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
+    && echo "${TZ}" > /etc/timezone \
+    && rm -rf /var/cache/apk/* /tmp/*
+COPY --from=builder /out /
+VOLUME ["/home/nginxWebUI"]
+ENTRYPOINT ["tini", "entrypoint.sh"]
+       

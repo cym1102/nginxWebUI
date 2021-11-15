@@ -22,6 +22,7 @@ import com.cym.service.SettingService;
 import com.cym.utils.MessageUtils;
 import com.cym.utils.PropertiesUtils;
 
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.StrUtil;
 
 @Component
@@ -43,6 +44,7 @@ public class FrontInterceptor implements HandlerInterceptor {
 	SettingService settingService;
 	@Autowired
 	MessageUtils m;
+
 	/*
 	 * 视图渲染之后的操作
 	 */
@@ -69,12 +71,17 @@ public class FrontInterceptor implements HandlerInterceptor {
 		String host = request.getHeader("Host");
 
 		String ctx = AdminInterceptor.getCtx(httpHost, host, realPort);
-		
+		if (StrUtil.isNotEmpty(request.getParameter("ctx"))) {
+			ctx = Base64.decodeStr(request.getParameter("ctx"));
+		}
+
 		request.setAttribute("ctx", ctx);
 
 		request.setAttribute("jsrandom", currentVersion);
 		request.setAttribute("currentVersion", currentVersion);
 		request.setAttribute("projectName", projectName);
+
+		request.setAttribute("showAdmin", request.getParameter("showAdmin"));
 
 		// 显示版本更新
 		if (versionConfig.getVersion() != null) {
@@ -122,7 +129,7 @@ public class FrontInterceptor implements HandlerInterceptor {
 
 			request.setAttribute(key, map);
 		}
-		
+
 		if (settingService.get("lang") != null && settingService.get("lang").equals("en_US")) {
 			request.setAttribute("langType", "切换到中文");
 		} else {
@@ -132,6 +139,4 @@ public class FrontInterceptor implements HandlerInterceptor {
 		return true;
 	}
 
-
-	
 }

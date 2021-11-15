@@ -165,23 +165,27 @@ function edit(id, clone) {
 				$("#pemPath").html(cert.pem);
 				$("#keyPath").html(cert.key);
 				
-				$("#domain").attr("disabled", true);
-				$("#domain").addClass("disabled");
-				
-				if(cert.pem!=null && cert.pem!='' && cert.key!=null&& cert.key!=''){
-					$("#type").attr("disabled", true);
-				} else {
-					$("#type").attr("disabled", false);
-				}
-				if (!clone) {
+				if(!clone){
+					$("#domain").attr("disabled", true);
+					$("#domain").addClass("disabled");
+					
+					if(cert.pem!=null && cert.pem!='' && cert.key!=null&& cert.key!=''){
+						$("#type").attr("disabled", true);
+					} else {
+						$("#type").attr("disabled", false);
+					}
+					
 					$("#id").val(cert.id);
 					$("#pem").val(cert.pem);
 					$("#key").val(cert.key);
 				} else {
+					$("#domain").attr("disabled", false);
+					$("#domain").removeClass("disabled");
+					$("#type").attr("disabled", false);
+					
 					$("#id").val("");
 					$("#pem").val("");
 					$("#key").val("");
-					$("#type").attr("disabled", false);
 				}
 				
 				checkType(cert.type);
