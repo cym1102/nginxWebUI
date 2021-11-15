@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -43,6 +45,7 @@ import cn.hutool.json.JSONUtil;
 @Controller
 @RequestMapping("/adminPage/conf")
 public class ConfController extends BaseController {
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	UpstreamService upstreamService;
 	@Autowired
@@ -132,8 +135,7 @@ public class ConfController extends BaseController {
 			confService.replace(nginxPath, nginxContent, subContent, subName, true, adminName); 
 			return renderSuccess(m.get("confStr.replaceSuccess"));
 		} catch (Exception e) {
-			e.printStackTrace();
-
+			logger.error(e.getMessage(), e);
 			return renderError(m.get("confStr.error3") + ":" + e.getMessage());
 		}
 
@@ -189,7 +191,7 @@ public class ConfController extends BaseController {
 			}
 			rs = RuntimeUtil.execForStr(cmd);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			rs = e.getMessage().replace("\n", "<br>");
 		}
 
@@ -255,7 +257,7 @@ public class ConfController extends BaseController {
 			}
 			rs = RuntimeUtil.execForStr(cmd);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			rs = e.getMessage().replace("\n", "<br>");
 		}
 
@@ -314,7 +316,7 @@ public class ConfController extends BaseController {
 				return renderSuccess(cmd + "<br>" + m.get("confStr.reloadFail") + "<br>" + rs.replace("\n", "<br>"));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			return renderSuccess(m.get("confStr.reloadFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
 		}
 	}
@@ -345,7 +347,7 @@ public class ConfController extends BaseController {
 				return renderSuccess(cmd + "<br>" + m.get("confStr.runFail") + "<br>" + rs.replace("\n", "<br>"));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			return renderSuccess(m.get("confStr.runFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
 		}
 	}

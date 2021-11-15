@@ -11,6 +11,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +43,7 @@ import cn.hutool.core.util.StrUtil;
 @Controller
 @RequestMapping("/adminPage/admin")
 public class AdminController extends BaseController {
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	AdminService adminService;
 	@Autowired
@@ -147,7 +150,7 @@ public class AdminController extends BaseController {
 			sendCloudUtils.sendMailSmtp(mail, m.get("adminStr.emailTest"), m.get("adminStr.emailTest"));
 			return renderSuccess();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			return renderError(e.getMessage());
 		}
 	}
@@ -182,7 +185,7 @@ public class AdminController extends BaseController {
 				BitMatrix matrix = new MultiFormatWriter().encode(url, BarcodeFormat.QR_CODE, w, h, hints);
 				MatrixToImageWriter.writeToStream(matrix, "png", stream);
 			} catch (WriterException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			} finally {
 				if (stream != null) {
 					stream.flush();

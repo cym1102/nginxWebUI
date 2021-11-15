@@ -32,6 +32,7 @@ import cn.hutool.json.JSONUtil;
 @RequestMapping("")
 @Controller
 public class MainController extends BaseController {
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	UpdateUtils updateUtils;
 	@Autowired
@@ -71,7 +72,7 @@ public class MainController extends BaseController {
 
 			return renderSuccess(dest.getPath().replace("\\", "/"));
 		} catch (IllegalStateException | IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 
 		return renderError();

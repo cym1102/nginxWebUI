@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +47,7 @@ import cn.hutool.core.util.ZipUtil;
 
 @Service
 public class ConfService {
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	UpstreamService upstreamService;
 	@Autowired
@@ -245,7 +248,7 @@ public class ConfService {
 
 			return confExt;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 
 		return null;
@@ -744,27 +747,6 @@ public class ConfService {
 			asycPack.setParamList(sqlHelper.findAll(Param.class));
 		}
 
-//		if (data.contains("nginx") || data.contains("all")) {
-//			String nginxPath = settingService.get("nginxPath");
-//			String decompose = settingService.get("decompose");
-//			ConfExt confExt = buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"), false);
-//
-//			if (FileUtil.exist(nginxPath)) {
-//				String orgStr = FileUtil.readString(nginxPath, StandardCharsets.UTF_8);
-//				confExt.setConf(orgStr);
-//
-//				for (ConfFile confFile : confExt.getFileList()) {
-//					confFile.setConf("");
-//
-//					String filePath = new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/" + confFile.getName();
-//					if (FileUtil.exist(filePath)) {
-//						confFile.setConf(FileUtil.readString(filePath, StandardCharsets.UTF_8));
-//					}
-//				}
-//			}
-//			asycPack.setDecompose(decompose);
-//			asycPack.setConfExt(confExt);
-//		}
 
 		return asycPack;
 	}
@@ -830,29 +812,9 @@ public class ConfService {
 				}
 			}
 
-//			if (asycPack.getDecompose() != null) {
-//				settingService.set("decompose", asycPack.getDecompose());
-//			}
-//
-//			if (asycPack.getConfExt() != null) {
-//				ConfExt confExt = asycPack.getConfExt();
-//				String nginxPath = settingService.get("nginxPath");
-//				if (FileUtil.exist(nginxPath)) {
-//
-//					List<String> subContent = new ArrayList<>();
-//					List<String> subName = new ArrayList<>();
-//
-//					for (ConfFile confFile : confExt.getFileList()) {
-//						subContent.add(confFile.getConf());
-//						subName.add(confFile.getName());
-//					}
-//
-//					replace(nginxPath, confExt.getConf(), subContent, subName, true, adminName);
-//				}
-//			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 
 	}

@@ -2,6 +2,8 @@ package com.cym.utils;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
@@ -9,7 +11,7 @@ import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 
 @Component
 public class AuthUtils {
-
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	GoogleAuthenticator gAuth;
 
 	@PostConstruct
@@ -26,7 +28,7 @@ public class AuthUtils {
 			GoogleAuthenticator gAuth = new GoogleAuthenticator();
 			return gAuth.authorize(key, value);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			return false;
 		}
 	}

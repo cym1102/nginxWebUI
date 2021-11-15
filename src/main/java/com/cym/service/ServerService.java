@@ -34,7 +34,7 @@ import cn.hutool.json.JSONUtil;
 
 @Service
 public class ServerService {
-	private final static Logger log = LoggerFactory.getLogger(ServerService.class);
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	SqlHelper sqlHelper;
@@ -149,7 +149,7 @@ public class ServerService {
 		try {
 			conf = NgxConfig.read(initNginxPath);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			throw new Exception("文件读取失败");
 		}
 

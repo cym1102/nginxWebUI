@@ -20,6 +20,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,7 +44,7 @@ import cn.hutool.json.JSONUtil;
 
 @Component
 public class AdminInterceptor implements HandlerInterceptor {
-
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	CreditService creditService;
 	@Autowired
@@ -159,7 +161,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 				}
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 				response.sendRedirect(ctx + "/adminPage/login/noServer");
 			}
 			return false;

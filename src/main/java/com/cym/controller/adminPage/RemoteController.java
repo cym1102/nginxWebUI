@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -46,6 +48,7 @@ import cn.hutool.json.JSONUtil;
 @Controller
 @RequestMapping("/adminPage/remote")
 public class RemoteController extends BaseController {
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	RemoteService remoteService;
 	@Autowired
@@ -120,7 +123,7 @@ public class RemoteController extends BaseController {
 					remote.setNginx((Integer) map.get("nginx"));
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 
 		}
@@ -341,7 +344,7 @@ public class RemoteController extends BaseController {
 					String json = HttpUtil.post(url, map);
 					jsonResult = JSONUtil.toBean(json, JsonResult.class);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 				}
 			}
 
@@ -358,7 +361,7 @@ public class RemoteController extends BaseController {
 				try {
 					Thread.sleep(interval * 1000);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 				}
 			}
 		}
@@ -403,7 +406,7 @@ public class RemoteController extends BaseController {
 								+ "&adminName=" + adminName, map);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 				}
 			}
 
@@ -474,7 +477,7 @@ public class RemoteController extends BaseController {
 				return renderError(m.get("remoteStr.noAuth"));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			return renderError(m.get("remoteStr.noAuth"));
 		}
 	}
@@ -588,13 +591,13 @@ public class RemoteController extends BaseController {
 				i = bis.read(buffer);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			if (bis != null) {
 				try {
 					bis.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 				}
 			}
 		}

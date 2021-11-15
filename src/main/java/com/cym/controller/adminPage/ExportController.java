@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +37,7 @@ import cn.hutool.json.JSONUtil;
 @Controller
 @RequestMapping("/adminPage/export")
 public class ExportController extends BaseController {
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	ConfService confService;
 
@@ -101,20 +104,20 @@ public class ExportController extends BaseController {
 					i = bis.read(buffer);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			} finally {
 				if (bis != null) {
 					try {
 						bis.close();
 					} catch (IOException e) {
-						e.printStackTrace();
+						logger.error(e.getMessage(), e);
 					}
 				}
 				if (fis != null) {
 					try {
 						fis.close();
 					} catch (IOException e) {
-						e.printStackTrace();
+						logger.error(e.getMessage(), e);
 					}
 				}
 			}

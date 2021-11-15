@@ -16,6 +16,7 @@ import com.cym.utils.MessageUtils;
 import com.cym.utils.TimeExeUtils;
 
 import cn.craccd.sqlHelper.utils.SqlHelper;
+import io.swagger.models.auth.In;
 
 @SpringBootTest(classes = NginxWebUI.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class MainTest {
@@ -32,7 +33,11 @@ public class MainTest {
 
 	@Test
 	public void testStartUp() throws InterruptedException, IOException {
-		String code = "Wb7cQZCHt3oXYXpCLG9V7nifzqAOdf5jnhJoTOCT8vk";
+		try {
+			Integer i = 1/0;
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
 	}
 
 }

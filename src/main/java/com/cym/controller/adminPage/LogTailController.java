@@ -12,6 +12,8 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
@@ -25,7 +27,7 @@ import cn.craccd.sqlHelper.utils.SqlHelper;
 @ServerEndpoint("/adminPage/logTail/{id}/{guid}")
 @Controller
 public class LogTailController {
-
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	Map<String, Process> processMap = new HashMap<>();
 	Map<String, InputStream> inputStreamMap = new HashMap<>();
 
@@ -44,14 +46,14 @@ public class LogTailController {
 			if (log == null) {
 				return;
 			}
-			
+
 			Process process = null;
 			InputStream inputStream = null;
 
 			if (SystemTool.isWindows()) {
 				process = Runtime.getRuntime().exec("powershell Get-Content " + log.getPath() + " -Tail 20");
 			} else {
-				process = Runtime.getRuntime().exec("tail -f " + log.getPath() + " --line 20");
+				process = Runtime.getRuntime().exec("tail -f " + log.getPath() + " -n 20");
 			}
 			inputStream = process.getInputStream();
 
@@ -62,7 +64,7 @@ public class LogTailController {
 			TailLogThread thread = new TailLogThread(inputStream, session);
 			thread.start();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -87,12 +89,12 @@ public class LogTailController {
 			processMap.remove(guid);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
 	@OnError
 	public void onError(Throwable thr) {
-		thr.printStackTrace();
+		logger.error(thr.getMessage(), thr);
 	}
 }

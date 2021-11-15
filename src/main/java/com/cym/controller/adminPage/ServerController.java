@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +47,7 @@ import cn.hutool.json.JSONUtil;
 @Controller
 @RequestMapping("/adminPage/server")
 public class ServerController extends BaseController {
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	ServerService serverService;
 	@Autowired
@@ -204,8 +207,7 @@ public class ServerController extends BaseController {
 			serverService.importServer(nginxPath);
 			return renderSuccess(m.get("serverStr.importSuccess"));
 		} catch (Exception e) {
-			e.printStackTrace();
-
+			logger.error(e.getMessage(), e);
 			return renderError(m.get("serverStr.importFail"));
 		}
 	}

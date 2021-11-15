@@ -5,6 +5,8 @@ import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +26,7 @@ import cn.hutool.core.util.ZipUtil;
 @RequestMapping("/adminPage/www")
 @Controller
 public class WwwController extends BaseController {
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	WwwService wwwService;
 
@@ -56,7 +59,7 @@ public class WwwController extends BaseController {
 			return renderSuccess();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 
 		return renderError(m.get("wwwStr.zipError"));
@@ -100,9 +103,9 @@ public class WwwController extends BaseController {
 			// 返回当前类的路径，并且处理路径中的空格，因为在路径中出现的空格如果不处理的话，
 			// 在访问时就会从空格处断开，那么也就取不到完整的信息了，这个问题在web开发中尤其要注意
 			return strURL.replaceAll("%20", " ");
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw ex;
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw e;
 		}
 	}
 }

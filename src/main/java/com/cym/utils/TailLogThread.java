@@ -7,7 +7,13 @@ import java.io.InputStreamReader;
 
 import javax.websocket.Session;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.cym.NginxWebUI;
+
 public class TailLogThread extends Thread {
+	static Logger logger = LoggerFactory.getLogger(TailLogThread.class);
 	
 	private BufferedReader reader;
 	private Session session;
@@ -27,7 +33,7 @@ public class TailLogThread extends Thread {
 				session.getBasicRemote().sendText(line + "<br>");
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 }

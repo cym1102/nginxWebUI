@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +36,7 @@ import cn.hutool.core.util.URLUtil;
 @Controller
 @RequestMapping("/adminPage/log")
 public class LogController extends BaseController {
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	SettingService settingService;
 	@Autowired
@@ -121,7 +124,7 @@ public class LogController extends BaseController {
 			IOUtils.copy(inputStream, response.getOutputStream());
 			response.flushBuffer();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 
 	}

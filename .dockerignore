@@ -1,6 +1,4 @@
 *
-!src
-!pom.xml
+!target/nginxWebUI-*.jar
 !Dockerfile
 !entrypoint.sh
-!settings.xml

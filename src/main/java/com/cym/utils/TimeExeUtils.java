@@ -72,7 +72,7 @@ public class TimeExeUtils {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			if (process != null) {
 				process.destroy();

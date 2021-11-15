@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -47,7 +49,7 @@ import cn.hutool.json.JSONUtil;
 @Configuration // 1.主要用于标记配置类，兼备Component的效果。
 @EnableScheduling // 2.开启定时任务
 public class ScheduleTask {
-
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Value("${server.port}")
 	Integer port;
 
@@ -195,7 +197,7 @@ public class ScheduleTask {
 						names.add(remote.getDescr() + "[" + remote.getIp() + ":" + remote.getPort() + "]");
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 
 					names.add(remote.getDescr() + "[" + remote.getIp() + ":" + remote.getPort() + "]");
 				}
