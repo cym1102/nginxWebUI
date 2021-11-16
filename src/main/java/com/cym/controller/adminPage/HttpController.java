@@ -12,15 +12,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.config.InitConfig;
 import com.cym.model.Http;
-import com.cym.model.LogInfo;
 import com.cym.service.HttpService;
 import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SnowFlakeUtils;
 
-import cn.craccd.sqlHelper.bean.Sort;
-import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 

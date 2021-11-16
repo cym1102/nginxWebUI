@@ -82,9 +82,9 @@ Path : JDK安装目录\bin
 2.下载最新版发行包jar
 
 ```
-Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.8.1.jar
+Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.8.2.jar
 
-Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-2.8.1.jar
+Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-2.8.2.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -119,7 +119,7 @@ Windows: java -jar -Xmx64m D:/home/nginxWebUI/nginxWebUI.jar --server.port=8080 
 
 #### docker安装说明
 
-本项目制作了docker镜像, 支持 amd64/arm64/armv7 三大平台，同时包含nginx和nginxWebUI在内, 一体化管理与运行nginx. 
+本项目制作了docker镜像, 支持 x86/x86_64/arm64/arm v7/arm v6/ppc64 平台，同时包含nginx和nginxWebUI在内, 一体化管理与运行nginx. 
 
 1.安装docker容器环境
 
