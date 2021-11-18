@@ -25,7 +25,6 @@ public class NginxWebUI {
 
 	public static void main(String[] args) {
 		try {
-			Integer i = 1/0;
 			// 尝试杀掉旧版本
 			killSelf();
 

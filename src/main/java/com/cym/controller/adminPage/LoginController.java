@@ -25,10 +25,10 @@ import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.PwdCheckUtil;
 import com.cym.utils.SystemTool;
+import com.wf.captcha.SpecCaptcha;
+import com.wf.captcha.base.Captcha;
+import com.wf.captcha.utils.CaptchaUtil;
 
-import cn.hutool.captcha.CaptchaUtil;
-import cn.hutool.captcha.ShearCaptcha;
-import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.util.StrUtil;
 
 /**
@@ -77,12 +77,11 @@ public class LoginController extends BaseController {
 
 	@RequestMapping("login")
 	@ResponseBody
-	public JsonResult submitLogin(String name, String pass, String code, String authCode, String remember, HttpSession httpSession) {
+	public JsonResult submitLogin(String name, String pass, String code, String authCode, String remember, HttpSession httpSession,HttpServletRequest httpServletRequest) {
 
 		// 验证码
-		String imgCode = (String) httpSession.getAttribute("imgCode");
-		if (StrUtil.isEmpty(imgCode) || StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
-			httpSession.removeAttribute("imgCode"); // 销毁验证码
+		if (!CaptchaUtil.ver(code, httpServletRequest)) {
+			CaptchaUtil.clear(httpServletRequest); // 销毁验证码
 			return renderError(m.get("loginStr.backError1")); // 验证码不正确
 		}
 
@@ -134,12 +133,11 @@ public class LoginController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("getAuth")
-	public JsonResult getAuth(String name, String pass, String code, Integer remote, HttpSession httpSession) {
+	public JsonResult getAuth(String name, String pass, String code, Integer remote, HttpSession httpSession, HttpServletRequest httpServletRequest) {
 		// 验证码
 		if (remote == null) {
-			String imgCode = (String) httpSession.getAttribute("imgCode");
-			if (StrUtil.isEmpty(imgCode) || StrUtil.isNotEmpty(imgCode) && !imgCode.equalsIgnoreCase(code)) {
-				httpSession.removeAttribute("imgCode");	// 销毁验证码
+			if (!CaptchaUtil.ver(code, httpServletRequest)) {
+				CaptchaUtil.clear(httpServletRequest); // 销毁验证码
 				return renderError(m.get("loginStr.backError1")); // 验证码不正确
 			}
 		}
@@ -232,24 +230,17 @@ public class LoginController extends BaseController {
 
 	@RequestMapping("/getCode")
 	public void getCode(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
-		ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(100, 40);
-		captcha.setGenerator(new RandomGenerator("0123456789", 4));
-
-		String createText = captcha.getCode();
-		httpServletRequest.getSession().setAttribute("imgCode", createText);
-
-		captcha.write(httpServletResponse.getOutputStream());
+		SpecCaptcha specCaptcha = new SpecCaptcha(100, 40, 4);
+		specCaptcha.setCharType(Captcha.TYPE_ONLY_NUMBER);
+		CaptchaUtil.out(specCaptcha, httpServletRequest, httpServletResponse);
 	}
 
 	@RequestMapping("/getRemoteCode")
 	public void getRemoteCode(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
-		ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(100, 40);
-		captcha.setGenerator(new RandomGenerator("0123456789", 4));
-
-		String createText = captcha.getCode();
-		settingService.set("remoteCode", createText);
-
-		captcha.write(httpServletResponse.getOutputStream());
+		SpecCaptcha specCaptcha = new SpecCaptcha(100, 40, 4);
+		specCaptcha.setCharType(Captcha.TYPE_ONLY_NUMBER);
+		settingService.set("remoteCode", specCaptcha.text());
+		specCaptcha.out(httpServletResponse.getOutputStream());
 	}
 
 	@ResponseBody
