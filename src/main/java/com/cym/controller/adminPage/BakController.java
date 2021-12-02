@@ -2,7 +2,9 @@ package com.cym.controller.adminPage;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,7 +23,6 @@ import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 
 import cn.craccd.sqlHelper.bean.Page;
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 
@@ -42,6 +43,22 @@ public class BakController extends BaseController {
 		return modelAndView;
 	}
 
+	@RequestMapping("getCompare")
+	@ResponseBody
+	public JsonResult getCompare(String id) {
+		Bak bak = sqlHelper.findById(id, Bak.class);
+
+		Bak pre = bakService.getPre(id);
+		if (pre == null) {
+			return renderError("没有更早的备份文件");
+		}
+
+		Map map = new HashMap<>();
+		map.put("bak", bak);
+		map.put("pre", pre);
+
+		return renderSuccess(map);
+	}
 
 	@RequestMapping("content")
 	@ResponseBody
@@ -90,7 +107,7 @@ public class BakController extends BaseController {
 	@ResponseBody
 	public JsonResult delAll() {
 		bakService.delAll();
-		
+
 		return renderSuccess();
 	}
 

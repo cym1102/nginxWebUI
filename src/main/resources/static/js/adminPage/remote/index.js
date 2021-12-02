@@ -867,6 +867,7 @@ function addOverSubmit(){
 				location.reload();
 			} else {
 				layer.msg(data.msg);
+				refreshCode();
 			}
 		},
 		error : function() {

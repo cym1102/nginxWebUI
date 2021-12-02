@@ -29,6 +29,7 @@ import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
 import com.wf.captcha.utils.CaptchaUtil;
 
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.StrUtil;
 
 /**
@@ -77,8 +78,22 @@ public class LoginController extends BaseController {
 
 	@RequestMapping("login")
 	@ResponseBody
-	public JsonResult submitLogin(String name, String pass, String code, String authCode, String remember, HttpSession httpSession,HttpServletRequest httpServletRequest) {
-
+	public JsonResult submitLogin(String name, String pass, String code, String authCode, String remember, HttpSession httpSession, HttpServletRequest httpServletRequest) {
+		// 解码
+		if (StrUtil.isNotEmpty(name)) {
+			name = Base64.decodeStr(Base64.decodeStr(name));
+		}
+		if (StrUtil.isNotEmpty(pass)) {
+			pass = Base64.decodeStr(Base64.decodeStr(pass));
+		}
+		if (StrUtil.isNotEmpty(code)) {
+			code = Base64.decodeStr(Base64.decodeStr(code));
+		}
+		if (StrUtil.isNotEmpty(authCode)) {
+			authCode = Base64.decodeStr(Base64.decodeStr(authCode));
+		}
+			
+		
 		// 验证码
 		if (!CaptchaUtil.ver(code, httpServletRequest)) {
 			CaptchaUtil.clear(httpServletRequest); // 销毁验证码
@@ -134,6 +149,18 @@ public class LoginController extends BaseController {
 	@ResponseBody
 	@RequestMapping("getAuth")
 	public JsonResult getAuth(String name, String pass, String code, Integer remote, HttpSession httpSession, HttpServletRequest httpServletRequest) {
+
+		// 解码
+		if (StrUtil.isNotEmpty(name)) {
+			name = Base64.decodeStr(Base64.decodeStr(name));
+		}
+		if (StrUtil.isNotEmpty(pass)) {
+			pass = Base64.decodeStr(Base64.decodeStr(pass));
+		}
+		if (StrUtil.isNotEmpty(code)) {
+			code = Base64.decodeStr(Base64.decodeStr(code));
+		}
+
 		// 验证码
 		if (remote == null) {
 			if (!CaptchaUtil.ver(code, httpServletRequest)) {
@@ -142,7 +169,6 @@ public class LoginController extends BaseController {
 			}
 		}
 
-		// 用户名密码
 		Admin admin = adminService.login(name, pass);
 		if (admin == null) {
 			return renderError(m.get("loginStr.backError2")); // 用户名密码错误
@@ -158,6 +184,17 @@ public class LoginController extends BaseController {
 	@ResponseBody
 	@RequestMapping("getCredit")
 	public JsonResult getCredit(String name, String pass, String code, String auth) {
+		// 解码
+		if (StrUtil.isNotEmpty(name)) {
+			name = Base64.decodeStr(Base64.decodeStr(name));
+		}
+		if (StrUtil.isNotEmpty(pass)) {
+			pass = Base64.decodeStr(Base64.decodeStr(pass));
+		}
+		if (StrUtil.isNotEmpty(code)) {
+			code = Base64.decodeStr(Base64.decodeStr(code));
+		}
+
 		// 用户名密码
 		Admin admin = adminService.login(name, pass);
 		if (admin == null) {
@@ -222,7 +259,7 @@ public class LoginController extends BaseController {
 		admin.setPass(pass);
 		admin.setAuth(false);
 		admin.setType(0);
-		
+
 		sqlHelper.insert(admin);
 
 		return renderSuccess();
@@ -258,4 +295,5 @@ public class LoginController extends BaseController {
 
 		return renderSuccess();
 	}
+	
 }

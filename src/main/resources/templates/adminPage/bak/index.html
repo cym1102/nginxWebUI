@@ -2,7 +2,7 @@
 <html>
 <head>
 <#include "/adminPage/common.html"/>
-
+<link rel="stylesheet" type="text/css" href="${ctx}/lib/jsdifflib/diffview.css" />
 </head>
 <body>
 		<!-- 内容主体区域 -->
@@ -29,6 +29,7 @@
 						<td>${bak.time}</td>
 						<td>
 							<button class="layui-btn layui-btn-sm" onclick="content('${bak.id}')">${bakStr.content}</button>
+							<button class="layui-btn layui-btn-sm" onclick="compare('${bak.id}')">${bakStr.compare}</button>
 							<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="replace('${bak.id}')">${bakStr.restore}</button>
 							<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="del('${bak.id}')">${commonStr.del}</button>
 						</td>
@@ -39,10 +40,16 @@
 			<div id="pageInfo"></div>
 		</div>
 
-
+	<div style="height: 0px; width: 0px; overflow: hidden;">
+		<div id="diffoutput"></div>
+	</div>
 
 	<#include '/adminPage/script.html'/>
 	<#include '/adminPage/select_preview.html'/>
+	<script src="${ctx}/lib/auto-line-number/auto-line-number.js" type="text/javascript"></script>
+	<script src="${ctx}/lib/jsdifflib/difflib.js" type="text/javascript"></script>
+	<script src="${ctx}/lib/jsdifflib/diffview.js" type="text/javascript"></script>
+	<script src="${ctx}/lib/base64/base64.js" type="text/javascript"></script>
 	<script src="${ctx}/js/adminPage/bak/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 

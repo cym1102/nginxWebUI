@@ -17,6 +17,7 @@ import com.cym.model.Remote;
 import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
 import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
 import cn.craccd.sqlHelper.utils.SqlHelper;
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
@@ -32,13 +33,12 @@ public class RemoteService {
 	public void getCreditKey(Remote remote, String code, String auth) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 
-		paramMap.put("name", remote.getName());
-		paramMap.put("pass", remote.getPass());
-		paramMap.put("code", code);
+		paramMap.put("name", Base64.encode(Base64.encode(remote.getName())));
+		paramMap.put("pass", Base64.encode(Base64.encode(remote.getPass())));
+		paramMap.put("code", Base64.encode(Base64.encode(code)));
 		paramMap.put("auth", auth);
 		try {
-			String rs = HttpUtil.post(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort()
-					+ "/adminPage/login/getCredit", paramMap, 2000);
+			String rs = HttpUtil.post(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/login/getCredit", paramMap, 2000);
 
 			if (StrUtil.isNotEmpty(rs)) {
 				JSONObject jsonObject = new JSONObject(rs);
@@ -75,11 +75,9 @@ public class RemoteService {
 	public boolean hasSame(Remote remote) {
 		Long count = 0l;
 		if (StrUtil.isEmpty(remote.getId())) {
-			count = sqlHelper.findCountByQuery(
-					new ConditionAndWrapper().eq("ip", remote.getIp()).eq("port", remote.getPort()), Remote.class);
+			count = sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("ip", remote.getIp()).eq("port", remote.getPort()), Remote.class);
 		} else {
-			count = sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("ip", remote.getIp())
-					.eq("port", remote.getPort()).ne("id", remote.getId()), Remote.class);
+			count = sqlHelper.findCountByQuery(new ConditionAndWrapper().eq("ip", remote.getIp()).eq("port", remote.getPort()).ne("id", remote.getId()), Remote.class);
 		}
 
 		if (count > 0) {
