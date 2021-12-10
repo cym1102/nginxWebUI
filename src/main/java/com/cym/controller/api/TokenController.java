@@ -28,8 +28,11 @@ public class TokenController extends BaseController {
 
 		// 用户名密码
 		Admin admin = adminService.login(name, pass);
-		if (admin == null || !admin.getApi()) {
+		if (admin == null) {
 			return renderError(m.get("loginStr.backError2")); // 用户名密码错误
+		}
+		if (!admin.getApi()) {
+			return renderError(m.get("loginStr.backError7")); // 无接口权限
 		}
 
 		Map<String, String> map = new HashMap<String, String>();

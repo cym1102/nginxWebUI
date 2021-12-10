@@ -75,9 +75,9 @@ reboot
 2.Download the latest release of the distribution jar
 
 ```
-Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.8.5.jar
+Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.8.7.jar
 
-Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-2.8.5.jar
+Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-2.8.7.jar
 ```
 
 With a new version, you just need to change the version in the path
@@ -112,7 +112,7 @@ Note that the command ends with an & to indicate that the project is running in 
 
 #### docker installation instructions 
 
-Docker image supports x86/x86_64/arm64/arm v7/arm v6/ppc64 platforms. Note that an & sign is added at the end of the command, indicating that the docker image of this project has been produced by the background operation of the project, including nginx and nginxWebUI, for integrated management and operation of Nginx.
+Docker image supports x86_64/arm64/arm v7 platforms. Note that an & sign is added at the end of the command, indicating that the docker image of this project has been produced by the background operation of the project, including nginx and nginxWebUI, for integrated management and operation of Nginx.
 
 1.Install the Docker environment
 

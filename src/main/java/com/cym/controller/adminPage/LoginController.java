@@ -99,6 +99,7 @@ public class LoginController extends BaseController {
 			CaptchaUtil.clear(httpServletRequest); // 销毁验证码
 			return renderError(m.get("loginStr.backError1")); // 验证码不正确
 		}
+		CaptchaUtil.clear(httpServletRequest); // 销毁验证码
 
 		// 用户名密码
 		Admin admin = adminService.login(name, pass);
