@@ -34,7 +34,8 @@ public class MainTest {
 
 	@Test
 	public void testStartUp() throws InterruptedException, IOException {
-
+		String name = "${java:os}";
+		logger.error("name is {}", name);
 	}
 
 	public static void main(String[] args) {
