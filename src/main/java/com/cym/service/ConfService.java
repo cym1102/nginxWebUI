@@ -584,7 +584,9 @@ public class ConfService {
 		if (upstreamServer.getMaxFails() != null) {
 			conf += " max_fails=" + upstreamServer.getMaxFails();
 		}
-
+		if (upstreamServer.getMaxConns() != null) {
+			conf += " max_conns=" + upstreamServer.getMaxConns();
+		}
 		conf += " " + status;
 		return conf;
 	}
