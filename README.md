@@ -39,8 +39,6 @@ nginx本身功能复杂, nginxWebUI并不能涵盖nginx所有功能, 但能覆�
 
 本项目是基于springBoot的web系统, 数据库使用sqlite, 因此服务器上不需要安装任何数据库
 
-项目启动时会释放一个.sqlite.db到系统用户文件夹中, 注意进行备份
-
 本系统通过Let's encrypt申请证书, 使用acme.sh脚本进行自动化申请和续签, 开启续签的证书将在每天凌晨2点进行续签, 只有超过60天的证书才会进行续签. 只支持在linux下签发证书.
 
 添加tcp/ip转发配置支持时, 一些低版本的nginx可能需要重新编译，通过添加–with-stream参数指定安装stream模块才能使用, 但在ubuntu 18.04下, 官方软件库中的nginx已经带有stream模块, 不需要重新编译. 本系统如果配置了tcp转发项的话, 会自动引入ngx_stream_module.so的配置项, 如果没有开启则不引入, 最大限度优化ngnix配置文件. 

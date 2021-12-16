@@ -34,8 +34,6 @@ password: Admin123
 
 This project is a Web system based on springBoot. The database use SQLite, so there is no need to install any database on the server.
 
-sqlite.db will be released into the system user folder when the project starts, so pay attention to backup.
-
 This system applies for the certificate through Let's ENCRYPT and USES acme.sh script to automatically apply for and renew the certificate. Once the certificate is renewed, it will be renewed at 2 am every day, and only certificates exceeding 60 days will be renewed.
 
 When adding TCP/IP forwarding configuration support, some lower versions of Nginx may need to be recompiled,You can install the stream module by adding the -with-stream parameter, but under Ubuntu 18.04, the nginx in the official software library already has the stream module, which does not need to be recompiled. If the TCP forwarding item is configured in this system, the configuration item of ngx_stream_module.so will be introduced automatically, and the configuration file of Ngnix will be optimized to the maximum.
