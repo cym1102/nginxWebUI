@@ -122,23 +122,6 @@ public class AdminInterceptor implements HandlerInterceptor {
 					rs = HttpUtil.post(url, body);
 				}
 
-//				String remoteDomain = "//" + remote.getIp() + ":" + remote.getPort();
-//				String remoteDomainNoPort = "//" + remote.getIp();
-//				String localDomain = "//" + request.getServerName() + ":" + request.getServerPort();
-//
-//				rs = rs.replace(remoteDomain + "/", localDomain + "/")//
-//						.replace(remoteDomainNoPort + "/", localDomain + "/")//
-//						.replace(remoteDomain + "/adminPage", localDomain + "/adminPage")//
-//						.replace(remoteDomainNoPort + "/adminPage", localDomain + "/adminPage")//
-//						.replace(remoteDomain + "/lib", localDomain + "/lib")//
-//						.replace(remoteDomainNoPort + "/lib", localDomain + "/lib")//
-//						.replace(remoteDomain + "/js", localDomain + "/js")//
-//						.replace(remoteDomainNoPort + "/js", localDomain + "/js")//
-//						.replace(remoteDomain + "/css", localDomain + "/css")//
-//						.replace(remoteDomainNoPort + "/css", localDomain + "/css")//
-//						.replace(remoteDomain + "/img", localDomain + "/img")//
-//						.replace(remoteDomainNoPort + "/img", localDomain + "/img")//
-//				;
 				response.setCharacterEncoding("utf-8");
 				response.setContentType("text/html;charset=utf-8");
 

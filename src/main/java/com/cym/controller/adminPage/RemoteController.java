@@ -39,6 +39,7 @@ import com.cym.utils.JsonResult;
 import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
 
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.StrUtil;
@@ -384,8 +385,7 @@ public class RemoteController extends BaseController {
 		} else {
 			// 远程
 			json = HttpUtil.get(remoteFrom.getProtocol() + "://" + remoteFrom.getIp() + ":" + remoteFrom.getPort() + "/adminPage/remote/getAsycPack?creditKey=" + remoteFrom.getCreditKey()
-				+ "&asycData=" + StrUtil.join(",", Arrays.asList(asycData))
-			, 1000);
+					+ "&asycData=" + StrUtil.join(",", Arrays.asList(asycData)), 1000);
 		}
 
 		String adminName = getAdmin(request).getName();
@@ -460,8 +460,8 @@ public class RemoteController extends BaseController {
 	public JsonResult getAuth(Remote remote) {
 		try {
 			Map<String, Object> map = new HashMap<>();
-			map.put("name", remote.getName());
-			map.put("pass", remote.getPass());
+			map.put("name", Base64.encode(Base64.encode(remote.getName())));
+			map.put("pass", Base64.encode(Base64.encode(remote.getPass())));
 			map.put("remote", 1);
 
 			String rs = HttpUtil.post(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/login/getAuth", map, 3000);

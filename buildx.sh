@@ -10,7 +10,7 @@ set -o pipefail
 
 ## 基本信息
 repo="cym1102/nginxwebui"
-arch="linux/386,linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x"
+arch="linux/amd64,linux/arm64,linux/arm/v7"
 ver=$(cat pom.xml | grep -A1 nginxWebUI | grep version | grep -oP "\d+\.\d+\.\d+")
 echo "构建镜像：$repo"
 echo "构建架构：$arch"

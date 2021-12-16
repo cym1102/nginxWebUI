@@ -53,8 +53,8 @@ function diffUsingJS(before, after) {
         newTextLines: newtxt,
         opcodes: opcodes,
         // set the display titles for each resource
-        baseTextName: confStr.build,
-        newTextName: confStr.target,
+        baseTextName: operateLogStr.base,
+        newTextName: operateLogStr.next,
         //contextSize: contextSize,
         viewType: 1
     }));

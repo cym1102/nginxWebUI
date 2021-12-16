@@ -34,8 +34,6 @@ password: Admin123
 
 This project is a Web system based on springBoot. The database use SQLite, so there is no need to install any database on the server.
 
-sqlite.db will be released into the system user folder when the project starts, so pay attention to backup.
-
 This system applies for the certificate through Let's ENCRYPT and USES acme.sh script to automatically apply for and renew the certificate. Once the certificate is renewed, it will be renewed at 2 am every day, and only certificates exceeding 60 days will be renewed.
 
 When adding TCP/IP forwarding configuration support, some lower versions of Nginx may need to be recompiled,You can install the stream module by adding the -with-stream parameter, but under Ubuntu 18.04, the nginx in the official software library already has the stream module, which does not need to be recompiled. If the TCP forwarding item is configured in this system, the configuration item of ngx_stream_module.so will be introduced automatically, and the configuration file of Ngnix will be optimized to the maximum.
@@ -75,9 +73,9 @@ reboot
 2.Download the latest release of the distribution jar
 
 ```
-Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.8.3.jar
+Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.8.8.jar
 
-Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-2.8.3.jar
+Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-2.8.8.jar
 ```
 
 With a new version, you just need to change the version in the path
@@ -112,7 +110,7 @@ Note that the command ends with an & to indicate that the project is running in 
 
 #### docker installation instructions 
 
-Docker image supports x86/x86_64/arm64/arm v7/arm v6/ppc64 platforms. Note that an & sign is added at the end of the command, indicating that the docker image of this project has been produced by the background operation of the project, including nginx and nginxWebUI, for integrated management and operation of Nginx.
+Docker image supports x86_64/arm64/arm v7 platforms. Note that an & sign is added at the end of the command, indicating that the docker image of this project has been produced by the background operation of the project, including nginx and nginxWebUI, for integrated management and operation of Nginx.
 
 1.Install the Docker environment
 

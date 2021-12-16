@@ -24,18 +24,24 @@ public class BakService {
 	}
 
 	public List<BakSub> getSubList(String id) {
-		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq(BakSub::getBakId, id),  BakSub.class);
+		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq(BakSub::getBakId, id), BakSub.class);
 	}
 
 	public void del(String id) {
 		sqlHelper.deleteById(id, Bak.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq(BakSub::getBakId, id), BakSub.class);
 	}
-	
+
 	public void delAll() {
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Bak.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper(), BakSub.class);
 	}
 
-	
+	public Bak getPre(String id) {
+		Bak bak = sqlHelper.findById(id, Bak.class);
+		Bak pre = sqlHelper.findOneByQuery(new ConditionAndWrapper().lt(Bak::getTime, bak.getTime()), new Sort(Bak::getTime, Direction.DESC), Bak.class);
+
+		return pre;
+	}
+
 }
