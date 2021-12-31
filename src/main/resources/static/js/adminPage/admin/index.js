@@ -189,7 +189,7 @@ function qr(name, key){
 	layer.open({
 		type : 1,
 		title : adminStr.qr,
-		area : [ '350px', '380px' ], // 宽高
+		area : [ '350px', '390px' ], // 宽高
 		content : $('#qrDiv')
 	});
 }

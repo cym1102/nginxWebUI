@@ -41,6 +41,10 @@ public class ParamService {
 			list.addAll(addList);
 		}
 
+		if (type.contains("server")) {
+			type = "server";
+		}
+
 		list.addAll(sqlHelper.findListByQuery(new ConditionAndWrapper().eq(type + "Id", id), Param.class));
 
 		return list;
@@ -48,16 +52,16 @@ public class ParamService {
 
 	public List<Param> getList(String serverId, String locationId, String upstreamId) {
 		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper();
-		if(StrUtil.isNotEmpty(serverId)) {
+		if (StrUtil.isNotEmpty(serverId)) {
 			conditionAndWrapper.eq("serverId", serverId);
 		}
-		if(StrUtil.isNotEmpty(locationId)) {
+		if (StrUtil.isNotEmpty(locationId)) {
 			conditionAndWrapper.eq("locationId", locationId);
 		}
-		if(StrUtil.isNotEmpty(upstreamId)) {
+		if (StrUtil.isNotEmpty(upstreamId)) {
 			conditionAndWrapper.eq("upstreamId", upstreamId);
 		}
-		
+
 		return sqlHelper.findListByQuery(conditionAndWrapper, Param.class);
 	}
 

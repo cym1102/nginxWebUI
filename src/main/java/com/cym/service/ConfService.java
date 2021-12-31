@@ -336,7 +336,11 @@ public class ConfService {
 			setServerSsl(server, ngxBlockServer);
 
 			// 自定义参数
-			List<Param> paramList = paramService.getListByTypeId(server.getId(), "server");
+			String type = "server";
+			if (server.getProxyType() != 0) {
+				type += server.getProxyType();
+			}
+			List<Param> paramList = paramService.getListByTypeId(server.getId(), type);
 			for (Param param : paramList) {
 				setSameParam(param, ngxBlockServer);
 			}
@@ -477,7 +481,11 @@ public class ConfService {
 			setServerSsl(server, ngxBlockServer);
 
 			// 自定义参数
-			List<Param> paramList = paramService.getListByTypeId(server.getId(), "server");
+			String type = "server";
+			if (server.getProxyType() != 0) {
+				type += server.getProxyType();
+			}
+			List<Param> paramList = paramService.getListByTypeId(server.getId(), type);
 			for (Param param : paramList) {
 				setSameParam(param, ngxBlockServer);
 			}
@@ -643,7 +651,7 @@ public class ConfService {
 
 	@Transactional
 	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName, Boolean isReplace, String adminName) {
-		
+
 		String beforeConf = null;
 		if (isReplace) {
 			// 先读取已有的配置

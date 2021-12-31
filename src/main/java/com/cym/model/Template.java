@@ -7,7 +7,7 @@ import cn.craccd.sqlHelper.config.Table;
 public class Template extends BaseModel{
 	String name;
 
-	String def; // 默认配置 "" "server" "location" "upstreamId"
+	String def; // 默认配置 "" "server" "server1" "server2" "location" "upstream"
 	
 	
 	public String getName() {
