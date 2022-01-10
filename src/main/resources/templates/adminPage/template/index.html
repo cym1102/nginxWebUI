@@ -33,12 +33,12 @@ input[name='param']{
 				<form action="${ctx}/adminPage/template" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${templateStr.add}</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${templateStr.add}</button>
 						</div>
 					</div>
 				</form>
 
-				<table class="layui-table" style="table-layout:fixed; WORD-BREAK:break-all;">
+				<table class="layui-table" lay-size="sm" style="table-layout:fixed; WORD-BREAK:break-all;">
 					<thead>
 						<tr>
 							<th>${commonStr.name}</th>
@@ -67,8 +67,13 @@ input[name='param']{
 							
 							</td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.template.id}')">${commonStr.edit}</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.template.id}')">${commonStr.del}</button>
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-sm " onclick="edit('${ext.template.id}')">${commonStr.edit}</button>
+								</div>
+								
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-danger layui-btn-sm " onclick="del('${ext.template.id}')">${commonStr.del}</button>
+								</div>
 							</td>
 						</tr>
 						</#list>
@@ -109,7 +114,7 @@ input[name='param']{
 		
 			
 			<div class="layui-form-item">
-				<table class="layui-table">
+				<table class="layui-table" lay-size="sm">
 					<thead>
 						<tr>
 							<th>${commonStr.name}</th>

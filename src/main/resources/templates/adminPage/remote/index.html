@@ -26,17 +26,26 @@
 
 				<form action="${ctx}/adminPage/remote" id="searchForm" method="post">
 					<div class="layui-form">
+						<#if admin.type==0>
+							<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${remoteStr.add}</button>
+							</div>
+							
+							<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-sm" onclick="addGroup()">${remoteStr.addGroup}</button>
+							</div>
+						</#if>
+						
 						<div class="layui-inline">
-							<#if admin.type==0>
-								<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${remoteStr.add}</button>
-								<button type="button" class="layui-btn" onclick="addGroup()">${remoteStr.addGroup}</button>
-							</#if>
-							
-							<button type="button" class="layui-btn" onclick="cmdGroup()">${remoteStr.cmdGroup}</button>
-							
-							<button type="button" class="layui-btn layui-btn-normal" onclick="asycSelect()">${remoteStr.asycSelect}</button>
-							
-							<button type="button" class="layui-btn layui-btn-normal" onclick="nginxMonitor()">${remoteStr.nginxMonitor}</button>
+						<button type="button" class="layui-btn layui-btn-sm" onclick="cmdGroup()">${remoteStr.cmdGroup}</button>
+						</div>
+						
+						<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="asycSelect()">${remoteStr.asycSelect}</button>
+						</div>
+						
+						<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="nginxMonitor()">${remoteStr.nginxMonitor}</button>
 						</div>
 						
 						<div class="layui-inline">
@@ -48,7 +57,7 @@
 				</form>
 
 
-				<table class="layui-table layui-form" id="tree-table">
+				<table class="layui-table layui-form"  lay-size="sm" id="tree-table">
 
 				</table>
 				

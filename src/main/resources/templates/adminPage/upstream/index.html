@@ -23,24 +23,25 @@
 	height: 30px;
 }
 
-.server .short100{
+.server .short100 {
 	width: 100px;
 	text-align: center;
 }
-.server .short50{
+
+.server .short50 {
 	width: 50px;
 	text-align: center;
 }
 
-.layui-table td{
+.layui-table td {
 	padding: 5px 15px;
 }
 
-#paramList td{
-	padding-left: 5px!important;
-	padding-right: 5px!important;
-	padding-top:0px!important;
-	padding-bottom:0px!important; 
+#paramList td {
+	padding-left: 5px !important;
+	padding-right: 5px !important;
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
 	height: 110px;
 }
 </style>
@@ -61,33 +62,32 @@
 				<form action="${ctx}/adminPage/upstream" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${upstreamStr.add}</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${upstreamStr.add}</button>
 						</div>
-
 						<div class="layui-inline">
-							<label class="layui-form-label">${upstreamStr.keywords}</label>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="upstreamMonitor()">${upstreamStr.upstreamMonitor}</button>
 						</div>
 						<div class="layui-input-inline">
-							<input type="text" name="keywords" class="layui-input" value="${keywords}" onkeydown="if(event.keyCode==13)return false;">
+							<input type="text" name="keywords" class="layui-input layui-input-sm" value="${keywords}" onkeydown="if(event.keyCode==13)return false;">
+						</div>
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-sm" onclick="search()">${commonStr.search}</button>
 						</div>
 
-						<button type="button" class="layui-btn" onclick="search()">${commonStr.search}</button>
 
-						<button type="button" class="layui-btn layui-btn-normal" onclick="upstreamMonitor()">${upstreamStr.upstreamMonitor}</button>
-						<input type="hidden" name="curr" value="${page.curr}">
-						<input type="hidden" name="limit" value="${page.limit}">
+						<input type="hidden" name="curr" value="${page.curr}"> <input type="hidden" name="limit" value="${page.limit}">
 					</div>
 				</form>
 
-				<table class="layui-table layui-form" >
+				<table class="layui-table layui-form" lay-size="sm">
 					<thead>
 						<tr>
 							<th>${upstreamStr.proxyType}</th>
 							<th>${commonStr.name}</th>
 							<th>${upstreamStr.strategy}</th>
 							<th>${upstreamStr.server}</th>
-							<#if upstreamMonitor == 'true'>
-								<th>${upstreamStr.mailNotice}</th>
+							<#if upstreamMonitor=='true'>
+							<th>${upstreamStr.mailNotice}</th>
 							</#if>
 							<th>${commonStr.operation}</th>
 						</tr>
@@ -95,39 +95,41 @@
 					<tbody>
 						<#list page.records as ext>
 						<tr>
-							<td><#if ext.upstream.proxyType==0>http/https</#if> 
-								<#if ext.upstream.proxyType==1>TCP/UDP</#if>
-							</td>
+							<td><#if ext.upstream.proxyType==0>http/https</#if> <#if ext.upstream.proxyType==1>TCP/UDP</#if></td>
 							<td>${ext.upstream.name}</td>
-							<td>
-								<#if ext.upstream.tactics==""> ${upstreamStr.default} </#if> 
-								<#if ext.upstream.tactics=="ip_hash"> ${upstreamStr.ipHash} </#if> 
-								<#if ext.upstream.tactics=="sticky"> ${upstreamStr.sticky} </#if> 
-								<#if ext.upstream.tactics=="least_conn"> ${upstreamStr.leastConn} </#if> 
-								<#if ext.upstream.tactics=="least_time"> ${upstreamStr.leastTime} </#if>
-								
-								<#if ext.upstream.tactics=="fair"> ${upstreamStr.fair} </#if>
-								<#if ext.upstream.tactics=="url_hash"> ${upstreamStr.urlHash} </#if>
-							</td>
+							<td><#if ext.upstream.tactics==""> ${upstreamStr.default} </#if> <#if ext.upstream.tactics=="ip_hash"> ${upstreamStr.ipHash} </#if> <#if ext.upstream.tactics=="sticky">
+								${upstreamStr.sticky} </#if> <#if ext.upstream.tactics=="least_conn"> ${upstreamStr.leastConn} </#if> <#if ext.upstream.tactics=="least_time"> ${upstreamStr.leastTime} </#if> <#if
+									ext.upstream.tactics=="fair"> ${upstreamStr.fair} </#if> <#if ext.upstream.tactics=="url_hash"> ${upstreamStr.urlHash} </#if></td>
 							<td style="padding: 0px;">
-								<table class="server">
-									${ext.serverStr}
+								<table class="server">${ext.serverStr}
 								</table>
 							</td>
-							<#if upstreamMonitor == 'true'>
-								<td><input type="checkbox" name="switch" lay-filter="monitor" value="${ext.upstream.id}" ${(ext.upstream.monitor==1)?string( 'checked','')}  lay-text="ON|OFF" lay-skin="switch"></td>
+							<#if upstreamMonitor=='true'>
+							<td><input type="checkbox" name="switch" lay-filter="monitor" value="${ext.upstream.id}" ${(ext.upstream.monitor==1)?string( 'checked','')}  lay-text="ON|OFF" lay-skin="switch"></td>
 							</#if>
 							<td>
-								<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="preview('${ext.upstream.id}','upstream')">${commonStr.preview}</button>
-									
-								<button class="layui-btn layui-btn-sm" onclick="edit('${ext.upstream.id}', false)">${commonStr.edit}</button>
-								<button class="layui-btn layui-btn-sm" onclick="clone('${ext.upstream.id}')">${commonStr.clone}</button>
-								
-								
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.upstream.id}')">${commonStr.del}</button>
-								
-								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${ext.upstream.id}', 1)">${commonStr.up}</button>
-								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${ext.upstream.id}', -1)">${commonStr.down}</button>
+								<div class="layui-inline">
+									<button type="button" class="layui-btn layui-btn-sm layui-btn-normal " onclick="preview('${ext.upstream.id}','upstream')">${commonStr.preview}</button>
+								</div>
+								<div class="layui-inline">
+									<button class="layui-btn layui-btn-sm " onclick="edit('${ext.upstream.id}', false)">${commonStr.edit}</button>
+								</div>
+
+								<div class="layui-inline">
+									<button class="layui-btn layui-btn-sm " onclick="clone('${ext.upstream.id}')">${commonStr.clone}</button>
+								</div>
+
+								<div class="layui-inline">
+									<button class="layui-btn layui-btn-danger layui-btn-sm " onclick="del('${ext.upstream.id}')">${commonStr.del}</button>
+								</div>
+
+								<div class="layui-inline">
+									<button class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${ext.upstream.id}', 1)">${commonStr.up}</button>
+								</div>
+
+								<div class="layui-inline">
+									<button class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${ext.upstream.id}', -1)">${commonStr.down}</button>
+								</div>
 							</td>
 						</tr>
 						</#list>
@@ -159,7 +161,7 @@
 					<div class="layui-input-inline">
 						<input type="text" name="name" id="name" class="layui-input">
 					</div>
-					
+
 					<div id="tacticsDiv">
 						<label class="layui-form-label">${upstreamStr.loadTactics}</label>
 						<div class="layui-input-inline">
@@ -169,7 +171,7 @@
 								<option value="ip_hash">${upstreamStr.ipHash}</option>
 								<option value="least_conn">${upstreamStr.leastConn}</option>
 								<option value="least_time">${upstreamStr.leastTime}</option>
-								
+
 								<option value="fair">${upstreamStr.fair}</option>
 								<option value="url_hash">${upstreamStr.urlHash}</option>
 							</select>
@@ -181,14 +183,14 @@
 				<div class="layui-form-item">
 					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addItem()">${upstreamStr.addServer}</button>
 					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addBatch()">${upstreamStr.addServerBatch}</button>
-					
+
 					<button type="button" class="layui-btn layui-btn-sm" onclick="upstreamParam()">${upstreamStr.extParam}</button>
 					<textarea style="display: none;" id="upstreamParamJson" name="upstreamParamJson"></textarea>
 				</div>
 
 				<div class="layui-form-item">
 
-					<table class="layui-table">
+					<table class="layui-table" lay-size="sm">
 						<thead>
 							<tr>
 								<th>ip <span class="red">*</span></th>
@@ -214,13 +216,13 @@
 				</div>
 			</form>
 		</div>
-		
-		
+
+
 		<div class="layui-form" id="batchDiv" style="padding: 15px; display: none">
 			<div class="layui-form-item">
 				<label class="layui-form-label">${upstreamStr.ipPort}</label>
 				<div class="layui-input-block">
-					<textarea type="text" style="width: 100%;height: 300px;" name="batchIp" id="batchIp" class="layui-textarea" placeholder="${upstreamStr.example}"></textarea>
+					<textarea type="text" style="width: 100%; height: 300px;" name="batchIp" id="batchIp" class="layui-textarea" placeholder="${upstreamStr.example}"></textarea>
 				</div>
 			</div>
 
@@ -264,14 +266,14 @@
 		<div id="paramJsonDiv" style="display: none; padding: 15px;">
 			<div class="layui-form-item">
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">${upstreamStr.addParam}</button>
-				
+
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectTemplate('paramList')">${upstreamStr.selectTemplate}</button>
-				
+
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectTemplateAsParam('paramList')">${upstreamStr.selectTemplateAsParam}</button>
 			</div>
 			<div class="layui-form-item">
 				<input type="hidden" id="targertId">
-				<table class="layui-table">
+				<table class="layui-table" lay-size="sm">
 					<thead>
 						<tr>
 							<th>${commonStr.name}</th>
@@ -290,7 +292,7 @@
 				<button type="button" class="layui-btn" onclick="layer.close(paramIndex)">${commonStr.close}</button>
 			</div>
 		</div>
-		
+
 		<div class="layui-form" id="previewDiv" style="padding: 15px; display: none">
 			<div class="layui-form-item">
 				<div class="layui-input-inline" style="width: 100%">

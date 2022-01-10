@@ -20,14 +20,14 @@
 				<form action="${ctx}/adminPage/password" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${commonStr.add}</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${commonStr.add}</button>
 						</div>
 
 						<input type="hidden" name="curr" value="${page.curr}"> <input type="hidden" name="limit" value="${page.limit}">
 					</div>
 				</form>
 
-				<table class="layui-table">
+				<table class="layui-table" lay-size="sm">
 					<thead>
 						<tr>
 							<th>${passwordStr.name}</th>
@@ -43,8 +43,12 @@
 							<td>${password.descr}</td>
 							<td>${password.path}</td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${password.id}')">${commonStr.edit}</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${password.id}')">${commonStr.del}</button>
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-sm " onclick="edit('${password.id}')">${commonStr.edit}</button>
+								</div>
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-danger layui-btn-sm " onclick="del('${password.id}')">${commonStr.del}</button>
+								</div>
 							</td>
 						</tr>
 						</#list>

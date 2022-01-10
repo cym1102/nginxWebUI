@@ -33,19 +33,21 @@ input[name='param']{
 				<form action="${ctx}/adminPage/http" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${httpStr.add}</button>
-							
-							<button type="button" class="layui-btn" onclick="guide()">${httpStr.guide}</button>
-							
-							<button type="button" class="layui-btn" onclick="selectTemplateAsHttp()">${upstreamStr.selectTemplateAsParam}</button>
-							
-							<button type="button" class="layui-btn layui-btn-normal" onclick="preview(null,'http')">${commonStr.preview}</button>
-									
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${httpStr.add}</button>
+						</div>
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-sm" onclick="guide()">${httpStr.guide}</button>
+						</div>
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-sm" onclick="selectTemplateAsHttp()">${upstreamStr.selectTemplateAsParam}</button>
+						</div>	
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="preview(null,'http')">${commonStr.preview}</button>
 						</div>
 					</div>
 				</form>
 
-				<table class="layui-table" style="table-layout:fixed; WORD-BREAK:break-all;">
+				<table class="layui-table" lay-size="sm" style="table-layout:fixed; WORD-BREAK:break-all;">
 					<thead>
 						<tr>
 							<th>${commonStr.name}</th>
@@ -59,11 +61,21 @@ input[name='param']{
 							<td>${http.name}</td>
 							<td>${http.value}</td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${http.id}')">${commonStr.edit}</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${http.id}')">${commonStr.del}</button>
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-sm " onclick="edit('${http.id}')">${commonStr.edit}</button>
+								</div>
 								
-								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${http.id}', -1)">${commonStr.up}</button>
-								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${http.id}', 1)">${commonStr.down}</button>
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-danger layui-btn-sm " onclick="del('${http.id}')">${commonStr.del}</button>
+								</div>
+								
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${http.id}', -1)">${commonStr.up}</button>
+								</div>
+								
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${http.id}', 1)">${commonStr.down}</button>
+								</div>
 							</td>
 						</tr>
 						</#list>

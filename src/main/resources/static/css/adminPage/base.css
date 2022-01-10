@@ -5,6 +5,7 @@
 .green {
 	color: green;
 }
+
 .gray {
 	color: gray;
 }
@@ -27,6 +28,7 @@
 	color: gray;
 	cursor: pointer;
 }
+
 .layui-icon-set-fill {
 	font-size: 30px;
 	color: gray;
@@ -45,14 +47,28 @@ textarea {
 	color: #bbbbbb;
 }
 
-.ellipsis{ 
-    width:300px;
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    -o-text-overflow:ellipsis;
-    overflow: hidden;
- }  
- 
- .center{
- 	text-align: center;
- }
+.ellipsis {
+	width: 300px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.center {
+	text-align: center;
+}
+
+.layui-form-switch {
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+.layui-input-sm {
+	height: 30px;
+} 
+
+.layui-btn{
+	margin-top: 1px;
+	margin-bottom: 1px;
+}

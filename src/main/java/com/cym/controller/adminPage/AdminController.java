@@ -151,7 +151,7 @@ public class AdminController extends BaseController {
 			return renderSuccess();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			return renderError(e.getMessage());
+			return renderError(m.get("commonStr.error") + ": " + e.getMessage());
 		}
 	}
 	

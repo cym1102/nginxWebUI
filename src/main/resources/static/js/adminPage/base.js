@@ -77,10 +77,10 @@ $(function() {
 	});
 
 	// 判断屏幕分辨率, 给table加上lay-size="sm"
-	//alert(document.body.clientWidth);
-	if (document.body.clientWidth <= 1600) {
-		$(".layui-table").attr("lay-size", "sm");
-	}
+	//if (document.body.clientWidth <= 1600) {
+		//$(".layui-table").attr("lay-size", "sm");
+		//$(".layui-btn").addClass("layui-btn-sm");
+	//}
 })
 
 // 关闭AJAX相应的缓存

@@ -20,10 +20,10 @@
 				<form action="${ctx}/adminPage/admin" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" id="dataExport" class="layui-btn" onclick="dExport()">${exportStr.dExport}</button>
+							<button type="button" id="dataExport" class="layui-btn layui-btn-sm" onclick="dExport()">${exportStr.dExport}</button>
 						</div>
 						<div class="layui-inline">
-							<button type="button" id="dataImport" class="layui-btn" onclick="dImport()">${exportStr.dImport}</button>
+							<button type="button" id="dataImport" class="layui-btn layui-btn-sm" onclick="dImport()">${exportStr.dImport}</button>
 
 							<div style="display: none;">
 								<input type="file" id="file" onchange="dImportOver()">
@@ -31,7 +31,7 @@
 						</div>
 						
 						<div class="layui-inline">
-							<button type="button" id="logExport" class="layui-btn layui-btn-normal" onclick="lExport()">${exportStr.lExport}</button>
+							<button type="button" id="logExport" class="layui-btn layui-btn-sm layui-btn-normal" onclick="lExport()">${exportStr.lExport}</button>
 						</div>
 					</div>
 				</form>

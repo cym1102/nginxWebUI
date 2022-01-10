@@ -33,15 +33,14 @@
 				<form action="${ctx}/adminPage/cert" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal"
-								onclick="add()">${certStr.add}</button>
+							<button type="button" class="layui-btn layui-btn-normal layui-btn-sm" onclick="add()">${certStr.add}</button>
 						</div>
 						
 						<div class="layui-inline">
-							<input type="text" name="keywords" class="layui-input" value="${keywords}" onkeydown="if(event.keyCode==13)return false;">
+							<input type="text" name="keywords" class="layui-input layui-input-sm" value="${keywords}" onkeydown="if(event.keyCode==13)return false;">
 						</div>
 
-						<button type="button" class="layui-btn" onclick="search()">${commonStr.search}</button>
+						<button type="button" class="layui-btn layui-btn-sm" onclick="search()">${commonStr.search}</button>
 						
 						<div class="layui-inline">
 							<div class="layui-form-mid layui-word-aux proxyHttp">${certStr.tips}</div>
@@ -52,7 +51,7 @@
 					<input type="hidden" name="limit" value="${page.limit}">
 				</form>
 
-				<table class="layui-table layui-form">
+				<table class="layui-table layui-form" lay-size="sm">
 					<thead>
 						<tr>
 							<th>${certStr.domain}</th>
@@ -107,28 +106,43 @@
 							<td>
 								<#if cert.type==0 || cert.type==2>
 									<#if cert.pem == null || cert.pem == "">
+									<div class="layui-inline">
 									<button class="layui-btn layui-btn-sm" onclick="issue('${cert.id}')">${commonStr.apply}</button>
+									</div>
 									</#if>
 									 
 									<#if cert.pem != null && cert.pem != "">
+									<div class="layui-inline">
 									<button class="layui-btn layui-btn-sm" onclick="renew('${cert.id}')">${certStr.renew}</button>
+									</div>
 									</#if>
 								</#if>
 
+								<div class="layui-inline">
 								<button class="layui-btn layui-btn-sm" onclick="edit('${cert.id}')">${commonStr.edit}</button> 
+								</div>
 								
 								<#if cert.type == 2>
+									<div class="layui-inline">
 									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="getTxtValue('${cert.id}')">${certStr.hostRecords}</button>
+									</div>
 								</#if>
 								
 								<#if cert.pem!=null && cert.pem!='' && cert.key!=null&& cert.key!=''>
+									<div class="layui-inline">
 									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="download('${cert.id}')">${certStr.download}</button>
+									</div>
 								</#if>
 								
 								
-
+								<div class="layui-inline">
 								<button class="layui-btn layui-btn-sm" onclick="clone('${cert.id}')">${commonStr.clone}</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">${commonStr.del}</button></td>
+								</div>
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">${commonStr.del}</button>
+								</div>
+								</td>
+								
 						</tr>
 						</#list>
 					</tbody>
@@ -309,7 +323,7 @@
 
 				<div class="layui-form-item">
 					<div>${certStr.dnsDescr}</div>
-					<table class="layui-table layui-form">
+					<table class="layui-table layui-form" lay-size="sm">
 						<thead>
 							<tr>
 								<th>${certStr.hostRecords}</th>

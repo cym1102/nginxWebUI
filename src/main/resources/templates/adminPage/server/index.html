@@ -42,7 +42,7 @@
 
 .blk {
 	display: inline-block;
-	width: 105px;
+	width: 85px;
 	text-align: right;
 }
 
@@ -97,28 +97,29 @@
 				<form action="${ctx}/adminPage/server" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${serverStr.add}</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${serverStr.add}</button>
 						</div>
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-input-inline" onclick="openImport()">${serverStr.importServer}</button>
-						</div>
-
-						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="testPort()">${serverStr.testPort}</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-input-inline" onclick="openImport()">${serverStr.importServer}</button>
 						</div>
 
 						<div class="layui-inline">
-							<input type="text" name="keywords" class="layui-input" value="${keywords}" onkeydown="if(event.keyCode==13)return false;">
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="testPort()">${serverStr.testPort}</button>
 						</div>
 
-						<button type="button" class="layui-btn" onclick="search()">${commonStr.search}</button>
-
+						<div class="layui-inline">
+							<input type="text" name="keywords" class="layui-input layui-input-sm"  value="${keywords}" onkeydown="if(event.keyCode==13)return false;">
+						</div>
+						
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-sm" onclick="search()">${commonStr.search}</button>
+						</div>
 
 						<input type="hidden" name="curr" value="${page.curr}">
 						<input type="hidden" name="limit" value="${page.limit}">
 					</div>
 
-					<table class="layui-table layui-form">
+					<table class="layui-table layui-form" lay-size="sm">
 						<thead>
 							<tr>
 								<th>
@@ -194,14 +195,29 @@
 
 
 								<td>
-									<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="preview('${ext.server.id}','server')">${commonStr.preview}</button>
+									<div class="layui-inline">
+									<button type="button" class="layui-btn layui-btn-sm layui-btn-normal " onclick="preview('${ext.server.id}','server')">${commonStr.preview}</button>
+									</div>
 									
-									<button type="button" class="layui-btn layui-btn-sm" onclick="edit('${ext.server.id}', false)">${commonStr.edit}</button>
-									<button type="button" class="layui-btn layui-btn-sm" onclick="clone('${ext.server.id}')">${commonStr.clone}</button>
-									<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${ext.server.id}')">${commonStr.del}</button>
+									<div class="layui-inline">
+									<button type="button" class="layui-btn layui-btn-sm " onclick="edit('${ext.server.id}', false)">${commonStr.edit}</button>
+									</div>
 									
-									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${ext.server.id}', 1)">${commonStr.up}</button>
-									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${ext.server.id}', -1)">${commonStr.down}</button>
+									<div class="layui-inline">
+									<button type="button" class="layui-btn layui-btn-sm " onclick="clone('${ext.server.id}')">${commonStr.clone}</button>
+									</div>
+									
+									<div class="layui-inline">
+									<button type="button" class="layui-btn layui-btn-danger layui-btn-sm " onclick="del('${ext.server.id}')">${commonStr.del}</button>
+									</div>
+									
+									<div class="layui-inline">
+									<button class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${ext.server.id}', 1)">${commonStr.up}</button>
+									</div>
+									
+									<div class="layui-inline">
+									<button class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${ext.server.id}', -1)">${commonStr.down}</button>
+									</div>
 								</td>
 							</tr>
 							</#list>
@@ -391,7 +407,7 @@
 				
 							
 				<div class="layui-form-item proxyHttp">
-					<table class="layui-table">
+					<table class="layui-table" lay-size="sm">
 						<thead>
 							<tr>
 								<th>${serverStr.listenPath}</th>
@@ -424,7 +440,7 @@
 			</div>
 			<div class="layui-form-item">
 				<input type="hidden" id="targertId">
-				<table class="layui-table">
+				<table class="layui-table" lay-size="sm">
 					<thead>
 						<tr>
 							<th>${commonStr.name}</th>

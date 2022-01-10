@@ -9,14 +9,14 @@
 		<div style="padding: 15px">
 			<form action="${ctx}/adminPage/bak" id="searchForm" method="post">
 				<div class="layui-inline">
-					<button type="button" class="layui-btn layui-btn-danger" onclick="delAll()">${bakStr.clear}</button>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delAll()">${bakStr.clear}</button>
 				</div>
 				
 				<input type="hidden" name="curr" value="${page.curr}">
 				<input type="hidden" name="limit" value="${page.limit}">
 			</form>
 
-			<table class="layui-table">
+			<table class="layui-table" lay-size="sm">
 				<thead>
 					<tr>
 						<th>${commonStr.createTime}</th>
@@ -28,10 +28,18 @@
 					<tr>
 						<td>${bak.time}</td>
 						<td>
+							<div class="layui-inline">
 							<button class="layui-btn layui-btn-sm" onclick="content('${bak.id}')">${bakStr.content}</button>
+							</div>
+							<div class="layui-inline">
 							<button class="layui-btn layui-btn-sm" onclick="compare('${bak.id}')">${bakStr.compare}</button>
+							</div>
+							<div class="layui-inline">
 							<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="replace('${bak.id}')">${bakStr.restore}</button>
+							</div>
+							<div class="layui-inline">
 							<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="del('${bak.id}')">${commonStr.del}</button>
+							</div>
 						</td>
 					</tr>
 					</#list>

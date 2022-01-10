@@ -6,12 +6,19 @@
 	<div class="layui-form" id="rootSelectDiv" style="padding: 15px; display: none">
 		<ul id="rootSelect" class="ztree" style="height: 450px;overflow: auto;"></ul>
 		
-		<div class="layui-form-item" style="text-align: center;margin-top: 20px;">
+		<div class="layui-form" style="text-align: center;margin-top: 20px;">
+			<div class="layui-inline">
 			<button type="button" class="layui-btn layui-btn-sm" onclick="rootSelect.selectOver()">${commonStr.ok}</button>
+			</div>
+			<div class="layui-inline">
 			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="rootSelect.clear()">${commonStr.clear}</button>
+			</div>
+			<div class="layui-inline">
 			<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="rootSelect.close()">${commonStr.close}</button>
-			
+			</div>
+			<div class="layui-inline">
 			<button type="button" class="layui-btn layui-btn-sm" onclick="rootSelect.addDir()">${commonStr.addDir}</button>
+			</div>
 		</div>
 	</div>
 </div>

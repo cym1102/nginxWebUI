@@ -20,12 +20,12 @@
 				<form action="${ctx}/adminPage/www" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${wwwStr.add}</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${wwwStr.add}</button>
 						</div>
 					</div>
 				</form>
 
-				<table class="layui-table">
+				<table class="layui-table" lay-size="sm">
 					<thead>
 						<tr>
 							<th>${commonStr.path}</th>
@@ -37,9 +37,14 @@
 						<tr>
 							<td>${www.dir} &nbsp;&nbsp; <a style="color: blue;" href="javascript:copy('${www.dir}')">${commonStr.copy}</a></td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${www.id}')">${wwwStr.editOrUpdate}</button>
-								<!-- <button class="layui-btn layui-btn-sm layui-btn-normal" onclick="update('${www.id}')">${commonStr.update}</button> -->
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${www.id}')">${commonStr.del}</button>
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-sm " onclick="edit('${www.id}')">${wwwStr.editOrUpdate}</button>
+								</div>
+								
+								<!-- <button class="layui-btn layui-btn-sm layui-btn-normal " onclick="update('${www.id}')">${commonStr.update}</button> -->
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-danger layui-btn-sm " onclick="del('${www.id}')">${commonStr.del}</button>
+								</div>
 							</td>
 						</tr>
 						</#list>

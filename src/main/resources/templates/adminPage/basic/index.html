@@ -20,12 +20,12 @@
 				<form action="${ctx}/adminPage/basic" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${basicStr.add}</button> 
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${basicStr.add}</button> 
 						</div>
 					</div>
 				</form>
 
-				<table class="layui-table">
+				<table class="layui-table" lay-size="sm">
 					<thead>
 						<tr>
 							<th>${commonStr.name}</th>
@@ -39,12 +39,18 @@
 							<td>${basic.name}</td>
 							<td style="width: 50%;">${basic.value}</td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${basic.id}')">${commonStr.edit}</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${basic.id}')">${commonStr.del}</button>
-								
-								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${basic.id}', -1)">${commonStr.up}</button>
-								<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setOrder('${basic.id}', 1)">${commonStr.down}</button>
-								
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-sm " onclick="edit('${basic.id}')">${commonStr.edit}</button>
+								</div>
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-danger layui-btn-sm " onclick="del('${basic.id}')">${commonStr.del}</button>
+								</div>
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${basic.id}', -1)">${commonStr.up}</button>
+								</div>
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${basic.id}', 1)">${commonStr.down}</button>
+								</div>
 							</td>
 						</tr>
 						</#list>

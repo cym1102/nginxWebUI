@@ -29,15 +29,15 @@
 				<form action="${ctx}/adminPage/admin" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${adminStr.add}</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${adminStr.add}</button>
 						</div>
 
 						<div class="layui-inline">
-							<button type="button" class="layui-btn" onclick="downApk()">${adminStr.downApk}</button>
+							<button type="button" class="layui-btn layui-btn-sm" onclick="downApk()">${adminStr.downApk}</button>
 						</div>
 
 						<div class="layui-inline">
-							<button type="button" class="layui-btn" onclick="readme()">${adminStr.readme}</button>
+							<button type="button" class="layui-btn layui-btn-sm" onclick="readme()">${adminStr.readme}</button>
 						</div>
 
 						
@@ -47,13 +47,13 @@
 						</div>
 						
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-normal" onclick="apiPage()">${adminStr.apiPage}</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="apiPage()">${adminStr.apiPage}</button>
 						</div>
 						<input type="hidden" name="curr" value="${page.curr}"> <input type="hidden" name="limit" value="${page.limit}">
 					</div>
 				</form>
 
-				<table class="layui-table">
+				<table class="layui-table" lay-size="sm">
 					<thead>
 						<tr>
 							<th>${adminStr.name}</th>
@@ -74,8 +74,12 @@
 							<td><#if admin.api> ${commonStr.yes} </#if> <#if !admin.api> ${commonStr.no} </#if></td>
 							<td><#if admin.type==0> ${adminStr.adminUser} </#if> <#if admin.type==1> ${adminStr.limitUser} </#if> </td>
 							<td>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${admin.id}')">${commonStr.edit}</button>
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${admin.id}')">${commonStr.del}</button>
+								<div class="layui-inline">
+									<button class="layui-btn layui-btn-sm" onclick="edit('${admin.id}')">${commonStr.edit}</button>
+								</div>
+								<div class="layui-inline">
+									<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${admin.id}')">${commonStr.del}</button>
+								</div>
 							</td>
 						</tr>
 						</#list>

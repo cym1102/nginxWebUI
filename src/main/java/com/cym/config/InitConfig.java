@@ -27,6 +27,7 @@ import com.cym.utils.FilePermissionUtil;
 import com.cym.utils.MessageUtils;
 import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
+import com.cym.utils.ToolUtils;
 
 import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.io.FileUtil;
@@ -42,7 +43,7 @@ public class InitConfig {
 	protected MessageUtils m;
 	@Autowired
 	private ApplicationContext applicationContext;
-	
+
 	public static String acmeSh;
 	public static String acmeShDir;
 	public static String home;
@@ -61,19 +62,19 @@ public class InitConfig {
 	@Value("${project.home}")
 	public void setHome(String home) {
 
-		InitConfig.home = home;
+		InitConfig.home = ToolUtils.endDir(home);
 		InitConfig.acmeShDir = home + ".acme.sh/";
 		InitConfig.acmeSh = home + ".acme.sh/acme.sh";
 	}
 
 	@PostConstruct
 	public void init() throws IOException {
-		if(!FilePermissionUtil.canWrite(new File(home))) {
+		if (!FilePermissionUtil.canWrite(new File(home))) {
 			logger.error(home + " " + "directory does not have writable permission. Please specify it again.");
 			logger.error(home + " " + "目录没有可写权限,请重新指定.");
 			SpringApplication.exit(applicationContext);
 		}
-		
+
 		// 初始化base值
 		Long count = sqlHelper.findAllCount(Basic.class);
 		if (count == 0) {

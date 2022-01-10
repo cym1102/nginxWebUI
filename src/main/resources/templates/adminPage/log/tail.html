@@ -5,14 +5,18 @@
 
 </head>
 <body>
-	<div id="log-container" style="height: 635px; overflow-y: scroll; background: #333; color: #aaa; padding: 10px;">
+	<div id="log-container" style="height: 600px; overflow-y: scroll; background: #333; color: #aaa; padding: 10px;">
 		<div></div>
+		
+		
 	</div>
 	
-	<div style="text-align: center;margin-top: 5px;">
-		<button style="width: 100px;" class="layui-btn layui-btn-sm" type="button" onclick="stop()">${loginStr.pause}</button>
-	 	<button style="width: 100px;" class="layui-btn layui-btn-sm layui-btn-normal" type="button" onclick="goon()">${loginStr.continue}</button>
+	
+	<div style="position: fixed;top: 10px;right: 30px;">
+		<button class="layui-btn layui-btn-sm" type="button" onclick="stop()">${loginStr.pause}</button>
+	 	<button class="layui-btn layui-btn-sm layui-btn-normal" type="button" onclick="goon()">${loginStr.continue}</button>
 	</div>
+	
 
 	<#include '/adminPage/script.html'/>
 	<script src="${ctx}/lib/base64/base64.js" type="text/javascript"></script>

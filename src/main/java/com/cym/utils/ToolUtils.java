@@ -18,6 +18,19 @@ public class ToolUtils {
 	 * @return
 	 */
 	public static String handlePath(String path) {
-		return path.replace("\\", "/");
+		return path.replace("\\", "/").replace("//", "/");
+	}
+	
+	/**
+	 * 处理目录最后的斜杠
+	 * @param path
+	 * @return
+	 */
+	public static String endDir(String path) {
+		if(!path.endsWith("/")) {
+			path += "/";
+		}
+		
+		return path;
 	}
 }

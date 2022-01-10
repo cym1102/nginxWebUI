@@ -19,14 +19,14 @@
 
 				<form action="${ctx}/adminPage/log" id="searchForm" method="post">
 					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-normal" onclick="add()">${logStr.add}</button>
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${logStr.add}</button>
 					</div>
 
 					<input type="hidden" name="curr" value="${page.curr}">
 					<input type="hidden" name="limit" value="${page.limit}">
 				</form>
 
-				<table class="layui-table">
+				<table class="layui-table" lay-size="sm">
 					<thead>
 						<tr>
 							<th>${logStr.path}</th>
@@ -38,12 +38,21 @@
 						<tr>
 							<td>${log.path}</td>
 							<td>
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-sm " onclick="tail('${log.id}','${log.path}')">${logStr.tail}</button>
+								</div>
 								
-								<button class="layui-btn layui-btn-sm" onclick="tail('${log.id}','${log.path}')">${logStr.tail}</button>
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-sm " onclick="down('${log.id}')">${logStr.download}</button>
+								</div>
 								
-								<button class="layui-btn layui-btn-sm" onclick="down('${log.id}')">${logStr.download}</button>
-								<button class="layui-btn layui-btn-sm" onclick="edit('${log.id}')">${commonStr.edit}</button>
-								<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="del('${log.id}')">${commonStr.del}</button>
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-sm " onclick="edit('${log.id}')">${commonStr.edit}</button>
+								</div>
+								
+								<div class="layui-inline">
+								<button class="layui-btn layui-btn-sm layui-btn-danger " onclick="del('${log.id}')">${commonStr.del}</button>
+								</div>
 							</td>
 						</tr>
 						</#list>

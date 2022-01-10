@@ -438,7 +438,7 @@ function testMail() {
 				if (data.success) {
 					layer.msg(remoteStr.sendSuccess);
 				} else {
-					layer.msg(data.msg);
+					layer.alert(data.msg);
 				}
 			},
 			error: function() {

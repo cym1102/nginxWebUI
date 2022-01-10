@@ -3,17 +3,16 @@ server:
   servlet: 
     session:
       timeout: 7200 
-  tomcat:
-    # 默认是200
-    threads:
-      max: 5 #减少tomcat线程数
+  jetty:
+    acceptors: 1
+    selectors: 2
 spring:
   application:
     name: nginxWebUI
-  session:
-    store-type: jdbc
-    jdbc:
-      initialize-schema: always
+#  session:
+#    store-type: jdbc
+#    jdbc:
+#      initialize-schema: always
   jackson:
     default-property-inclusion: NON_NULL
   jmx:

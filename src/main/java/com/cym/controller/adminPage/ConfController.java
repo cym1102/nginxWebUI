@@ -59,7 +59,7 @@ public class ConfController extends BaseController {
 
 	@Autowired
 	VersionConfig versionConfig;
-	
+
 	@Value("${project.version}")
 	String currentVersion;
 
@@ -127,12 +127,12 @@ public class ConfController extends BaseController {
 		}
 
 		try {
-			if(StrUtil.isEmpty(adminName)) {
+			if (StrUtil.isEmpty(adminName)) {
 				Admin admin = getAdmin(request);
 				adminName = admin.getName();
 			}
-			
-			confService.replace(nginxPath, nginxContent, subContent, subName, true, adminName); 
+
+			confService.replace(nginxPath, nginxContent, subContent, subName, true, adminName);
 			return renderSuccess(m.get("confStr.replaceSuccess"));
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -227,17 +227,21 @@ public class ConfController extends BaseController {
 		String nginxContent = Base64.decodeStr(jsonObject.getStr("nginxContent"), CharsetUtil.CHARSET_UTF_8);
 		nginxContent = URLDecoder.decode(nginxContent, CharsetUtil.CHARSET_UTF_8).replace("<wave>", "~");
 
-		File pathFile = new File(nginxPath);
-		File tempFile = new File(InitConfig.home + "temp");
-		nginxContent = nginxContent.replace("include " + ToolUtils.handlePath(pathFile.getParent()), "include " + ToolUtils.handlePath(tempFile.getPath()));
-
 		List<String> subContent = jsonObject.getJSONArray("subContent").toList(String.class);
 		for (int i = 0; i < subContent.size(); i++) {
 			String content = Base64.decodeStr(subContent.get(i), CharsetUtil.CHARSET_UTF_8);
 			content = URLDecoder.decode(content, CharsetUtil.CHARSET_UTF_8).replace("<wave>", "~");
 			subContent.set(i, content);
 		}
+
+		// 替换分解域名include路径中的目标conf.d为temp/conf.d
+		String confDir = ToolUtils.endDir(ToolUtils.handlePath(new File(nginxPath).getParent())) + "conf.d/";
+		String tempDir = ToolUtils.endDir(InitConfig.home + "temp") + "conf.d/";
 		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
+		for (String sn : subName) {
+			nginxContent = nginxContent.replace("include " + confDir + sn, //
+					"include " + tempDir + sn);
+		}
 
 		FileUtil.del(InitConfig.home + "temp");
 		String fileTemp = InitConfig.home + "temp/nginx.conf";
@@ -324,10 +328,10 @@ public class ConfController extends BaseController {
 	@RequestMapping(value = "runCmd")
 	@ResponseBody
 	public JsonResult runCmd(String cmd, String type) {
-		if(StrUtil.isNotEmpty(type)) {
+		if (StrUtil.isNotEmpty(type)) {
 			settingService.set(type, cmd);
 		}
-		
+
 		try {
 			String rs = "";
 			if (SystemTool.isWindows()) {

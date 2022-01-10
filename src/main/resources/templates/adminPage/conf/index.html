@@ -57,7 +57,7 @@ input[type='radio']{
 								<label class="layui-form-label" style="width: 100px;">${confStr.nginxExe}<span class="red">*</span></label>
 							</div>
 							<div class="layui-input-inline">
-								<input type="text" id="nginxExe" name="nginxExe" class="layui-input" style="width: 210px;" value="${nginxExe}" oninput="saveCmd()">
+								<input type="text" id="nginxExe" name="nginxExe" class="layui-input layui-input-sm" style="width: 210px;" value="${nginxExe}" oninput="saveCmd()">
 							</div>
 							<div class="layui-input-inline">
 								<i class="layui-icon layui-icon-export" onclick="selectRootCustom('nginxExe')"></i>
@@ -67,7 +67,7 @@ input[type='radio']{
 								<label class="layui-form-label" style="width: 100px;">${confStr.nginxDir}</label>
 							</div>
 							<div class="layui-input-inline">
-								<input type="text" id="nginxDir" name="nginxDir" class="layui-input" style="width: 210px;" value="${nginxDir}" oninput="saveCmd()">
+								<input type="text" id="nginxDir" name="nginxDir" class="layui-input layui-input-sm" style="width: 210px;" value="${nginxDir}" oninput="saveCmd()">
 							</div>
 							<div class="layui-input-inline">
 								<i class="layui-icon layui-icon-export" onclick="selectRootCustom('nginxDir')"></i>
@@ -76,19 +76,19 @@ input[type='radio']{
 
 						<div style="margin-top: 20px;">
 							<div class="layui-inline">
-								<button type="button" class="layui-btn" onclick="diffUsingJS()">${confStr.compare}</button>
+								<button type="button" class="layui-btn layui-btn-sm" onclick="diffUsingJS()">${confStr.compare}</button>
 							</div>
 							
 							<div class="layui-inline">
-								<button type="button" class="layui-btn layui-btn-normal" onclick="check()">${confStr.verifyFile}</button>
+								<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="check()">${confStr.verifyFile}</button>
 							</div>
 							
 							<div class="layui-inline">
-								<button type="button" class="layui-btn layui-btn-normal" onclick="replace()">${confStr.replaceFile}</button>
+								<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="replace()">${confStr.replaceFile}</button>
 							</div>
 							
 							<div class="layui-inline">
-								<button type="button" class="layui-btn layui-btn-normal" onclick="reload()">${confStr.reload}</button>
+								<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="reload()">${confStr.reload}</button>
 							</div>
 
 							
@@ -100,16 +100,16 @@ input[type='radio']{
 							</div>
 
 							<div class="layui-inline" style="margin-left: 20px;">
-								<button type="button" class="layui-btn" onclick="runCmd('cmdStart')">${confStr.start}</button>
+								<button type="button" class="layui-btn layui-btn-sm" onclick="runCmd('cmdStart')">${confStr.start}</button>
 							</div>
 							<div class="layui-inline">
-								<button type="button" class="layui-btn" onclick="runCmd('cmdStop')">${confStr.stop}</button>
+								<button type="button" class="layui-btn layui-btn-sm" onclick="runCmd('cmdStop')">${confStr.stop}</button>
 							</div>
 							<div class="layui-inline">
 								<label class="layui-form-label" style="width: 150px;" id="nginxStatus"></label>
 							</div>
-							<div class="layui-input-inline" style="margin-left: 20px;">
-								<button type="button" class="layui-btn layui-btn-normal" onclick="showBak()">${bakStr.bakFile}</button>
+							<div class="layui-input-inline" >
+								<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="showBak()">${bakStr.bakFile}</button>
 							</div>
 
 						</div>
@@ -129,9 +129,11 @@ input[type='radio']{
 
 						<div style="width: 47%;">
 							<div class="layui-inline" style="padding-bottom: 5px;">
-								<label class="layui-form-label" style="width: 110px;text-align: left;"><span class="red">*</span>${confStr.target}：</label>
 								<div class="layui-input-inline">
-									<input type="text" id="nginxPath" class="layui-input" name="nginxPath" style="width: 300px;" value="${nginxPath}" oninput="saveCmd()">
+									<label class="layui-form-label" style="width: 110px;text-align: left;"><span class="red">*</span>${confStr.target}：</label>
+								</div>
+								<div class="layui-input-inline">
+									<input type="text" id="nginxPath" class="layui-input layui-input-sm" name="nginxPath" style="width: 250px;" value="${nginxPath}" oninput="saveCmd()">
 								</div>
 								<div class="layui-input-inline">
 									<i class="layui-icon layui-icon-export" onclick="selectRootCustom('nginxPath')"></i>
