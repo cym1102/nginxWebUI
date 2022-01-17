@@ -5,12 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import javax.websocket.Session;
-
+import org.noear.solon.core.message.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cym.NginxWebUI;
 
 public class TailLogThread extends Thread {
 	static Logger logger = LoggerFactory.getLogger(TailLogThread.class);
@@ -30,7 +28,7 @@ public class TailLogThread extends Thread {
 		try {
 			while((line = reader.readLine()) != null) {
 				// 将实时日志通过WebSocket发送给客户端，给每一行添加一个HTML换行
-				session.getBasicRemote().sendText(line + "<br>");
+				session.send(line + "<br>");
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);

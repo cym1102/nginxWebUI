@@ -3,22 +3,20 @@ package com.cym.service;
 import java.util.Collections;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.extend.aspect.annotation.Service;
 
 import com.cym.model.Param;
 import com.cym.model.Template;
-
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
-import cn.craccd.sqlHelper.utils.SqlHelper;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
+import com.cym.sqlhelper.utils.SqlHelper;
 
 @Service
 public class TemplateService {
-	@Autowired
+	@Inject
 	SqlHelper sqlHelper;
 
-	@Transactional
+	
 	public void addOver(Template template, List<Param> params) {
 		sqlHelper.insertOrUpdate(template);
 
@@ -35,7 +33,7 @@ public class TemplateService {
 		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq("templateId", templateId), Param.class);
 	}
 
-	@Transactional
+	
 	public void del(String id) {
 		sqlHelper.deleteById(id, Template.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("templateId", id), Param.class);

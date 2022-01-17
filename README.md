@@ -288,26 +288,21 @@ systemctl start nginxwebui.service
 
 如果忘记了登录密码，可按如下教程找回密码
 
-1. 安装sqlite3命令（Docker镜像已经安装好了）
+1.停止nginxWebUI
 
 ```
-apt install sqlite3
+pkill java
 ```
 
-2. 读取sqlite.db文件
+2.使用找回密码参数运行nginxWebUI.jar
 
 ```
-sqlite3 /home/nginxWebUI/sqlite.db
+java -jar nginxWebUI.jar --project.home=/home/nginxWebUI/ --project.findPass=true
 ```
 
-3. 查找admin表
+--project.home 为项目文件所在目录
 
-```
-select * from admin;
-```
+--project.findPass 为是否打印用户名密码
 
-4. 退出sqlite3
+运行成功后即可打印出全部用户名密码
 
-```
-.quit
-```

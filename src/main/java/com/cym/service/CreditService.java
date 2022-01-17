@@ -1,18 +1,18 @@
 package com.cym.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.extend.aspect.annotation.Service;
 
 import com.cym.model.Credit;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
+import com.cym.sqlhelper.utils.SqlHelper;
 
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
-import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 
 @Service
 public class CreditService {
-	@Autowired
+	@Inject
 	SqlHelper sqlHelper;
 
 	

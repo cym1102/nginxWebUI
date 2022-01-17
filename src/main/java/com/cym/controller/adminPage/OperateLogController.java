@@ -1,39 +1,34 @@
 package com.cym.controller.adminPage;
 
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
+import org.noear.solon.core.handle.ModelAndView;
 
 import com.cym.model.OperateLog;
 import com.cym.service.OperateLogService;
+import com.cym.sqlhelper.bean.Page;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 
-import cn.craccd.sqlHelper.bean.Page;
-
 @Controller
-@RequestMapping("/adminPage/operateLog")
+@Mapping("/adminPage/operateLog")
 public class OperateLogController extends BaseController{
-	@Autowired
+	@Inject
 	OperateLogService operateLogService;
 	
-	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page) {
+	@Mapping("")
+	public ModelAndView index( ModelAndView modelAndView, Page page) {
 		page = operateLogService.search(page);
 		
-		modelAndView.addObject("page", page);
+		modelAndView.put("page", page);
 		
-		modelAndView.setViewName("/adminPage/operatelog/index");
+		modelAndView.view("/adminPage/operatelog/index.html");
 		return modelAndView;
 	}
 	
 	
-	@RequestMapping("detail")
-	@ResponseBody
+	@Mapping("detail")
 	public JsonResult detail(String id) {
 		return renderSuccess(sqlHelper.findById(id, OperateLog.class));
 	}

@@ -3,16 +3,12 @@ package com.cym.controller.adminPage;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
+import org.noear.solon.core.handle.ModelAndView;
 
 import com.cym.ext.TemplateExt;
-import com.cym.model.Location;
 import com.cym.model.Param;
 import com.cym.model.Template;
 import com.cym.service.TemplateService;
@@ -23,13 +19,13 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
 @Controller
-@RequestMapping("/adminPage/template")
+@Mapping("/adminPage/template")
 public class TemplateController extends BaseController {
-	@Autowired
+	@Inject
 	TemplateService templateService;
 	
-	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
+	@Mapping("")
+	public ModelAndView index( ModelAndView modelAndView) {
 		List<Template> templateList = sqlHelper.findAll(Template.class);
 
 		List<TemplateExt> extList = new ArrayList<>();
@@ -43,13 +39,12 @@ public class TemplateController extends BaseController {
 			extList.add(templateExt);
 		}
 		
-		modelAndView.addObject("templateList", extList);
-		modelAndView.setViewName("/adminPage/template/index");
+		modelAndView.put("templateList", extList);
+		modelAndView.view("/adminPage/template/index.html");
 		return modelAndView;
 	}
 
-	@RequestMapping("addOver")
-	@ResponseBody
+	@Mapping("addOver")
 	public JsonResult addOver(Template template,String paramJson) {
 		
 		if (StrUtil.isEmpty(template.getId())) {
@@ -71,8 +66,7 @@ public class TemplateController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("detail")
-	@ResponseBody
+	@Mapping("detail")
 	public JsonResult detail(String id) {
 		Template template = sqlHelper.findById(id, Template.class);
 		TemplateExt templateExt = new TemplateExt();
@@ -84,16 +78,14 @@ public class TemplateController extends BaseController {
 		return renderSuccess(templateExt);
 	}
 
-	@RequestMapping("del")
-	@ResponseBody
+	@Mapping("del")
 	public JsonResult del(String id) {
 
 		templateService.del(id);
 		return renderSuccess();
 	}
 	
-	@RequestMapping("getTemplate")
-	@ResponseBody
+	@Mapping("getTemplate")
 	public JsonResult getTemplate() {
 
 		return renderSuccess(sqlHelper.findAll(Template.class));

@@ -1,21 +1,16 @@
 package com.cym.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.extend.aspect.annotation.Service;
 
 import com.cym.model.OperateLog;
-import com.cym.model.Server;
-
-import cn.craccd.sqlHelper.bean.Page;
-import cn.craccd.sqlHelper.bean.Sort;
-import cn.craccd.sqlHelper.bean.Sort.Direction;
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
-import cn.craccd.sqlHelper.utils.SqlHelper;
-import cn.hutool.core.util.StrUtil;
+import com.cym.sqlhelper.bean.Page;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
+import com.cym.sqlhelper.utils.SqlHelper;
 
 @Service
 public class OperateLogService {
-	@Autowired
+	@Inject
 	SqlHelper sqlHelper;
 
 	public Page search(Page page) {

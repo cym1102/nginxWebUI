@@ -1,29 +1,21 @@
 package com.cym.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.extend.aspect.annotation.Service;
 
 import com.cym.model.Admin;
 import com.cym.model.AdminGroup;
 import com.cym.model.Credit;
-import com.cym.model.Group;
-import com.cym.model.Server;
-import com.cym.model.Upstream;
-
-import cn.craccd.sqlHelper.bean.Page;
-import cn.craccd.sqlHelper.reflection.ReflectionUtil;
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
-import cn.craccd.sqlHelper.utils.SqlHelper;
-import cn.hutool.core.util.StrUtil;
+import com.cym.sqlhelper.bean.Page;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
+import com.cym.sqlhelper.utils.SqlHelper;
 
 @Service
 public class AdminService {
-	@Autowired
+	@Inject
 	SqlHelper sqlHelper;
 
 	public Admin login(String name, String pass) {

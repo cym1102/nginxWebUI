@@ -1,12 +1,12 @@
 package com.cym.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.extend.aspect.annotation.Service;
 
-import cn.craccd.sqlHelper.utils.SqlHelper;
+import com.cym.sqlhelper.utils.SqlHelper;
 
 @Service
 public class LocationService {
-	@Autowired
+	@Inject
 	SqlHelper sqlHelper;
 }

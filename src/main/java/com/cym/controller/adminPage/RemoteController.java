@@ -11,18 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
+import org.noear.solon.core.handle.Context;
+import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.controller.api.NginxApiController;
 import com.cym.ext.AsycPack;
@@ -47,31 +42,30 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 
 @Controller
-@RequestMapping("/adminPage/remote")
+@Mapping("/adminPage/remote")
 public class RemoteController extends BaseController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
+	@Inject
 	RemoteService remoteService;
-	@Autowired
+	@Inject
 	SettingService settingService;
-	@Autowired
+	@Inject
 	ConfService confService;
-	@Autowired
+	@Inject
 	GroupService groupService;
-	@Autowired
+	@Inject
 	ConfController confController;
-	@Autowired
+	@Inject
 	MainController mainController;
-	@Autowired
+	@Inject
 	NginxApiController nginxApiController;
 
-	@Value("${project.version}")
+	@Inject("${project.version}")
 	String projectVersion;
-	@Value("${server.port}")
+	@Inject("${server.port}")
 	Integer port;
 
-	@RequestMapping("version")
-	@ResponseBody
+	@Mapping("version")
 	public Map<String, Object> version() {
 		Map<String, Object> map = new HashMap<>();
 		map.put("version", projectVersion);
@@ -85,25 +79,24 @@ public class RemoteController extends BaseController {
 		return map;
 	}
 
-	@RequestMapping("")
-	public ModelAndView index(ModelAndView modelAndView, HttpSession httpSession) {
+	@Mapping("")
+	public ModelAndView index(ModelAndView modelAndView) {
 
 		JsonResult<List<String>> jsonResult = nginxApiController.getNginxStartCmd();
-		modelAndView.addObject("startCmds", jsonResult.getObj());
+		modelAndView.put("startCmds", jsonResult.getObj());
 
 		jsonResult = nginxApiController.getNginxStopCmd();
-		modelAndView.addObject("stopCmds", jsonResult.getObj());
+		modelAndView.put("stopCmds", jsonResult.getObj());
 
-		modelAndView.addObject("projectVersion", projectVersion);
-		modelAndView.setViewName("/adminPage/remote/index");
+		modelAndView.put("projectVersion", projectVersion);
+		modelAndView.view("/adminPage/remote/index.html");
 
 		return modelAndView;
 	}
 
-	@RequestMapping("allTable")
-	@ResponseBody
-	public List<Remote> allTable(HttpServletRequest request) {
-		Admin admin = getAdmin(request);
+	@Mapping("allTable")
+	public List<Remote> allTable() {
+		Admin admin = getAdmin();
 		List<Remote> remoteList = sqlHelper.findAll(Remote.class);
 
 		for (Remote remote : remoteList) {
@@ -179,8 +172,7 @@ public class RemoteController extends BaseController {
 		return "";
 	}
 
-	@RequestMapping("addGroupOver")
-	@ResponseBody
+	@Mapping("addGroupOver")
 	public JsonResult addGroupOver(Group group) {
 		if (StrUtil.isNotEmpty(group.getParentId()) && StrUtil.isNotEmpty(group.getId()) && group.getId().equals(group.getParentId())) {
 			return renderError(m.get("remoteStr.parentGroupMsg"));
@@ -190,24 +182,21 @@ public class RemoteController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("groupDetail")
-	@ResponseBody
+	@Mapping("groupDetail")
 	public JsonResult groupDetail(String id) {
 		return renderSuccess(sqlHelper.findById(id, Group.class));
 	}
 
-	@RequestMapping("delGroup")
-	@ResponseBody
+	@Mapping("delGroup")
 	public JsonResult delGroup(String id) {
 
 		groupService.delete(id);
 		return renderSuccess();
 	}
 
-	@RequestMapping("getGroupTree")
-	@ResponseBody
-	public JsonResult getGroupTree(HttpServletRequest request) {
-		Admin admin = getAdmin(request);
+	@Mapping("getGroupTree")
+	public JsonResult getGroupTree() {
+		Admin admin = getAdmin();
 
 		List<Tree> treeList = new ArrayList<>();
 		Tree tree = new Tree();
@@ -247,10 +236,9 @@ public class RemoteController extends BaseController {
 		return false;
 	}
 
-	@RequestMapping("getCmdRemote")
-	@ResponseBody
-	public JsonResult getCmdRemote(HttpServletRequest request) {
-		Admin admin = getAdmin(request);
+	@Mapping("getCmdRemote")
+	public JsonResult getCmdRemote() {
+		Admin admin = getAdmin();
 
 		List<Group> groups = remoteService.getGroupByAdmin(admin);
 		List<Remote> remotes = remoteService.getListByParent(null);
@@ -294,9 +282,8 @@ public class RemoteController extends BaseController {
 
 	}
 
-	@RequestMapping("cmdOver")
-	@ResponseBody
-	public JsonResult cmdOver(String[] remoteId, String cmd, Integer interval, HttpServletRequest request) {
+	@Mapping("cmdOver")
+	public JsonResult cmdOver(String[] remoteId, String cmd, Integer interval) {
 		if (remoteId == null || remoteId.length == 0) {
 			return renderSuccess(m.get("remoteStr.noSelect"));
 		}
@@ -312,7 +299,7 @@ public class RemoteController extends BaseController {
 					jsonResult = confController.reload(null, null, null);
 				}
 				if (cmd.contentEquals("replace")) {
-					jsonResult = confController.replace(confController.getReplaceJson(), request, null);
+					jsonResult = confController.replace(confController.getReplaceJson(), null);
 				}
 				if (cmd.startsWith("start") || cmd.startsWith("stop")) {
 					jsonResult = confController.runCmd(cmd.replace("start ", "").replace("stop ", ""), null);
@@ -370,9 +357,8 @@ public class RemoteController extends BaseController {
 		return renderSuccess(rs.toString());
 	}
 
-	@RequestMapping("asyc")
-	@ResponseBody
-	public JsonResult asyc(String fromId, String[] remoteId, String[] asycData, HttpServletRequest request) {
+	@Mapping("asyc")
+	public JsonResult asyc(String fromId, String[] remoteId, String[] asycData) {
 		if (StrUtil.isEmpty(fromId) || remoteId == null || remoteId.length == 0) {
 			return renderError(m.get("remoteStr.noChoice"));
 		}
@@ -388,11 +374,11 @@ public class RemoteController extends BaseController {
 					+ "&asycData=" + StrUtil.join(",", Arrays.asList(asycData)), 1000);
 		}
 
-		String adminName = getAdmin(request).getName();
+		String adminName = getAdmin().getName();
 
 		for (String remoteToId : remoteId) {
 			if (remoteToId.equals("local") || remoteToId.equals("本地")) {
-				setAsycPack(json, request, adminName);
+				setAsycPack(json, adminName);
 			} else {
 				Remote remoteTo = sqlHelper.findById(remoteToId, Remote.class);
 				try {
@@ -414,20 +400,18 @@ public class RemoteController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("getAsycPack")
-	@ResponseBody
+	@Mapping("getAsycPack")
 	public String getAsycPack(String[] asycData) {
 		AsycPack asycPack = confService.getAsycPack(asycData);
 
 		return JSONUtil.toJsonPrettyStr(asycPack);
 	}
 
-	@RequestMapping("setAsycPack")
-	@ResponseBody
-	public JsonResult setAsycPack(String json, HttpServletRequest request, String adminName) {
+	@Mapping("setAsycPack")
+	public JsonResult setAsycPack(String json, String adminName) {
 		AsycPack asycPack = JSONUtil.toBean(json, AsycPack.class);
 		if (StrUtil.isEmpty(adminName)) {
-			Admin admin = getAdmin(request);
+			Admin admin = getAdmin();
 			adminName = admin.getName();
 		}
 		confService.setAsycPack(asycPack, adminName);
@@ -435,8 +419,7 @@ public class RemoteController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("addOver")
-	@ResponseBody
+	@Mapping("addOver")
 	public JsonResult addOver(Remote remote, String code, String auth) {
 		remote.setIp(remote.getIp().trim());
 
@@ -455,8 +438,7 @@ public class RemoteController extends BaseController {
 
 	}
 
-	@RequestMapping("getAuth")
-	@ResponseBody
+	@Mapping("getAuth")
 	public JsonResult getAuth(Remote remote) {
 		try {
 			Map<String, Object> map = new HashMap<>();
@@ -482,22 +464,19 @@ public class RemoteController extends BaseController {
 		}
 	}
 
-	@RequestMapping("detail")
-	@ResponseBody
+	@Mapping("detail")
 	public JsonResult detail(String id) {
 		return renderSuccess(sqlHelper.findById(id, Remote.class));
 	}
 
-	@RequestMapping("del")
-	@ResponseBody
+	@Mapping("del")
 	public JsonResult del(String id) {
 		sqlHelper.deleteById(id, Remote.class);
 
 		return renderSuccess();
 	}
 
-	@RequestMapping("content")
-	@ResponseBody
+	@Mapping("content")
 	public JsonResult content(String id) {
 
 		Remote remote = sqlHelper.findById(id, Remote.class);
@@ -507,8 +486,7 @@ public class RemoteController extends BaseController {
 		return renderSuccess(rs);
 	}
 
-	@RequestMapping("readContent")
-	@ResponseBody
+	@Mapping("readContent")
 	public String readContent() {
 
 		String nginxPath = settingService.get("nginxPath");
@@ -521,25 +499,23 @@ public class RemoteController extends BaseController {
 
 	}
 
-	@RequestMapping("change")
-	@ResponseBody
-	public JsonResult change(String id, HttpSession httpSession) {
+	@Mapping("change")
+	public JsonResult change(String id,Context context) {
 		Remote remote = sqlHelper.findById(id, Remote.class);
 
 		if (remote == null) {
-			httpSession.setAttribute("localType", "local");
-			httpSession.removeAttribute("remote");
+			context.sessionSet("localType", "local");
+			context.sessionRemove("remote");
 		} else {
-			httpSession.setAttribute("localType", "remote");
-			httpSession.setAttribute("remote", remote);
+			context.sessionSet("localType", "remote");
+			context.sessionSet("remote", remote);
 		}
 
 		return renderSuccess();
 	}
 
-	@RequestMapping("nginxStatus")
-	@ResponseBody
-	public JsonResult nginxStatus(HttpSession httpSession) {
+	@Mapping("nginxStatus")
+	public JsonResult nginxStatus() {
 		Map<String, String> map = new HashMap<>();
 		map.put("mail", settingService.get("mail"));
 
@@ -549,8 +525,7 @@ public class RemoteController extends BaseController {
 		return renderSuccess(map);
 	}
 
-	@RequestMapping("nginxOver")
-	@ResponseBody
+	@Mapping("nginxOver")
 	public JsonResult nginxOver(String mail, String nginxMonitor) {
 		settingService.set("mail", mail);
 		settingService.set("nginxMonitor", nginxMonitor);
@@ -558,8 +533,7 @@ public class RemoteController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("setMonitor")
-	@ResponseBody
+	@Mapping("setMonitor")
 	public JsonResult setMonitor(String id, Integer monitor) {
 		if (!"local".equals(id)) {
 			Remote remote = new Remote();
@@ -573,8 +547,8 @@ public class RemoteController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("/src")
-	public void src(HttpServletRequest httpServletRequest, HttpServletResponse response, String url) throws Exception {
+	@Mapping("/src")
+	public void src(String url) throws Exception {
 
 //		response.addHeader("Content-Type", "image/jpeg");
 //		response.setHeader("content-disposition", "attachment;filename=code.jpg"); // 设置文件名
@@ -584,7 +558,7 @@ public class RemoteController extends BaseController {
 		BufferedInputStream bis = null;
 		try {
 			bis = new BufferedInputStream(downUrl.openConnection().getInputStream());
-			OutputStream os = response.getOutputStream();
+			OutputStream os = Context.current().outputStream();
 			int i = bis.read(buffer);
 			while (i != -1) {
 				os.write(buffer, 0, i);

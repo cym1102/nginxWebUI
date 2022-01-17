@@ -1,29 +1,38 @@
 package com.cym.model;
 
-import cn.craccd.sqlHelper.bean.BaseModel;
-import cn.craccd.sqlHelper.config.InitValue;
-import cn.craccd.sqlHelper.config.Table;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.cym.sqlhelper.bean.BaseModel;
+import com.cym.sqlhelper.config.InitValue;
+import com.cym.sqlhelper.config.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@ApiModel("负载均衡upstream")
+/**
+ * 
+ * 负载均衡upstream
+ *
+ */
 @Table
 public class Upstream extends BaseModel {
-	@ApiModelProperty("*负载均衡名称")
+	/**
+	 * 负载均衡名称
+	 * @required
+	 */
 	String name;
-	
-	@ApiModelProperty("负载策略: '':无(默认) 'sticky':会话保持 'ip_hash':ip绑定 'least_conn':最少连接 'least_time':最短时间")
+	/**
+	 * 负载策略: '':无(默认) 'sticky':会话保持 'ip_hash':ip绑定 'least_conn':最少连接 'least_time':最短时间
+	 */
 	String tactics; 
 
-	@ApiModelProperty("代理类型 0:http(默认) 1:tcp/udp")
+	/**
+	 * 代理类型 0:http(默认) 1:tcp/udp
+	 */
 	@InitValue("0")
 	Integer proxyType;
-
-	@ApiModelProperty("监控邮件通知 0:否(默认) 1:是")
+	/**
+	 * 监控邮件通知 0:否(默认) 1:是
+	 */
 	@InitValue("0")
 	Integer monitor;
-	
-	@ApiModelProperty(hidden = true)
+	@JsonIgnore
 	Long seq;
 
 	public Long getSeq() {

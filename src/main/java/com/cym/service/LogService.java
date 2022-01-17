@@ -1,23 +1,23 @@
 package com.cym.service;
 
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.extend.aspect.annotation.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
 
 import com.cym.model.Log;
+import com.cym.sqlhelper.bean.Page;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
+import com.cym.sqlhelper.utils.JdbcTemplate;
+import com.cym.sqlhelper.utils.SqlHelper;
 
-import cn.craccd.sqlHelper.bean.Page;
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
-import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.util.StrUtil;
 
 @Service
 public class LogService {
-	@Autowired
+	@Inject
 	SqlHelper sqlHelper;
-	@Autowired
+	@Inject
 	JdbcTemplate jdbcTemplate;
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());

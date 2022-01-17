@@ -5,41 +5,35 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.server.PathParam;
-import javax.websocket.server.ServerEndpoint;
-
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.ServerEndpoint;
+import org.noear.solon.core.message.Listener;
+import org.noear.solon.core.message.Message;
+import org.noear.solon.core.message.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Controller;
 
 import com.cym.model.Log;
-import com.cym.utils.ApplicationContextRegister;
+import com.cym.sqlhelper.utils.SqlHelper;
 import com.cym.utils.SystemTool;
 import com.cym.utils.TailLogThread;
 
-import cn.craccd.sqlHelper.utils.SqlHelper;
-
 @ServerEndpoint("/adminPage/logTail/{id}/{guid}")
-@Controller
-public class LogTailController {
+public class LogTailController implements Listener {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	Map<String, Process> processMap = new HashMap<>();
 	Map<String, InputStream> inputStreamMap = new HashMap<>();
 
+	@Inject
+	SqlHelper sqlHelper;
+
 	/**
 	 * 新的WebSocket请求开启
 	 */
-	@OnOpen
-	public void onOpen(Session session, @PathParam("id") String id, @PathParam("guid") String guid) {
-
-		ApplicationContext act = ApplicationContextRegister.getApplicationContext();
-		SqlHelper sqlHelper = act.getBean(SqlHelper.class);
-
+	@Override
+	public void onOpen(Session session) {
+		String id = session.param("id");
+		String guid =  session.param("guid");
 		try {
 			// 执行tail -f命令
 			Log log = sqlHelper.findById(id, Log.class);
@@ -68,11 +62,18 @@ public class LogTailController {
 		}
 	}
 
+	@Override
+	public void onMessage(Session session, Message message) {
+
+	}
+	
+	
 	/**
 	 * WebSocket请求关闭
 	 */
-	@OnClose
-	public void onClose(@PathParam("guid") String guid) {
+	@Override
+	public void onClose(Session session) {
+		String guid = session.param("guid");
 		try {
 			InputStream inputStream = inputStreamMap.get(guid);
 			Process process = processMap.get(guid);
@@ -93,8 +94,8 @@ public class LogTailController {
 		}
 	}
 
-	@OnError
-	public void onError(Throwable thr) {
+	@Override
+	public void onError(Session session, Throwable thr) {
 		logger.error(thr.getMessage(), thr);
 	}
 }

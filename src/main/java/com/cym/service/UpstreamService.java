@@ -4,28 +4,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.extend.aspect.annotation.Service;
 
 import com.cym.model.Param;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
-import com.cym.utils.SnowFlakeUtils;
+import com.cym.sqlhelper.bean.Page;
+import com.cym.sqlhelper.bean.Sort;
+import com.cym.sqlhelper.bean.Sort.Direction;
+import com.cym.sqlhelper.bean.Update;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
+import com.cym.sqlhelper.utils.ConditionOrWrapper;
+import com.cym.sqlhelper.utils.SqlHelper;
 
-import cn.craccd.sqlHelper.bean.Page;
-import cn.craccd.sqlHelper.bean.Sort;
-import cn.craccd.sqlHelper.bean.Sort.Direction;
-import cn.craccd.sqlHelper.bean.Update;
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
-import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
-import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
 @Service
 public class UpstreamService {
-	@Autowired
+	@Inject
 	SqlHelper sqlHelper;
 
 	public Page search(Page page, String word) {
@@ -40,13 +38,13 @@ public class UpstreamService {
 		return page;
 	}
 
-	@Transactional
+	
 	public void deleteById(String id) {
 		sqlHelper.deleteById(id, Upstream.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("upstreamId", id), UpstreamServer.class);
 	}
 
-	@Transactional
+	
 	public void addOver(Upstream upstream, List<UpstreamServer> upstreamServers, String upstreamParamJson) {
 		if (upstream.getProxyType() == 1 || upstream.getTactics() == null) {
 			upstream.setTactics("");
@@ -83,12 +81,12 @@ public class UpstreamService {
 		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq("upstreamId", id), UpstreamServer.class);
 	}
 
-	@Transactional
-	public void del(String id) {
-		sqlHelper.deleteById(id, Upstream.class);
-		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("upstreamId", id), UpstreamServer.class);
-
-	}
+	
+//	public void del(String id) {
+//		sqlHelper.deleteById(id, Upstream.class);
+//		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("upstreamId", id), UpstreamServer.class);
+//
+//	}
 
 	public List<Upstream> getListByProxyType(Integer proxyType) {
 		Sort sort = new Sort().add("seq", Direction.DESC);

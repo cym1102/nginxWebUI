@@ -1,6 +1,6 @@
 package com.cym.utils;
 
-import cn.craccd.sqlHelper.utils.SnowFlake;
+import com.cym.sqlhelper.utils.SnowFlake;
 
 public class SnowFlakeUtils {
 	static SnowFlake snowFlake = new SnowFlake(1, 1);

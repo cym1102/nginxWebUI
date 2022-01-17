@@ -1,17 +1,11 @@
 package com.cym.controller.adminPage;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
+import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.ext.MonitorInfo;
 import com.cym.ext.NetworkInfo;
@@ -22,56 +16,52 @@ import com.cym.utils.JsonResult;
 import com.cym.utils.NetWorkUtil;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 
-@RequestMapping("/adminPage/monitor")
+@Mapping("/adminPage/monitor")
 @Controller
 public class MonitorController extends BaseController {
-	@Autowired
+	@Inject
 	MonitorService monitorService;
-	@Autowired
+	@Inject
 	SettingService settingService;
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
+	@Mapping("")
+	public ModelAndView index(ModelAndView modelAndView) {
 
-		modelAndView.addObject("list", monitorService.getDiskInfo());
+		modelAndView.put("list", monitorService.getDiskInfo());
 
 		String nginxPath = settingService.get("nginxPath");
 		String nginxExe = settingService.get("nginxExe");
 		String nginxDir = settingService.get("nginxDir");
 
-		modelAndView.addObject("nginxDir", nginxDir);
-		modelAndView.addObject("nginxExe", nginxExe);
-		modelAndView.addObject("nginxPath", nginxPath);
+		modelAndView.put("nginxDir", nginxDir);
+		modelAndView.put("nginxExe", nginxExe);
+		modelAndView.put("nginxPath", nginxPath);
 
 		Boolean isInit = StrUtil.isNotEmpty(nginxExe);
-		modelAndView.addObject("isInit", isInit.toString());
+		modelAndView.put("isInit", isInit.toString());
 
-		modelAndView.setViewName("/adminPage/monitor/index");
+		modelAndView.view("/adminPage/monitor/index.html");
 		return modelAndView;
 	}
 
-	@RequestMapping("check")
-	@ResponseBody
+	@Mapping("check")
 	public JsonResult check() {
 
 		MonitorInfo monitorInfo = monitorService.getMonitorInfoOshi();
 
 		return renderSuccess(monitorInfo);
 	}
-	
-	@RequestMapping("network")
-	@ResponseBody
+
+	@Mapping("network")
 	public JsonResult network() {
 		NetworkInfo networkInfo = NetWorkUtil.getNetworkDownUp();
-		//System.err.println(JSONUtil.toJsonStr(networkInfo));
+		// System.err.println(JSONUtil.toJsonStr(networkInfo));
 		return renderSuccess(networkInfo);
 	}
 
-	@RequestMapping("addNginxGiudeOver")
-	@ResponseBody
+	@Mapping("addNginxGiudeOver")
 	public JsonResult addNginxGiudeOver(String nginxDir, String nginxExe) {
 
 		settingService.set("nginxDir", nginxDir);

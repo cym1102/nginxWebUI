@@ -3,14 +3,9 @@ package com.cym.controller.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
 
 import com.cym.controller.adminPage.ConfController;
 import com.cym.service.AdminService;
@@ -21,23 +16,24 @@ import com.cym.utils.NginxUtils;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HtmlUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
-@Api(tags = "nginx接口")
-@RestController
-@RequestMapping("/api/nginx")
+/**
+ * nginx接口
+ */
+@Mapping("/api/nginx")
+@Controller
 public class NginxApiController extends BaseController {
-	@Autowired
+	@Inject
 	ConfController confController;
-	@Autowired
+	@Inject
 	AdminService adminService;
-	@Autowired
+	@Inject
 	SettingService settingService;
 
-	@ApiOperation("获取nginx状态")
-	@PostMapping("nginxStatus")
+	/**
+	 * 获取nginx状态
+	 */
+	@Mapping("nginxStatus")
 	public JsonResult<?> nginxStatus() {
 		if (NginxUtils.isRun()) {
 			return renderSuccess(m.get("confStr.running"));
@@ -46,10 +42,13 @@ public class NginxApiController extends BaseController {
 		}
 	}
 
-	@ApiOperation("替换conf文件")
-	@PostMapping("replace")
-	public JsonResult<?> replace(@RequestHeader String token, HttpServletRequest request) {
-		JsonResult jsonResult = confController.replace(confController.getReplaceJson(), request, null);
+	/**
+	 * 替换conf文件
+	 * 
+	 */
+	@Mapping("replace")
+	public JsonResult<?> replace() {
+		JsonResult jsonResult = confController.replace(confController.getReplaceJson(), null);
 		if (jsonResult.isSuccess()) {
 			return renderSuccess("替换成功");
 		} else {
@@ -57,8 +56,11 @@ public class NginxApiController extends BaseController {
 		}
 	}
 
-	@ApiOperation("效验conf文件")
-	@PostMapping("check")
+	/**
+	 * 效验conf文件
+	 * 
+	 */
+	@Mapping("check")
 	public JsonResult<?> checkBase() {
 		JsonResult jsonResult = confController.checkBase();
 		if (jsonResult.isSuccess()) {
@@ -68,8 +70,11 @@ public class NginxApiController extends BaseController {
 		}
 	}
 
-	@ApiOperation("重载conf文件")
-	@PostMapping("reload")
+	/**
+	 * 重载conf文件
+	 * 
+	 */
+	@Mapping("reload")
 	public synchronized JsonResult<?> reload() {
 		JsonResult jsonResult = confController.reload(null, null, null);
 		if (jsonResult.isSuccess()) {
@@ -79,8 +84,11 @@ public class NginxApiController extends BaseController {
 		}
 	}
 
-	@ApiOperation("获取nginx启动命令")
-	@PostMapping("getNginxStartCmd")
+	/**
+	 * 获取nginx启动命令
+	 * 
+	 */
+	@Mapping("getNginxStartCmd")
 	public JsonResult<List<String>> getNginxStartCmd() {
 		String nginxExe = settingService.get("nginxExe");
 		String nginxPath = settingService.get("nginxPath");
@@ -98,8 +106,11 @@ public class NginxApiController extends BaseController {
 		return renderSuccess(list);
 	}
 
-	@ApiOperation("获取nginx停止命令")
-	@PostMapping("getNginxStopCmd")
+	/**
+	 * 获取nginx停止命令
+	 * 
+	 */
+	@Mapping("getNginxStopCmd")
 	public JsonResult<List<String>> getNginxStopCmd() {
 		String nginxExe = settingService.get("nginxExe");
 		String nginxDir = settingService.get("nginxDir");
@@ -118,36 +129,18 @@ public class NginxApiController extends BaseController {
 		return renderSuccess(list);
 	}
 
-	@ApiOperation("执行nginx命令")
-	@PostMapping("runNginxCmd")
-	public JsonResult<?> runNginxCmd(@RequestParam @ApiParam("执行命令") String cmd) {
+	/**
+	 * 执行nginx命令
+	 * 
+	 * @param cmd 命令内容
+	 * 
+	 */
+	@Mapping("runNginxCmd")
+	public JsonResult<?> runNginxCmd(String cmd) {
 
 		JsonResult jsonResult = confController.runCmd(cmd, null);
 		jsonResult.setObj(HtmlUtil.cleanHtmlTag(jsonResult.getObj().toString()));
 		return jsonResult;
 	}
 
-//	@ApiOperation("停止nginx")
-//	@PostMapping("stop")
-//	public synchronized JsonResult<?> stop() {
-//		JsonResult jsonResult = confController.stop(null, null);
-//		
-//		if (jsonResult.isSuccess()) {
-//			return renderSuccess("停止成功");
-//		} else {
-//			return renderError("停止失败");
-//		}
-//	}
-//
-//	@ApiOperation("启动nginx")
-//	@PostMapping("start")
-//	public synchronized JsonResult<?> start() {
-//		JsonResult jsonResult = confController.start(null, null, null);
-//		
-//		if (jsonResult.isSuccess()) {
-//			return renderSuccess("启动成功");
-//		} else {
-//			return renderError("启动失败");
-//		}
-//	}
 }

@@ -4,9 +4,8 @@ import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.stereotype.Service;
+import org.noear.solon.annotation.Init;
+import org.noear.solon.extend.aspect.annotation.Service;
 
 import com.cym.ext.DiskInfo;
 import com.cym.ext.MonitorInfo;
@@ -17,7 +16,6 @@ import cn.hutool.system.oshi.OshiUtil;
 import oshi.software.os.OSFileStore;
 import oshi.util.FormatUtil;
 
-/** */
 /**
  * 获取系统信息的业务逻辑实现类.
  * 
@@ -28,7 +26,7 @@ public class MonitorService {
 
 	OperatingSystemMXBean osmxb;
 
-	@PostConstruct
+	@Init
 	private void init() {
 		osmxb = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 	}

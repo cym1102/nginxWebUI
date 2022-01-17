@@ -6,20 +6,18 @@ import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.noear.solon.Solon;
+import org.noear.solon.schedule.annotation.EnableScheduling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.system.ApplicationHome;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.cym.utils.JarUtil;
 import com.cym.utils.SystemTool;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RuntimeUtil;
 
-@EnableTransactionManagement
-@SpringBootApplication
+@EnableScheduling
 public class NginxWebUI {
 	static Logger logger = LoggerFactory.getLogger(NginxWebUI.class);
 
@@ -30,13 +28,28 @@ public class NginxWebUI {
 
 			// 删掉多余的jar
 			removeJar();
+
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		
-		// 启动springboot
-		SpringApplication.run(NginxWebUI.class, args);
+
+		Solon.start(NginxWebUI.class, args, app -> {
+			app.onError(e -> logger.info(e.getMessage(), e));
+			
+			app.before(c -> {
+				c.pathNew(c.path().replace("//", "/"));
+			});
+
+			app.enableWebSocket(true);
+
+			app.onEvent(freemarker.template.Configuration.class, cfg -> {
+				cfg.setSetting("classic_compatible", "true");
+				cfg.setSetting("number_format", "0.##");
+			});
+
+		});
 	}
+
 
 	public static void killSelf() {
 		RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
@@ -84,12 +97,9 @@ public class NginxWebUI {
 	}
 
 	private static void removeJar() {
-		ApplicationHome home = new ApplicationHome(NginxWebUI.class);
-		File jar = home.getSource();
-
-		File[] list = jar.getParentFile().listFiles();
+		File[] list = new File(JarUtil.getCurrentFilePath()).getParentFile().listFiles();
 		for (File file : list) {
-			if (file.getName().startsWith("nginxWebUI") && file.getName().endsWith(".jar") && !file.getName().equals(jar.getName())) {
+			if (file.getName().startsWith("nginxWebUI") && file.getName().endsWith(".jar") && !file.getPath().equals(JarUtil.getCurrentFilePath())) {
 				FileUtil.del(file);
 				logger.info("删除文件:" + file);
 			}

@@ -2,43 +2,39 @@ package com.cym.controller.adminPage;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
+import org.noear.solon.core.handle.ModelAndView;
 
 import com.cym.config.InitConfig;
 import com.cym.model.Password;
 import com.cym.service.PasswordService;
+import com.cym.sqlhelper.bean.Page;
 import com.cym.utils.BaseController;
 import com.cym.utils.Crypt;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
 
-import cn.craccd.sqlHelper.bean.Page;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 
-@RequestMapping("/adminPage/password")
+@Mapping("/adminPage/password")
 @Controller
 public class PasswordController extends BaseController {
-	@Autowired
+	@Inject
 	PasswordService passwordService;
 
-	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page) {
+	@Mapping("")
+	public ModelAndView index(ModelAndView modelAndView, Page page) {
 		page = passwordService.search(page);
 
-		modelAndView.addObject("page", page);
-		modelAndView.setViewName("/adminPage/password/index");
+		modelAndView.put("page", page);
+		modelAndView.view("/adminPage/password/index.html");
 		return modelAndView;
 	}
 
-	@RequestMapping("addOver")
-	@ResponseBody
+	@Mapping("addOver")
 	public JsonResult addOver(Password password) throws IOException {
 
 		if (StrUtil.isEmpty(password.getId())) {
@@ -56,7 +52,7 @@ public class PasswordController extends BaseController {
 			FileUtil.del(passwordOrg.getPath());
 		}
 
-		password.setPath(InitConfig.home + "password/" + password.getName());
+		password.setPath(homeConfig.home + "password/" + password.getName());
 
 		String value = "";
 		if (SystemTool.isWindows()) {
@@ -73,8 +69,7 @@ public class PasswordController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("del")
-	@ResponseBody
+	@Mapping("del")
 	public JsonResult del(String id) {
 		Password password = sqlHelper.findById(id, Password.class);
 		sqlHelper.deleteById(id, Password.class);
@@ -83,8 +78,7 @@ public class PasswordController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("detail")
-	@ResponseBody
+	@Mapping("detail")
 	public JsonResult detail(String id) {
 		return renderSuccess(sqlHelper.findById(id, Password.class));
 	}

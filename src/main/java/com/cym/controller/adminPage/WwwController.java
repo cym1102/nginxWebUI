@@ -3,43 +3,39 @@ package com.cym.controller.adminPage;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import javax.servlet.http.HttpSession;
-
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
+import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.model.Www;
 import com.cym.service.WwwService;
+import com.cym.sqlhelper.bean.Sort;
+import com.cym.sqlhelper.bean.Sort.Direction;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 
-import cn.craccd.sqlHelper.bean.Sort;
-import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ZipUtil;
 
-@RequestMapping("/adminPage/www")
+@Mapping("/adminPage/www")
 @Controller
 public class WwwController extends BaseController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
+	@Inject
 	WwwService wwwService;
 
-	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
+	@Mapping("")
+	public ModelAndView index(ModelAndView modelAndView) {
 
-		modelAndView.addObject("list", sqlHelper.findAll(new Sort("dir", Direction.ASC), Www.class));
-		modelAndView.setViewName("/adminPage/www/index");
+		modelAndView.put("list", sqlHelper.findAll(new Sort("dir", Direction.ASC), Www.class));
+		modelAndView.view("/adminPage/www/index.html");
 		return modelAndView;
 	}
 
-	@RequestMapping("addOver")
-	@ResponseBody
+	@Mapping("addOver")
 	public JsonResult addOver(Www www, String dirTemp) {
 		if (wwwService.hasDir(www.getDir(),www.getId())) {
 			return renderError(m.get("wwwStr.sameDir"));
@@ -67,16 +63,14 @@ public class WwwController extends BaseController {
 
 
 
-	@RequestMapping("del")
-	@ResponseBody
+	@Mapping("del")
 	public JsonResult del(String id) {
 		sqlHelper.deleteById(id, Www.class);
 
 		return renderSuccess();
 	}
 
-	@RequestMapping("detail")
-	@ResponseBody
+	@Mapping("detail")
 	public JsonResult detail(String id) {
 		Www www = sqlHelper.findById(id, Www.class);
 

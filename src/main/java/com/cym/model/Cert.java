@@ -1,57 +1,91 @@
 package com.cym.model;
 
-import cn.craccd.sqlHelper.bean.BaseModel;
-import cn.craccd.sqlHelper.config.InitValue;
-import cn.craccd.sqlHelper.config.SingleIndex;
-import cn.craccd.sqlHelper.config.Table;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-@ApiModel("证书")
+import com.cym.sqlhelper.bean.BaseModel;
+import com.cym.sqlhelper.config.InitValue;
+import com.cym.sqlhelper.config.SingleIndex;
+import com.cym.sqlhelper.config.Table;
+
+/**
+ * 
+ * 证书
+ *
+ */
 @Table
 public class Cert extends BaseModel {
-	@ApiModelProperty("域名")
+	/**
+	 * 域名
+	 */
 	@SingleIndex(unique = true)
 	String domain; 
-	@ApiModelProperty("pem文件路径")
+	/**
+	 * pem文件路径
+	 */
 	String pem;
-	@ApiModelProperty("key文件路径")
+	/**
+	 * key文件路径
+	 */
 	String key;
-
-	@ApiModelProperty("获取方式 0 申请证书 1 手动上传 2 DNS验证")
+	/**
+	 * 获取方式 0 申请证书 1 手动上传 2 DNS验证
+	 */
 	@InitValue("0")
 	Integer type; 
-
-	@ApiModelProperty("签发时间戳")
+	/**
+	 * 签发时间戳
+	 */
 	Long makeTime; 
-
-	@ApiModelProperty("是否自动续签 0否 1是")
+	/**
+	 * 是否自动续签 0否 1是
+	 */
 	@InitValue("0")
 	Integer autoRenew; 
-
-	@ApiModelProperty("dns提供商 ali:阿里云  dp:腾讯云  cf:Cloudflare  gd:Godaddy")
+	/**
+	 * dns提供商 ali:阿里云  dp:腾讯云  cf:Cloudflare  gd:Godaddy
+	 */
 	String dnsType; 
-	@ApiModelProperty("dpId(腾讯云需要的参数)")
+	/**
+	 * dpId(腾讯云需要的参数)
+	 */
 	String dpId;
-	@ApiModelProperty("dpKey(腾讯云需要的参数)")
+	/**
+	 * dpKey(腾讯云需要的参数)
+	 */
 	String dpKey;
-	@ApiModelProperty("aliKey(阿里云需要的参数)")
+	/**
+	 * aliKey(阿里云需要的参数)
+	 */
 	String aliKey;
-	@ApiModelProperty("aliSecret(阿里云需要的参数)")
+	/**
+	 * aliSecret(阿里云需要的参数)
+	 */
 	String aliSecret;
-	@ApiModelProperty("cfEmail(Cloudflare需要的参数)")
+	/**
+	 * cfEmail(Cloudflare需要的参数)
+	 */
 	String cfEmail;
-	@ApiModelProperty("cfKey(Cloudflare需要的参数)")
+	/**
+	 * cfKey(Cloudflare需要的参数)
+	 */
 	String cfKey;
-	@ApiModelProperty("gdKey(Godaddy需要的参数)")
+	/**
+	 * gdKey(Godaddy需要的参数)
+	 */
 	String gdKey;
-	@ApiModelProperty("gdSecret(Godaddy需要的参数)")
+	/**
+	 * gdSecret(Godaddy需要的参数)
+	 */
 	String gdSecret;
-	
-	@ApiModelProperty("hwUsername(华为云需要的参数)")
+	/**
+	 * hwUsername(华为云需要的参数)
+	 */
 	String hwUsername;
-	@ApiModelProperty("hwPassword(华为云需要的参数)")
+	/**
+	 * hwPassword(华为云需要的参数)
+	 */
 	String hwPassword;
-	@ApiModelProperty("hwProjectID(华为云需要的参数)")
+	/**
+	 * hwProjectID(华为云需要的参数)
+	 */
 	String hwProjectID;
 	
 	

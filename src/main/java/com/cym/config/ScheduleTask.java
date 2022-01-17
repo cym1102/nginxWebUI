@@ -9,15 +9,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PostConstruct;
-
+import org.noear.solon.annotation.Component;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.schedule.annotation.Scheduled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import com.cym.controller.adminPage.CertController;
 import com.cym.controller.adminPage.ConfController;
@@ -32,11 +28,11 @@ import com.cym.service.LogService;
 import com.cym.service.RemoteService;
 import com.cym.service.SettingService;
 import com.cym.service.UpstreamService;
+import com.cym.sqlhelper.utils.SqlHelper;
 import com.cym.utils.MessageUtils;
 import com.cym.utils.SendMailUtils;
 import com.cym.utils.TelnetUtils;
 
-import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
@@ -46,35 +42,36 @@ import cn.hutool.core.util.ZipUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 
-@Configuration // 1.主要用于标记配置类，兼备Component的效果。
-@EnableScheduling // 2.开启定时任务
+@Component
 public class ScheduleTask {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Value("${server.port}")
+	@Inject("${server.port}")
 	Integer port;
 
-	@Autowired
+	@Inject
 	SqlHelper sqlHelper;
-	@Autowired
+	@Inject
 	CertController certController;
-	@Autowired
+	@Inject
 	SettingService settingService;
-	@Autowired
+	@Inject
 	ConfController confController;
-	@Autowired
+	@Inject
 	RemoteController remoteController;
-	@Autowired
+	@Inject
 	RemoteService remoteService;
-	@Autowired
+	@Inject
 	UpstreamService upstreamService;
-	@Autowired
+	@Inject
 	LogService logInfoService;
-	@Autowired
+	@Inject
 	SendMailUtils sendMailUtils;
-	@Autowired
+	@Inject
 	HttpService httpService;
-	@Autowired
+	@Inject
 	MessageUtils m;
+	@Inject
+	HomeConfig homeConfig;
 
 	// 续签证书
 	@Scheduled(cron = "0 0 2 * * ?")
@@ -150,7 +147,7 @@ public class ScheduleTask {
 	public void delBak() {
 
 		long time = System.currentTimeMillis();
-		File dir = new File(InitConfig.home + "bak/");
+		File dir = new File(homeConfig.home + "bak/");
 		if (dir.exists()) {
 			for (File file : dir.listFiles()) {
 				if (file.getName().contains("nginx.conf.") && (file.getName().endsWith(".zip") || file.getName().endsWith(".bak"))) {

@@ -4,17 +4,12 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
+import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.config.InitConfig;
 import com.cym.config.VersionConfig;
@@ -33,6 +28,7 @@ import com.cym.utils.ToolUtils;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.net.URLDecoder;
 import cn.hutool.core.net.URLEncoder;
 import cn.hutool.core.util.CharsetUtil;
@@ -43,49 +39,45 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
 @Controller
-@RequestMapping("/adminPage/conf")
+@Mapping("/adminPage/conf")
 public class ConfController extends BaseController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
+	@Inject
 	UpstreamService upstreamService;
-	@Autowired
+	@Inject
 	SettingService settingService;
-	@Autowired
+	@Inject
 	ServerService serverService;
-	@Autowired
+	@Inject
 	ConfService confService;
-	@Autowired
+	@Inject
 	MainController mainController;
 
-	@Autowired
+	@Inject
 	VersionConfig versionConfig;
 
-	@Value("${project.version}")
-	String currentVersion;
-
-	@RequestMapping("")
+	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView) {
 
 		String nginxPath = settingService.get("nginxPath");
-		modelAndView.addObject("nginxPath", nginxPath);
+		modelAndView.put("nginxPath", nginxPath);
 
 		String nginxExe = settingService.get("nginxExe");
-		modelAndView.addObject("nginxExe", nginxExe);
+		modelAndView.put("nginxExe", nginxExe);
 
 		String nginxDir = settingService.get("nginxDir");
-		modelAndView.addObject("nginxDir", nginxDir);
+		modelAndView.put("nginxDir", nginxDir);
 
 		String decompose = settingService.get("decompose");
-		modelAndView.addObject("decompose", decompose);
+		modelAndView.put("decompose", decompose);
 
-		modelAndView.addObject("tmp", InitConfig.home + "temp/nginx.conf");
+		modelAndView.put("tmp", homeConfig.home + "temp/nginx.conf");
 
-		modelAndView.setViewName("/adminPage/conf/index");
+		modelAndView.view("/adminPage/conf/index.html");
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "nginxStatus")
-	@ResponseBody
+	@Mapping(value = "nginxStatus")
 	public JsonResult nginxStatus() {
 		if (NginxUtils.isRun()) {
 			return renderSuccess(m.get("confStr.nginxStatus") + "：<span class='green'>" + m.get("confStr.running") + "</span>");
@@ -95,9 +87,8 @@ public class ConfController extends BaseController {
 
 	}
 
-	@RequestMapping(value = "replace")
-	@ResponseBody
-	public JsonResult replace(String json, HttpServletRequest request, String adminName) {
+	@Mapping(value = "replace")
+	public JsonResult replace(String json, String adminName) {
 
 		if (StrUtil.isEmpty(json)) {
 			json = getReplaceJson();
@@ -128,7 +119,7 @@ public class ConfController extends BaseController {
 
 		try {
 			if (StrUtil.isEmpty(adminName)) {
-				Admin admin = getAdmin(request);
+				Admin admin = getAdmin();
 				adminName = admin.getName();
 			}
 
@@ -166,8 +157,7 @@ public class ConfController extends BaseController {
 	 * @param nginxDir
 	 * @return
 	 */
-	@RequestMapping(value = "checkBase")
-	@ResponseBody
+	@Mapping(value = "checkBase")
 	public JsonResult checkBase() {
 		String nginxExe = settingService.get("nginxExe");
 		String nginxDir = settingService.get("nginxDir");
@@ -175,15 +165,15 @@ public class ConfController extends BaseController {
 		String rs = null;
 		String cmd = null;
 
-		FileUtil.del(InitConfig.home + "temp");
-		String fileTemp = InitConfig.home + "temp/nginx.conf";
+		FileUtil.del(homeConfig.home + "temp");
+		String fileTemp = homeConfig.home + "temp/nginx.conf";
 
 		try {
 			ConfExt confExt = confService.buildConf(false, true);
 			FileUtil.writeString(confExt.getConf(), fileTemp, CharsetUtil.CHARSET_UTF_8);
 
 			ClassPathResource resource = new ClassPathResource("mime.types");
-			FileUtil.writeFromStream(resource.getInputStream(), InitConfig.home + "temp/mime.types");
+			FileUtil.writeFromStream(resource.getStream(), homeConfig.home + "temp/mime.types");
 
 			cmd = nginxExe + " -t -c " + fileTemp;
 			if (StrUtil.isNotEmpty(nginxDir)) {
@@ -213,8 +203,7 @@ public class ConfController extends BaseController {
 	 * @param json
 	 * @return
 	 */
-	@RequestMapping(value = "check")
-	@ResponseBody
+	@Mapping(value = "check")
 	public JsonResult check(String nginxPath, String nginxExe, String nginxDir, String json) {
 		if (nginxExe == null) {
 			nginxExe = settingService.get("nginxExe");
@@ -235,16 +224,16 @@ public class ConfController extends BaseController {
 		}
 
 		// 替换分解域名include路径中的目标conf.d为temp/conf.d
-		String confDir = ToolUtils.endDir(ToolUtils.handlePath(new File(nginxPath).getParent())) + "conf.d/";
-		String tempDir = ToolUtils.endDir(InitConfig.home + "temp") + "conf.d/";
+		String confDir = ToolUtils.handlePath(new File(nginxPath).getParent()) + "conf.d/";
+		String tempDir = homeConfig.home + "temp" + "conf.d/";
 		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
 		for (String sn : subName) {
 			nginxContent = nginxContent.replace("include " + confDir + sn, //
 					"include " + tempDir + sn);
 		}
 
-		FileUtil.del(InitConfig.home + "temp");
-		String fileTemp = InitConfig.home + "temp/nginx.conf";
+		FileUtil.del(homeConfig.home + "temp");
+		String fileTemp = homeConfig.home + "temp/nginx.conf";
 
 		confService.replace(fileTemp, nginxContent, subContent, subName, false, null);
 
@@ -253,7 +242,7 @@ public class ConfController extends BaseController {
 
 		try {
 			ClassPathResource resource = new ClassPathResource("mime.types");
-			FileUtil.writeFromStream(resource.getInputStream(), InitConfig.home + "temp/mime.types");
+			FileUtil.writeFromStream(resource.getStream(), homeConfig.home + "temp/mime.types");
 
 			cmd = nginxExe + " -t -c " + fileTemp;
 			if (StrUtil.isNotEmpty(nginxDir)) {
@@ -274,8 +263,7 @@ public class ConfController extends BaseController {
 
 	}
 
-	@RequestMapping(value = "saveCmd")
-	@ResponseBody
+	@Mapping(value = "saveCmd")
 	public JsonResult saveCmd(String nginxPath, String nginxExe, String nginxDir) {
 		nginxPath = ToolUtils.handlePath(nginxPath);
 		settingService.set("nginxPath", nginxPath);
@@ -289,8 +277,7 @@ public class ConfController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping(value = "reload")
-	@ResponseBody
+	@Mapping(value = "reload")
 	public synchronized JsonResult reload(String nginxPath, String nginxExe, String nginxDir) {
 		if (nginxPath == null) {
 			nginxPath = settingService.get("nginxPath");
@@ -325,8 +312,7 @@ public class ConfController extends BaseController {
 		}
 	}
 
-	@RequestMapping(value = "runCmd")
-	@ResponseBody
+	@Mapping(value = "runCmd")
 	public JsonResult runCmd(String cmd, String type) {
 		if (StrUtil.isNotEmpty(type)) {
 			settingService.set(type, cmd);
@@ -356,14 +342,12 @@ public class ConfController extends BaseController {
 		}
 	}
 
-	@RequestMapping(value = "getLastCmd")
-	@ResponseBody
+	@Mapping(value = "getLastCmd")
 	public JsonResult getLastCmd(String type) {
 		return renderSuccess(settingService.get(type));
 	}
 
-	@RequestMapping(value = "loadConf")
-	@ResponseBody
+	@Mapping(value = "loadConf")
 	public JsonResult loadConf() {
 		String decompose = settingService.get("decompose");
 
@@ -371,8 +355,7 @@ public class ConfController extends BaseController {
 		return renderSuccess(confExt);
 	}
 
-	@RequestMapping(value = "loadOrg")
-	@ResponseBody
+	@Mapping(value = "loadOrg")
 	public JsonResult loadOrg(String nginxPath) {
 		String decompose = settingService.get("decompose");
 		ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"), false);
@@ -401,33 +384,29 @@ public class ConfController extends BaseController {
 
 	}
 
-	@RequestMapping(value = "decompose")
-	@ResponseBody
+	@Mapping(value = "decompose")
 	public JsonResult decompose(String decompose) {
 		settingService.set("decompose", decompose);
 		return renderSuccess();
 	}
 
-	@RequestMapping(value = "update")
-	@ResponseBody
+	@Mapping(value = "update")
 	public JsonResult update() {
 		versionConfig.getNewVersion();
-		if (Integer.parseInt(currentVersion.replace(".", "").replace("v", "")) < Integer.parseInt(versionConfig.getVersion().getVersion().replace(".", "").replace("v", ""))) {
-			mainController.autoUpdate(versionConfig.getVersion().getUrl());
+		if (Integer.parseInt(versionConfig.currentVersion.replace(".", "").replace("v", "")) < Integer.parseInt(versionConfig.getNewVersion().getVersion().replace(".", "").replace("v", ""))) {
+			mainController.autoUpdate(versionConfig.getNewVersion().getUrl());
 			return renderSuccess(m.get("confStr.updateSuccess"));
 		} else {
 			return renderSuccess(m.get("confStr.noNeedUpdate"));
 		}
 	}
 
-	@RequestMapping(value = "getKey")
-	@ResponseBody
+	@Mapping(value = "getKey")
 	public JsonResult getKey(String key) {
 		return renderSuccess(settingService.get(key));
 	}
 
-	@RequestMapping(value = "setKey")
-	@ResponseBody
+	@Mapping(value = "setKey")
 	public JsonResult setKey(String key, String val) {
 		settingService.set(key, val);
 		return renderSuccess();

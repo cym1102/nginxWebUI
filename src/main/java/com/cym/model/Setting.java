@@ -1,9 +1,9 @@
 package com.cym.model;
 
-import cn.craccd.sqlHelper.bean.BaseModel;
-import cn.craccd.sqlHelper.config.CompositeIndex;
-import cn.craccd.sqlHelper.config.SingleIndex;
-import cn.craccd.sqlHelper.config.Table;
+import com.cym.sqlhelper.bean.BaseModel;
+import com.cym.sqlhelper.config.CompositeIndex;
+import com.cym.sqlhelper.config.SingleIndex;
+import com.cym.sqlhelper.config.Table;
 
 @Table
 @CompositeIndex(colums = { "key", "value" }, unique = true)

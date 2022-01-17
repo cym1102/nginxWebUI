@@ -2,13 +2,10 @@ package com.cym.controller.adminPage;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
+import org.noear.solon.core.handle.ModelAndView;
 
 import com.cym.config.InitConfig;
 import com.cym.model.Http;
@@ -22,24 +19,23 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
 @Controller
-@RequestMapping("/adminPage/http")
+@Mapping("/adminPage/http")
 public class HttpController extends BaseController {
-	@Autowired
+	@Inject
 	HttpService httpService;
-	@Autowired
+	@Inject
 	SettingService settingService;
 
-	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
+	@Mapping("")
+	public ModelAndView index(ModelAndView modelAndView) {
 		List<Http> httpList = httpService.findAll();
 
-		modelAndView.addObject("httpList", httpList);
-		modelAndView.setViewName("/adminPage/http/index");
+		modelAndView.put("httpList", httpList);
+		modelAndView.view("/adminPage/http/index.html");
 		return modelAndView;
 	}
 
-	@RequestMapping("addOver")
-	@ResponseBody
+	@Mapping("addOver")
 	public JsonResult addOver(Http http) {
 		if (StrUtil.isEmpty(http.getId())) {
 			http.setSeq(SnowFlakeUtils.getId());
@@ -49,30 +45,26 @@ public class HttpController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("addTemplate")
-	@ResponseBody
+	@Mapping("addTemplate")
 	public JsonResult addTemplate(String templateId) {
 		httpService.addTemplate(templateId);
 
 		return renderSuccess();
 	}
 
-	@RequestMapping("detail")
-	@ResponseBody
+	@Mapping("detail")
 	public JsonResult detail(String id) {
 		return renderSuccess(sqlHelper.findById(id, Http.class));
 	}
 
-	@RequestMapping("del")
-	@ResponseBody
+	@Mapping("del")
 	public JsonResult del(String id) {
 		sqlHelper.deleteById(id, Http.class);
 
 		return renderSuccess();
 	}
 
-	@RequestMapping("addGiudeOver")
-	@ResponseBody
+	@Mapping("addGiudeOver")
 	public JsonResult addGiudeOver(String json, Boolean logStatus, Boolean webSocket) {
 		List<Http> https = JSONUtil.toList(JSONUtil.parseArray(json), Http.class);
 
@@ -80,13 +72,13 @@ public class HttpController extends BaseController {
 
 			Http http = new Http();
 			http.setName("access_log");
-			http.setValue(InitConfig.home + "log/access.log");
+			http.setValue(homeConfig.home + "log/access.log");
 			http.setUnit("");
 			https.add(http);
 
 			http = new Http();
 			http.setName("error_log");
-			http.setValue(InitConfig.home + "log/error.log");
+			http.setValue(homeConfig.home + "log/error.log");
 			http.setUnit("");
 			https.add(http);
 
@@ -109,8 +101,7 @@ public class HttpController extends BaseController {
 
 
 
-	@RequestMapping("setOrder")
-	@ResponseBody
+	@Mapping("setOrder")
 	public JsonResult setOrder(String id, Integer count) {
 		httpService.setSeq(id, count);
 		return renderSuccess();

@@ -1,10 +1,9 @@
 package com.cym.utils;
 
-import javax.annotation.PostConstruct;
-
+import org.noear.solon.annotation.Component;
+import org.noear.solon.annotation.Init;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
@@ -14,7 +13,7 @@ public class AuthUtils {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	GoogleAuthenticator gAuth;
 
-	@PostConstruct
+	@Init
 	public void init() {
 		gAuth = new GoogleAuthenticator();
 	}

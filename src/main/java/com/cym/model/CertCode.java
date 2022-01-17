@@ -1,21 +1,29 @@
 package com.cym.model;
 
-import cn.craccd.sqlHelper.bean.BaseModel;
-import cn.craccd.sqlHelper.config.InitValue;
-import cn.craccd.sqlHelper.config.SingleIndex;
-import cn.craccd.sqlHelper.config.Table;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-@ApiModel("证书解析码")
+import com.cym.sqlhelper.bean.BaseModel;
+import com.cym.sqlhelper.config.Table;
+/**
+ * 
+ * 证书解析码
+ *
+ */
 @Table
 public class CertCode extends BaseModel {
-	@ApiModelProperty("证书id")
+	/**
+	 * 证书id
+	 */
 	String certId; 
-	@ApiModelProperty("域名")
+	/**
+	 * 域名
+	 */
 	String domain;
-	@ApiModelProperty("解析类型")
+	/**
+	 * 解析类型
+	 */
 	String type;
-	@ApiModelProperty("解析值")
+	/**
+	 * 解析值
+	 */
 	String value;
 	
 	public String getCertId() {

@@ -2,10 +2,9 @@ package com.cym.utils;
 
 import java.util.Properties;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.noear.solon.annotation.Component;
+import org.noear.solon.annotation.Init;
+import org.noear.solon.annotation.Inject;
 
 import com.cym.service.SettingService;
 
@@ -15,20 +14,20 @@ import com.cym.service.SettingService;
 @Component
 public class MessageUtils {
 
-	@Autowired
+	@Inject
 	PropertiesUtils propertiesUtils;
 	
 	Properties properties = null;
 	Properties propertiesEN = null;
 	
-	@PostConstruct
+	@Init
 	private void ini() {
 		propertiesEN = propertiesUtils.getPropertis("messages_en_US.properties");
 		properties = propertiesUtils.getPropertis("messages.properties");
 	}
 	
 	
-	@Autowired
+	@Inject
 	SettingService settingService;
 	
 	/**

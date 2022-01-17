@@ -3,11 +3,9 @@ package com.cym.controller.api;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
 
 import com.cym.model.Param;
 import com.cym.service.ParamService;
@@ -15,24 +13,29 @@ import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 
 import cn.hutool.core.util.StrUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
-@Api(tags = "额外参数接口")
-@RestController
-@RequestMapping("/api/param")
+/**
+ * 额外参数接口
+ */
+@Mapping("/api/param")
+@Controller
 public class ParamApiController extends BaseController {
 
-	@Autowired
+	@Inject
 	ParamService paramService;
 
-	@ApiOperation("根据项目获取参数列表")
-	@PostMapping("getList")
-	public JsonResult<List<Param>> getList(@ApiParam("所属反向代理id") String serverId, //
-			@ApiParam("所属代理目标id") String locationId, //
-			@ApiParam("所属负载均衡id") String upstreamId) {
+	/**
+	 * 根据项目获取参数列表
+	 * 
+	 * @param serverId   所属反向代理id
+	 * @param locationId 所属代理目标id
+	 * @param upstreamId 所属负载均衡id
+	 * 
+	 */
+	@Mapping("getList")
+	public JsonResult<List<Param>> getList(String serverId, //
+			String locationId, //
+			String upstreamId) {
 		if (StrUtil.isEmpty(serverId) && StrUtil.isEmpty(locationId) && StrUtil.isEmpty(upstreamId)) {
 			return renderError(m.get("apiStr.paramError"));
 		}
@@ -41,8 +44,13 @@ public class ParamApiController extends BaseController {
 		return renderSuccess(list);
 	}
 
-	@ApiOperation("添加或编辑参数")
-	@PostMapping("insertOrUpdate")
+	/**
+	 * 添加或编辑参数
+	 * 
+	 * @param param 额外参数
+	 * 
+	 */
+	@Mapping("insertOrUpdate")
 	public JsonResult<?> insertOrUpdate(Param param) throws IOException {
 		Integer count = 0;
 		if (StrUtil.isNotEmpty(param.getLocationId())) {
@@ -64,8 +72,13 @@ public class ParamApiController extends BaseController {
 		return renderSuccess(param);
 	}
 
-	@ApiOperation("删除")
-	@PostMapping("del")
+	/**
+	 * 删除额外参数
+	 * 
+	 * @param id 参数id
+	 * 
+	 */
+	@Mapping("del")
 	public JsonResult<?> del(String id) {
 		sqlHelper.deleteById(id, Param.class);
 

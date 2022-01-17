@@ -1,22 +1,28 @@
 package com.cym.model;
 
-import cn.craccd.sqlHelper.bean.BaseModel;
-import cn.craccd.sqlHelper.config.Table;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.cym.sqlhelper.bean.BaseModel;
+import com.cym.sqlhelper.config.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@ApiModel("密码文件")
+/**
+ * 
+ * 密码文件
+ *
+ */
 @Table
 public class Password extends BaseModel {
-	@ApiModelProperty("用户名")
+	/**
+	 * 用户名
+	 */
 	String name;
-	@ApiModelProperty("密码")
+	/**
+	 * 密码
+	 */
 	String pass;
-	@ApiModelProperty(hidden = true, name = "文件路径")
+	@JsonIgnore
 	String path;
-	@ApiModelProperty("描述")
 	String descr;
-	@ApiModelProperty(hidden = true, name = "文件内容")
+	@JsonIgnore
 	String pathStr;
 
 	public String getPathStr() {

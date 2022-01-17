@@ -1,0 +1,246 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link rel="stylesheet" href="markdown.css?v=1641871594082"/>
+    <title>nginx接口</title>
+</head>
+<body>
+<div class="markdown-body">
+    <h1>nginx接口</h1>
+<h2>获取nginx状态</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/nginx/nginxStatus</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 获取nginx状态</p>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl -X ANY  -i http://your_ip:port/api/nginx/nginxStatus
+</code></pre>
+<p><strong>Response-fields:</strong></p>
+<table>
+<thead>
+<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
+<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
+<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
+<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Response-example:</strong></p>
+<pre><code>{
+	&quot;success&quot;:true,
+	&quot;status&quot;:&quot;qh9893&quot;,
+	&quot;msg&quot;:&quot;nd71zo&quot;,
+	&quot;obj&quot;:{
+		
+	}
+}
+</code></pre>
+<h2>替换conf文件</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/nginx/replace</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 替换conf文件</p>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl -X ANY  -i http://your_ip:port/api/nginx/replace
+</code></pre>
+<p><strong>Response-fields:</strong></p>
+<table>
+<thead>
+<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
+<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
+<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
+<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Response-example:</strong></p>
+<pre><code>{
+	&quot;success&quot;:true,
+	&quot;status&quot;:&quot;ag2t5r&quot;,
+	&quot;msg&quot;:&quot;ll24io&quot;,
+	&quot;obj&quot;:{
+		
+	}
+}
+</code></pre>
+<h2>效验conf文件</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/nginx/check</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 效验conf文件</p>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl -X ANY  -i http://your_ip:port/api/nginx/check
+</code></pre>
+<p><strong>Response-fields:</strong></p>
+<table>
+<thead>
+<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
+<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
+<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
+<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Response-example:</strong></p>
+<pre><code>{
+	&quot;success&quot;:true,
+	&quot;status&quot;:&quot;t5vc9j&quot;,
+	&quot;msg&quot;:&quot;n0tfv3&quot;,
+	&quot;obj&quot;:{
+		
+	}
+}
+</code></pre>
+<h2>重载conf文件</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/nginx/reload</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 重载conf文件</p>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl -X ANY  -i http://your_ip:port/api/nginx/reload
+</code></pre>
+<p><strong>Response-fields:</strong></p>
+<table>
+<thead>
+<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
+<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
+<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
+<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Response-example:</strong></p>
+<pre><code>{
+	&quot;success&quot;:true,
+	&quot;status&quot;:&quot;91l8si&quot;,
+	&quot;msg&quot;:&quot;3ueqic&quot;,
+	&quot;obj&quot;:{
+		
+	}
+}
+</code></pre>
+<h2>获取nginx启动命令</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/nginx/getNginxStartCmd</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 获取nginx启动命令</p>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl -X ANY  -i http://your_ip:port/api/nginx/getNginxStartCmd
+</code></pre>
+<p><strong>Response-fields:</strong></p>
+<table>
+<thead>
+<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
+<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
+<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
+<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Response-example:</strong></p>
+<pre><code>{
+	&quot;success&quot;:true,
+	&quot;status&quot;:&quot;rk3ofy&quot;,
+	&quot;msg&quot;:&quot;7dl4os&quot;,
+	&quot;obj&quot;:[
+		&quot;7wgsjg&quot;,
+		&quot;9e4hbo&quot;
+	]
+}
+</code></pre>
+<h2>获取nginx停止命令</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/nginx/getNginxStopCmd</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 获取nginx停止命令</p>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl -X ANY  -i http://your_ip:port/api/nginx/getNginxStopCmd
+</code></pre>
+<p><strong>Response-fields:</strong></p>
+<table>
+<thead>
+<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
+<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
+<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
+<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Response-example:</strong></p>
+<pre><code>{
+	&quot;success&quot;:true,
+	&quot;status&quot;:&quot;5g5cv7&quot;,
+	&quot;msg&quot;:&quot;o6my2g&quot;,
+	&quot;obj&quot;:[
+		&quot;h0za7i&quot;,
+		&quot;fer2s9&quot;
+	]
+}
+</code></pre>
+<h2>执行nginx命令</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/nginx/runNginxCmd</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 执行nginx命令</p>
+<p><strong>Request-parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>cmd</td><td>string</td><td>命令内容</td><td>true</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl   -i http://your_ip:port/api/nginx/runNginxCmd?cmd=t0342e
+</code></pre>
+<p><strong>Response-fields:</strong></p>
+<table>
+<thead>
+<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
+<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
+<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
+<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Response-example:</strong></p>
+<pre><code>{
+	&quot;success&quot;:true,
+	&quot;status&quot;:&quot;lfdnjr&quot;,
+	&quot;msg&quot;:&quot;jf37e9&quot;,
+	&quot;obj&quot;:{
+		
+	}
+}
+</code></pre>
+
+    <footer class="page-footer">
+        <span class="copyright">Generated by smart-doc at 2022-01-11 11:26:34</span>
+        <span class="footer-modification">Suggestions, contact, support and error reporting on
+            <a href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">Gitee</a> or
+            <a href="https://github.com/smart-doc-group/smart-doc" target="_blank">Github</a>
+        </span>
+    </footer>
+</div>
+</body>
+</html>

@@ -3,15 +3,12 @@ package com.cym.controller.adminPage;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
+import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.ext.ServerExt;
 import com.cym.model.Cert;
@@ -27,6 +24,9 @@ import com.cym.service.ParamService;
 import com.cym.service.ServerService;
 import com.cym.service.SettingService;
 import com.cym.service.UpstreamService;
+import com.cym.sqlhelper.bean.Page;
+import com.cym.sqlhelper.bean.Sort;
+import com.cym.sqlhelper.bean.Sort.Direction;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SnowFlakeUtils;
@@ -37,30 +37,27 @@ import com.github.odiszapc.nginxparser.NgxConfig;
 import com.github.odiszapc.nginxparser.NgxDumper;
 import com.github.odiszapc.nginxparser.NgxParam;
 
-import cn.craccd.sqlHelper.bean.Page;
-import cn.craccd.sqlHelper.bean.Sort;
-import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
 @Controller
-@RequestMapping("/adminPage/server")
+@Mapping("/adminPage/server")
 public class ServerController extends BaseController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
+	@Inject
 	ServerService serverService;
-	@Autowired
+	@Inject
 	UpstreamService upstreamService;
-	@Autowired
+	@Inject
 	ParamService paramService;
-	@Autowired
+	@Inject
 	SettingService settingService;
-	@Autowired
+	@Inject
 	ConfService confService;
 
-	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String keywords) {
+	@Mapping("")
+	public ModelAndView index( ModelAndView modelAndView, Page page, String keywords) {
 		page = serverService.search(page, keywords);
 
 		List<ServerExt> exts = new ArrayList<ServerExt>();
@@ -88,23 +85,23 @@ public class ServerController extends BaseController {
 		}
 		page.setRecords(exts);
 
-		modelAndView.addObject("page", page);
+		modelAndView.put("page", page);
 
 		List<Upstream> upstreamList = upstreamService.getListByProxyType(0);
-		modelAndView.addObject("upstreamList", upstreamList);
-		modelAndView.addObject("upstreamSize", upstreamList.size());
+		modelAndView.put("upstreamList", upstreamList);
+		modelAndView.put("upstreamSize", upstreamList.size());
 
 		List<Upstream> upstreamTcpList = upstreamService.getListByProxyType(1);
-		modelAndView.addObject("upstreamTcpList", upstreamTcpList);
-		modelAndView.addObject("upstreamTcpSize", upstreamTcpList.size());
+		modelAndView.put("upstreamTcpList", upstreamTcpList);
+		modelAndView.put("upstreamTcpSize", upstreamTcpList.size());
 
-		modelAndView.addObject("certList", sqlHelper.findAll(Cert.class));
-		modelAndView.addObject("wwwList", sqlHelper.findAll(Www.class));
+		modelAndView.put("certList", sqlHelper.findAll(Cert.class));
+		modelAndView.put("wwwList", sqlHelper.findAll(Www.class));
 
-		modelAndView.addObject("passwordList", sqlHelper.findAll(Password.class));
+		modelAndView.put("passwordList", sqlHelper.findAll(Password.class));
 
-		modelAndView.addObject("keywords", keywords);
-		modelAndView.setViewName("/adminPage/server/index");
+		modelAndView.put("keywords", keywords);
+		modelAndView.view("/adminPage/server/index.html");
 		return modelAndView;
 	}
 
@@ -130,8 +127,7 @@ public class ServerController extends BaseController {
 		return StrUtil.join("<br>", str);
 	}
 
-	@RequestMapping("addOver")
-	@ResponseBody
+	@Mapping("addOver")
 	public JsonResult addOver(String serverJson, String serverParamJson, String locationJson) {
 		Server server = JSONUtil.toBean(serverJson, Server.class);
 		List<Location> locations = JSONUtil.toList(JSONUtil.parseArray(locationJson), Location.class);
@@ -153,15 +149,13 @@ public class ServerController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("setEnable")
-	@ResponseBody
+	@Mapping("setEnable")
 	public JsonResult setEnable(Server server) {
 		sqlHelper.updateById(server);
 		return renderSuccess();
 	}
 
-	@RequestMapping("detail")
-	@ResponseBody
+	@Mapping("detail")
 	public JsonResult detail(String id) {
 		Server server = sqlHelper.findById(id, Server.class);
 
@@ -179,24 +173,22 @@ public class ServerController extends BaseController {
 		return renderSuccess(serverExt);
 	}
 
-	@RequestMapping("del")
-	@ResponseBody
+	@Mapping("del")
 	public JsonResult del(String id) {
 		serverService.deleteById(id);
 
 		return renderSuccess();
 	}
 
-//	@RequestMapping("clone")
-//	@ResponseBody
+//	@Mapping("clone")
+//	
 //	public JsonResult clone(String id) {
 //		serverService.clone(id);
 //
 //		return renderSuccess();
 //	}
 
-	@RequestMapping("importServer")
-	@ResponseBody
+	@Mapping("importServer")
 	public JsonResult importServer(String nginxPath) {
 
 		if (StrUtil.isEmpty(nginxPath) || !FileUtil.exist(nginxPath)) {
@@ -212,8 +204,7 @@ public class ServerController extends BaseController {
 		}
 	}
 
-	@RequestMapping("testPort")
-	@ResponseBody
+	@Mapping("testPort")
 	public JsonResult testPort() {
 		List<Server> servers = sqlHelper.findAll(Server.class);
 
@@ -242,8 +233,7 @@ public class ServerController extends BaseController {
 
 	}
 
-	@RequestMapping("editDescr")
-	@ResponseBody
+	@Mapping("editDescr")
 	public JsonResult editDescr(String id, String descr) {
 		Server server = new Server();
 		server.setId(id);
@@ -253,8 +243,7 @@ public class ServerController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("preview")
-	@ResponseBody
+	@Mapping("preview")
 	public JsonResult preview(String id, String type) {
 		NgxBlock ngxBlock = null;
 		if (type.equals("server")) {
@@ -290,15 +279,13 @@ public class ServerController extends BaseController {
 		return renderSuccess(conf);
 	}
 
-	@RequestMapping("setOrder")
-	@ResponseBody
+	@Mapping("setOrder")
 	public JsonResult setOrder(String id, Integer count) {
 		serverService.setSeq(id, count);
 		return renderSuccess();
 	}
 	
-	@RequestMapping("getDescr")
-	@ResponseBody
+	@Mapping("getDescr")
 	public JsonResult getDescr(String id) {
 		Server server = sqlHelper.findById(id, Server.class);
 		

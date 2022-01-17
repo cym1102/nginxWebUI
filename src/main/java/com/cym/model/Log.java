@@ -1,8 +1,8 @@
 package com.cym.model;
 
-import cn.craccd.sqlHelper.bean.BaseModel;
-import cn.craccd.sqlHelper.config.SingleIndex;
-import cn.craccd.sqlHelper.config.Table;
+import com.cym.sqlhelper.bean.BaseModel;
+import com.cym.sqlhelper.config.SingleIndex;
+import com.cym.sqlhelper.config.Table;
 
 @Table
 public class Log extends BaseModel{

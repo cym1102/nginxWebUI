@@ -1,25 +1,26 @@
 package com.cym.utils;
 
-import javax.servlet.http.HttpServletRequest;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.core.handle.Context;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.cym.config.HomeConfig;
 import com.cym.model.Admin;
 import com.cym.service.AdminService;
-
-import cn.craccd.sqlHelper.utils.SqlHelper;
+import com.cym.sqlhelper.utils.SqlHelper;
 
 /**
  * Author: D.Yang Email: koyangslash@gmail.com Date: 16/10/9 Time: 下午1:37
  * Describe: 基础控制器
  */
 public class BaseController {
-	@Autowired
+	@Inject
 	protected SqlHelper sqlHelper;
-	@Autowired
+	@Inject
 	protected AdminService adminService;
-	@Autowired
+	@Inject
 	protected MessageUtils m;
+	@Inject
+	protected HomeConfig homeConfig;
 
 	protected JsonResult renderError() {
 		JsonResult result = new JsonResult();
@@ -54,14 +55,16 @@ public class BaseController {
 		return result;
 	}
 
-	public Admin getAdmin(HttpServletRequest request) {
-		Admin admin = (Admin) request.getSession().getAttribute("admin");
+	public Admin getAdmin() {
+		
+		
+		Admin admin = (Admin) Context.current().session("admin");
 		if (admin == null) {
-			String token = request.getHeader("token");
+			String token = Context.current().header("token");
 			admin = adminService.getByToken(token);
 		}
 		if (admin == null) {
-			String creditKey = request.getParameter("creditKey");
+			String creditKey =  Context.current().param("creditKey");
 			admin = adminService.getByCreditKey(creditKey);
 		}
 		

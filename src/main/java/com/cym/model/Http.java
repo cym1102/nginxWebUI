@@ -1,20 +1,28 @@
 package com.cym.model;
 
-import cn.craccd.sqlHelper.bean.BaseModel;
-import cn.craccd.sqlHelper.config.Table;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.cym.sqlhelper.bean.BaseModel;
+import com.cym.sqlhelper.config.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@ApiModel("Http参数")
+/**
+ * Http参数
+ *
+ */
 @Table
 public class Http extends BaseModel {
-	@ApiModelProperty("参数名")
+	/**
+	 * 参数名
+	 */
 	String name;
-	@ApiModelProperty("参数值")
+	/**
+	 * 参数值
+	 */
 	String value;
-	@ApiModelProperty("参数单位")
+	/**
+	 * 参数单位
+	 */
 	String unit;
-	@ApiModelProperty(hidden = true)
+	@JsonIgnore
 	Long seq;
 
 	public Http() {

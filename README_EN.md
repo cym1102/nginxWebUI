@@ -282,28 +282,22 @@ Note: In the parameter description, all fields with * prefix are required.
 
 If you forget your login password, follow the following tutorial to retrieve it
 
-1. install sqlite3 (docker image has already included)
+1.Stop nginxWebUI.
 
 ```
-apt install sqlite3
+pkill java
 ```
 
-2. read sqlite.db
+2.Run nginxWebUI.jar with the retrieve password parameter.
 
 ```
-sqlite3 /home/nginxWebUI/sqlite.db
+java -jar nginxWebUI.jar --project.home=/home/nginxWebUI/ --project.findPass=true
 ```
 
-3. search admin table
+--project.home Project profile directory
 
-```
-select * from admin;
-```
+--project.findPass Whether to print the user name and password
 
-4. exit sqlite3
-
-```
-.quit
-```
+After the operation is successful, all user names and passwords can be printed out.
 
 

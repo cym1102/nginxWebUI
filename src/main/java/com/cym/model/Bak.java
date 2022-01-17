@@ -1,16 +1,11 @@
 package com.cym.model;
 
-import cn.craccd.sqlHelper.bean.BaseModel;
-import cn.craccd.sqlHelper.config.Table;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.cym.sqlhelper.bean.BaseModel;
+import com.cym.sqlhelper.config.Table;
 
-@ApiModel("备份文件")
 @Table
 public class Bak extends BaseModel{
-	@ApiModelProperty("时间")
 	String time;
-	@ApiModelProperty("主文件内容")
 	String content;
 
 

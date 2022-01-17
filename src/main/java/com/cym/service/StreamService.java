@@ -2,23 +2,20 @@ package com.cym.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.extend.aspect.annotation.Service;
 
-import com.cym.model.Basic;
-import com.cym.model.Http;
 import com.cym.model.Param;
 import com.cym.model.Stream;
+import com.cym.sqlhelper.bean.Sort;
+import com.cym.sqlhelper.bean.Sort.Direction;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
+import com.cym.sqlhelper.utils.SqlHelper;
 import com.cym.utils.SnowFlakeUtils;
-
-import cn.craccd.sqlHelper.bean.Sort;
-import cn.craccd.sqlHelper.bean.Sort.Direction;
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
-import cn.craccd.sqlHelper.utils.SqlHelper;
 
 @Service
 public class StreamService {
-	@Autowired
+	@Inject
 	SqlHelper sqlHelper;
 
 	public void setSeq(String streamId, Integer seqAdd) {

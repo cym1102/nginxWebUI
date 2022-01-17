@@ -1,0 +1,371 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link rel="stylesheet" href="markdown.css?v=1641871594082"/>
+    <title>证书接口</title>
+</head>
+<body>
+<div class="markdown-body">
+    <h1>证书接口</h1>
+<h2>获取证书分页列表</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/cert/getPage</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 获取证书分页列表</p>
+<p><strong>Request-parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>current</td><td>int32</td><td>当前页数(从1开始)</td><td>true</td><td>-</td></tr>
+<tr><td>limit</td><td>int32</td><td>每页数量(默认为10)</td><td>true</td><td>-</td></tr>
+<tr><td>keywords</td><td>string</td><td>查询关键字</td><td>true</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl   -i http://your_ip:port/api/cert/getPage?current=bxjjjo&amp;limit=10&amp;keywords=14j9d5
+</code></pre>
+<p><strong>Response-fields:</strong></p>
+<table>
+<thead>
+<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
+<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
+<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
+<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
+<tr><td>└─count</td><td>int64</td><td>总记录数</td><td>-</td></tr>
+<tr><td>└─curr</td><td>int32</td><td>起始页(从1开始)</td><td>-</td></tr>
+<tr><td>└─limit</td><td>int32</td><td>每页记录数</td><td>-</td></tr>
+<tr><td>└─records</td><td>array</td><td>列表内容</td><td>-</td></tr>
+<tr><td>     └─id</td><td>string</td><td>主键</td><td>-</td></tr>
+<tr><td>     └─domain</td><td>string</td><td>域名</td><td>-</td></tr>
+<tr><td>     └─pem</td><td>string</td><td>pem文件路径</td><td>-</td></tr>
+<tr><td>     └─key</td><td>string</td><td>key文件路径</td><td>-</td></tr>
+<tr><td>     └─type</td><td>int32</td><td>获取方式 0 申请证书 1 手动上传 2 DNS验证</td><td>-</td></tr>
+<tr><td>     └─makeTime</td><td>int64</td><td>签发时间戳</td><td>-</td></tr>
+<tr><td>     └─autoRenew</td><td>int32</td><td>是否自动续签 0否 1是</td><td>-</td></tr>
+<tr><td>     └─dnsType</td><td>string</td><td>dns提供商 ali:阿里云  dp:腾讯云  cf:Cloudflare  gd:Godaddy</td><td>-</td></tr>
+<tr><td>     └─dpId</td><td>string</td><td>dpId(腾讯云需要的参数)</td><td>-</td></tr>
+<tr><td>     └─dpKey</td><td>string</td><td>dpKey(腾讯云需要的参数)</td><td>-</td></tr>
+<tr><td>     └─aliKey</td><td>string</td><td>aliKey(阿里云需要的参数)</td><td>-</td></tr>
+<tr><td>     └─aliSecret</td><td>string</td><td>aliSecret(阿里云需要的参数)</td><td>-</td></tr>
+<tr><td>     └─cfEmail</td><td>string</td><td>cfEmail(Cloudflare需要的参数)</td><td>-</td></tr>
+<tr><td>     └─cfKey</td><td>string</td><td>cfKey(Cloudflare需要的参数)</td><td>-</td></tr>
+<tr><td>     └─gdKey</td><td>string</td><td>gdKey(Godaddy需要的参数)</td><td>-</td></tr>
+<tr><td>     └─gdSecret</td><td>string</td><td>gdSecret(Godaddy需要的参数)</td><td>-</td></tr>
+<tr><td>     └─hwUsername</td><td>string</td><td>hwUsername(华为云需要的参数)</td><td>-</td></tr>
+<tr><td>     └─hwPassword</td><td>string</td><td>hwPassword(华为云需要的参数)</td><td>-</td></tr>
+<tr><td>     └─hwProjectID</td><td>string</td><td>hwProjectID(华为云需要的参数)</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Response-example:</strong></p>
+<pre><code>{
+	&quot;success&quot;:true,
+	&quot;status&quot;:&quot;rtzq7v&quot;,
+	&quot;msg&quot;:&quot;pju3a3&quot;,
+	&quot;obj&quot;:{
+		&quot;count&quot;:918,
+		&quot;curr&quot;:651,
+		&quot;limit&quot;:10,
+		&quot;records&quot;:[
+			{
+				&quot;id&quot;:&quot;45&quot;,
+				&quot;domain&quot;:&quot;xn--m8s.info&quot;,
+				&quot;pem&quot;:&quot;zf41n8&quot;,
+				&quot;key&quot;:&quot;rbh07g&quot;,
+				&quot;type&quot;:415,
+				&quot;makeTime&quot;:1641871596310,
+				&quot;autoRenew&quot;:285,
+				&quot;dnsType&quot;:&quot;0ssekf&quot;,
+				&quot;dpId&quot;:&quot;45&quot;,
+				&quot;dpKey&quot;:&quot;9x4so7&quot;,
+				&quot;aliKey&quot;:&quot;y0erig&quot;,
+				&quot;aliSecret&quot;:&quot;cqumh4&quot;,
+				&quot;cfEmail&quot;:&quot;弘文.邱@hotmail.com&quot;,
+				&quot;cfKey&quot;:&quot;lnbox7&quot;,
+				&quot;gdKey&quot;:&quot;ek7sgu&quot;,
+				&quot;gdSecret&quot;:&quot;kk9ln7&quot;,
+				&quot;hwUsername&quot;:&quot;鹤轩.白&quot;,
+				&quot;hwPassword&quot;:&quot;2gauxu&quot;,
+				&quot;hwProjectID&quot;:&quot;45&quot;
+			}
+		]
+	}
+}
+</code></pre>
+<h2>添加或编辑证书</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/cert/addOver</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 添加或编辑证书</p>
+<p><strong>Request-parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>id</td><td>string</td><td>主键</td><td>false</td><td>-</td></tr>
+<tr><td>domain</td><td>string</td><td>域名</td><td>false</td><td>-</td></tr>
+<tr><td>pem</td><td>string</td><td>pem文件路径</td><td>false</td><td>-</td></tr>
+<tr><td>key</td><td>string</td><td>key文件路径</td><td>false</td><td>-</td></tr>
+<tr><td>type</td><td>int32</td><td>获取方式 0 申请证书 1 手动上传 2 DNS验证</td><td>false</td><td>-</td></tr>
+<tr><td>makeTime</td><td>int64</td><td>签发时间戳</td><td>false</td><td>-</td></tr>
+<tr><td>autoRenew</td><td>int32</td><td>是否自动续签 0否 1是</td><td>false</td><td>-</td></tr>
+<tr><td>dnsType</td><td>string</td><td>dns提供商 ali:阿里云  dp:腾讯云  cf:Cloudflare  gd:Godaddy</td><td>false</td><td>-</td></tr>
+<tr><td>dpId</td><td>string</td><td>dpId(腾讯云需要的参数)</td><td>false</td><td>-</td></tr>
+<tr><td>dpKey</td><td>string</td><td>dpKey(腾讯云需要的参数)</td><td>false</td><td>-</td></tr>
+<tr><td>aliKey</td><td>string</td><td>aliKey(阿里云需要的参数)</td><td>false</td><td>-</td></tr>
+<tr><td>aliSecret</td><td>string</td><td>aliSecret(阿里云需要的参数)</td><td>false</td><td>-</td></tr>
+<tr><td>cfEmail</td><td>string</td><td>cfEmail(Cloudflare需要的参数)</td><td>false</td><td>-</td></tr>
+<tr><td>cfKey</td><td>string</td><td>cfKey(Cloudflare需要的参数)</td><td>false</td><td>-</td></tr>
+<tr><td>gdKey</td><td>string</td><td>gdKey(Godaddy需要的参数)</td><td>false</td><td>-</td></tr>
+<tr><td>gdSecret</td><td>string</td><td>gdSecret(Godaddy需要的参数)</td><td>false</td><td>-</td></tr>
+<tr><td>hwUsername</td><td>string</td><td>hwUsername(华为云需要的参数)</td><td>false</td><td>-</td></tr>
+<tr><td>hwPassword</td><td>string</td><td>hwPassword(华为云需要的参数)</td><td>false</td><td>-</td></tr>
+<tr><td>hwProjectID</td><td>string</td><td>hwProjectID(华为云需要的参数)</td><td>false</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl   -i http://your_ip:port/api/cert/addOver?hwUsername=鹤轩.白&amp;hwProjectID=45&amp;updateTime=1641871596310&amp;cfKey=52rz4k&amp;type=338&amp;aliSecret=advc3u&amp;id=45&amp;dnsType=0vd2dj&amp;hwPassword=zwow4g&amp;domain=xn--m8s.info&amp;gdSecret=n7jzu8&amp;dpId=45&amp;gdKey=gd3akm&amp;createTime=1641871596310&amp;aliKey=aiptn8&amp;pem=kbou05&amp;key=3t7rh7&amp;autoRenew=918&amp;makeTime=1641871596310&amp;dpKey=uiis2k&amp;cfEmail=弘文.邱@hotmail.com
+</code></pre>
+<p><strong>Response-fields:</strong></p>
+<table>
+<thead>
+<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
+<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
+<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
+<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Response-example:</strong></p>
+<pre><code>{
+	&quot;success&quot;:true,
+	&quot;status&quot;:&quot;rygbuz&quot;,
+	&quot;msg&quot;:&quot;qhz0rj&quot;,
+	&quot;obj&quot;:{
+		&quot;waring&quot;:&quot;You may have used non-display generics.&quot;
+	}
+}
+</code></pre>
+<h2>获取域名解析码</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/cert/getTxtValue</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 获取域名解析码</p>
+<p><strong>Request-parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>certId</td><td>string</td><td>证书id</td><td>true</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl   -i http://your_ip:port/api/cert/getTxtValue?certId=45
+</code></pre>
+<p><strong>Response-fields:</strong></p>
+<table>
+<thead>
+<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
+<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
+<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
+<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
+<tr><td>└─id</td><td>string</td><td>主键</td><td>-</td></tr>
+<tr><td>└─certId</td><td>string</td><td>证书id</td><td>-</td></tr>
+<tr><td>└─domain</td><td>string</td><td>域名</td><td>-</td></tr>
+<tr><td>└─type</td><td>string</td><td>解析类型</td><td>-</td></tr>
+<tr><td>└─value</td><td>string</td><td>解析值</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Response-example:</strong></p>
+<pre><code>{
+	&quot;success&quot;:true,
+	&quot;status&quot;:&quot;r4q56m&quot;,
+	&quot;msg&quot;:&quot;l3v3mx&quot;,
+	&quot;obj&quot;:[
+		{
+			&quot;id&quot;:&quot;45&quot;,
+			&quot;certId&quot;:&quot;45&quot;,
+			&quot;domain&quot;:&quot;xn--m8s.info&quot;,
+			&quot;type&quot;:&quot;bv7bl3&quot;,
+			&quot;value&quot;:&quot;r1bi58&quot;
+		}
+	]
+}
+</code></pre>
+<h2>设置证书自动续签</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/cert/setAutoRenew</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 设置证书自动续签</p>
+<p><strong>Request-parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>id</td><td>string</td><td>证书id</td><td>true</td><td>-</td></tr>
+<tr><td>autoRenew</td><td>int32</td><td>是否自动续签:0否 1是</td><td>true</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl   -i http://your_ip:port/api/cert/setAutoRenew?id=45&amp;autoRenew=4guu91
+</code></pre>
+<p><strong>Response-fields:</strong></p>
+<table>
+<thead>
+<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
+<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
+<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
+<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Response-example:</strong></p>
+<pre><code>{
+	&quot;success&quot;:true,
+	&quot;status&quot;:&quot;h4niqj&quot;,
+	&quot;msg&quot;:&quot;24dt42&quot;,
+	&quot;obj&quot;:{
+		&quot;waring&quot;:&quot;You may have used non-display generics.&quot;
+	}
+}
+</code></pre>
+<h2>删除证书</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/cert/del</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 删除证书</p>
+<p><strong>Request-parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>id</td><td>string</td><td>证书id</td><td>true</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl   -i http://your_ip:port/api/cert/del?id=45
+</code></pre>
+<p><strong>Response-fields:</strong></p>
+<table>
+<thead>
+<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
+<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
+<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
+<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Response-example:</strong></p>
+<pre><code>{
+	&quot;success&quot;:true,
+	&quot;status&quot;:&quot;v6akjn&quot;,
+	&quot;msg&quot;:&quot;k25al6&quot;,
+	&quot;obj&quot;:{
+		&quot;waring&quot;:&quot;You may have used non-display generics.&quot;
+	}
+}
+</code></pre>
+<h2>执行申请</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/cert/apply</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 执行申请</p>
+<p><strong>Request-parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>id</td><td>string</td><td>证书id</td><td>true</td><td>-</td></tr>
+<tr><td>type</td><td>string</td><td>申请类型 issue:申请 renew:续签</td><td>true</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl   -i http://your_ip:port/api/cert/apply?type=jc5fa8&amp;id=45
+</code></pre>
+<p><strong>Response-fields:</strong></p>
+<table>
+<thead>
+<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
+<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
+<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
+<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
+<tr><td>└─id</td><td>string</td><td>主键</td><td>-</td></tr>
+<tr><td>└─certId</td><td>string</td><td>证书id</td><td>-</td></tr>
+<tr><td>└─domain</td><td>string</td><td>域名</td><td>-</td></tr>
+<tr><td>└─type</td><td>string</td><td>解析类型</td><td>-</td></tr>
+<tr><td>└─value</td><td>string</td><td>解析值</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Response-example:</strong></p>
+<pre><code>{
+	&quot;success&quot;:true,
+	&quot;status&quot;:&quot;6fbeag&quot;,
+	&quot;msg&quot;:&quot;jgz72k&quot;,
+	&quot;obj&quot;:[
+		{
+			&quot;id&quot;:&quot;45&quot;,
+			&quot;certId&quot;:&quot;45&quot;,
+			&quot;domain&quot;:&quot;xn--m8s.info&quot;,
+			&quot;type&quot;:&quot;exfr63&quot;,
+			&quot;value&quot;:&quot;yi5aq8&quot;
+		}
+	]
+}
+</code></pre>
+<h2>下载证书文件</h2>
+<p><strong>URL:</strong> <code>http://your_ip:port/api/cert/download</code></p>
+<p><strong>Type:</strong> <code>ANY</code></p>
+<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
+<p><strong>Description:</strong> 下载证书文件</p>
+<p><strong>Request-parameters:</strong></p>
+<table>
+<thead>
+<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
+</thead>
+<tbody>
+<tr><td>id</td><td>string</td><td>证书id</td><td>true</td><td>-</td></tr>
+</tbody>
+</table>
+<p><strong>Request-example:</strong></p>
+<pre><code>curl   -i http://your_ip:port/api/cert/download?id=45
+</code></pre>
+<p><strong>Response-example:</strong></p>
+<pre><code>This api return nothing.
+</code></pre>
+
+    <footer class="page-footer">
+        <span class="copyright">Generated by smart-doc at 2022-01-11 11:26:34</span>
+        <span class="footer-modification">Suggestions, contact, support and error reporting on
+            <a href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">Gitee</a> or
+            <a href="https://github.com/smart-doc-group/smart-doc" target="_blank">Github</a>
+        </span>
+    </footer>
+</div>
+</body>
+</html>

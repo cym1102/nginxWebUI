@@ -1,76 +1,96 @@
 package com.cym.model;
 
-import cn.craccd.sqlHelper.bean.BaseModel;
-import cn.craccd.sqlHelper.config.InitValue;
-import cn.craccd.sqlHelper.config.Table;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.cym.sqlhelper.bean.BaseModel;
+import com.cym.sqlhelper.config.InitValue;
+import com.cym.sqlhelper.config.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@ApiModel("反向代理server")
+/**
+ * 
+ * 反向代理server
+ *
+ */
 @Table
 public class Server extends BaseModel {
-	@ApiModelProperty("监听域名")
+	/**
+	 * 监听域名
+	 */
 	String serverName;
-	
-	@ApiModelProperty("*监听ip端口 (格式 ip:port或port)")
+	/**
+	 * 监听ip端口 (格式 ip:port或port)
+	 * @required
+	 */
 	String listen;
-
-	@ApiModelProperty("是否为默认server 0否(默认) 1是")
+	/**
+	 * 是否为默认server 0否(默认) 1是
+	 */
 	@InitValue("0")
 	Integer def; 
-
-	@ApiModelProperty("是否http跳转https 0否(默认) 1是")
+	/**
+	 * 是否http跳转https 0否(默认) 1是
+	 */
 	@InitValue("0")
 	Integer rewrite; 
-	
-	@ApiModelProperty("http跳转https监听ip端口,默认为80 (格式 ip:port或port)")
+	/**
+	 * http跳转https监听ip端口,默认为80 (格式 ip:port或port)
+	 */
 	@InitValue("80")
 	String rewriteListen; 
-
-	@ApiModelProperty("是否开启ssl 0否(默认) 1是")
+	/**
+	 * 是否开启ssl 0否(默认) 1是
+	 */
 	@InitValue("0")
 	Integer ssl; 
-	@ApiModelProperty("是否开启http2 0否(默认) 1是")
+	/**
+	 * 是否开启http2 0否(默认) 1是
+	 */
 	@InitValue("0")
 	Integer http2; 
-	
-	@ApiModelProperty("是否开启proxy_protocol 0否(默认) 1是")
+	/**
+	 * 是否开启proxy_protocol 0否(默认) 1是
+	 */
 	@InitValue("0")
 	Integer proxyProtocol; 
-	 
-	
-	@ApiModelProperty("ssl证书pem文件路径")
+	/**
+	 * ssl证书pem文件路径
+	 */
 	String pem;
-	@ApiModelProperty("ssl证书key文件路径")
+	/**
+	 * ssl证书key文件路径
+	 */
 	String key;
-	
-	@ApiModelProperty("代理类型 0:http(默认) 1:tcp 2:udp")
+	/**
+	 * 代理类型 0:http(默认) 1:tcp 2:udp
+	 */
 	@InitValue("0")
 	Integer proxyType;
-	
-	@ApiModelProperty("代理upstream的id")
+	/**
+	 * 代理upstream的id
+	 */
 	String proxyUpstreamId;
-
-	@ApiModelProperty(hidden = true)
+	@JsonIgnore
 	String pemStr;
-	@ApiModelProperty(hidden = true)
+	@JsonIgnore
 	String keyStr;
-
-	@ApiModelProperty("是否启用 true:启用(默认) false:禁用")
+	/**
+	 * 是否启用 true:启用(默认) false:禁用
+	 */
 	@InitValue("true")
 	Boolean enable;
-
-	@ApiModelProperty("描述")
+	/**
+	 * 描述
+	 */
 	String descr; 
-	
-	@ApiModelProperty("加密协议 (默认:TLSv1 TLSv1.1 TLSv1.2 TLSv1.3)")
+	/**
+	 * 加密协议 (默认:TLSv1 TLSv1.1 TLSv1.2 TLSv1.3)
+	 */
 	@InitValue("TLSv1 TLSv1.1 TLSv1.2 TLSv1.3")
 	String protocols; 
-
-	@ApiModelProperty("使用的password文件Id")
+	/**
+	 * 使用的password文件Id
+	 */
 	String passwordId;
-
-	@ApiModelProperty(hidden = true)
+	@JsonIgnore
 	Long seq;
 
 	public Long getSeq() {

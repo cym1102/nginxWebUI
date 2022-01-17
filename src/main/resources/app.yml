@@ -1,0 +1,30 @@
+server:
+  port: 8080
+ 
+project:
+  sqlPrint: false
+  beanPackage: com.cym.model
+  home: /home/nginxWebUI/
+  findPass: false
+  
+solon:
+  app.name: nginxWebUI
+  view.mapping.html: FreemarkerRender
+  logging:
+    logger:
+      "org.eclipse.jetty":
+        level: "WARN"
+      "com.zaxxer":
+        level: "WARN"
+    appender:
+      file:
+        name: ${project.home}/log/${solon.app.name}
+        level: INFO
+        
+spring:
+  database:
+    type: h2
+  datasource:
+    url: 
+    username: 
+    password: 

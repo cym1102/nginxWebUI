@@ -4,19 +4,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.extend.aspect.annotation.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.cym.model.Admin;
-import com.cym.model.AdminGroup;
 import com.cym.model.Group;
 import com.cym.model.Remote;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
+import com.cym.sqlhelper.utils.ConditionOrWrapper;
+import com.cym.sqlhelper.utils.SqlHelper;
 
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
-import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
-import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
@@ -25,9 +24,9 @@ import cn.hutool.json.JSONObject;
 @Service
 public class RemoteService {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
+	@Inject
 	SqlHelper sqlHelper;
-	@Autowired
+	@Inject
 	AdminService adminService;
 
 	public void getCreditKey(Remote remote, String code, String auth) {

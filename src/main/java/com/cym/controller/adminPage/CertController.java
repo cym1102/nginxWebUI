@@ -6,64 +6,56 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
+import org.noear.solon.core.handle.Context;
+import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.config.InitConfig;
-import com.cym.ext.CertExt;
 import com.cym.model.Cert;
 import com.cym.model.CertCode;
 import com.cym.service.CertService;
 import com.cym.service.SettingService;
+import com.cym.sqlhelper.bean.Page;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
 import com.cym.utils.TimeExeUtils;
 
-import cn.craccd.sqlHelper.bean.Page;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 
 @Controller
-@RequestMapping("/adminPage/cert")
+@Mapping("/adminPage/cert")
 public class CertController extends BaseController {
-	@Autowired
+	@Inject
 	SettingService settingService;
-	@Autowired
+	@Inject
 	CertService certService;
-	@Autowired
+	@Inject
 	TimeExeUtils timeExeUtils;
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	Boolean isInApply = false;
 
-	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView, Page page, String keywords) {
+	@Mapping("")
+	public ModelAndView index(ModelAndView modelAndView, Page page, String keywords) {
 		page = certService.getPage(keywords, page);
 
-		modelAndView.addObject("keywords", keywords);
-		modelAndView.addObject("page", page);
-		modelAndView.setViewName("/adminPage/cert/index");
+		modelAndView.put("keywords", keywords);
+		modelAndView.put("page", page);
+		modelAndView.view("/adminPage/cert/index.html");
 		return modelAndView;
 	}
 
-	@RequestMapping("addOver")
-	@ResponseBody
+	@Mapping("addOver")
 	public JsonResult addOver(Cert cert, String[] domains, String[] types, String[] values) {
 		if (certService.hasSame(cert)) {
 			return renderError(m.get("certStr.same"));
@@ -74,24 +66,21 @@ public class CertController extends BaseController {
 		return renderSuccess(cert);
 	}
 
-	@RequestMapping("setAutoRenew")
-	@ResponseBody
+	@Mapping("setAutoRenew")
 	public JsonResult setAutoRenew(Cert cert) {
 		sqlHelper.updateById(cert);
 		return renderSuccess();
 	}
 
-	@RequestMapping("detail")
-	@ResponseBody
+	@Mapping("detail")
 	public JsonResult detail(String id) {
 		return renderSuccess(sqlHelper.findById(id, Cert.class));
 	}
 
-	@RequestMapping("del")
-	@ResponseBody
+	@Mapping("del")
 	public JsonResult del(String id) {
 		Cert cert = sqlHelper.findById(id, Cert.class);
-		String path = InitConfig.acmeShDir + cert.getDomain();
+		String path = homeConfig.acmeShDir + cert.getDomain();
 		if (FileUtil.exist(path)) {
 			FileUtil.del(path);
 		}
@@ -99,8 +88,7 @@ public class CertController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("apply")
-	@ResponseBody
+	@Mapping("apply")
 	public JsonResult apply(String id, String type) {
 		if (!SystemTool.isLinux()) {
 			return renderError(m.get("certStr.error2"));
@@ -138,12 +126,12 @@ public class CertController extends BaseController {
 					dnsType = "dns_huaweicloud";
 				}
 
-				cmd = InitConfig.acmeSh + " --issue --force --dns " + dnsType + " -d " + cert.getDomain() + " --server letsencrypt";
+				cmd = homeConfig.acmeSh + " --issue --force --dns " + dnsType + " -d " + cert.getDomain() + " --server letsencrypt";
 			} else if (cert.getType() == 2) {
 				if (certService.hasCode(cert.getId())) {
-					cmd = InitConfig.acmeSh + " --renew --force --dns -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+					cmd = homeConfig.acmeSh + " --renew --force --dns -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
 				} else {
-					cmd = InitConfig.acmeSh + " --issue --force --dns -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+					cmd = homeConfig.acmeSh + " --issue --force --dns -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
 				}
 
 			}
@@ -151,9 +139,9 @@ public class CertController extends BaseController {
 			// 续签,以第一个域名为证书名
 			if (cert.getType() == 0) {
 				String domain = cert.getDomain().split(",")[0];
-				cmd = InitConfig.acmeSh + " --renew --force -d " + domain;
+				cmd = homeConfig.acmeSh + " --renew --force -d " + domain;
 			} else if (cert.getType() == 2) {
-				cmd = InitConfig.acmeSh + " --renew --force -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+				cmd = homeConfig.acmeSh + " --renew --force -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
 			}
 		}
 		logger.info(cmd);
@@ -164,13 +152,13 @@ public class CertController extends BaseController {
 		if (rs.contains("Your cert is in")) {
 			// 申请成功, 将证书复制到/home/nginxWebUI
 			String domain = cert.getDomain().split(",")[0];
-			String certDir = InitConfig.acmeShDir + domain + "/";
+			String certDir = homeConfig.acmeShDir + domain + "/";
 
-			String dest = InitConfig.home + "cert/" + domain + ".fullchain.cer";
+			String dest = homeConfig.home + "cert/" + domain + ".fullchain.cer";
 			FileUtil.copy(new File(certDir + "fullchain.cer"), new File(dest), true);
 			cert.setPem(dest);
 
-			dest = InitConfig.home + "cert/" + domain + ".key";
+			dest = homeConfig.home + "cert/" + domain + ".key";
 			FileUtil.copy(new File(certDir + domain + ".key"), new File(dest), true);
 			cert.setKey(dest);
 
@@ -240,19 +228,18 @@ public class CertController extends BaseController {
 		return list.toArray(new String[] {});
 	}
 
-	@RequestMapping("getTxtValue")
-	@ResponseBody
+	@Mapping("getTxtValue")
 	public JsonResult getTxtValue(String id) {
 
 		List<CertCode> certCodes = certService.getCertCodes(id);
 		return renderSuccess(certCodes);
 	}
 
-	@RequestMapping("download")
-	public void download(String id, HttpServletResponse response) throws IOException {
+	@Mapping("download")
+	public void download(String id) throws IOException {
 		Cert cert = sqlHelper.findById(id, Cert.class);
 		if (StrUtil.isNotEmpty(cert.getPem()) && StrUtil.isNotEmpty(cert.getKey())) {
-			String dir = InitConfig.home + "/temp/cert";
+			String dir = homeConfig.home + "/temp/cert";
 			FileUtil.del(dir);
 			FileUtil.del(dir + ".zip");
 			FileUtil.mkdir(dir);
@@ -265,21 +252,21 @@ public class CertController extends BaseController {
 			ZipUtil.zip(dir);
 			FileUtil.del(dir);
 
-			handleStream(response, dir + ".zip");
+			handleStream(dir + ".zip");
 		}
 	}
 
-	private void handleStream(HttpServletResponse response, String path) throws IOException {
+	private void handleStream(String path) throws IOException {
 
-		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
-		response.setHeader("Content-Disposition", "attachment;filename=cert.zip");
+		Context.current().contentType(("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"));
+		Context.current().header("Content-Disposition", "attachment;filename=cert.zip");
 		byte[] buffer = new byte[1024];
 		FileInputStream fis = null;
 		BufferedInputStream bis = null;
 		try {
 			fis = new FileInputStream(path);
 			bis = new BufferedInputStream(fis);
-			OutputStream os = response.getOutputStream();
+			OutputStream os = Context.current().outputStream();
 			int i = bis.read(buffer);
 			while (i != -1) {
 				os.write(buffer, 0, i);

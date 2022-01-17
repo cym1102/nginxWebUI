@@ -2,13 +2,10 @@ package com.cym.controller.adminPage;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
+import org.noear.solon.core.handle.ModelAndView;
 
 import com.cym.model.Stream;
 import com.cym.service.StreamService;
@@ -16,27 +13,24 @@ import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SnowFlakeUtils;
 
-import cn.craccd.sqlHelper.bean.Sort;
-import cn.craccd.sqlHelper.bean.Sort.Direction;
 import cn.hutool.core.util.StrUtil;
 
 @Controller
-@RequestMapping("/adminPage/stream")
+@Mapping("/adminPage/stream")
 public class StreamController extends BaseController {
-	@Autowired
+	@Inject
 	StreamService streamService;
 
-	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
+	@Mapping("")
+	public ModelAndView index( ModelAndView modelAndView) {
 		List<Stream> streamList = streamService.findAll();
 
-		modelAndView.addObject("streamList", streamList);
-		modelAndView.setViewName("/adminPage/stream/index");
+		modelAndView.put("streamList", streamList);
+		modelAndView.view("/adminPage/stream/index.html");
 		return modelAndView;
 	}
 
-	@RequestMapping("addOver")
-	@ResponseBody
+	@Mapping("addOver")
 	public JsonResult addOver(Stream stream) {
 		if (StrUtil.isEmpty(stream.getId())) {
 			stream.setSeq( SnowFlakeUtils.getId());
@@ -47,30 +41,26 @@ public class StreamController extends BaseController {
 	}
 	
 
-	@RequestMapping("addTemplate")
-	@ResponseBody
+	@Mapping("addTemplate")
 	public JsonResult addTemplate(String templateId) {
 		streamService.addTemplate(templateId);
 		
 		return renderSuccess();
 	}
 
-	@RequestMapping("detail")
-	@ResponseBody
+	@Mapping("detail")
 	public JsonResult detail(String id) {
 		return renderSuccess(sqlHelper.findById(id, Stream.class));
 	}
 
-	@RequestMapping("del")
-	@ResponseBody
+	@Mapping("del")
 	public JsonResult del(String id) {
 		sqlHelper.deleteById(id, Stream.class);
 
 		return renderSuccess();
 	}
 
-	@RequestMapping("setOrder")
-	@ResponseBody
+	@Mapping("setOrder")
 	public JsonResult setOrder(String id, Integer count) {
 		streamService.setSeq(id, count);
 

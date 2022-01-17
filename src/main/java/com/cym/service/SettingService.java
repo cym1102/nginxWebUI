@@ -1,19 +1,15 @@
 package com.cym.service;
 
-import java.util.List;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.extend.aspect.annotation.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.cym.model.Bak;
 import com.cym.model.Setting;
-
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
-import cn.craccd.sqlHelper.utils.SqlHelper;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
+import com.cym.sqlhelper.utils.SqlHelper;
 
 @Service
 public class SettingService {
-	@Autowired
+	@Inject
 	SqlHelper sqlHelper;
 
 	public void set(String key, String value) {

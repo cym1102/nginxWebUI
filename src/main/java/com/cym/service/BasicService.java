@@ -2,21 +2,18 @@ package com.cym.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.extend.aspect.annotation.Service;
 
 import com.cym.model.Basic;
-
-import cn.craccd.sqlHelper.bean.Sort;
-import cn.craccd.sqlHelper.bean.Sort.Direction;
-import cn.craccd.sqlHelper.utils.ConditionAndWrapper;
-import cn.craccd.sqlHelper.utils.ConditionOrWrapper;
-import cn.craccd.sqlHelper.utils.SqlHelper;
+import com.cym.sqlhelper.bean.Sort;
+import com.cym.sqlhelper.bean.Sort.Direction;
+import com.cym.sqlhelper.utils.ConditionOrWrapper;
+import com.cym.sqlhelper.utils.SqlHelper;
 
 @Service
 public class BasicService {
-	@Autowired
+	@Inject
 	SqlHelper sqlHelper;
 
 	public List<Basic> findAll() {
@@ -24,7 +21,6 @@ public class BasicService {
 	}
 
 
-	@Transactional
 	public void setSeq(String basicId, Integer seqAdd) {
 		Basic basic = sqlHelper.findById(basicId, Basic.class);
 

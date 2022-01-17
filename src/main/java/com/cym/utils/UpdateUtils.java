@@ -1,10 +1,9 @@
 package com.cym.utils;
 
+import org.noear.solon.annotation.Component;
+import org.noear.solon.annotation.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
 
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.RuntimeUtil;
@@ -12,20 +11,20 @@ import cn.hutool.core.util.StrUtil;
 
 @Component
 public class UpdateUtils {
-	@Value("${server.port}")
+	@Inject("${server.port}")
 	String port;
-	@Value("${project.home}")
+	@Inject("${project.home}")
 	String home;
-	@Value("${knife4j.production:}")
+	@Inject("${knife4j.production:}")
 	String production;
 
-	@Value("${spring.database.type:}")
+	@Inject("${spring.database.type:}")
 	String type;
-	@Value("${spring.datasource.url:}")
+	@Inject("${spring.datasource.url:}")
 	String url;
-	@Value("${spring.datasource.username:}")
+	@Inject("${spring.datasource.username:}")
 	String username;
-	@Value("${spring.datasource.password:}")
+	@Inject("${spring.datasource.password:}")
 	String password;
 
 	private static final Logger LOG = LoggerFactory.getLogger(UpdateUtils.class);

@@ -1,36 +1,33 @@
 package com.cym.config;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
+import org.noear.solon.annotation.Component;
+import org.noear.solon.annotation.Init;
+import org.noear.solon.annotation.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.system.ApplicationHome;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
+import com.cym.model.Admin;
 import com.cym.model.Basic;
 import com.cym.model.Http;
 import com.cym.service.BasicService;
 import com.cym.service.SettingService;
+import com.cym.sqlhelper.utils.JdbcTemplate;
+import com.cym.sqlhelper.utils.SqlHelper;
 import com.cym.utils.FilePermissionUtil;
 import com.cym.utils.MessageUtils;
 import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
-import com.cym.utils.ToolUtils;
 
-import cn.craccd.sqlHelper.utils.SqlHelper;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
@@ -39,40 +36,37 @@ import cn.hutool.core.util.ZipUtil;
 @Component
 public class InitConfig {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
-	protected MessageUtils m;
-	@Autowired
-	private ApplicationContext applicationContext;
+	@Inject
+	MessageUtils m;
 
-	public static String acmeSh;
-	public static String acmeShDir;
-	public static String home;
+	@Inject
+	HomeConfig homeConfig;
 
-	@Autowired
+	@Inject
+	VersionConfig versionConfig;
+
+	@Inject
 	SettingService settingService;
-	@Autowired
+	@Inject
 	BasicService basicService;
-	@Autowired
-	ScheduleTask scheduleTask;
-	@Autowired
+	@Inject
 	SqlHelper sqlHelper;
-	@Autowired
+	@Inject
 	JdbcTemplate jdbcTemplate;
 
-	@Value("${project.home}")
-	public void setHome(String home) {
+	@Inject("${project.findPass}")
+	Boolean findPass;
 
-		InitConfig.home = ToolUtils.endDir(home);
-		InitConfig.acmeShDir = home + ".acme.sh/";
-		InitConfig.acmeSh = home + ".acme.sh/acme.sh";
-	}
-
-	@PostConstruct
+	@Init
 	public void init() throws IOException {
-		if (!FilePermissionUtil.canWrite(new File(home))) {
-			logger.error(home + " " + "directory does not have writable permission. Please specify it again.");
-			logger.error(home + " " + "目录没有可写权限,请重新指定.");
-			SpringApplication.exit(applicationContext);
+
+		// 打印密码
+		if (findPass) {
+			List<Admin> admins = sqlHelper.findAll(Admin.class);
+			for (Admin admin : admins) {
+				System.out.println(m.get("adminStr.name") + ":" + admin.getName() + " " + m.get("adminStr.pass") + ":" + admin.getPass());
+			}
+			System.exit(1);
 		}
 
 		// 初始化base值
@@ -80,7 +74,7 @@ public class InitConfig {
 		if (count == 0) {
 			List<Basic> basics = new ArrayList<Basic>();
 			basics.add(new Basic("worker_processes", "auto", 1l));
-			basics.add(new Basic("events", "{\r\n" + "    worker_connections  1024;\r\n    accept_mutex on;\r\n" + "}", 2l));
+			basics.add(new Basic("events", "{\r\n    worker_connections  1024;\r\n    accept_mutex on;\r\n" + "}", 2l));
 			sqlHelper.insertAll(basics);
 		}
 
@@ -94,19 +88,19 @@ public class InitConfig {
 		}
 
 		// 释放nginx.conf,mime.types
-		if (!FileUtil.exist(home + "nginx.conf")) {
+		if (!FileUtil.exist(homeConfig.home + "nginx.conf")) {
 			ClassPathResource resource = new ClassPathResource("nginx.conf");
-			FileUtil.writeFromStream(resource.getInputStream(), home + "nginx.conf");
+			FileUtil.writeFromStream(resource.getStream(), homeConfig.home + "nginx.conf");
 		}
-		if (!FileUtil.exist(home + "mime.types")) {
+		if (!FileUtil.exist(homeConfig.home + "mime.types")) {
 			ClassPathResource resource = new ClassPathResource("mime.types");
-			FileUtil.writeFromStream(resource.getInputStream(), home + "mime.types");
+			FileUtil.writeFromStream(resource.getStream(), homeConfig.home + "mime.types");
 		}
 
 		// 设置nginx配置文件
 		String nginxPath = settingService.get("nginxPath");
 		if (StrUtil.isEmpty(nginxPath)) {
-			nginxPath = home + "nginx.conf";
+			nginxPath = homeConfig.home + "nginx.conf";
 			// 设置nginx.conf路径
 			settingService.set("nginxPath", nginxPath);
 		}
@@ -114,22 +108,22 @@ public class InitConfig {
 		if (SystemTool.isLinux()) {
 			// 释放acme全新包
 			ClassPathResource resource = new ClassPathResource("acme.zip");
-			InputStream inputStream = resource.getInputStream();
-			FileUtil.writeFromStream(inputStream, InitConfig.home + "acme.zip");
-			FileUtil.mkdir(acmeShDir);
-			ZipUtil.unzip(home + "acme.zip", acmeShDir);
-			FileUtil.del(home + "acme.zip");
+			InputStream inputStream = resource.getStream();
+			FileUtil.writeFromStream(inputStream, homeConfig.home + "acme.zip");
+			FileUtil.mkdir(homeConfig.acmeShDir);
+			ZipUtil.unzip(homeConfig.home + "acme.zip", homeConfig.acmeShDir);
+			FileUtil.del(homeConfig.home + "acme.zip");
 
 			// 修改acme.sh文件
-			List<String> res = FileUtil.readUtf8Lines(acmeSh);
+			List<String> res = FileUtil.readUtf8Lines(homeConfig.acmeSh);
 			for (int i = 0; i < res.size(); i++) {
 				if (res.get(i).contains("DEFAULT_INSTALL_HOME=\"$HOME/.$PROJECT_NAME\"")) {
-					res.set(i, "DEFAULT_INSTALL_HOME=\"" + acmeShDir + "\"");
+					res.set(i, "DEFAULT_INSTALL_HOME=\"" + homeConfig.acmeShDir + "\"");
 				}
 			}
 
-			FileUtil.writeUtf8Lines(res, acmeSh);
-			RuntimeUtil.exec("chmod a+x " + acmeSh);
+			FileUtil.writeUtf8Lines(res, homeConfig.acmeSh);
+			RuntimeUtil.exec("chmod a+x " + homeConfig.acmeSh);
 
 			// 查找ngx_stream_module模块
 			if (!basicService.contain("ngx_stream_module.so")) {
@@ -144,8 +138,8 @@ public class InitConfig {
 				}
 			}
 
-			// 判断是否是容器中
-			if (inDocker()) {
+			// 判断是否存在nginx命令
+			if (hasNginx()) {
 				// 设置nginx执行文件
 				settingService.set("nginxExe", "nginx");
 			}
@@ -166,28 +160,35 @@ public class InitConfig {
 			}
 		}
 
+		// 展示logo
+		showLogo();
+
 	}
 
-	/**
-	 * 是否在docker中
-	 * 
-	 * @return
-	 */
-	private Boolean inDocker() {
-		List<String> rs = RuntimeUtil.execForLines("cat /proc/1/cgroup");
-		for (String str : rs) {
-//			logger.info(str);
-			if (str.contains("docker")) {
-				logger.info("I am in docker");
-				return true;
-			}
-			if (str.contains("kubepods")) {
-				logger.info("I am in k8s");
-				return true;
-			}
+	private boolean hasNginx() {
+		String rs = RuntimeUtil.execForStr("which nginx");
+		if (StrUtil.isNotEmpty(rs)) {
+			return true;
 		}
-		logger.info("I am not in docker");
+
 		return false;
+	}
+
+	private void showLogo() throws IOException {
+		ClassPathResource resource = new ClassPathResource("banner.txt");
+		BufferedReader reader = resource.getReader(Charset.forName("utf-8"));
+		String str = null;
+		StringBuilder stringBuilder = new StringBuilder();
+		// 使用readLine() 比较方便的读取一行
+		while (null != (str = reader.readLine())) {
+			stringBuilder.append(str + "\n");
+		}
+		reader.close();// 关闭流
+
+		stringBuilder.append("nginxWebUI " + versionConfig.currentVersion + "\n");
+
+		logger.info(stringBuilder.toString());
+
 	}
 
 }

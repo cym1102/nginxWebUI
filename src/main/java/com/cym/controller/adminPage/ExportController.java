@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -11,17 +12,14 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import org.noear.solon.annotation.Controller;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
+import org.noear.solon.core.handle.Context;
+import org.noear.solon.core.handle.DownloadedFile;
+import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.cym.config.InitConfig;
 import com.cym.ext.AsycPack;
@@ -35,45 +33,47 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
 @Controller
-@RequestMapping("/adminPage/export")
+@Mapping("/adminPage/export")
 public class ExportController extends BaseController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
+	@Inject
 	ConfService confService;
 
-	@RequestMapping("")
-	public ModelAndView index(HttpSession httpSession, ModelAndView modelAndView) {
+	@Mapping("")
+	public ModelAndView index(ModelAndView modelAndView) {
 
-		modelAndView.setViewName("/adminPage/export/index");
+		modelAndView.view("/adminPage/export/index.html");
 		return modelAndView;
 	}
 
-	@RequestMapping("dataExport")
-	public void dataExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	@Mapping("dataExport")
+	public DownloadedFile dataExport(Context context) throws IOException {
 		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
 
-		AsycPack asycPack = confService.getAsycPack(new String[] {"all"});
+		AsycPack asycPack = confService.getAsycPack(new String[] { "all" });
 		String json = JSONUtil.toJsonPrettyStr(asycPack);
 
-		response.addHeader("Content-Type", "application/octet-stream");
-		response.setHeader("content-disposition", "attachment;filename=" + URLEncoder.encode(date + ".json", "UTF-8")); // 设置文件名
+//		context.header("Content-Type", "application/octet-stream");
+//		context.header("content-disposition", "attachment;filename=" + URLEncoder.encode(date + ".json", "UTF-8")); // 设置文件名
+//
+//		byte[] buffer = new byte[1024];
+//		BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(json.getBytes(Charset.forName("UTF-8"))));
+//		OutputStream os = context.outputStream();
+//		int i = bis.read(buffer);
+//		while (i != -1) {
+//			os.write(buffer, 0, i);
+//			i = bis.read(buffer);
+//		}
 
-		byte[] buffer = new byte[1024];
-		BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(json.getBytes(Charset.forName("UTF-8"))));
-		OutputStream os = response.getOutputStream();
-		int i = bis.read(buffer);
-		while (i != -1) {
-			os.write(buffer, 0, i);
-			i = bis.read(buffer);
-		}
+		DownloadedFile downloadedFile = new DownloadedFile("application/octet-stream", new ByteArrayInputStream(json.getBytes(Charset.forName("UTF-8"))), date + ".json");
+		return downloadedFile;
 	}
 
-	@RequestMapping(value = "dataImport")
-	@ResponseBody
-	public JsonResult dataImport(String json, HttpServletRequest request, String adminName) {
+	@Mapping(value = "dataImport")
+	public JsonResult dataImport(String json, Context context, String adminName) {
 		AsycPack asycPack = JSONUtil.toBean(json, AsycPack.class);
-		if(StrUtil.isEmpty(adminName)) {
-			Admin admin = getAdmin(request);
+		if (StrUtil.isEmpty(adminName)) {
+			Admin admin = getAdmin();
 			adminName = admin.getName();
 		}
 		confService.setAsycPack(asycPack, adminName);
@@ -81,48 +81,15 @@ public class ExportController extends BaseController {
 		return renderSuccess();
 	}
 
-	@RequestMapping("logExport")
-	public void logExport(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
-		File file = new File(InitConfig.home + "log/nginxWebUI.log");
+	@Mapping("logExport")
+	public DownloadedFile logExport(Context context) throws FileNotFoundException {
+		File file = new File(homeConfig.home + "log/nginxWebUI.log");
 		if (file.exists()) {
-			// 配置文件下载
-			response.setHeader("content-type", "application/octet-stream");
-			response.setContentType("application/octet-stream");
-			// 下载文件能正常显示中文
-			response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
-			// 实现文件下载
-			byte[] buffer = new byte[1024];
-			FileInputStream fis = null;
-			BufferedInputStream bis = null;
-			try {
-				fis = new FileInputStream(file);
-				bis = new BufferedInputStream(fis);
-				OutputStream os = response.getOutputStream();
-				int i = bis.read(buffer);
-				while (i != -1) {
-					os.write(buffer, 0, i);
-					i = bis.read(buffer);
-				}
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-			} finally {
-				if (bis != null) {
-					try {
-						bis.close();
-					} catch (IOException e) {
-						logger.error(e.getMessage(), e);
-					}
-				}
-				if (fis != null) {
-					try {
-						fis.close();
-					} catch (IOException e) {
-						logger.error(e.getMessage(), e);
-					}
-				}
-			}
-
+			DownloadedFile downloadedFile = new DownloadedFile("application/octet-stream", new FileInputStream(file), file.getName());
+			return downloadedFile;
 		}
+		
+		return null;
 	}
 
 }

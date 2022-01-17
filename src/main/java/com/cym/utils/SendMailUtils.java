@@ -1,9 +1,9 @@
 package com.cym.utils;
 
+import org.noear.solon.annotation.Component;
+import org.noear.solon.annotation.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.cym.service.SettingService;
 
@@ -14,7 +14,7 @@ import cn.hutool.extra.mail.MailUtil;
 public class SendMailUtils {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
+	@Inject
 	SettingService settingService;
 
 	public void sendMailSmtp(String to, String title, String msg) {
