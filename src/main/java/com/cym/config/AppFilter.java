@@ -230,10 +230,10 @@ public class AppFilter implements Filter {
 		ctx.attrSet("admin", ctx.session("admin"));
 
 		// 显示版本更新
-		if (versionConfig.getNewVersion() != null) {
-			ctx.attrSet("newVersion", versionConfig.getNewVersion());
+		if (versionConfig.newVersion != null) {
+			ctx.attrSet("newVersion", versionConfig.newVersion);
 
-			if (Integer.parseInt(versionConfig.currentVersion.replace(".", "").replace("v", "")) < Integer.parseInt(versionConfig.getNewVersion().getVersion().replace(".", "").replace("v", ""))) {
+			if (Integer.parseInt(versionConfig.currentVersion.replace(".", "").replace("v", "")) < Integer.parseInt(versionConfig.newVersion.getVersion().replace(".", "").replace("v", ""))) {
 				ctx.attrSet("hasNewVersion", 1);
 			}
 		}

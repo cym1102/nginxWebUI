@@ -80,9 +80,9 @@ Path : JDK安装目录\bin
 2.下载最新版发行包jar
 
 ```
-Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-2.9.4.jar
+Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.0.3.jar
 
-Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-2.9.4.jar
+Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-3.0.3.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -142,7 +142,12 @@ docker pull cym1102/nginxwebui:latest
 3.启动容器: 
 
 ```
-docker run -itd -v /home/nginxWebUI:/home/nginxWebUI -e BOOT_OPTIONS="--server.port=8080" --privileged=true --net=host cym1102/nginxwebui:latest
+docker run -itd \
+  -v /home/nginxWebUI:/home/nginxWebUI \
+  -e BOOT_OPTIONS="--server.port=8080" \
+  --privileged=true \
+  --net=host \
+  cym1102/nginxwebui:latest
 ```
 
 注意: 
@@ -174,6 +179,47 @@ services:
     network_mode: "host"
 
 ```
+
+#### docker安装时如何确保所要代理的服务已经运行起来
+
+docker安装时，有时候重启机器后，所有的容器会自动启动，但启动有先有后，为了保证nginxwebui能正常代理，一般需要nginxwebui在其他所有所在代理的服务之后才启动，这时，可以自己重写容器默认的[entrypoint.sh](entrypoint.sh)如下：
+
+```
+#!/bin/sh
+
+## 如果你还需要其他软件包，也可以在启动时安装好，比如想额外安装nginx的http-js这个mod
+apk add --update nginx-mod-http-js
+
+## 由nginxwebui负责代理的并且需要在nginxwebui之前先确认是否启动好的ip或hostname，注意ip最好是固定ip
+hosts="code-server flexget 10.0.0.19 172.18.0.3"
+
+## 检测所要代理的服务是否全部上线
+for host in $hosts; do
+    until ping -c 2 $host &>/dev/null; do
+        echo "等待 $host 上线..."  ## 你也可以自行修改
+        sleep 1
+    done
+    continue
+done
+echo "所有服务已全部已上线，开始启动nginxwebui程序..."
+
+## 执行原本的entrypoint.sh内容
+cd /home
+exec java -jar -Xmx64m nginxWebUI.jar ${BOOT_OPTIONS} > /dev/null
+```
+
+然后在创建容器时，用上述`entrypoint.sh` （注意添加可执行权限`chmod +x entrypoint.sh`）覆盖容器内的`/usr/local/bin/entrypoint.sh`，增加映射即可：
+
+```
+docker run -itd \
+  -v /home/nginxWebUI:/home/nginxWebUI \
+  -v /你修改后的entrypoint.sh存放路径/entrypoint.sh: /usr/local/bin/entrypoint.sh \
+  -e BOOT_OPTIONS="--server.port=8080" \
+  --privileged=true \
+  --net=host 
+  cym1102/nginxwebui:latest
+```
+
 
 #### 编译说明
 
@@ -276,13 +322,11 @@ systemctl start nginxwebui.service
 
 #### 接口开发
 
-本系统提供http接口调用, 只要在启动参数添加 --knife4j.production=false, 再打开 http://xxx.xxx.xxx.xxx:8080/doc.html 即可查看knife4j接口页面.
+本系统提供http接口调用, 打开 http://xxx.xxx.xxx.xxx:8080/doc.html 即可查看smart-doc接口页面.
 
-接口调用需要在header中添加token, 其中token的获取需要在管理员管理中, 打开用户的接口调用权限, 然后通过用户名密码调用获取token接口, 才能得到token, 然后在knife4j的文档管理中设置全局token. 
+接口调用需要在http请求header中添加token, 其中token的获取需要先在管理员管理中, 打开用户的接口调用权限, 然后通过用户名密码调用获取token接口, 才能得到token 
 
-注意: 参数说明中, 带*前缀的均是必填项
-
-![输入图片说明](http://www.nginxwebui.cn/img/knife4j.png "knife4j.png")
+![输入图片说明](http://www.nginxwebui.cn/img/smart-doc.png "smart-doc.png")
 
 #### 找回密码
 

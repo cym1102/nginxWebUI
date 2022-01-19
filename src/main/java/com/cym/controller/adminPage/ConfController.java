@@ -392,9 +392,9 @@ public class ConfController extends BaseController {
 
 	@Mapping(value = "update")
 	public JsonResult update() {
-		versionConfig.getNewVersion();
-		if (Integer.parseInt(versionConfig.currentVersion.replace(".", "").replace("v", "")) < Integer.parseInt(versionConfig.getNewVersion().getVersion().replace(".", "").replace("v", ""))) {
-			mainController.autoUpdate(versionConfig.getNewVersion().getUrl());
+		versionConfig.checkVersion();
+		if (Integer.parseInt(versionConfig.currentVersion.replace(".", "").replace("v", "")) < Integer.parseInt(versionConfig.newVersion.getVersion().replace(".", "").replace("v", ""))) {
+			mainController.autoUpdate(versionConfig.newVersion.getUrl());
 			return renderSuccess(m.get("confStr.updateSuccess"));
 		} else {
 			return renderSuccess(m.get("confStr.noNeedUpdate"));

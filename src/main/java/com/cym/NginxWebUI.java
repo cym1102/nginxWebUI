@@ -32,7 +32,8 @@ public class NginxWebUI {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-
+		
+		  
 		Solon.start(NginxWebUI.class, args, app -> {
 			app.onError(e -> logger.info(e.getMessage(), e));
 			

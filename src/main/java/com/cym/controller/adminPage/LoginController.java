@@ -111,7 +111,7 @@ public class LoginController extends BaseController {
 		Context.current().sessionRemove("imgCode"); // 立刻销毁验证码
 
 		// 检查更新
-		versionConfig.getNewVersion();
+		versionConfig.checkVersion();
 
 		return renderSuccess(admin);
 	}
@@ -129,7 +129,7 @@ public class LoginController extends BaseController {
 			Context.current().sessionRemove("imgCode"); // 立刻销毁验证码
 
 			// 检查更新
-			versionConfig.getNewVersion();
+			versionConfig.checkVersion();
 
 			return renderSuccess(admin);
 		} else {

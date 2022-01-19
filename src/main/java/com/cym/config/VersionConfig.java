@@ -27,12 +27,12 @@ import cn.hutool.json.JSONUtil;
 public class VersionConfig {
 	Logger logger = LoggerFactory.getLogger(VersionConfig.class);
 
-	Version newVersion;
+	public Version newVersion;
 
 	public String currentVersion;
 
 	@Init
-	public void init() {
+	public void checkVersion() {
 		// 获取版本号
 		try {
 			currentVersion = getFromPom();
@@ -51,10 +51,6 @@ public class VersionConfig {
 
 		}
 
-	}
-
-	public Version getNewVersion() {
-		return newVersion;
 	}
 
 	public String getFromPom() throws FileNotFoundException, IOException, XmlPullParserException {

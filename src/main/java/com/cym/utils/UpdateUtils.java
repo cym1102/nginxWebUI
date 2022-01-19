@@ -38,19 +38,19 @@ public class UpdateUtils {
 
 		String param = " --server.port=" + port //
 				+ " --project.home=" + home;
-		
+
 		if (StrUtil.isNotEmpty(production)) {
 			param += " --knife4j.production=" + production;
 		}
-		
-		if (!"sqlite".equals(type)) {
+
+		if ("mysql".equals(type.toLowerCase())) {
 			param += " --spring.database.type=" + type //
 					+ " --spring.datasource.url=" + url //
 					+ " --spring.datasource.username=" + username //
 					+ " --spring.datasource.password=" + password;
 		}
 
-		cmd = "nohup java -jar -Xmx64m " + path.replace(".update", "") + param + " > /dev/null &";
+		cmd = "nohup java -jar -Dfile.encoding=UTF-8 " + path.replace(".update", "") + param + " > /dev/null &";
 		LOG.info(cmd);
 		RuntimeUtil.exec(cmd);
 
