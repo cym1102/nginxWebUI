@@ -330,7 +330,7 @@ systemctl start nginxwebui.service
 
 #### 找回密码
 
-如果忘记了登录密码，可按如下教程找回密码
+如果忘记了登录密码或没有保存两步验证，可按如下教程找回密码和关闭两步验证
 
 1.停止nginxWebUI
 
@@ -348,5 +348,5 @@ java -jar nginxWebUI.jar --project.home=/home/nginxWebUI/ --project.findPass=tru
 
 --project.findPass 为是否打印用户名密码
 
-运行成功后即可打印出全部用户名密码
+运行成功后即可打印出全部用户名密码并关闭两步验证
 

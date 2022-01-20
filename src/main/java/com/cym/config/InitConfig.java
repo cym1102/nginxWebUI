@@ -60,11 +60,13 @@ public class InitConfig {
 	@Init
 	public void init() throws IOException {
 
-		// 打印密码
+		// 找回密码
 		if (findPass) {
 			List<Admin> admins = sqlHelper.findAll(Admin.class);
 			for (Admin admin : admins) {
 				System.out.println(m.get("adminStr.name") + ":" + admin.getName() + " " + m.get("adminStr.pass") + ":" + admin.getPass());
+				admin.setAuth(false); // 关闭二次验证
+				sqlHelper.updateById(admin);
 			}
 			System.exit(1);
 		}

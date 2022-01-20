@@ -319,7 +319,7 @@ The interface invocation requires adding a token to the HTTP request header. To 
 
 #### Forgot Password
 
-If you forget your login password, follow the following tutorial to retrieve it
+If you forget your login password or do not save the two steps verify, follow the instructions below to retrieve the password and turn off the two steps verify.
 
 1.Stop nginxWebUI.
 
@@ -337,6 +337,6 @@ java -jar nginxWebUI.jar --project.home=/home/nginxWebUI/ --project.findPass=tru
 
 --project.findPass Whether to print the user name and password
 
-After the operation is successful, all user names and passwords can be printed out.
+After the operation is successful, all user names and passwords can be printed and two steps verify is disabled.
 
 
