@@ -19,6 +19,7 @@ import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cym.config.VersionConfig;
 import com.cym.controller.api.NginxApiController;
 import com.cym.ext.AsycPack;
 import com.cym.ext.Tree;
@@ -59,16 +60,15 @@ public class RemoteController extends BaseController {
 	MainController mainController;
 	@Inject
 	NginxApiController nginxApiController;
-
-	@Inject("${project.version}")
-	String projectVersion;
+	@Inject
+	VersionConfig versionConfig;
 	@Inject("${server.port}")
 	Integer port;
 
 	@Mapping("version")
 	public Map<String, Object> version() {
 		Map<String, Object> map = new HashMap<>();
-		map.put("version", projectVersion);
+		map.put("version", versionConfig.currentVersion);
 
 		if (NginxUtils.isRun()) {
 			map.put("nginx", 1);
@@ -88,7 +88,7 @@ public class RemoteController extends BaseController {
 		jsonResult = nginxApiController.getNginxStopCmd();
 		modelAndView.put("stopCmds", jsonResult.getObj());
 
-		modelAndView.put("projectVersion", projectVersion);
+		modelAndView.put("projectVersion", versionConfig.currentVersion);
 		modelAndView.view("/adminPage/remote/index.html");
 
 		return modelAndView;
