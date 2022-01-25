@@ -1,10 +1,12 @@
 package com.cym.controller.adminPage;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,7 @@ import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.Context;
+import org.noear.solon.core.handle.DownloadedFile;
 import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -236,7 +239,7 @@ public class CertController extends BaseController {
 	}
 
 	@Mapping("download")
-	public void download(String id) throws IOException {
+	public DownloadedFile download(String id) throws IOException {
 		Cert cert = sqlHelper.findById(id, Cert.class);
 		if (StrUtil.isNotEmpty(cert.getPem()) && StrUtil.isNotEmpty(cert.getKey())) {
 			String dir = homeConfig.home + "/temp/cert";
@@ -252,43 +255,11 @@ public class CertController extends BaseController {
 			ZipUtil.zip(dir);
 			FileUtil.del(dir);
 
-			handleStream(dir + ".zip");
+			DownloadedFile downloadedFile = new DownloadedFile("application/octet-stream", new FileInputStream(dir + ".zip"), "cert.zip");
+			return downloadedFile;
 		}
+
+		return null;
 	}
 
-	private void handleStream(String path) throws IOException {
-
-		Context.current().contentType(("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"));
-		Context.current().header("Content-Disposition", "attachment;filename=cert.zip");
-		byte[] buffer = new byte[1024];
-		FileInputStream fis = null;
-		BufferedInputStream bis = null;
-		try {
-			fis = new FileInputStream(path);
-			bis = new BufferedInputStream(fis);
-			OutputStream os = Context.current().outputStream();
-			int i = bis.read(buffer);
-			while (i != -1) {
-				os.write(buffer, 0, i);
-				i = bis.read(buffer);
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (bis != null) {
-				try {
-					bis.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
-				}
-			}
-			if (fis != null) {
-				try {
-					fis.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
-				}
-			}
-		}
-	}
 }

@@ -131,7 +131,7 @@ public class ConfService {
 					addConfFile(confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/upstreams." + upstream.getName() + ".conf");
+					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/upstreams." + upstream.getName().replace(" ", "_").replace("*", "-") + ".conf");
 					ngxBlockHttp.addEntry(ngxParam);
 
 				} else {
@@ -161,7 +161,7 @@ public class ConfService {
 					addConfFile(confExt, name + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/" + name + ".conf");
+					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/" + name.replace(" ", "_").replace("*", "-") + ".conf");
 
 					if (noContain(ngxBlockHttp, ngxParam)) {
 						ngxBlockHttp.addEntry(ngxParam);
@@ -199,7 +199,7 @@ public class ConfService {
 					addConfFile(confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/upstreams." + upstream.getName() + ".conf");
+					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/upstreams." + upstream.getName().replace(" ", "_").replace("*", "-") + ".conf");
 					ngxBlockStream.addEntry(ngxParam);
 				} else {
 					ngxBlockStream.addEntry(ngxBlockServer);

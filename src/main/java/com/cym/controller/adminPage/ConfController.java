@@ -224,8 +224,8 @@ public class ConfController extends BaseController {
 		}
 
 		// 替换分解域名include路径中的目标conf.d为temp/conf.d
-		String confDir = ToolUtils.handlePath(new File(nginxPath).getParent()) + "conf.d/";
-		String tempDir = homeConfig.home + "temp" + "conf.d/";
+		String confDir = ToolUtils.handlePath(new File(nginxPath).getParent()) + "/conf.d/";
+		String tempDir = homeConfig.home + "temp" + "/conf.d/";
 		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
 		for (String sn : subName) {
 			nginxContent = nginxContent.replace("include " + confDir + sn, //

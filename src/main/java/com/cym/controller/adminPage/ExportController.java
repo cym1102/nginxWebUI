@@ -53,18 +53,6 @@ public class ExportController extends BaseController {
 		AsycPack asycPack = confService.getAsycPack(new String[] { "all" });
 		String json = JSONUtil.toJsonPrettyStr(asycPack);
 
-//		context.header("Content-Type", "application/octet-stream");
-//		context.header("content-disposition", "attachment;filename=" + URLEncoder.encode(date + ".json", "UTF-8")); // 设置文件名
-//
-//		byte[] buffer = new byte[1024];
-//		BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(json.getBytes(Charset.forName("UTF-8"))));
-//		OutputStream os = context.outputStream();
-//		int i = bis.read(buffer);
-//		while (i != -1) {
-//			os.write(buffer, 0, i);
-//			i = bis.read(buffer);
-//		}
-
 		DownloadedFile downloadedFile = new DownloadedFile("application/octet-stream", new ByteArrayInputStream(json.getBytes(Charset.forName("UTF-8"))), date + ".json");
 		return downloadedFile;
 	}
