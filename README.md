@@ -80,9 +80,9 @@ Path : JDK安装目录\bin
 2.下载最新版发行包jar
 
 ```
-Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.0.5.jar
+Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.0.7.jar
 
-Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-3.0.5.jar
+Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-3.0.7.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -90,7 +90,7 @@ Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-3.0.5.
 3.启动程序
 
 ```
-Linux: nohup java -jar /home/nginxWebUI/nginxWebUI.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
+Linux: nohup java -jar -Dfile.encoding=UTF-8 /home/nginxWebUI/nginxWebUI.jar --server.port=8080 --project.home=/home/nginxWebUI/ > /dev/null &
 
 Windows: java -jar -Dfile.encoding=UTF-8 D:/home/nginxWebUI/nginxWebUI.jar --server.port=8080 --project.home=D:/home/nginxWebUI/
 ```
