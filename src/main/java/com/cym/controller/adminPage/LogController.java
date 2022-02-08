@@ -85,11 +85,7 @@ public class LogController extends BaseController {
 			}
 		}
 
-		String httpHost = Context.current().header("X-Forwarded-Host");
-		String realPort = Context.current().header("X-Forwarded-Port");
-		String host = Context.current().header("Host");
-
-		String ctxWs = appFilter.getCtxStr(httpHost, host, realPort);
+		String ctxWs = appFilter.getCtxStr(Context.current());
 		modelAndView.put("ctxWs", ctxWs); 
 		
 		modelAndView.view("/adminPage/log/tail.html");

@@ -15,7 +15,7 @@ $(function() {
 				success: function(data) {
 					if (data.success) {
 						window.localStorage.setItem("time", new Date().getTime());
-						location.href = ctx + "adminPage/monitor";
+						location.href = ctx + "/adminPage/monitor";
 					} 
 				},
 				error: function() {
@@ -73,7 +73,7 @@ function login() {
 					window.localStorage.removeItem("adminId");
 				}
 				
-				location.href = ctx + "adminPage/monitor";
+				location.href = ctx + "/adminPage/monitor";
 			} else {
 				layer.msg(data.msg);
 				refreshCode('codeImg');
@@ -179,7 +179,7 @@ function getKey() {
 
 
 function refreshCode(id) {
-	$("#" + id).attr("src", ctx + "adminPage/login/getCode?t=" + (new Date()).getTime());
+	$("#" + id).attr("src", ctx + "/adminPage/login/getCode?t=" + (new Date()).getTime());
 }
 
 

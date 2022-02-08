@@ -4,7 +4,7 @@ var parentId;
 $(function(){
 	// 加载组件
 	layui.config({
-		base: ctx + 'lib/layui/exts/xmSelect/'
+		base: ctx + '/lib/layui/exts/xmSelect/'
 	}).extend({
 		xmSelect: 'xm-select'
 	}).use(['xmSelect'], function(){
@@ -180,11 +180,11 @@ function downApk(){
 }
 
 function readme(){
-	window.open(ctx + "img/readme.pdf");
+	window.open(ctx + "/img/readme.pdf");
 }
 
 function qr(name, key){
-	$("#qrImg").attr("src", ctx + "adminPage/admin/qr?url=" + encodeURIComponent(`otpauth://totp/${name}?secret=${key}&issuer=nginxWebUI`));
+	$("#qrImg").attr("src", ctx + "/adminPage/admin/qr?url=" + encodeURIComponent(`otpauth://totp/${name}?secret=${key}&issuer=nginxWebUI`));
 	
 	layer.open({
 		type : 1,

@@ -8,7 +8,7 @@ var load;
 $(function(){
 	// 加载组件
 	layui.config({
-		base: ctx + 'lib/layui/exts/xmSelect/'
+		base: ctx + '/lib/layui/exts/xmSelect/'
 	}).extend({
 		xmSelect: 'xm-select'
 	}).use(['xmSelect'], function() {
@@ -198,7 +198,7 @@ $(function(){
 	
 	layer.load();
 	layui.config({
-		base: ctx + 'lib/layui/exts/treeTable/'
+		base: ctx + '/lib/layui/exts/treeTable/'
 	}).extend({
 		treeTable: 'treeTable'
 	}).use(['treeTable'], function(){
@@ -206,7 +206,7 @@ $(function(){
 		var re = treeTable
 				.render({
 					elem : '#tree-table',
-					url: ctx + 'adminPage/remote/allTable' ,
+					url: ctx + '/adminPage/remote/allTable' ,
 					icon_key : 'descr',
 					primary_key: 'id',
 					parent_key: 'parentId',
@@ -788,7 +788,7 @@ function testMail(){
 		loadIndex = layer.load();
 		$.ajax({
 			type: 'POST',
-			url: ctx + 'adminPage/admin/testMail',
+			url: ctx + '/adminPage/admin/testMail',
 			data: {
 				mail: $("#mail").val(),
 			},

@@ -4,7 +4,7 @@ function showSelectMail() {
 
 	$.ajax({
 		type: 'POST',
-		url: ctx + 'adminPage/admin/getMailSetting',
+		url: ctx + '/adminPage/admin/getMailSetting',
 		dataType: 'json',
 		success: function(data) {
 			if (data.success) {
@@ -44,7 +44,7 @@ function selectMailOver() {
 	
 	$.ajax({
 		type: 'POST',
-		url: ctx + 'adminPage/admin/updateMailSetting',
+		url: ctx + '/adminPage/admin/updateMailSetting',
 		data: {
 			mail_host: $("#mail_host").val(),
 			mail_port: $("#mail_port").val(),

@@ -57,7 +57,6 @@ public class BaseController {
 
 	public Admin getAdmin() {
 		
-		
 		Admin admin = (Admin) Context.current().session("admin");
 		if (admin == null) {
 			String token = Context.current().header("token");

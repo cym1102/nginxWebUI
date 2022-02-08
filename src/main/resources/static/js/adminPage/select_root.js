@@ -6,7 +6,7 @@ var rootSelect = {
 		async : {
 			enable : true,
 			dataType : "json",
-			url: ctx + 'adminPage/root/getList',
+			url: ctx + '/adminPage/root/getList',
 			autoParam: ["id"]
 		},
         data:{

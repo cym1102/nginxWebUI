@@ -33,12 +33,17 @@ public class NginxWebUI {
 			logger.error(e.getMessage(), e);
 		}
 		
-		  
+		System.setProperty("org.eclipse.jetty.server.Request.maxFormContentSize", "-1");
+		
 		Solon.start(NginxWebUI.class, args, app -> {
 			app.onError(e -> logger.info(e.getMessage(), e));
 			
 			app.before(c -> {
-				c.pathNew(c.path().replace("//", "/"));
+				String path = c.path();
+				while (path.contains("//")) {
+					path = path.replace("//", "/");
+				}
+				c.pathNew(path);
 			});
 
 			app.enableWebSocket(true);

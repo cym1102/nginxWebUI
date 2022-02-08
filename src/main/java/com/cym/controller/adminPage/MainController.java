@@ -8,6 +8,7 @@ import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.Context;
+import org.noear.solon.core.handle.DownloadedFile;
 import org.noear.solon.core.handle.ModelAndView;
 import org.noear.solon.core.handle.UploadedFile;
 import org.slf4j.Logger;
@@ -48,6 +49,7 @@ public class MainController extends BaseController {
 		context.redirect("doc/api.html");
 	}
 
+	
 	@Mapping("/adminPage/main/upload")
 	public JsonResult upload(Context context, UploadedFile file) {
 		try {

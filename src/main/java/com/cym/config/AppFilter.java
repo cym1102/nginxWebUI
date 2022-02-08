@@ -60,7 +60,6 @@ public class AppFilter implements Filter {
 	@Inject
 	VersionConfig versionConfig;
 
-
 	@Inject
 	PropertiesUtils propertiesUtils;
 	@Inject
@@ -68,16 +67,13 @@ public class AppFilter implements Filter {
 
 	@Override
 	public void doFilter(Context ctx, FilterChain chain) throws Throwable {
-
 		// 全局过滤器
 		if (!ctx.path().contains("/lib/") //
 				&& !ctx.path().contains("/js/") //
 				&& !ctx.path().contains("/doc/") //
 				&& !ctx.path().contains("/img/") //
 				&& !ctx.path().contains("/css/")) {
-			if (!frontInterceptor(ctx)) {
-				return;
-			}
+			frontInterceptor(ctx);
 		}
 
 		// 登录过滤器
@@ -88,6 +84,8 @@ public class AppFilter implements Filter {
 				&& !ctx.path().contains("/img/") //
 				&& !ctx.path().contains("/css/")) {
 			if (!adminInterceptor(ctx)) {
+				// 设置为已处理
+				ctx.setHandled(true);
 				return;
 			}
 		}
@@ -100,6 +98,8 @@ public class AppFilter implements Filter {
 				&& !ctx.path().contains("/img/") //
 				&& !ctx.path().contains("/css/")) {
 			if (!apiInterceptor(ctx)) {
+				// 设置为已处理
+				ctx.setHandled(true);
 				return;
 			}
 		}
@@ -128,11 +128,7 @@ public class AppFilter implements Filter {
 	}
 
 	private boolean adminInterceptor(Context ctx) {
-		String httpHost = ctx.header("X-Forwarded-Host");
-		String realPort = ctx.header("X-Forwarded-Port");
-		String host = ctx.header("Host");
-
-		String ctxStr = getCtxStr(httpHost, host, realPort);
+		String ctxStr = getCtxStr(ctx);
 
 		if (ctx.path().contains("adminPage/login")) {
 			return true;
@@ -204,18 +200,15 @@ public class AppFilter implements Filter {
 				logger.error(e.getMessage(), e);
 				ctx.redirect("/adminPage/login/noServer");
 			}
+
 			return false;
 		}
 
 		return true;
 	}
 
-	private boolean frontInterceptor(Context ctx) {
-		String httpHost = ctx.header("X-Forwarded-Host");
-		String realPort = ctx.header("X-Forwarded-Port");
-		String host = ctx.header("Host");
-
-		String ctxStr = getCtxStr(httpHost, host, realPort);
+	private void frontInterceptor(Context ctx) {
+		String ctxStr = getCtxStr(ctx);
 		if (StrUtil.isNotEmpty(ctx.param("ctx"))) {
 			ctxStr = Base64.decodeStr(ctx.param("ctx"));
 		}
@@ -282,7 +275,6 @@ public class AppFilter implements Filter {
 			ctx.attrSet("langType", "Switch to English");
 		}
 
-		return true;
 	}
 
 	private String buldBody(Map<String, List<String>> parameterMap, Remote remote, Admin admin) throws UnsupportedEncodingException {
@@ -324,16 +316,28 @@ public class AppFilter implements Filter {
 				"&ctx=" + Base64.encode(ctxStr);
 	}
 
-	public String getCtxStr(String httpHost, String host, String realPort) {
+	public String getCtxStr(Context context) {
+		String httpHost = context.header("X-Forwarded-Host");
+		String realPort = context.header("X-Forwarded-Port");
+		String host = context.header("Host");
+
 		String ctx = "//";
 		if (StrUtil.isNotEmpty(httpHost)) {
 			ctx += httpHost;
+		} else if (StrUtil.isNotEmpty(host)) {
+			ctx += host;
+			if (!host.contains(":") && StrUtil.isNotEmpty(realPort)) {
+				ctx += ":" + realPort;
+			}
 		} else {
+			host = context.url().split("/")[2];
 			ctx += host;
 			if (!host.contains(":") && StrUtil.isNotEmpty(realPort)) {
 				ctx += ":" + realPort;
 			}
 		}
 		return ctx;
+
 	}
+
 }

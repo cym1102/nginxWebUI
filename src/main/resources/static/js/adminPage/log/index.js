@@ -111,10 +111,10 @@ function tail(id,path){
 		  area : [ '1300px', '671px' ], // 宽高
 		  title : path,
 		  resize  : false,
-		  content: ctx + "adminPage/log/tail?id=" + id
+		  content: ctx + "/adminPage/log/tail?id=" + id
 	}); 
 }
 
 function down(id){
-	window.open(ctx+"adminPage/log/down?id=" + id);
+	window.open(ctx + "/adminPage/log/down?id=" + id);
 }

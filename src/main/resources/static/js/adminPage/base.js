@@ -59,12 +59,12 @@ $(function() {
 
 	// 菜单选中
 	var url = location.pathname + location.search;
-	$("a[href='" + ctx + url.substr(1) + "']").parent().addClass("layui-this");
+	$("a[href='" + ctx + url + "']").parent().addClass("layui-this");
 
 
 	$.ajax({
 		type: 'POST',
-		url: ctx + 'adminPage/login/getLocalType',
+		url: ctx + '/adminPage/login/getLocalType',
 		dataType: 'json',
 		success: function(data) {
 			if (data.success) {
@@ -167,7 +167,7 @@ function getQueryString(name) {
 
 // 下载文件
 function downloadFile(url, name) {
-	window.open(ctx + "downloadFile?url=" + encodeURIComponent(url) + "&name="
+	window.open(ctx + "/downloadFile?url=" + encodeURIComponent(url) + "&name="
 		+ encodeURIComponent(name));
 }
 
