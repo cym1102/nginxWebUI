@@ -98,6 +98,27 @@ function del(id){
 }
 
 
+function clean(){
+	if(confirm(logStr.cleanConfirm)){
+		$.ajax({
+			type : 'POST',
+			url : ctx + '/adminPage/log/clean',
+			dataType : 'json',
+			success : function(data) {
+				if (data.success) {
+					location.reload();
+				}else{
+					layer.msg(data.msg)
+				}
+			},
+			error : function() {
+				layer.alert(commonStr.errorInfo);
+			}
+		});
+	}
+}
+
+
 function selectRootCustom(){
 	rootSelect.selectOne(function callBack(val){
 		$("#path").val(val);
@@ -108,7 +129,7 @@ function selectRootCustom(){
 function tail(id,path){
 	layer.open({
 		  type: 2, 
-		  area : [ '1300px', '671px' ], // 宽高
+		  area : [ '90%', '90%' ], // 宽高
 		  title : path,
 		  resize  : false,
 		  content: ctx + "/adminPage/log/tail?id=" + id

@@ -32,7 +32,7 @@ password: Admin123
 
 #### Technical note
 
-This project is a Web system based on springBoot. The database use SQLite, so there is no need to install any database on the server.
+This project is a Web system based on solon. The database use h2, so there is no need to install any database on the server.
 
 This system applies for the certificate through Let's ENCRYPT and USES acme.sh script to automatically apply for and renew the certificate. Once the certificate is renewed, it will be renewed at 2 am every day, and only certificates exceeding 60 days will be renewed.
 
@@ -73,9 +73,9 @@ reboot
 2.Download the latest release of the distribution jar
 
 ```
-Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.1.3.jar
+Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.1.5.jar
 
-Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-3.1.3.jar
+Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-3.1.5.jar
 ```
 
 With a new version, you just need to change the version in the path
@@ -90,13 +90,11 @@ Windows: java -jar -Dfile.encoding=UTF-8 D:/home/nginxWebUI/nginxWebUI.jar --ser
 
 Parameter description (both non-required)
 
--Xmx64m Maximum number of memory allocated
-
 --server.port Occupied port, default starts at port 8080
 
 --project.home Project profile directory for database files, certificate files, logs, etc. Default is /home/nginxwebui/
 
---spring.database.type=mysql Use other databases, not filled with native SQLite, options include mysql and postgresql
+--spring.database.type=mysql Use other databases, not filled with native h2, options include mysql
 
 --spring.datasource.url=jdbc:mysql://ip:port/nginxwebui Databases url
 
@@ -104,9 +102,7 @@ Parameter description (both non-required)
 
 --spring.datasource.password=pass  Databases password
 
---knife4j.production=false  false:Open interface debugging page. true:Close interface debugging page.
-
-Note that the command ends with an & to indicate that the project is running in the background
+Note that the Linux command ends with an & to indicate that the project is running in the background
 
 #### docker installation instructions 
 

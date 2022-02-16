@@ -18,6 +18,8 @@ import com.cym.model.Log;
 import com.cym.service.LogService;
 import com.cym.service.SettingService;
 import com.cym.sqlhelper.bean.Page;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
+import com.cym.utils.BLogFileTailer;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
@@ -36,9 +38,11 @@ public class LogController extends BaseController {
 	LogService logService;
 	@Inject
 	AppFilter appFilter;
+	@Inject
+	BLogFileTailer bLogFileTailer;
 
 	@Mapping("")
-	public ModelAndView index( ModelAndView modelAndView, Page page) {
+	public ModelAndView index(ModelAndView modelAndView, Page page) {
 		page = logService.search(page);
 		modelAndView.put("page", page);
 
@@ -72,32 +76,24 @@ public class LogController extends BaseController {
 		return renderSuccess();
 	}
 
+	@Mapping("clean")
+	public JsonResult clean() {
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Log.class);
+		return renderSuccess();
+	}
+
 	@Mapping("tail")
 	public ModelAndView tail(ModelAndView modelAndView, String id, String protocol) {
 		modelAndView.put("id", id);
-		// 获取远程机器的协议
-		if (StrUtil.isNotEmpty(protocol)) {
-			if (protocol.equals("https")) {
-				modelAndView.put("protocol", "wss:");
-			}
-			if (protocol.equals("http")) {
-				modelAndView.put("protocol", "ws:");
-			}
-		}
-
-		String ctxWs = appFilter.getCtxStr(Context.current());
-		modelAndView.put("ctxWs", ctxWs); 
-		
 		modelAndView.view("/adminPage/log/tail.html");
 		return modelAndView;
 	}
 
-	
 	@Mapping("down")
 	public void down(ModelAndView modelAndView, String id) throws FileNotFoundException {
 		Log log = sqlHelper.findById(id, Log.class);
 		File file = new File(log.getPath());
-		
+
 		Context.current().contentType("application/octet-stream");
 		String headerKey = "Content-Disposition";
 		String headerValue = "attachment; filename=" + URLUtil.encode(file.getName());
@@ -105,6 +101,17 @@ public class LogController extends BaseController {
 
 		InputStream inputStream = new FileInputStream(file);
 		Context.current().output(inputStream);
+	}
+
+	@Mapping("tailCmd")
+	public JsonResult tailCmd(String id, String guid) throws Exception {
+		Log log = sqlHelper.findById(id, Log.class);
+		if (!FileUtil.exist(log.getPath())) {
+			return renderSuccess("");
+		}
+
+		String rs = bLogFileTailer.run(guid, log.getPath());
+		return renderSuccess(rs);
 	}
 
 }

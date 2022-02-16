@@ -1,6 +1,7 @@
 package com.cym.config;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +30,7 @@ import com.cym.service.RemoteService;
 import com.cym.service.SettingService;
 import com.cym.service.UpstreamService;
 import com.cym.sqlhelper.utils.SqlHelper;
+import com.cym.utils.BLogFileTailer;
 import com.cym.utils.MessageUtils;
 import com.cym.utils.SendMailUtils;
 import com.cym.utils.TelnetUtils;
@@ -47,7 +49,8 @@ public class ScheduleTask {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Inject("${server.port}")
 	Integer port;
-
+	@Inject("${solon.logging.appender.file.maxHistory}")
+	Integer maxHistory;
 	@Inject
 	SqlHelper sqlHelper;
 	@Inject
@@ -72,6 +75,8 @@ public class ScheduleTask {
 	MessageUtils m;
 	@Inject
 	HomeConfig homeConfig;
+	@Inject
+	BLogFileTailer bLogFileTailer;
 
 	// 续签证书
 	@Scheduled(cron = "0 0 2 * * ?")
@@ -92,7 +97,6 @@ public class ScheduleTask {
 	}
 
 	// 分隔日志,每天
-	// @Scheduled(cron = "0/10 * * * * ?")
 	@Scheduled(cron = "0 55 23 * * ?")
 	public void diviLog() {
 		Http access = httpService.getName("access_log");
@@ -132,7 +136,7 @@ public class ScheduleTask {
 						String[] array = file.getName().split("[.]");
 						String dateStr = array[array.length - 2];
 						DateTime dateTime = DateUtil.parse(dateStr, "yyyy-MM-dd");
-						if (time - dateTime.getTime() > TimeUnit.DAYS.toMillis(8)) {
+						if (time - dateTime.getTime() > TimeUnit.DAYS.toMillis(maxHistory)) {
 							FileUtil.del(file);
 						}
 					}
@@ -140,30 +144,6 @@ public class ScheduleTask {
 			}
 		}
 
-	}
-
-	// 删除7天前的备份
-	@Scheduled(cron = "0 0 0 * * ?")
-	public void delBak() {
-
-		long time = System.currentTimeMillis();
-		File dir = new File(homeConfig.home + "bak/");
-		if (dir.exists()) {
-			for (File file : dir.listFiles()) {
-				if (file.getName().contains("nginx.conf.") && (file.getName().endsWith(".zip") || file.getName().endsWith(".bak"))) {
-					String dateStr = file.getName().replace("nginx.conf.", "").replace(".zip", "").replace(".bak", "").split("_")[0];
-					DateTime date = null;
-					if (dateStr.length() != 10) {
-						FileUtil.del(file);
-					} else {
-						date = DateUtil.parse(dateStr, "yyyy-MM-dd");
-						if (time - date.getTime() > TimeUnit.DAYS.toMillis(8)) {
-							FileUtil.del(file);
-						}
-					}
-				}
-			}
-		}
 	}
 
 	// 检查远程服务器
@@ -260,4 +240,11 @@ public class ScheduleTask {
 			}
 		}
 	}
+
+	// 测试任务
+//	@Scheduled(cron = "* * * * * ?")
+//	public void test() throws InterruptedException {
+//		Thread.sleep(3000);
+//		System.out.println(DateUtil.format(new Date(), "HHmmss"));
+//	}
 }

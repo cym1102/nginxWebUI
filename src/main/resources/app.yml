@@ -1,7 +1,8 @@
 server:
   port: 8080
   request:
-      maxRequestSize: 2048mb
+    maxRequestSize: 2048mb
+    
 project:
   sqlPrint: false
   beanPackage: com.cym.model
@@ -11,8 +12,6 @@ project:
 solon:
   app:
     name: nginxWebUI
-  mime:
-    pdf: "application/octet-stream"
   view:
     mapping:
       html: FreemarkerRender
@@ -26,7 +25,8 @@ solon:
       file:
         name: ${project.home}/log/${solon.app.name}
         level: INFO
-
+        maxFileSize: "100 MB"
+        maxHistory: "7"
 spring:
   database:
     type: h2

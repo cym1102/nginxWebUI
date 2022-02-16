@@ -848,7 +848,7 @@ function editDescr(id) {
 				layer.open({
 					type: 1,
 					title: serverStr.descr,
-					area: ['500px', '350px'], // 宽高
+					area: ['500px', '360px'], // 宽高
 					content: $('#descrDiv')
 				});
 				

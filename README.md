@@ -37,7 +37,7 @@ nginx本身功能复杂, nginxWebUI并不能涵盖nginx所有功能, 但能覆�
 
 #### 技术说明
 
-本项目是基于springBoot的web系统, 数据库使用sqlite, 因此服务器上不需要安装任何数据库
+本项目是基于solon的web系统, 数据库使用h2, 因此服务器上不需要安装任何数据库
 
 本系统通过Let's encrypt申请证书, 使用acme.sh脚本进行自动化申请和续签, 开启续签的证书将在每天凌晨2点进行续签, 只有超过60天的证书才会进行续签. 只支持在linux下签发证书.
 
@@ -80,9 +80,9 @@ Path : JDK安装目录\bin
 2.下载最新版发行包jar
 
 ```
-Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.1.3.jar
+Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.1.5.jar
 
-Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-3.1.3.jar
+Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-3.1.5.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -97,13 +97,11 @@ Windows: java -jar -Dfile.encoding=UTF-8 D:/home/nginxWebUI/nginxWebUI.jar --ser
 
 参数说明(都是非必填)
 
--Xmx64m 最大分配内存数
-
 --server.port 占用端口, 默认以8080端口启动
 
 --project.home 项目配置文件目录，存放数据库文件，证书文件，日志等, 默认为/home/nginxWebUI/
 
---spring.database.type=mysql 使用其他数据库，不填为使用本地sqlite，选项包括mysql和postgresql
+--spring.database.type=mysql 使用其他数据库，不填为使用本地h2数据库，可选mysql
 
 --spring.datasource.url=jdbc:mysql://ip:port/nginxwebui 数据库url
 
@@ -111,9 +109,7 @@ Windows: java -jar -Dfile.encoding=UTF-8 D:/home/nginxWebUI/nginxWebUI.jar --ser
 
 --spring.datasource.password=pass  数据库密码
 
---knife4j.production=false  false:打开接口调试页面 true:关闭接口调试页面
-
-注意命令最后加一个&号, 表示项目后台运行
+注意Linux命令最后加一个&号, 表示项目后台运行
 
 #### docker安装说明
 

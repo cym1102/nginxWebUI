@@ -4,66 +4,18 @@
 <#include "/adminPage/common.html"/>
 
 </head>
-<body>
-	<div id="log-container" style="height: 600px; overflow-y: scroll; background: #333; color: #aaa; padding: 10px;">
-		<div></div>
-		
+<body style="background: #333; color: #aaa;"> 
+	<div id="log-container" style=" padding: 10px;">
 		
 	</div>
-	
-	
-	<div style="position: fixed;top: 10px;right: 30px;">
-		<button class="layui-btn layui-btn-sm" type="button" onclick="stop()">${loginStr.pause}</button>
-	 	<button class="layui-btn layui-btn-sm layui-btn-normal" type="button" onclick="goon()">${loginStr.continue}</button>
-	</div>
-	
 
+	<div style="position: fixed; top: 10px; right: 30px;">
+		<button class="layui-btn layui-btn-sm" id="stopOrStart" type="button" onclick="stopOrStart()">${loginStr.pause}</button>
+	</div>
+
+	<input type="hidden" id="id" value="${id}">
 	<#include '/adminPage/script.html'/>
-	<script src="${ctx}/lib/base64/base64.js" type="text/javascript"></script>
-	
-	<script>
-		var run = true;
-		$(document).ready(function() {
-			// 指定websocket路径
-			var protocol = `${protocol}`;
-			if(protocol == ''){
-				if (window.location.protocol == 'https:') {
-					var protocol = 'wss:';
-				} else {
-					var protocol = 'ws:';
-				}
-			}
-			
-			var ctxWs = `${ctxWs}`;
-			
-			var guid = Math.random();
-			var websocket = new WebSocket(protocol + ctxWs + `/adminPage/logTail/${id}/` + guid);
-			websocket.onmessage = function(event) {
-				if(run){
-					// 接收服务端的实时日志并添加到HTML页面中
-					$("#log-container div").append(event.data);
-					// 滚动条滚动到最低部
-					$("#log-container").scrollTop($("#log-container div").height() - $("#log-container").height());
-
-					// 超过1000行, 清空
-					if ($("#log-container div").children().length > 1000) {
-						$("#log-container div").html("");
-					} 
-				}
-			};
-		});
-		
-		function stop(){
-			run = false;
-		}
-		
-		function goon(){
-			run = true;
-		}
-		
-		
-	</script>
-	
+	<script src="${ctx}/js/adminPage/log/tail.js?v=${jsrandom}" type="text/javascript"></script>
 </body>
 
 
