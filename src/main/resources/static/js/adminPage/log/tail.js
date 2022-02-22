@@ -4,6 +4,8 @@ var guid = guid();
 $(function() {
 	setInterval(startTail, 1000);
 });
+// 保留上一次数据
+var temp = "";
 
 function startTail() {
 	if (run) {
@@ -20,10 +22,10 @@ function startTail() {
 					// 接收服务端的实时日志并添加到HTML页面中
 					$("#log-container").html(data.obj);
 					// 滚动条滚动到最低部
-					if (data.obj != "") {
-						//$("#log-container").scrollTop($("#log-container div").height() - $("#log-container").height());
+					if (data.obj != "" && data.obj != temp) {
 						window.scrollTo(0, document.body.scrollHeight);
 					}
+					temp = data.obj;
 				}
 			},
 			error: function() {
