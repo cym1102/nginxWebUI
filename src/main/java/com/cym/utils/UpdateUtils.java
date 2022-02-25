@@ -1,13 +1,15 @@
 package com.cym.utils;
 
+import java.io.File;
+
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
 
 @Component
 public class UpdateUtils {
@@ -15,8 +17,6 @@ public class UpdateUtils {
 	String port;
 	@Inject("${project.home}")
 	String home;
-	@Inject("${knife4j.production:}")
-	String production;
 
 	@Inject("${spring.database.type:}")
 	String type;
@@ -32,16 +32,10 @@ public class UpdateUtils {
 	public void run(String path) {
 		ThreadUtil.safeSleep(2000);
 
-		String cmd = "mv " + path + " " + path.replace(".update", "");
-		LOG.info(cmd);
-		RuntimeUtil.exec(cmd);
+		String newPath = path.replace(".update", "");
+		FileUtil.rename(new File(path), newPath, true);
 
-		String param = " --server.port=" + port //
-				+ " --project.home=" + home;
-
-		if (StrUtil.isNotEmpty(production)) {
-			param += " --knife4j.production=" + production;
-		}
+		String param = " --server.port=" + port + " --project.home=" + home;
 
 		if ("mysql".equals(type.toLowerCase())) {
 			param += " --spring.database.type=" + type //
@@ -50,10 +44,15 @@ public class UpdateUtils {
 					+ " --spring.datasource.password=" + password;
 		}
 
-		cmd = "nohup java -jar -Dfile.encoding=UTF-8 " + path.replace(".update", "") + param + " > /dev/null &";
+		String cmd = null;
+		if (SystemTool.isWindows()) {
+			cmd = "java -jar -Dfile.encoding=UTF-8 " + newPath + param;
+		} else {
+			cmd = "nohup java -jar -Dfile.encoding=UTF-8 " + newPath + param + " > /dev/null &";
+		}
+
 		LOG.info(cmd);
 		RuntimeUtil.exec(cmd);
-
 	}
 
 }

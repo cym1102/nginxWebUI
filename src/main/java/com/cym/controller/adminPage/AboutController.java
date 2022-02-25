@@ -6,14 +6,14 @@ import org.noear.solon.core.handle.ModelAndView;
 
 import com.cym.utils.BaseController;
 
-@Mapping("/adminPage/abort")
+@Mapping("/adminPage/about")
 @Controller
-public class AbortController extends BaseController {
+public class AboutController extends BaseController {
 
 	@Mapping("")
 	public ModelAndView index( ModelAndView modelAndView) {
 
-		modelAndView.view("/adminPage/abort/index.html");
+		modelAndView.view("/adminPage/about/index.html");
 		return modelAndView;
 	}
 

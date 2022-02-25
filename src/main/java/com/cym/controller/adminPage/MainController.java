@@ -83,9 +83,9 @@ public class MainController extends BaseController {
 
 	@Mapping("/adminPage/main/autoUpdate")
 	public JsonResult autoUpdate(String url) {
-		if (!SystemTool.isLinux()) {
-			return renderError(m.get("commonStr.updateTips"));
-		}
+//		if (!SystemTool.isLinux()) {
+//			return renderError(m.get("commonStr.updateTips"));
+//		}
 
 		File jar = JarUtil.getCurrentFile();
 		String path = jar.getParent() + "/nginxWebUI.jar.update";

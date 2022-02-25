@@ -148,7 +148,7 @@ public class AppFilter implements Filter {
 				&& localType.equals("remote") //
 				&& !ctx.path().contains("adminPage/remote") //
 				&& !ctx.path().contains("adminPage/admin") //
-				&& !ctx.path().contains("adminPage/abort") //
+				&& !ctx.path().contains("adminPage/about") //
 		) {
 			// 转发到远程服务器
 			Remote remote = (Remote) ctx.session("remote");

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cym.service.SettingService;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
 
@@ -18,7 +19,10 @@ public class SendMailUtils {
 	SettingService settingService;
 
 	public void sendMailSmtp(String to, String title, String msg) {
-
+		if(StrUtil.isEmpty(to)) {
+			logger.info("目标邮件为空, 无法发送");
+			return;
+		}
 		MailAccount account = new MailAccount();
 		account.setHost(settingService.get("mail_host"));
 		if (settingService.get("mail_port") != null) {

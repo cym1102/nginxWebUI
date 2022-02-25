@@ -29,7 +29,7 @@ function startTail() {
 				}
 			},
 			error: function() {
-				layer.alert(commonStr.errorInfo);
+				//layer.alert(commonStr.errorInfo);
 			}
 		});
 	}
