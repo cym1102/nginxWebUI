@@ -27,7 +27,7 @@ After the deployment of this project, the configuration of nginx no longer need 
 ```
 Demo address: http://test.nginxwebui.cn:8080
 User: admin
-password: Admin123
+password: admin
 ```
 
 #### Technical note
@@ -73,9 +73,9 @@ reboot
 2.Download the latest release of the distribution jar
 
 ```
-Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.1.8.jar
+Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.2.0.jar
 
-Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-3.1.8.jar
+Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-3.2.0.jar
 ```
 
 With a new version, you just need to change the version in the path

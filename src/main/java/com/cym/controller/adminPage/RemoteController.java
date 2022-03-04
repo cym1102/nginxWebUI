@@ -410,11 +410,8 @@ public class RemoteController extends BaseController {
 	@Mapping("setAsycPack")
 	public JsonResult setAsycPack(String json, String adminName) {
 		AsycPack asycPack = JSONUtil.toBean(json, AsycPack.class);
-		if (StrUtil.isEmpty(adminName)) {
-			Admin admin = getAdmin();
-			adminName = admin.getName();
-		}
-		confService.setAsycPack(asycPack, adminName);
+		
+		confService.setAsycPack(asycPack);
 
 		return renderSuccess();
 	}

@@ -18,6 +18,7 @@ import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.DownloadedFile;
 import org.noear.solon.core.handle.ModelAndView;
+import org.noear.solon.core.handle.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +30,7 @@ import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
@@ -58,15 +60,17 @@ public class ExportController extends BaseController {
 	}
 
 	@Mapping(value = "dataImport")
-	public JsonResult dataImport(String json, Context context, String adminName) {
-		AsycPack asycPack = JSONUtil.toBean(json, AsycPack.class);
-		if (StrUtil.isEmpty(adminName)) {
-			Admin admin = getAdmin();
-			adminName = admin.getName();
-		}
-		confService.setAsycPack(asycPack, adminName);
+	public void dataImport(UploadedFile file, Context context) throws IOException {
+		if (file != null) {
+			File tempFile = new File(homeConfig.home + "temp" + File.separator + file.name);
+			file.transferTo(tempFile);
+			String json = FileUtil.readString(tempFile, Charset.forName("UTF-8"));
+			tempFile.delete();
 
-		return renderSuccess();
+			AsycPack asycPack = JSONUtil.toBean(json, AsycPack.class);
+			confService.setAsycPack(asycPack);
+		}
+		context.redirect("/adminPage/export?over=true");
 	}
 
 	@Mapping("logExport")
@@ -76,7 +80,7 @@ public class ExportController extends BaseController {
 			DownloadedFile downloadedFile = new DownloadedFile("application/octet-stream", new FileInputStream(file), file.getName());
 			return downloadedFile;
 		}
-		
+
 		return null;
 	}
 

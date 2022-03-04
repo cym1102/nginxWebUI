@@ -1,162 +1,664 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width initial-scale=1'>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" href="markdown.css?v=1641871594082"/>
-    <title>额外参数接口</title>
-</head>
-<body>
-<div class="markdown-body">
-    <h1>额外参数接口</h1>
-<h2>根据项目获取参数列表</h2>
-<p><strong>URL:</strong> <code>http://your_ip:port/api/param/getList</code></p>
-<p><strong>Type:</strong> <code>ANY</code></p>
-<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
-<p><strong>Description:</strong> 根据项目获取参数列表</p>
-<p><strong>Request-parameters:</strong></p>
-<table>
-<thead>
-<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>serverId</td><td>string</td><td>所属反向代理id</td><td>true</td><td>-</td></tr>
-<tr><td>locationId</td><td>string</td><td>所属代理目标id</td><td>true</td><td>-</td></tr>
-<tr><td>upstreamId</td><td>string</td><td>所属负载均衡id</td><td>true</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Request-example:</strong></p>
-<pre><code>curl   -i http://your_ip:port/api/param/getList?upstreamId=45&amp;locationId=45&amp;serverId=45
-</code></pre>
-<p><strong>Response-fields:</strong></p>
-<table>
-<thead>
-<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
-<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
-<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
-<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
-<tr><td>└─id</td><td>string</td><td>主键</td><td>-</td></tr>
-<tr><td>└─serverId</td><td>string</td><td>所属反向代理id</td><td>-</td></tr>
-<tr><td>└─locationId</td><td>string</td><td>所属代理目标id</td><td>-</td></tr>
-<tr><td>└─upstreamId</td><td>string</td><td>所属负载均衡id</td><td>-</td></tr>
-<tr><td>└─name</td><td>string</td><td>参数名</td><td>-</td></tr>
-<tr><td>└─value</td><td>string</td><td>参数值</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Response-example:</strong></p>
-<pre><code>{
-	&quot;success&quot;:true,
-	&quot;status&quot;:&quot;454i6z&quot;,
-	&quot;msg&quot;:&quot;jmej9l&quot;,
-	&quot;obj&quot;:[
-		{
-			&quot;id&quot;:&quot;45&quot;,
-			&quot;serverId&quot;:&quot;45&quot;,
-			&quot;locationId&quot;:&quot;45&quot;,
-			&quot;upstreamId&quot;:&quot;45&quot;,
-			&quot;name&quot;:&quot;鹤轩.白&quot;,
-			&quot;value&quot;:&quot;jbxs19&quot;
-		}
-	]
-}
-</code></pre>
-<h2>添加或编辑参数</h2>
-<p><strong>URL:</strong> <code>http://your_ip:port/api/param/insertOrUpdate</code></p>
-<p><strong>Type:</strong> <code>ANY</code></p>
-<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
-<p><strong>Description:</strong> 添加或编辑参数</p>
-<p><strong>Request-parameters:</strong></p>
-<table>
-<thead>
-<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>id</td><td>string</td><td>主键</td><td>false</td><td>-</td></tr>
-<tr><td>serverId</td><td>string</td><td>所属反向代理id</td><td>false</td><td>-</td></tr>
-<tr><td>locationId</td><td>string</td><td>所属代理目标id</td><td>false</td><td>-</td></tr>
-<tr><td>upstreamId</td><td>string</td><td>所属负载均衡id</td><td>false</td><td>-</td></tr>
-<tr><td>name</td><td>string</td><td>参数名</td><td>false</td><td>-</td></tr>
-<tr><td>value</td><td>string</td><td>参数值</td><td>false</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Request-example:</strong></p>
-<pre><code>curl   -i http://your_ip:port/api/param/insertOrUpdate?updateTime=1641871596310&amp;templateId=45&amp;locationId=45&amp;templateValue=n34iov&amp;id=45&amp;templateName=鹤轩.白&amp;createTime=1641871596310&amp;serverId=45&amp;upstreamId=45&amp;value=ch4j2p&amp;name=鹤轩.白
-</code></pre>
-<p><strong>Response-fields:</strong></p>
-<table>
-<thead>
-<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
-<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
-<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
-<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Response-example:</strong></p>
-<pre><code>{
-	&quot;success&quot;:true,
-	&quot;status&quot;:&quot;7mz8tn&quot;,
-	&quot;msg&quot;:&quot;m8xwge&quot;,
-	&quot;obj&quot;:{
-		
-	}
-}
-</code></pre>
-<h2>删除额外参数</h2>
-<p><strong>URL:</strong> <code>http://your_ip:port/api/param/del</code></p>
-<p><strong>Type:</strong> <code>ANY</code></p>
-<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
-<p><strong>Description:</strong> 删除额外参数</p>
-<p><strong>Request-parameters:</strong></p>
-<table>
-<thead>
-<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>id</td><td>string</td><td>参数id</td><td>true</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Request-example:</strong></p>
-<pre><code>curl   -i http://your_ip:port/api/param/del?id=45
-</code></pre>
-<p><strong>Response-fields:</strong></p>
-<table>
-<thead>
-<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
-<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
-<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
-<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Response-example:</strong></p>
-<pre><code>{
-	&quot;success&quot;:true,
-	&quot;status&quot;:&quot;20eaza&quot;,
-	&quot;msg&quot;:&quot;zmwywh&quot;,
-	&quot;obj&quot;:{
-		
-	}
-}
-</code></pre>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="smart-doc">
+    <title>nginxWebUI</title>
+    <link rel="stylesheet" href="font.css">
+    <link rel="stylesheet" href="AllInOne.css?v=1646038809454"/>
+    
+    <style>.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint {
+        background: #f7f7f8;
+    }
 
-    <footer class="page-footer">
-        <span class="copyright">Generated by smart-doc at 2022-01-11 11:26:34</span>
-        <span class="footer-modification">Suggestions, contact, support and error reporting on
-            <a href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">Gitee</a> or
-            <a href="https://github.com/smart-doc-group/smart-doc" target="_blank">Github</a>
-        </span>
-    </footer>
+    .hljs {
+        padding: 0em;
+    }</style>
+    <script src="highlight.min.js"></script>
+    <script src="jquery.min.js"></script>
+</head>
+<body class="book toc2 toc-left">
+<div id="header"><h1>nginxWebUI</h1>
+    <div id="toc" class="toc2">
+        <div id="book-search-input"><input id="search" type="text" placeholder="Type to search"></div>
+        <div id="toctitle"><span>API Reference</span></div>
+        <ul id="accordion" class="sectlevel1">
+            <li class=""><a class="dd" href="api.html#header">1.&nbsp;基础参数接口</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="api.html#_1_1_获取Http参数">1.1.&nbsp;获取Http参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_2_添加或编辑Http参数">1.2.&nbsp;添加或编辑Http参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_3_删除Http参数">1.3.&nbsp;删除Http参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_4_获取基础参数">1.4.&nbsp;获取基础参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_5_添加或编辑基础参数">1.5.&nbsp;添加或编辑基础参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_6_删除基础参数">1.6.&nbsp;删除基础参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_7_获取Stream参数">1.7.&nbsp;获取Stream参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_8_添加或编辑Stream参数">1.8.&nbsp;添加或编辑Stream参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_9_删除Stream参数">1.9.&nbsp;删除Stream参数</a>
+                    </li>
+                </ul>
+            </li>
+            <li class=""><a class="dd" href="CertApiController.html#header">2.&nbsp;证书接口</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="CertApiController.html#_2_1_获取证书分页列表">2.1.&nbsp;获取证书分页列表</a>
+                    </li>
+
+                    <li><a
+                            href="CertApiController.html#_2_2_添加或编辑证书">2.2.&nbsp;添加或编辑证书</a>
+                    </li>
+
+                    <li><a
+                            href="CertApiController.html#_2_3_获取域名解析码">2.3.&nbsp;获取域名解析码</a>
+                    </li>
+
+                    <li><a
+                            href="CertApiController.html#_2_4_设置证书自动续签">2.4.&nbsp;设置证书自动续签</a>
+                    </li>
+
+                    <li><a
+                            href="CertApiController.html#_2_5_删除证书">2.5.&nbsp;删除证书</a>
+                    </li>
+
+                    <li><a
+                            href="CertApiController.html#_2_6_执行申请">2.6.&nbsp;执行申请</a>
+                    </li>
+
+                    <li><a
+                            href="CertApiController.html#_2_7_下载证书文件">2.7.&nbsp;下载证书文件</a>
+                    </li>
+                </ul>
+            </li>
+            <li class=""><a class="dd" href="NginxApiController.html#header">3.&nbsp;nginx接口</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="NginxApiController.html#_3_1_获取nginx状态">3.1.&nbsp;获取nginx状态</a>
+                    </li>
+
+                    <li><a
+                            href="NginxApiController.html#_3_2_替换conf文件">3.2.&nbsp;替换conf文件</a>
+                    </li>
+
+                    <li><a
+                            href="NginxApiController.html#_3_3_效验conf文件">3.3.&nbsp;效验conf文件</a>
+                    </li>
+
+                    <li><a
+                            href="NginxApiController.html#_3_4_重载conf文件">3.4.&nbsp;重载conf文件</a>
+                    </li>
+
+                    <li><a
+                            href="NginxApiController.html#_3_5_获取nginx启动命令">3.5.&nbsp;获取nginx启动命令</a>
+                    </li>
+
+                    <li><a
+                            href="NginxApiController.html#_3_6_获取nginx停止命令">3.6.&nbsp;获取nginx停止命令</a>
+                    </li>
+
+                    <li><a
+                            href="NginxApiController.html#_3_7_执行nginx命令">3.7.&nbsp;执行nginx命令</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="open"><a class="dd" href="ParamApiController.html#header">4.&nbsp;额外参数接口</a>
+                <ul class="sectlevel2" style="display: block">
+                    <li><a
+                            href="ParamApiController.html#_4_1_根据项目获取参数列表">4.1.&nbsp;根据项目获取参数列表</a>
+                    </li>
+
+                    <li><a
+                            href="ParamApiController.html#_4_2_添加或编辑参数">4.2.&nbsp;添加或编辑参数</a>
+                    </li>
+
+                    <li><a
+                            href="ParamApiController.html#_4_3_删除额外参数">4.3.&nbsp;删除额外参数</a>
+                    </li>
+                </ul>
+            </li>
+            <li class=""><a class="dd" href="PasswordApiController.html#header">5.&nbsp;密码文件接口</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="PasswordApiController.html#_5_1_获取全部密码文件列表">5.1.&nbsp;获取全部密码文件列表</a>
+                    </li>
+
+                    <li><a
+                            href="PasswordApiController.html#_5_2_添加或编辑密码文件">5.2.&nbsp;添加或编辑密码文件</a>
+                    </li>
+
+                    <li><a
+                            href="PasswordApiController.html#_5_3_删除密码文件">5.3.&nbsp;删除密码文件</a>
+                    </li>
+                </ul>
+            </li>
+            <li class=""><a class="dd" href="ServerApiController.html#header">6.&nbsp;反向代理(server)接口</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="ServerApiController.html#_6_1_获取server分页列表">6.1.&nbsp;获取server分页列表</a>
+                    </li>
+
+                    <li><a
+                            href="ServerApiController.html#_6_2_添加或编辑server">6.2.&nbsp;添加或编辑server</a>
+                    </li>
+
+                    <li><a
+                            href="ServerApiController.html#_6_3_删除server">6.3.&nbsp;删除server</a>
+                    </li>
+
+                    <li><a
+                            href="ServerApiController.html#_6_4_根据serverId获取location列表">6.4.&nbsp;根据serverId获取location列表</a>
+                    </li>
+
+                    <li><a
+                            href="ServerApiController.html#_6_5_添加或编辑location">6.5.&nbsp;添加或编辑location</a>
+                    </li>
+
+                    <li><a
+                            href="ServerApiController.html#_6_6_删除location">6.6.&nbsp;删除location</a>
+                    </li>
+                </ul>
+            </li>
+            <li class=""><a class="dd" href="TokenController.html#header">7.&nbsp;获取token</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="TokenController.html#_7_1_获取Token">7.1.&nbsp;获取Token</a>
+                    </li>
+                </ul>
+            </li>
+            <li class=""><a class="dd" href="UpstreamApiController.html#header">8.&nbsp;负载均衡(upstream)接口</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="UpstreamApiController.html#_8_1_获取upstream分页列表">8.1.&nbsp;获取upstream分页列表</a>
+                    </li>
+
+                    <li><a
+                            href="UpstreamApiController.html#_8_2_添加或编辑upstream">8.2.&nbsp;添加或编辑upstream</a>
+                    </li>
+
+                    <li><a
+                            href="UpstreamApiController.html#_8_3_删除upstream">8.3.&nbsp;删除upstream</a>
+                    </li>
+
+                    <li><a
+                            href="UpstreamApiController.html#_8_4_根据upstreamId获取server列表">8.4.&nbsp;根据upstreamId获取server列表</a>
+                    </li>
+
+                    <li><a
+                            href="UpstreamApiController.html#_8_5_添加或编辑server">8.5.&nbsp;添加或编辑server</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
 </div>
+<div id="content">
+    <div class="sect1"><h2 id="_额外参数接口"><a class="anchor" href="#_额外参数接口"></a><a class="link" href="#_额外参数接口">4.&nbsp;额外参数接口</a>
+    </h2>
+        <div class="sectionbody">
+            <div class="sect2"><h3 id="_4_1_根据项目获取参数列表">
+                <a class="anchor" href="#_4_1_根据项目获取参数列表"></a>
+                <a class="link" href="#_4_1_根据项目获取参数列表">4.1.&nbsp;根据项目获取参数列表</a>
+            </h3>
+                <div class="paragraph"><p><strong>URL:</strong><a href="/api/param/getList" class="bare">&nbsp;/api/param/getList</a>
+                </p></div>
+                <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Description:</strong>&nbsp;根据项目获取参数列表</p></div>
+                <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Parameter</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Required</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">serverId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">  所属反向代理id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">locationId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">所属代理目标id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">upstreamId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">所属负载均衡id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Request-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="bash">curl -X GET -i /api/param/getList?upstreamId=87&locationId=87&serverId=87</code></pre>
+                    </div>
+                </div>
+                <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Field</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">success</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求结果</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">status</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求状态 200:请求成功 401:token无效 500:服务器错误</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">msg</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">错误信息</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">obj</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">返回内容</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">主键</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─serverId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">所属反向代理id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─locationId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">所属代理目标id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─upstreamId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">所属负载均衡id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─name</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">参数名</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─value</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">参数值</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Response-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="json">{
+  "success": true,
+  "status": "ds98cl",
+  "msg": "m2w3ja",
+  "obj": [
+    {
+      "id": "87",
+      "serverId": "87",
+      "locationId": "87",
+      "upstreamId": "87",
+      "name": "georgianna.stracke",
+      "value": "33fb1g"
+    }
+  ]
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sect2"><h3 id="_4_2_添加或编辑参数">
+                <a class="anchor" href="#_4_2_添加或编辑参数"></a>
+                <a class="link" href="#_4_2_添加或编辑参数">4.2.&nbsp;添加或编辑参数</a>
+            </h3>
+                <div class="paragraph"><p><strong>URL:</strong><a href="/api/param/insertOrUpdate" class="bare">&nbsp;/api/param/insertOrUpdate</a>
+                </p></div>
+                <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Description:</strong>&nbsp;添加或编辑参数</p></div>
+                <div class="paragraph"><p><strong>Body-parameters:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Parameter</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Required</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">主键</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">serverId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">所属反向代理id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">locationId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">所属代理目标id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">upstreamId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">所属负载均衡id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">参数名</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">value</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">参数值</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Request-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="bash">curl -X GET -i /api/param/insertOrUpdate?serverId=87&id=87&templateName=georgianna.stracke&templateValue=4xqfm0&upstreamId=87&templateId=87&updateTime=1646038811217&locationId=87&value=sqwbf0&createTime=1646038811217&name=georgianna.stracke</code></pre>
+                    </div>
+                </div>
+                <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Field</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">success</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求结果</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">status</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求状态 200:请求成功 401:token无效 500:服务器错误</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">msg</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">错误信息</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">obj</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">返回内容</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Response-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="json">{
+  "success": true,
+  "status": "pdqwya",
+  "msg": "3d4gnb",
+  "obj": {}
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sect2"><h3 id="_4_3_删除额外参数">
+                <a class="anchor" href="#_4_3_删除额外参数"></a>
+                <a class="link" href="#_4_3_删除额外参数">4.3.&nbsp;删除额外参数</a>
+            </h3>
+                <div class="paragraph"><p><strong>URL:</strong><a href="/api/param/del" class="bare">&nbsp;/api/param/del</a>
+                </p></div>
+                <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Description:</strong>&nbsp;删除额外参数</p></div>
+                <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Parameter</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Required</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">参数id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Request-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="bash">curl -X GET -i /api/param/del?id=87</code></pre>
+                    </div>
+                </div>
+                <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Field</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">success</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求结果</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">status</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求状态 200:请求成功 401:token无效 500:服务器错误</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">msg</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">错误信息</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">obj</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">返回内容</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Response-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="json">{
+  "success": true,
+  "status": "neoz0u",
+  "msg": "5i7nbi",
+  "obj": {}
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2022-02-28 17:00:09</span><span
+            class="footer-modification">Suggestions,contact,support and error reporting on<a
+            href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">&nbsp;Gitee</a>&nbsp;or<a
+            href="https://github.com/smart-doc-group/smart-doc.git" target="_blank">&nbsp;Github</a></span></footer>
+</div>
+<script src="search.js?v=1646038809454"></script>
+<script>
+    $(function () {
+        const Accordion = function (el, multiple) {
+            this.el = el || {};
+            this.multiple = multiple || false;
+            const links = this.el.find('.dd');
+            links.on('click', {el: this.el, multiple: this.multiple}, this.dropdown);
+        };
+        Accordion.prototype.dropdown = function (e) {
+            const $el = e.data.el;
+            const $this = $(this), $next = $this.next();
+            $next.slideToggle();
+            $this.parent().toggleClass('open');
+            if (!e.data.multiple) {
+                $el.find('.submenu').not($next).slideUp("20").parent().removeClass('open');
+            }
+        };
+        new Accordion($('#accordion'), false);
+        hljs.highlightAll()
+    });
+</script>
 </body>
 </html>

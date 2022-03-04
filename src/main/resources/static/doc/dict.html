@@ -4,16 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="smart-doc">
-    <title>nginxWebUI</title>
+    <title>Dictionary</title>
     <link rel="stylesheet" href="font.css">
     <link rel="stylesheet" href="AllInOne.css?v=1646038809454"/>
     
     <style>.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint {
-        background: #f7f7f8;
+        background: #f7f7f8
     }
-
     .hljs {
-        padding: 0em;
+        padding: 0em
     }</style>
     <script src="highlight.min.js"></script>
     <script src="jquery.min.js"></script>
@@ -24,7 +23,7 @@
         <div id="book-search-input"><input id="search" type="text" placeholder="Type to search"></div>
         <div id="toctitle"><span>API Reference</span></div>
         <ul id="accordion" class="sectlevel1">
-            <li class=""><a class="dd" href="api.html#header">1.&nbsp;基础参数接口</a>
+            <li><a class="dd" href="api.html#header">1.&nbsp;基础参数接口</a>
                 <ul class="sectlevel2" style="display: none">
                     <li><a
                             href="api.html#_1_1_获取Http参数">1.1.&nbsp;获取Http参数</a>
@@ -63,7 +62,7 @@
                     </li>
                 </ul>
             </li>
-            <li class=""><a class="dd" href="CertApiController.html#header">2.&nbsp;证书接口</a>
+            <li><a class="dd" href="CertApiController.html#header">2.&nbsp;证书接口</a>
                 <ul class="sectlevel2" style="display: none">
                     <li><a
                             href="CertApiController.html#_2_1_获取证书分页列表">2.1.&nbsp;获取证书分页列表</a>
@@ -94,7 +93,7 @@
                     </li>
                 </ul>
             </li>
-            <li class=""><a class="dd" href="NginxApiController.html#header">3.&nbsp;nginx接口</a>
+            <li><a class="dd" href="NginxApiController.html#header">3.&nbsp;nginx接口</a>
                 <ul class="sectlevel2" style="display: none">
                     <li><a
                             href="NginxApiController.html#_3_1_获取nginx状态">3.1.&nbsp;获取nginx状态</a>
@@ -125,7 +124,7 @@
                     </li>
                 </ul>
             </li>
-            <li class=""><a class="dd" href="ParamApiController.html#header">4.&nbsp;额外参数接口</a>
+            <li><a class="dd" href="ParamApiController.html#header">4.&nbsp;额外参数接口</a>
                 <ul class="sectlevel2" style="display: none">
                     <li><a
                             href="ParamApiController.html#_4_1_根据项目获取参数列表">4.1.&nbsp;根据项目获取参数列表</a>
@@ -140,7 +139,7 @@
                     </li>
                 </ul>
             </li>
-            <li class=""><a class="dd" href="PasswordApiController.html#header">5.&nbsp;密码文件接口</a>
+            <li><a class="dd" href="PasswordApiController.html#header">5.&nbsp;密码文件接口</a>
                 <ul class="sectlevel2" style="display: none">
                     <li><a
                             href="PasswordApiController.html#_5_1_获取全部密码文件列表">5.1.&nbsp;获取全部密码文件列表</a>
@@ -155,7 +154,7 @@
                     </li>
                 </ul>
             </li>
-            <li class=""><a class="dd" href="ServerApiController.html#header">6.&nbsp;反向代理(server)接口</a>
+            <li><a class="dd" href="ServerApiController.html#header">6.&nbsp;反向代理(server)接口</a>
                 <ul class="sectlevel2" style="display: none">
                     <li><a
                             href="ServerApiController.html#_6_1_获取server分页列表">6.1.&nbsp;获取server分页列表</a>
@@ -182,14 +181,14 @@
                     </li>
                 </ul>
             </li>
-            <li class="open"><a class="dd" href="TokenController.html#header">7.&nbsp;获取token</a>
-                <ul class="sectlevel2" style="display: block">
+            <li><a class="dd" href="TokenController.html#header">7.&nbsp;获取token</a>
+                <ul class="sectlevel2" style="display: none">
                     <li><a
                             href="TokenController.html#_7_1_获取Token">7.1.&nbsp;获取Token</a>
                     </li>
                 </ul>
             </li>
-            <li class=""><a class="dd" href="UpstreamApiController.html#header">8.&nbsp;负载均衡(upstream)接口</a>
+            <li><a class="dd" href="UpstreamApiController.html#header">8.&nbsp;负载均衡(upstream)接口</a>
                 <ul class="sectlevel2" style="display: none">
                     <li><a
                             href="UpstreamApiController.html#_8_1_获取upstream分页列表">8.1.&nbsp;获取upstream分页列表</a>
@@ -215,122 +214,7 @@
         </ul>
     </div>
 </div>
-<div id="content">
-    <div class="sect1"><h2 id="_获取token"><a class="anchor" href="#_获取token"></a><a class="link" href="#_获取token">7.&nbsp;获取token</a>
-    </h2>
-        <div class="sectionbody">
-            <div class="sect2"><h3 id="_7_1_获取Token">
-                <a class="anchor" href="#_7_1_获取Token"></a>
-                <a class="link" href="#_7_1_获取Token">7.1.&nbsp;获取Token</a>
-            </h3>
-                <div class="paragraph"><p><strong>URL:</strong><a href="/token/getToken" class="bare">&nbsp;/token/getToken</a>
-                </p></div>
-                <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
-                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
-                <div class="paragraph"><p><strong>Description:</strong>&nbsp;获取Token</p></div>
-                <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
-                <table class="tableblock frame-all grid-all spread">
-                    <colgroup>
-                        <col style="width: 20%;">
-                        <col style="width: 20%;">
-                        <col style="width: 20%;">
-                        <col style="width: 20%;">
-                        <col style="width: 20%;">
-                    </colgroup>
-                    <thead>
-                    <tr>
-                        <th class="tableblock halign-left valign-top">Parameter</th>
-                        <th class="tableblock halign-left valign-top">Type</th>
-                        <th class="tableblock halign-left valign-top">Description</th>
-                        <th class="tableblock halign-left valign-top">Required</th>
-                        <th class="tableblock halign-left valign-top">Since</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">用户名</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">pass</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">密码</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="paragraph"><p><strong>Request-example:</strong></p></div>
-                <div class="listingblock">
-                    <div class="content">
-                        <pre><code class="bash">curl -X GET -i /token/getToken?name=georgianna.stracke&pass=lgkzh0</code></pre>
-                    </div>
-                </div>
-                <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
-                <table class="tableblock frame-all grid-all spread">
-                    <colgroup>
-                        <col style="width: 25%;">
-                        <col style="width: 25%;">
-                        <col style="width: 25%;">
-                        <col style="width: 25%;">
-                    </colgroup>
-                    <thead>
-                    <tr>
-                        <th class="tableblock halign-left valign-top">Field</th>
-                        <th class="tableblock halign-left valign-top">Type</th>
-                        <th class="tableblock halign-left valign-top">Description</th>
-                        <th class="tableblock halign-left valign-top">Since</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">success</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求结果</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">status</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求状态 200:请求成功 401:token无效 500:服务器错误</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">msg</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">错误信息</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">obj</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">返回内容</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="paragraph"><p><strong>Response-example:</strong></p></div>
-                <div class="listingblock">
-                    <div class="content">
-                        <pre><code class="json">{
-  "success": true,
-  "status": "21emyq",
-  "msg": "wllkmr",
-  "obj": {}
-}</code></pre>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2022-02-28 17:00:09</span><span
+<div id="content">    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2022-02-28 17:00:09</span><span
             class="footer-modification">Suggestions,contact,support and error reporting on<a
             href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">&nbsp;Gitee</a>&nbsp;or<a
             href="https://github.com/smart-doc-group/smart-doc.git" target="_blank">&nbsp;Github</a></span></footer>

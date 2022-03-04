@@ -1,360 +1,1382 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width initial-scale=1'>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" href="markdown.css?v=1641871594082"/>
-    <title>反向代理(server)接口</title>
-</head>
-<body>
-<div class="markdown-body">
-    <h1>反向代理(server)接口</h1>
-<h2>获取server分页列表</h2>
-<p><strong>URL:</strong> <code>http://your_ip:port/api/server/getPage</code></p>
-<p><strong>Type:</strong> <code>ANY</code></p>
-<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
-<p><strong>Description:</strong> 获取server分页列表</p>
-<p><strong>Request-parameters:</strong></p>
-<table>
-<thead>
-<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>current</td><td>int32</td><td>当前页数(从1开始)</td><td>true</td><td>-</td></tr>
-<tr><td>limit</td><td>int32</td><td>每页数量(默认为10)</td><td>true</td><td>-</td></tr>
-<tr><td>keywords</td><td>string</td><td>查询关键字</td><td>true</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Request-example:</strong></p>
-<pre><code>curl   -i http://your_ip:port/api/server/getPage?current=am28jh&amp;limit=10&amp;keywords=gmci3u
-</code></pre>
-<p><strong>Response-fields:</strong></p>
-<table>
-<thead>
-<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
-<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
-<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
-<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
-<tr><td>└─count</td><td>int64</td><td>总记录数</td><td>-</td></tr>
-<tr><td>└─curr</td><td>int32</td><td>起始页(从1开始)</td><td>-</td></tr>
-<tr><td>└─limit</td><td>int32</td><td>每页记录数</td><td>-</td></tr>
-<tr><td>└─records</td><td>array</td><td>列表内容</td><td>-</td></tr>
-<tr><td>     └─id</td><td>string</td><td>主键</td><td>-</td></tr>
-<tr><td>     └─serverName</td><td>string</td><td>监听域名</td><td>-</td></tr>
-<tr><td>     └─listen</td><td>string</td><td>监听ip端口 (格式 ip:port或port)</td><td>-</td></tr>
-<tr><td>     └─def</td><td>int32</td><td>是否为默认server 0否(默认) 1是</td><td>-</td></tr>
-<tr><td>     └─rewrite</td><td>int32</td><td>是否http跳转https 0否(默认) 1是</td><td>-</td></tr>
-<tr><td>     └─rewriteListen</td><td>string</td><td>http跳转https监听ip端口,默认为80 (格式 ip:port或port)</td><td>-</td></tr>
-<tr><td>     └─ssl</td><td>int32</td><td>是否开启ssl 0否(默认) 1是</td><td>-</td></tr>
-<tr><td>     └─http2</td><td>int32</td><td>是否开启http2 0否(默认) 1是</td><td>-</td></tr>
-<tr><td>     └─proxyProtocol</td><td>int32</td><td>是否开启proxy_protocol 0否(默认) 1是</td><td>-</td></tr>
-<tr><td>     └─pem</td><td>string</td><td>ssl证书pem文件路径</td><td>-</td></tr>
-<tr><td>     └─key</td><td>string</td><td>ssl证书key文件路径</td><td>-</td></tr>
-<tr><td>     └─proxyType</td><td>int32</td><td>代理类型 0:http(默认) 1:tcp 2:udp</td><td>-</td></tr>
-<tr><td>     └─proxyUpstreamId</td><td>string</td><td>代理upstream的id</td><td>-</td></tr>
-<tr><td>     └─enable</td><td>boolean</td><td>是否启用 true:启用(默认) false:禁用</td><td>-</td></tr>
-<tr><td>     └─descr</td><td>string</td><td>描述</td><td>-</td></tr>
-<tr><td>     └─protocols</td><td>string</td><td>加密协议 (默认:TLSv1 TLSv1.1 TLSv1.2 TLSv1.3)</td><td>-</td></tr>
-<tr><td>     └─passwordId</td><td>string</td><td>使用的password文件Id</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Response-example:</strong></p>
-<pre><code>{
-	&quot;success&quot;:true,
-	&quot;status&quot;:&quot;5apfo5&quot;,
-	&quot;msg&quot;:&quot;yt3ai7&quot;,
-	&quot;obj&quot;:{
-		&quot;count&quot;:986,
-		&quot;curr&quot;:530,
-		&quot;limit&quot;:10,
-		&quot;records&quot;:[
-			{
-				&quot;id&quot;:&quot;45&quot;,
-				&quot;serverName&quot;:&quot;鹤轩.白&quot;,
-				&quot;listen&quot;:&quot;0prb73&quot;,
-				&quot;def&quot;:168,
-				&quot;rewrite&quot;:182,
-				&quot;rewriteListen&quot;:&quot;6ggh7u&quot;,
-				&quot;ssl&quot;:735,
-				&quot;http2&quot;:539,
-				&quot;proxyProtocol&quot;:159,
-				&quot;pem&quot;:&quot;inoiaq&quot;,
-				&quot;key&quot;:&quot;c44lt0&quot;,
-				&quot;proxyType&quot;:323,
-				&quot;proxyUpstreamId&quot;:&quot;45&quot;,
-				&quot;enable&quot;:true,
-				&quot;descr&quot;:&quot;vvpe1q&quot;,
-				&quot;protocols&quot;:&quot;zq3ak2&quot;,
-				&quot;passwordId&quot;:&quot;45&quot;
-			}
-		]
-	}
-}
-</code></pre>
-<h2>添加或编辑server</h2>
-<p><strong>URL:</strong> <code>http://your_ip:port/api/server/insertOrUpdate</code></p>
-<p><strong>Type:</strong> <code>ANY</code></p>
-<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
-<p><strong>Description:</strong> 添加或编辑server</p>
-<p><strong>Request-parameters:</strong></p>
-<table>
-<thead>
-<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>id</td><td>string</td><td>主键</td><td>false</td><td>-</td></tr>
-<tr><td>serverName</td><td>string</td><td>监听域名</td><td>false</td><td>-</td></tr>
-<tr><td>listen</td><td>string</td><td>监听ip端口 (格式 ip:port或port)</td><td>true</td><td>-</td></tr>
-<tr><td>def</td><td>int32</td><td>是否为默认server 0否(默认) 1是</td><td>false</td><td>-</td></tr>
-<tr><td>rewrite</td><td>int32</td><td>是否http跳转https 0否(默认) 1是</td><td>false</td><td>-</td></tr>
-<tr><td>rewriteListen</td><td>string</td><td>http跳转https监听ip端口,默认为80 (格式 ip:port或port)</td><td>false</td><td>-</td></tr>
-<tr><td>ssl</td><td>int32</td><td>是否开启ssl 0否(默认) 1是</td><td>false</td><td>-</td></tr>
-<tr><td>http2</td><td>int32</td><td>是否开启http2 0否(默认) 1是</td><td>false</td><td>-</td></tr>
-<tr><td>proxyProtocol</td><td>int32</td><td>是否开启proxy_protocol 0否(默认) 1是</td><td>false</td><td>-</td></tr>
-<tr><td>pem</td><td>string</td><td>ssl证书pem文件路径</td><td>false</td><td>-</td></tr>
-<tr><td>key</td><td>string</td><td>ssl证书key文件路径</td><td>false</td><td>-</td></tr>
-<tr><td>proxyType</td><td>int32</td><td>代理类型 0:http(默认) 1:tcp 2:udp</td><td>false</td><td>-</td></tr>
-<tr><td>proxyUpstreamId</td><td>string</td><td>代理upstream的id</td><td>false</td><td>-</td></tr>
-<tr><td>enable</td><td>boolean</td><td>是否启用 true:启用(默认) false:禁用</td><td>false</td><td>-</td></tr>
-<tr><td>descr</td><td>string</td><td>描述</td><td>false</td><td>-</td></tr>
-<tr><td>protocols</td><td>string</td><td>加密协议 (默认:TLSv1 TLSv1.1 TLSv1.2 TLSv1.3)</td><td>false</td><td>-</td></tr>
-<tr><td>passwordId</td><td>string</td><td>使用的password文件Id</td><td>false</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Request-example:</strong></p>
-<pre><code>curl   -i http://your_ip:port/api/server/insertOrUpdate?rewriteListen=3r7p63&amp;key=w4l1bh&amp;listen=09xusm&amp;protocols=ulhmpa&amp;proxyProtocol=948&amp;seq=0&amp;pem=qm42n3&amp;descr=n6q0ov&amp;updateTime=1641871596310&amp;serverName=鹤轩.白&amp;proxyType=303&amp;pemStr=btwgd2&amp;def=448&amp;enable=true&amp;proxyUpstreamId=45&amp;id=45&amp;passwordId=45&amp;ssl=812&amp;keyStr=c9535u&amp;http2=928&amp;createTime=1641871596310&amp;rewrite=128
-</code></pre>
-<p><strong>Response-fields:</strong></p>
-<table>
-<thead>
-<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
-<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
-<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
-<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Response-example:</strong></p>
-<pre><code>{
-	&quot;success&quot;:true,
-	&quot;status&quot;:&quot;ibmlr3&quot;,
-	&quot;msg&quot;:&quot;ml9q3z&quot;,
-	&quot;obj&quot;:{
-		
-	}
-}
-</code></pre>
-<h2>删除server</h2>
-<p><strong>URL:</strong> <code>http://your_ip:port/api/server/delete</code></p>
-<p><strong>Type:</strong> <code>ANY</code></p>
-<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
-<p><strong>Description:</strong> 删除server</p>
-<p><strong>Request-parameters:</strong></p>
-<table>
-<thead>
-<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>id</td><td>string</td><td>反向代理id</td><td>true</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Request-example:</strong></p>
-<pre><code>curl   -i http://your_ip:port/api/server/delete?id=45
-</code></pre>
-<p><strong>Response-fields:</strong></p>
-<table>
-<thead>
-<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
-<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
-<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
-<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Response-example:</strong></p>
-<pre><code>{
-	&quot;success&quot;:true,
-	&quot;status&quot;:&quot;iqy47a&quot;,
-	&quot;msg&quot;:&quot;azv4p7&quot;,
-	&quot;obj&quot;:{
-		
-	}
-}
-</code></pre>
-<h2>根据serverId获取location列表</h2>
-<p><strong>URL:</strong> <code>http://your_ip:port/api/server/getLocationByServerId</code></p>
-<p><strong>Type:</strong> <code>ANY</code></p>
-<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
-<p><strong>Description:</strong> 根据serverId获取location列表</p>
-<p><strong>Request-parameters:</strong></p>
-<table>
-<thead>
-<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>serverId</td><td>string</td><td>反向代理id</td><td>true</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Request-example:</strong></p>
-<pre><code>curl   -i http://your_ip:port/api/server/getLocationByServerId?serverId=45
-</code></pre>
-<p><strong>Response-fields:</strong></p>
-<table>
-<thead>
-<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
-<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
-<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
-<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
-<tr><td>└─id</td><td>string</td><td>主键</td><td>-</td></tr>
-<tr><td>└─serverId</td><td>string</td><td>所属反向代理serverId</td><td>-</td></tr>
-<tr><td>└─path</td><td>string</td><td>监控路径 例:/</td><td>-</td></tr>
-<tr><td>└─type</td><td>int32</td><td>代理类型 0:动态代理(默认) 1:静态代理 2:负载均衡 3:空白代理</td><td>-</td></tr>
-<tr><td>└─value</td><td>string</td><td>动态代理目标 (例:http://10.10.10.1:8080/)</td><td>-</td></tr>
-<tr><td>└─upstreamType</td><td>string</td><td>代理负载协议,http or https</td><td>-</td></tr>
-<tr><td>└─upstreamId</td><td>string</td><td>代理负载均衡upstream的id</td><td>-</td></tr>
-<tr><td>└─upstreamPath</td><td>string</td><td>代理负载额外路径,默认为空</td><td>-</td></tr>
-<tr><td>└─rootPath</td><td>string</td><td>静态代理路径 (例:/home/www)</td><td>-</td></tr>
-<tr><td>└─rootPage</td><td>string</td><td>静态代理默认页面 (例:index.html)</td><td>-</td></tr>
-<tr><td>└─rootType</td><td>string</td><td>静态代理类型 root:根路径模式 alias:别名模式</td><td>-</td></tr>
-<tr><td>└─header</td><td>int32</td><td>是否携带Host参数 0否 1是(默认)</td><td>-</td></tr>
-<tr><td>└─websocket</td><td>int32</td><td>是否开启websocket支持 0否(默认) 1是</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Response-example:</strong></p>
-<pre><code>{
-	&quot;success&quot;:true,
-	&quot;status&quot;:&quot;kilgm4&quot;,
-	&quot;msg&quot;:&quot;um1ium&quot;,
-	&quot;obj&quot;:[
-		{
-			&quot;id&quot;:&quot;45&quot;,
-			&quot;serverId&quot;:&quot;45&quot;,
-			&quot;path&quot;:&quot;q6c9bl&quot;,
-			&quot;type&quot;:828,
-			&quot;value&quot;:&quot;suqxyi&quot;,
-			&quot;upstreamType&quot;:&quot;d3i9xl&quot;,
-			&quot;upstreamId&quot;:&quot;45&quot;,
-			&quot;upstreamPath&quot;:&quot;l45vw3&quot;,
-			&quot;rootPath&quot;:&quot;2hjcec&quot;,
-			&quot;rootPage&quot;:&quot;ws27nb&quot;,
-			&quot;rootType&quot;:&quot;5ccy8i&quot;,
-			&quot;header&quot;:241,
-			&quot;websocket&quot;:252
-		}
-	]
-}
-</code></pre>
-<h2>添加或编辑location</h2>
-<p><strong>URL:</strong> <code>http://your_ip:port/api/server/insertOrUpdateLocation</code></p>
-<p><strong>Type:</strong> <code>ANY</code></p>
-<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
-<p><strong>Description:</strong> 添加或编辑location</p>
-<p><strong>Request-parameters:</strong></p>
-<table>
-<thead>
-<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>id</td><td>string</td><td>主键</td><td>false</td><td>-</td></tr>
-<tr><td>serverId</td><td>string</td><td>所属反向代理serverId</td><td>true</td><td>-</td></tr>
-<tr><td>path</td><td>string</td><td>监控路径 例:/</td><td>true</td><td>-</td></tr>
-<tr><td>type</td><td>int32</td><td>代理类型 0:动态代理(默认) 1:静态代理 2:负载均衡 3:空白代理</td><td>false</td><td>-</td></tr>
-<tr><td>value</td><td>string</td><td>动态代理目标 (例:http://10.10.10.1:8080/)</td><td>false</td><td>-</td></tr>
-<tr><td>upstreamType</td><td>string</td><td>代理负载协议,http or https</td><td>false</td><td>-</td></tr>
-<tr><td>upstreamId</td><td>string</td><td>代理负载均衡upstream的id</td><td>false</td><td>-</td></tr>
-<tr><td>upstreamPath</td><td>string</td><td>代理负载额外路径,默认为空</td><td>false</td><td>-</td></tr>
-<tr><td>rootPath</td><td>string</td><td>静态代理路径 (例:/home/www)</td><td>false</td><td>-</td></tr>
-<tr><td>rootPage</td><td>string</td><td>静态代理默认页面 (例:index.html)</td><td>false</td><td>-</td></tr>
-<tr><td>rootType</td><td>string</td><td>静态代理类型 root:根路径模式 alias:别名模式</td><td>false</td><td>-</td></tr>
-<tr><td>header</td><td>int32</td><td>是否携带Host参数 0否 1是(默认)</td><td>false</td><td>-</td></tr>
-<tr><td>websocket</td><td>int32</td><td>是否开启websocket支持 0否(默认) 1是</td><td>false</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Request-example:</strong></p>
-<pre><code>curl   -i http://your_ip:port/api/server/insertOrUpdateLocation?createTime=1641871596310&amp;locationParamJson=30rgac&amp;upstreamType=lebfju&amp;updateTime=1641871596310&amp;path=mgt8hc&amp;type=21&amp;rootPage=6mixs1&amp;header=807&amp;value=llfa10&amp;upstreamId=45&amp;rootType=46asvm&amp;rootPath=mdejkj&amp;websocket=224&amp;id=45&amp;serverId=45&amp;upstreamPath=mqqzqf
-</code></pre>
-<p><strong>Response-fields:</strong></p>
-<table>
-<thead>
-<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
-<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
-<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
-<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Response-example:</strong></p>
-<pre><code>{
-	&quot;success&quot;:true,
-	&quot;status&quot;:&quot;tw4lux&quot;,
-	&quot;msg&quot;:&quot;77ywvi&quot;,
-	&quot;obj&quot;:{
-		
-	}
-}
-</code></pre>
-<h2>删除location</h2>
-<p><strong>URL:</strong> <code>http://your_ip:port/api/server/deleteLocation</code></p>
-<p><strong>Type:</strong> <code>ANY</code></p>
-<p><strong>Content-Type:</strong> <code>application/x-www-form-urlencoded;charset=utf-8</code></p>
-<p><strong>Description:</strong> 删除location</p>
-<p><strong>Request-parameters:</strong></p>
-<table>
-<thead>
-<tr><th>Parameter</th><th>Type</th><th>Description</th><th>Required</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>id</td><td>string</td><td>代理目标location的id</td><td>true</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Request-example:</strong></p>
-<pre><code>curl   -i http://your_ip:port/api/server/deleteLocation?id=45
-</code></pre>
-<p><strong>Response-fields:</strong></p>
-<table>
-<thead>
-<tr><th>Field</th><th>Type</th><th>Description</th><th>Since</th></tr>
-</thead>
-<tbody>
-<tr><td>success</td><td>boolean</td><td>请求结果</td><td>-</td></tr>
-<tr><td>status</td><td>string</td><td>请求状态 200:请求成功 401:token无效 500:服务器错误</td><td>-</td></tr>
-<tr><td>msg</td><td>string</td><td>错误信息</td><td>-</td></tr>
-<tr><td>obj</td><td>object</td><td>返回内容</td><td>-</td></tr>
-</tbody>
-</table>
-<p><strong>Response-example:</strong></p>
-<pre><code>{
-	&quot;success&quot;:true,
-	&quot;status&quot;:&quot;z7plds&quot;,
-	&quot;msg&quot;:&quot;rgom7n&quot;,
-	&quot;obj&quot;:{
-		
-	}
-}
-</code></pre>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="smart-doc">
+    <title>nginxWebUI</title>
+    <link rel="stylesheet" href="font.css">
+    <link rel="stylesheet" href="AllInOne.css?v=1646038809454"/>
+    
+    <style>.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint {
+        background: #f7f7f8;
+    }
 
-    <footer class="page-footer">
-        <span class="copyright">Generated by smart-doc at 2022-01-11 11:26:34</span>
-        <span class="footer-modification">Suggestions, contact, support and error reporting on
-            <a href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">Gitee</a> or
-            <a href="https://github.com/smart-doc-group/smart-doc" target="_blank">Github</a>
-        </span>
-    </footer>
+    .hljs {
+        padding: 0em;
+    }</style>
+    <script src="highlight.min.js"></script>
+    <script src="jquery.min.js"></script>
+</head>
+<body class="book toc2 toc-left">
+<div id="header"><h1>nginxWebUI</h1>
+    <div id="toc" class="toc2">
+        <div id="book-search-input"><input id="search" type="text" placeholder="Type to search"></div>
+        <div id="toctitle"><span>API Reference</span></div>
+        <ul id="accordion" class="sectlevel1">
+            <li class=""><a class="dd" href="api.html#header">1.&nbsp;基础参数接口</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="api.html#_1_1_获取Http参数">1.1.&nbsp;获取Http参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_2_添加或编辑Http参数">1.2.&nbsp;添加或编辑Http参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_3_删除Http参数">1.3.&nbsp;删除Http参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_4_获取基础参数">1.4.&nbsp;获取基础参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_5_添加或编辑基础参数">1.5.&nbsp;添加或编辑基础参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_6_删除基础参数">1.6.&nbsp;删除基础参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_7_获取Stream参数">1.7.&nbsp;获取Stream参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_8_添加或编辑Stream参数">1.8.&nbsp;添加或编辑Stream参数</a>
+                    </li>
+
+                    <li><a
+                            href="api.html#_1_9_删除Stream参数">1.9.&nbsp;删除Stream参数</a>
+                    </li>
+                </ul>
+            </li>
+            <li class=""><a class="dd" href="CertApiController.html#header">2.&nbsp;证书接口</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="CertApiController.html#_2_1_获取证书分页列表">2.1.&nbsp;获取证书分页列表</a>
+                    </li>
+
+                    <li><a
+                            href="CertApiController.html#_2_2_添加或编辑证书">2.2.&nbsp;添加或编辑证书</a>
+                    </li>
+
+                    <li><a
+                            href="CertApiController.html#_2_3_获取域名解析码">2.3.&nbsp;获取域名解析码</a>
+                    </li>
+
+                    <li><a
+                            href="CertApiController.html#_2_4_设置证书自动续签">2.4.&nbsp;设置证书自动续签</a>
+                    </li>
+
+                    <li><a
+                            href="CertApiController.html#_2_5_删除证书">2.5.&nbsp;删除证书</a>
+                    </li>
+
+                    <li><a
+                            href="CertApiController.html#_2_6_执行申请">2.6.&nbsp;执行申请</a>
+                    </li>
+
+                    <li><a
+                            href="CertApiController.html#_2_7_下载证书文件">2.7.&nbsp;下载证书文件</a>
+                    </li>
+                </ul>
+            </li>
+            <li class=""><a class="dd" href="NginxApiController.html#header">3.&nbsp;nginx接口</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="NginxApiController.html#_3_1_获取nginx状态">3.1.&nbsp;获取nginx状态</a>
+                    </li>
+
+                    <li><a
+                            href="NginxApiController.html#_3_2_替换conf文件">3.2.&nbsp;替换conf文件</a>
+                    </li>
+
+                    <li><a
+                            href="NginxApiController.html#_3_3_效验conf文件">3.3.&nbsp;效验conf文件</a>
+                    </li>
+
+                    <li><a
+                            href="NginxApiController.html#_3_4_重载conf文件">3.4.&nbsp;重载conf文件</a>
+                    </li>
+
+                    <li><a
+                            href="NginxApiController.html#_3_5_获取nginx启动命令">3.5.&nbsp;获取nginx启动命令</a>
+                    </li>
+
+                    <li><a
+                            href="NginxApiController.html#_3_6_获取nginx停止命令">3.6.&nbsp;获取nginx停止命令</a>
+                    </li>
+
+                    <li><a
+                            href="NginxApiController.html#_3_7_执行nginx命令">3.7.&nbsp;执行nginx命令</a>
+                    </li>
+                </ul>
+            </li>
+            <li class=""><a class="dd" href="ParamApiController.html#header">4.&nbsp;额外参数接口</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="ParamApiController.html#_4_1_根据项目获取参数列表">4.1.&nbsp;根据项目获取参数列表</a>
+                    </li>
+
+                    <li><a
+                            href="ParamApiController.html#_4_2_添加或编辑参数">4.2.&nbsp;添加或编辑参数</a>
+                    </li>
+
+                    <li><a
+                            href="ParamApiController.html#_4_3_删除额外参数">4.3.&nbsp;删除额外参数</a>
+                    </li>
+                </ul>
+            </li>
+            <li class=""><a class="dd" href="PasswordApiController.html#header">5.&nbsp;密码文件接口</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="PasswordApiController.html#_5_1_获取全部密码文件列表">5.1.&nbsp;获取全部密码文件列表</a>
+                    </li>
+
+                    <li><a
+                            href="PasswordApiController.html#_5_2_添加或编辑密码文件">5.2.&nbsp;添加或编辑密码文件</a>
+                    </li>
+
+                    <li><a
+                            href="PasswordApiController.html#_5_3_删除密码文件">5.3.&nbsp;删除密码文件</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="open"><a class="dd" href="ServerApiController.html#header">6.&nbsp;反向代理(server)接口</a>
+                <ul class="sectlevel2" style="display: block">
+                    <li><a
+                            href="ServerApiController.html#_6_1_获取server分页列表">6.1.&nbsp;获取server分页列表</a>
+                    </li>
+
+                    <li><a
+                            href="ServerApiController.html#_6_2_添加或编辑server">6.2.&nbsp;添加或编辑server</a>
+                    </li>
+
+                    <li><a
+                            href="ServerApiController.html#_6_3_删除server">6.3.&nbsp;删除server</a>
+                    </li>
+
+                    <li><a
+                            href="ServerApiController.html#_6_4_根据serverId获取location列表">6.4.&nbsp;根据serverId获取location列表</a>
+                    </li>
+
+                    <li><a
+                            href="ServerApiController.html#_6_5_添加或编辑location">6.5.&nbsp;添加或编辑location</a>
+                    </li>
+
+                    <li><a
+                            href="ServerApiController.html#_6_6_删除location">6.6.&nbsp;删除location</a>
+                    </li>
+                </ul>
+            </li>
+            <li class=""><a class="dd" href="TokenController.html#header">7.&nbsp;获取token</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="TokenController.html#_7_1_获取Token">7.1.&nbsp;获取Token</a>
+                    </li>
+                </ul>
+            </li>
+            <li class=""><a class="dd" href="UpstreamApiController.html#header">8.&nbsp;负载均衡(upstream)接口</a>
+                <ul class="sectlevel2" style="display: none">
+                    <li><a
+                            href="UpstreamApiController.html#_8_1_获取upstream分页列表">8.1.&nbsp;获取upstream分页列表</a>
+                    </li>
+
+                    <li><a
+                            href="UpstreamApiController.html#_8_2_添加或编辑upstream">8.2.&nbsp;添加或编辑upstream</a>
+                    </li>
+
+                    <li><a
+                            href="UpstreamApiController.html#_8_3_删除upstream">8.3.&nbsp;删除upstream</a>
+                    </li>
+
+                    <li><a
+                            href="UpstreamApiController.html#_8_4_根据upstreamId获取server列表">8.4.&nbsp;根据upstreamId获取server列表</a>
+                    </li>
+
+                    <li><a
+                            href="UpstreamApiController.html#_8_5_添加或编辑server">8.5.&nbsp;添加或编辑server</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
 </div>
+<div id="content">
+    <div class="sect1"><h2 id="_反向代理(server)接口"><a class="anchor" href="#_反向代理(server)接口"></a><a class="link" href="#_反向代理(server)接口">6.&nbsp;反向代理(server)接口</a>
+    </h2>
+        <div class="sectionbody">
+            <div class="sect2"><h3 id="_6_1_获取server分页列表">
+                <a class="anchor" href="#_6_1_获取server分页列表"></a>
+                <a class="link" href="#_6_1_获取server分页列表">6.1.&nbsp;获取server分页列表</a>
+            </h3>
+                <div class="paragraph"><p><strong>URL:</strong><a href="/api/server/getPage" class="bare">&nbsp;/api/server/getPage</a>
+                </p></div>
+                <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Description:</strong>&nbsp;获取server分页列表</p></div>
+                <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Parameter</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Required</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">current</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock"> 当前页数(从1开始)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">limit</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">   每页数量(默认为10)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">keywords</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">查询关键字</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Request-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="bash">curl -X GET -i /api/server/getPage?current=958&limit=10&keywords=l2uhwj</code></pre>
+                    </div>
+                </div>
+                <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Field</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">success</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求结果</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">status</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求状态 200:请求成功 401:token无效 500:服务器错误</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">msg</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">错误信息</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">obj</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">返回内容</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─count</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int64</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">总记录数</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─curr</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">起始页(从1开始)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─limit</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">每页记录数</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─records</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">列表内容</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">主键</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─serverName</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">监听域名</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─listen</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">监听ip端口 (格式 ip:port或port)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─def</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否为默认server 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─rewrite</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否http跳转https 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─rewriteListen</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">http跳转https监听ip端口,默认为80 (格式 ip:port或port)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ssl</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启ssl 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─http2</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启http2 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─proxyProtocol</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启proxy_protocol 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─pem</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">ssl证书pem文件路径</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─key</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">ssl证书key文件路径</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─proxyType</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理类型 0:http(默认) 1:tcp 2:udp</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─proxyUpstreamId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理upstream的id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─enable</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否启用 true:启用(默认) false:禁用</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─descr</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">描述</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─protocols</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">加密协议 (默认:TLSv1 TLSv1.1 TLSv1.2 TLSv1.3)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─passwordId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">使用的password文件Id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Response-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="json">{
+  "success": true,
+  "status": "f1rkem",
+  "msg": "na9y84",
+  "obj": {
+    "count": 371,
+    "curr": 573,
+    "limit": 10,
+    "records": [
+      {
+        "id": "87",
+        "serverName": "georgianna.stracke",
+        "listen": "ve0szg",
+        "def": 274,
+        "rewrite": 966,
+        "rewriteListen": "fpps51",
+        "ssl": 480,
+        "http2": 23,
+        "proxyProtocol": 217,
+        "pem": "ctweie",
+        "key": "vk4d6b",
+        "proxyType": 457,
+        "proxyUpstreamId": "87",
+        "enable": true,
+        "descr": "7udts9",
+        "protocols": "b9uv2g",
+        "passwordId": "87"
+      }
+    ]
+  }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sect2"><h3 id="_6_2_添加或编辑server">
+                <a class="anchor" href="#_6_2_添加或编辑server"></a>
+                <a class="link" href="#_6_2_添加或编辑server">6.2.&nbsp;添加或编辑server</a>
+            </h3>
+                <div class="paragraph"><p><strong>URL:</strong><a href="/api/server/insertOrUpdate" class="bare">&nbsp;/api/server/insertOrUpdate</a>
+                </p></div>
+                <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Description:</strong>&nbsp;添加或编辑server</p></div>
+                <div class="paragraph"><p><strong>Body-parameters:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Parameter</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Required</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">主键</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">serverName</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">监听域名</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">listen</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">监听ip端口 (格式 ip:port或port)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">def</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否为默认server 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">rewrite</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否http跳转https 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">rewriteListen</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">http跳转https监听ip端口,默认为80 (格式 ip:port或port)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">ssl</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启ssl 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">http2</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启http2 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">proxyProtocol</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启proxy_protocol 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">pem</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">ssl证书pem文件路径</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">key</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">ssl证书key文件路径</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">proxyType</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理类型 0:http(默认) 1:tcp 2:udp</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">proxyUpstreamId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理upstream的id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">enable</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否启用 true:启用(默认) false:禁用</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">descr</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">描述</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">protocols</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">加密协议 (默认:TLSv1 TLSv1.1 TLSv1.2 TLSv1.3)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">passwordId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">使用的password文件Id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Request-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdate?pemStr=oiq0hz&ssl=266&http2=78&keyStr=g3mth2&pem=atx1lr&rewriteListen=b64vyj&descr=g0ftc8&proxyUpstreamId=87&def=264&serverName=georgianna.stracke&updateTime=1646038811217&enable=true&key=olqgp9&protocols=19owo0&proxyProtocol=153&listen=53icc0&passwordId=87&rewrite=621&id=87&proxyType=416&createTime=1646038811217&seq=770</code></pre>
+                    </div>
+                </div>
+                <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Field</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">success</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求结果</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">status</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求状态 200:请求成功 401:token无效 500:服务器错误</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">msg</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">错误信息</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">obj</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">返回内容</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Response-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="json">{
+  "success": true,
+  "status": "jx051f",
+  "msg": "a8cnjq",
+  "obj": {}
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sect2"><h3 id="_6_3_删除server">
+                <a class="anchor" href="#_6_3_删除server"></a>
+                <a class="link" href="#_6_3_删除server">6.3.&nbsp;删除server</a>
+            </h3>
+                <div class="paragraph"><p><strong>URL:</strong><a href="/api/server/delete" class="bare">&nbsp;/api/server/delete</a>
+                </p></div>
+                <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Description:</strong>&nbsp;删除server</p></div>
+                <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Parameter</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Required</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">反向代理id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Request-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="bash">curl -X GET -i /api/server/delete?id=87</code></pre>
+                    </div>
+                </div>
+                <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Field</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">success</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求结果</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">status</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求状态 200:请求成功 401:token无效 500:服务器错误</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">msg</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">错误信息</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">obj</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">返回内容</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Response-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="json">{
+  "success": true,
+  "status": "eehzp2",
+  "msg": "a4t4nu",
+  "obj": {}
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sect2"><h3 id="_6_4_根据serverId获取location列表">
+                <a class="anchor" href="#_6_4_根据serverId获取location列表"></a>
+                <a class="link" href="#_6_4_根据serverId获取location列表">6.4.&nbsp;根据serverId获取location列表</a>
+            </h3>
+                <div class="paragraph"><p><strong>URL:</strong><a href="/api/server/getLocationByServerId" class="bare">&nbsp;/api/server/getLocationByServerId</a>
+                </p></div>
+                <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Description:</strong>&nbsp;根据serverId获取location列表</p></div>
+                <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Parameter</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Required</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">serverId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">反向代理id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Request-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="bash">curl -X GET -i /api/server/getLocationByServerId?serverId=87</code></pre>
+                    </div>
+                </div>
+                <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Field</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">success</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求结果</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">status</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求状态 200:请求成功 401:token无效 500:服务器错误</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">msg</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">错误信息</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">obj</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">返回内容</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">主键</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─serverId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">所属反向代理serverId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─path</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">监控路径 例:/</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─type</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理类型 0:动态代理(默认) 1:静态代理 2:负载均衡 3:空白代理</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─value</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">动态代理目标 (例:http://10.10.10.1:8080/)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─upstreamType</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理负载协议,http or https</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─upstreamId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理负载均衡upstream的id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─upstreamPath</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理负载额外路径,默认为空</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─rootPath</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">静态代理路径 (例:/home/www)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─rootPage</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">静态代理默认页面 (例:index.html)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─rootType</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">静态代理类型 root:根路径模式 alias:别名模式</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─header</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否携带Host参数 0否 1是(默认)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─websocket</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启websocket支持 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Response-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="json">{
+  "success": true,
+  "status": "l45gtu",
+  "msg": "mvix1d",
+  "obj": [
+    {
+      "id": "87",
+      "serverId": "87",
+      "path": "zfzx26",
+      "type": 930,
+      "value": "sfpiw6",
+      "upstreamType": "7dbdim",
+      "upstreamId": "87",
+      "upstreamPath": "vchp32",
+      "rootPath": "pd09q2",
+      "rootPage": "ryy3qq",
+      "rootType": "b6q1me",
+      "header": 541,
+      "websocket": 60
+    }
+  ]
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sect2"><h3 id="_6_5_添加或编辑location">
+                <a class="anchor" href="#_6_5_添加或编辑location"></a>
+                <a class="link" href="#_6_5_添加或编辑location">6.5.&nbsp;添加或编辑location</a>
+            </h3>
+                <div class="paragraph"><p><strong>URL:</strong><a href="/api/server/insertOrUpdateLocation" class="bare">&nbsp;/api/server/insertOrUpdateLocation</a>
+                </p></div>
+                <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Description:</strong>&nbsp;添加或编辑location</p></div>
+                <div class="paragraph"><p><strong>Body-parameters:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Parameter</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Required</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">主键</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">serverId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">所属反向代理serverId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">path</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">监控路径 例:/</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理类型 0:动态代理(默认) 1:静态代理 2:负载均衡 3:空白代理</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">value</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">动态代理目标 (例:http://10.10.10.1:8080/)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">upstreamType</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理负载协议,http or https</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">upstreamId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理负载均衡upstream的id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">upstreamPath</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理负载额外路径,默认为空</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">rootPath</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">静态代理路径 (例:/home/www)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">rootPage</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">静态代理默认页面 (例:index.html)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">rootType</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">静态代理类型 root:根路径模式 alias:别名模式</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">header</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否携带Host参数 0否 1是(默认)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">websocket</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启websocket支持 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Request-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdateLocation?rootPage=zrorof&updateTime=1646038811217&websocket=499&value=pggazb&type=118&createTime=1646038811217&id=87&path=4w0tzv&rootPath=r5hoz7&locationParamJson=ywl79q&upstreamType=49sztj&serverId=87&rootType=udo5dr&upstreamId=87&header=874&upstreamPath=c8a4fx</code></pre>
+                    </div>
+                </div>
+                <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Field</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">success</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求结果</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">status</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求状态 200:请求成功 401:token无效 500:服务器错误</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">msg</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">错误信息</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">obj</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">返回内容</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Response-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="json">{
+  "success": true,
+  "status": "jeraiw",
+  "msg": "2rq9go",
+  "obj": {}
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sect2"><h3 id="_6_6_删除location">
+                <a class="anchor" href="#_6_6_删除location"></a>
+                <a class="link" href="#_6_6_删除location">6.6.&nbsp;删除location</a>
+            </h3>
+                <div class="paragraph"><p><strong>URL:</strong><a href="/api/server/deleteLocation" class="bare">&nbsp;/api/server/deleteLocation</a>
+                </p></div>
+                <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Description:</strong>&nbsp;删除location</p></div>
+                <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Parameter</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Required</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理目标location的id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Request-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="bash">curl -X GET -i /api/server/deleteLocation?id=87</code></pre>
+                    </div>
+                </div>
+                <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
+                <table class="tableblock frame-all grid-all spread">
+                    <colgroup>
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="tableblock halign-left valign-top">Field</th>
+                        <th class="tableblock halign-left valign-top">Type</th>
+                        <th class="tableblock halign-left valign-top">Description</th>
+                        <th class="tableblock halign-left valign-top">Since</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">success</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求结果</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">status</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">请求状态 200:请求成功 401:token无效 500:服务器错误</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">msg</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">错误信息</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">obj</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">返回内容</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="paragraph"><p><strong>Response-example:</strong></p></div>
+                <div class="listingblock">
+                    <div class="content">
+                        <pre><code class="json">{
+  "success": true,
+  "status": "f04p4w",
+  "msg": "ymvkpq",
+  "obj": {}
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2022-02-28 17:00:09</span><span
+            class="footer-modification">Suggestions,contact,support and error reporting on<a
+            href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">&nbsp;Gitee</a>&nbsp;or<a
+            href="https://github.com/smart-doc-group/smart-doc.git" target="_blank">&nbsp;Github</a></span></footer>
+</div>
+<script src="search.js?v=1646038809454"></script>
+<script>
+    $(function () {
+        const Accordion = function (el, multiple) {
+            this.el = el || {};
+            this.multiple = multiple || false;
+            const links = this.el.find('.dd');
+            links.on('click', {el: this.el, multiple: this.multiple}, this.dropdown);
+        };
+        Accordion.prototype.dropdown = function (e) {
+            const $el = e.data.el;
+            const $this = $(this), $next = $this.next();
+            $next.slideToggle();
+            $this.parent().toggleClass('open');
+            if (!e.data.multiple) {
+                $el.find('.submenu').not($next).slideUp("20").parent().removeClass('open');
+            }
+        };
+        new Accordion($('#accordion'), false);
+        hljs.highlightAll()
+    });
+</script>
 </body>
 </html>

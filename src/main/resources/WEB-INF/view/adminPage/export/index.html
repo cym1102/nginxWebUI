@@ -17,7 +17,7 @@
 					<legend>${menuStr.export}</legend>
 				</fieldset>
 
-				<form action="${ctx}/adminPage/admin" id="searchForm" method="post">
+				<form action="${ctx}/adminPage/export/dataImport" enctype="multipart/form-data" id="dataImport" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
 							<button type="button" id="dataExport" class="layui-btn layui-btn-sm" onclick="dExport()">${exportStr.dExport}</button>
@@ -26,7 +26,7 @@
 							<button type="button" id="dataImport" class="layui-btn layui-btn-sm" onclick="dImport()">${exportStr.dImport}</button>
 
 							<div style="display: none;">
-								<input type="file" id="file" onchange="dImportOver()">
+								<input type="file" id="file" name="file" onchange="dImportOver()">
 							</div>
 						</div>
 						

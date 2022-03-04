@@ -47,7 +47,7 @@ public class VersionConfig {
 				newVersion = JSONUtil.toBean(json, Version.class);
 			}
 		} catch (Exception e) {
-			logger.info(e.getMessage(), e);
+			logger.error("更新服务器不可访问");
 
 		}
 

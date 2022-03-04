@@ -1,5 +1,7 @@
 $(function() {
-
+	if (getQueryString("over") == 'true') {
+		layer.msg(exportStr.importSuccess);
+	}
 });
 
 function dExport() {
@@ -16,6 +18,11 @@ function dImportOver() {
 	if (files.length == 0) {
 		layer.alert(exportStr.selectFile);
 	} else {
+		if (confirm(exportStr.confirm)) {
+			$("#dataImport").submit();
+		}
+
+		/*
 		var reader = new FileReader();// 新建一个FileReader
 		reader.readAsText(files[0], "UTF-8");// 读取文件
 		reader.onload = function(evt) { // 读取完文件之后会回来这里
@@ -40,9 +47,10 @@ function dImportOver() {
 				}
 			});
 		}
+		*/
 	}
 }
 
-function lExport(){
+function lExport() {
 	window.open(ctx + "/adminPage/export/logExport")
 }

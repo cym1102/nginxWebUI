@@ -756,7 +756,7 @@ public class ConfService {
 	}
 
 	
-	public void setAsycPack(AsycPack asycPack, String adminName) {
+	public void setAsycPack(AsycPack asycPack) {
 		// 不要同步Cert表
 		try {
 

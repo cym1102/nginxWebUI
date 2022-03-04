@@ -26,6 +26,7 @@ public class Admin extends BaseModel {
 	@InitValue("0")
 	Integer type;
 	
+	
 	public String getToken() {
 		return token;
 	}
