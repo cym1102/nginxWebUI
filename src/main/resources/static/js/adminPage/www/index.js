@@ -71,7 +71,7 @@ function addOver() {
 		layer.alert(wwwStr.noUpload);
 		return;
 	}
-	
+	showLoad();
 	$.ajax({
 		type : 'POST',
 		url : ctx + '/adminPage/www/addOver',

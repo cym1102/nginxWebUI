@@ -57,7 +57,7 @@ public class ServerController extends BaseController {
 	ConfService confService;
 
 	@Mapping("")
-	public ModelAndView index( ModelAndView modelAndView, Page page, String keywords) {
+	public ModelAndView index(ModelAndView modelAndView, Page page, String keywords) {
 		page = serverService.search(page, keywords);
 
 		List<ServerExt> exts = new ArrayList<ServerExt>();
@@ -66,12 +66,12 @@ public class ServerController extends BaseController {
 			if (server.getEnable() == null) {
 				server.setEnable(false);
 			}
-			
+
 			// 描述回车转<br>
-			if(StrUtil.isNotEmpty(server.getDescr())) {
+			if (StrUtil.isNotEmpty(server.getDescr())) {
 				server.setDescr(server.getDescr().replace("\n", "<br>"));
 			}
-			
+
 			serverExt.setServer(server);
 			if (server.getProxyType() == 0) {
 				serverExt.setLocationStr(buildLocationStr(server.getId()));
@@ -80,7 +80,6 @@ public class ServerController extends BaseController {
 				serverExt.setLocationStr(m.get("serverStr.server") + ": " + (upstream != null ? upstream.getName() : ""));
 			}
 
-			
 			exts.add(serverExt);
 		}
 		page.setRecords(exts);
@@ -213,8 +212,10 @@ public class ServerController extends BaseController {
 			String ip = "";
 			String port = "";
 			if (server.getListen().contains(":")) {
-				ip = server.getListen().split(":")[0];
-				port = server.getListen().split(":")[1];
+				String[] strArray = server.getListen().split(":");
+
+				port = strArray[strArray.length - 1];
+				ip = server.getListen().replace(":" + port, "");
 			} else {
 				ip = "127.0.0.1";
 				port = server.getListen();
@@ -284,11 +285,11 @@ public class ServerController extends BaseController {
 		serverService.setSeq(id, count);
 		return renderSuccess();
 	}
-	
+
 	@Mapping("getDescr")
 	public JsonResult getDescr(String id) {
 		Server server = sqlHelper.findById(id, Server.class);
-		
+
 		return renderSuccess(server.getDescr());
 	}
 }

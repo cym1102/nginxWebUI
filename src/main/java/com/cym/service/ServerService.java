@@ -41,7 +41,7 @@ public class ServerService {
 	public Page search(Page page, String keywords) {
 		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper();
 		if (StrUtil.isNotEmpty(keywords)) {
-			conditionAndWrapper.and(new ConditionOrWrapper().like("descr", keywords).like("serverName", keywords.trim()).like("listen", keywords.trim()));
+			conditionAndWrapper.and(new ConditionOrWrapper().like("descr", keywords.trim()).like("serverName", keywords.trim()).like("listen", keywords.trim()));
 		}
 
 		Sort sort = new Sort().add("seq", Direction.DESC);
