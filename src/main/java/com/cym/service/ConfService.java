@@ -106,6 +106,16 @@ public class ConfService {
 				NgxBlock ngxBlockServer = new NgxBlock();
 				ngxBlockServer.addValue("upstream " + upstream.getName().trim());
 
+				if (StrUtil.isNotEmpty(upstream.getDescr())) {
+					String[] descrs = upstream.getDescr().split("\n");
+					for (String d : descrs) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("# " + d);
+						ngxBlockServer.addEntry(ngxParam);
+					}
+
+				}
+
 				if (StrUtil.isNotEmpty(upstream.getTactics())) {
 					ngxParam = new NgxParam();
 					ngxParam.addValue(upstream.getTactics());
@@ -141,7 +151,7 @@ public class ConfService {
 			}
 
 			// 添加server
-			List<Server> servers = serverService.getListByProxyType(new String[] {"0" });
+			List<Server> servers = serverService.getListByProxyType(new String[] { "0" });
 			for (Server server : servers) {
 				if (server.getEnable() == null || !server.getEnable()) {
 					continue;
@@ -261,6 +271,16 @@ public class ConfService {
 
 		ngxBlockServer.addValue("upstream " + upstream.getName());
 
+		if (StrUtil.isNotEmpty(upstream.getDescr())) {
+			String[] descrs = upstream.getDescr().split("\n");
+			for (String d : descrs) {
+				ngxParam = new NgxParam();
+				ngxParam.addValue("# " + d);
+				ngxBlockServer.addEntry(ngxParam);
+			}
+
+		}
+		
 		if (StrUtil.isNotEmpty(upstream.getTactics())) {
 			ngxParam = new NgxParam();
 			ngxParam.addValue(upstream.getTactics());
@@ -289,6 +309,15 @@ public class ConfService {
 		NgxBlock ngxBlockServer = new NgxBlock();
 		if (server.getProxyType() == 0) {
 			ngxBlockServer.addValue("server");
+
+			if (StrUtil.isNotEmpty(server.getDescr())) {
+				String[] descrs = server.getDescr().split("\n");
+				for (String d : descrs) {
+					ngxParam = new NgxParam();
+					ngxParam.addValue("# " + d);
+					ngxBlockServer.addEntry(ngxParam);
+				}
+			}
 
 			// 监听域名
 			if (StrUtil.isNotEmpty(server.getServerName())) {
@@ -349,11 +378,20 @@ public class ConfService {
 			// location参数配置
 			for (Location location : locationList) {
 				NgxBlock ngxBlockLocation = new NgxBlock();
+				ngxBlockLocation.addValue("location");
+				ngxBlockLocation.addValue(location.getPath());
+				
+				if (StrUtil.isNotEmpty(location.getDescr())) {
+					String[] descrs = location.getDescr().split("\n");
+					for (String d : descrs) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("# " + d);
+						ngxBlockLocation.addEntry(ngxParam);
+					}
+				}
+				
 				if (location.getType() == 0 || location.getType() == 2) { // location或负载均衡
-					// 添加location
-					ngxBlockLocation.addValue("location");
-					ngxBlockLocation.addValue(location.getPath());
-
+					
 					if (location.getType() == 0) {
 						ngxParam = new NgxParam();
 						ngxParam.addValue("proxy_pass " + location.getValue());
@@ -414,9 +452,6 @@ public class ConfService {
 					}
 
 				} else if (location.getType() == 1) { // 静态html
-					ngxBlockLocation.addValue("location");
-					ngxBlockLocation.addValue(location.getPath());
-
 					if (location.getRootType() != null && location.getRootType().equals("alias")) {
 						ngxParam = new NgxParam();
 						ngxParam.addValue("alias " + ToolUtils.handlePath(location.getRootPath()));
@@ -435,8 +470,6 @@ public class ConfService {
 
 				} else if (location.getType() == 3) { // 空白location
 
-					ngxBlockLocation.addValue("location");
-					ngxBlockLocation.addValue(location.getPath());
 				}
 
 				// 自定义参数
@@ -648,7 +681,6 @@ public class ConfService {
 		return ToolUtils.handleConf(new NgxDumper(ngxConfig).dump());
 	}
 
-	
 	public void replace(String nginxPath, String nginxContent, List<String> subContent, List<String> subName, Boolean isReplace, String adminName) {
 
 		String beforeConf = null;
@@ -755,7 +787,6 @@ public class ConfService {
 		return asycPack;
 	}
 
-	
 	public void setAsycPack(AsycPack asycPack) {
 		// 不要同步Cert表
 		try {
@@ -777,11 +808,15 @@ public class ConfService {
 				sqlHelper.insertAll(asycPack.getLocationList());
 
 				for (Server server : asycPack.getServerList()) {
-					if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getPemStr())) {
-						FileUtil.writeString(server.getPemStr(), server.getPem(), StandardCharsets.UTF_8);
-					}
-					if (StrUtil.isNotEmpty(server.getKey()) && StrUtil.isNotEmpty(server.getKeyStr())) {
-						FileUtil.writeString(server.getKeyStr(), server.getKey(), StandardCharsets.UTF_8);
+					try {
+						if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getPemStr())) {
+							FileUtil.writeString(server.getPemStr(), server.getPem(), StandardCharsets.UTF_8);
+						}
+						if (StrUtil.isNotEmpty(server.getKey()) && StrUtil.isNotEmpty(server.getKeyStr())) {
+							FileUtil.writeString(server.getKeyStr(), server.getKey(), StandardCharsets.UTF_8);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 			}

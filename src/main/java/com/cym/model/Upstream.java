@@ -14,13 +14,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Upstream extends BaseModel {
 	/**
 	 * 负载均衡名称
+	 * 
 	 * @required
 	 */
 	String name;
 	/**
-	 * 负载策略: '':无(默认) 'sticky':会话保持 'ip_hash':ip绑定 'least_conn':最少连接 'least_time':最短时间
+	 * 负载策略: '':无(默认) 'sticky':会话保持 'ip_hash':ip绑定 'least_conn':最少连接
+	 * 'least_time':最短时间
 	 */
-	String tactics; 
+	String tactics;
 
 	/**
 	 * 代理类型 0:http(默认) 1:tcp/udp
@@ -32,8 +34,22 @@ public class Upstream extends BaseModel {
 	 */
 	@InitValue("0")
 	Integer monitor;
+
+	/**
+	 * 描述
+	 */
+	String descr;
+
 	@JsonIgnore
 	Long seq;
+
+	public String getDescr() {
+		return descr;
+	}
+
+	public void setDescr(String descr) {
+		this.descr = descr;
+	}
 
 	public Long getSeq() {
 		return seq;

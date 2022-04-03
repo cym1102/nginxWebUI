@@ -1,25 +1,19 @@
 package com.cym.controller.adminPage;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
-import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.DownloadedFile;
 import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cym.config.InitConfig;
 import com.cym.model.Cert;
 import com.cym.model.CertCode;
 import com.cym.service.CertService;
@@ -52,6 +46,12 @@ public class CertController extends BaseController {
 	public ModelAndView index(ModelAndView modelAndView, Page page, String keywords) {
 		page = certService.getPage(keywords, page);
 
+		for (Cert cert : (List<Cert>) page.getRecords()) {
+			if (cert.getType() == 0 || cert.getType() == 2) {
+				cert.setDomain(cert.getDomain() + "(" + cert.getEncryption() + ")");
+			}
+		}
+
 		modelAndView.put("keywords", keywords);
 		modelAndView.put("page", page);
 		modelAndView.view("/adminPage/cert/index.html");
@@ -60,9 +60,6 @@ public class CertController extends BaseController {
 
 	@Mapping("addOver")
 	public JsonResult addOver(Cert cert, String[] domains, String[] types, String[] values) {
-		if (certService.hasSame(cert)) {
-			return renderError(m.get("certStr.same"));
-		}
 
 		certService.insertOrUpdate(cert, domains, types, values);
 
@@ -84,6 +81,9 @@ public class CertController extends BaseController {
 	public JsonResult del(String id) {
 		Cert cert = sqlHelper.findById(id, Cert.class);
 		String path = homeConfig.acmeShDir + cert.getDomain();
+		if ("ECC".equals(cert.getEncryption())) {
+			path += "_ecc";
+		}
 		if (FileUtil.exist(path)) {
 			FileUtil.del(path);
 		}
@@ -98,6 +98,11 @@ public class CertController extends BaseController {
 		}
 
 		Cert cert = sqlHelper.findById(id, Cert.class);
+		String keylength = "";
+		if ("ECC".equals(cert.getEncryption())) {
+			keylength = " --keylength ec-256 ";
+		}
+
 		if (cert.getDnsType() == null) {
 			return renderError(m.get("certStr.error3"));
 		}
@@ -129,12 +134,12 @@ public class CertController extends BaseController {
 					dnsType = "dns_huaweicloud";
 				}
 
-				cmd = homeConfig.acmeSh + " --issue --force --dns " + dnsType + " -d " + cert.getDomain() + " --server letsencrypt";
+				cmd = homeConfig.acmeSh + " --issue --force --dns " + dnsType + " -d " + cert.getDomain() + keylength + " --server letsencrypt";
 			} else if (cert.getType() == 2) {
 				if (certService.hasCode(cert.getId())) {
 					cmd = homeConfig.acmeSh + " --renew --force --dns -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
 				} else {
-					cmd = homeConfig.acmeSh + " --issue --force --dns -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+					cmd = homeConfig.acmeSh + " --issue --force --dns -d " + cert.getDomain() + keylength + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
 				}
 
 			}
@@ -155,15 +160,14 @@ public class CertController extends BaseController {
 		if (rs.contains("Your cert is in")) {
 			// 申请成功, 将证书复制到/home/nginxWebUI
 			String domain = cert.getDomain().split(",")[0];
-			String certDir = homeConfig.acmeShDir + domain + "/";
+			String certDir = homeConfig.acmeShDir + domain;
+			if ("ECC".equals(cert.getEncryption())) {
+				certDir += "_ecc";
+			}
+			certDir += "/";
 
-			String dest = homeConfig.home + "cert/" + domain + ".fullchain.cer";
-			FileUtil.copy(new File(certDir + "fullchain.cer"), new File(dest), true);
-			cert.setPem(dest);
-
-			dest = homeConfig.home + "cert/" + domain + ".key";
-			FileUtil.copy(new File(certDir + domain + ".key"), new File(dest), true);
-			cert.setKey(dest);
+			cert.setPem(certDir + "fullchain.cer");
+			cert.setKey(certDir + domain + ".key");
 
 			cert.setMakeTime(System.currentTimeMillis());
 			sqlHelper.updateById(cert);

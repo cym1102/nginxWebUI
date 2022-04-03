@@ -1,14 +1,10 @@
 package com.cym.controller.adminPage;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Date;
 
@@ -22,16 +18,17 @@ import org.noear.solon.core.handle.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cym.config.InitConfig;
 import com.cym.ext.AsycPack;
-import com.cym.model.Admin;
+import com.cym.model.Cert;
+import com.cym.model.CertCode;
+import com.cym.model.Stream;
+import com.cym.service.CertService;
 import com.cym.service.ConfService;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
 import com.cym.utils.BaseController;
-import com.cym.utils.JsonResult;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
 @Controller
@@ -40,6 +37,8 @@ public class ExportController extends BaseController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Inject
 	ConfService confService;
+	@Inject
+	CertService certService;
 
 	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView) {
@@ -50,11 +49,15 @@ public class ExportController extends BaseController {
 
 	@Mapping("dataExport")
 	public DownloadedFile dataExport(Context context) throws IOException {
-		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
-
 		AsycPack asycPack = confService.getAsycPack(new String[] { "all" });
+		// 导出证书
+		asycPack.setCertList(sqlHelper.findAll(Cert.class));
+		asycPack.setCertCodeList(sqlHelper.findAll(CertCode.class));
+		asycPack.setAcmeZip(certService.getAcmeZipBase64());
+		
 		String json = JSONUtil.toJsonPrettyStr(asycPack);
 
+		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
 		DownloadedFile downloadedFile = new DownloadedFile("application/octet-stream", new ByteArrayInputStream(json.getBytes(Charset.forName("UTF-8"))), date + ".json");
 		return downloadedFile;
 	}
@@ -63,12 +66,25 @@ public class ExportController extends BaseController {
 	public void dataImport(UploadedFile file, Context context) throws IOException {
 		if (file != null) {
 			File tempFile = new File(homeConfig.home + "temp" + File.separator + file.name);
+			FileUtil.mkdir(tempFile.getParentFile());
 			file.transferTo(tempFile);
 			String json = FileUtil.readString(tempFile, Charset.forName("UTF-8"));
 			tempFile.delete();
 
 			AsycPack asycPack = JSONUtil.toBean(json, AsycPack.class);
 			confService.setAsycPack(asycPack);
+			
+			// 导入证书
+			if (asycPack.getCertList() != null) {
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Cert.class);
+				sqlHelper.insertAll(asycPack.getCertList());
+			}
+			if (asycPack.getCertCodeList() != null) {
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), CertCode.class);
+				sqlHelper.insertAll(asycPack.getCertList());
+			}
+			
+			certService.writeAcmeZipBase64(asycPack.getAcmeZip());
 		}
 		context.redirect("/adminPage/export?over=true");
 	}

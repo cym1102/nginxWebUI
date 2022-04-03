@@ -107,24 +107,24 @@ public class InitConfig {
 			settingService.set("nginxPath", nginxPath);
 		}
 
-		if (SystemTool.isLinux()) {
-			// 释放acme全新包
-			ClassPathResource resource = new ClassPathResource("acme.zip");
-			InputStream inputStream = resource.getStream();
-			FileUtil.writeFromStream(inputStream, homeConfig.home + "acme.zip");
-			FileUtil.mkdir(homeConfig.acmeShDir);
-			ZipUtil.unzip(homeConfig.home + "acme.zip", homeConfig.acmeShDir);
-			FileUtil.del(homeConfig.home + "acme.zip");
+		// 释放acme全新包
+		ClassPathResource resource = new ClassPathResource("acme.zip");
+		InputStream inputStream = resource.getStream();
+		FileUtil.writeFromStream(inputStream, homeConfig.home + "acme.zip");
+		FileUtil.mkdir(homeConfig.acmeShDir);
+		ZipUtil.unzip(homeConfig.home + "acme.zip", homeConfig.acmeShDir);
+		FileUtil.del(homeConfig.home + "acme.zip");
 
-			// 修改acme.sh文件
-			List<String> res = FileUtil.readUtf8Lines(homeConfig.acmeSh);
-			for (int i = 0; i < res.size(); i++) {
-				if (res.get(i).contains("DEFAULT_INSTALL_HOME=\"$HOME/.$PROJECT_NAME\"")) {
-					res.set(i, "DEFAULT_INSTALL_HOME=\"" + homeConfig.acmeShDir + "\"");
-				}
+		// 修改acme.sh文件
+		List<String> res = FileUtil.readUtf8Lines(homeConfig.acmeSh);
+		for (int i = 0; i < res.size(); i++) {
+			if (res.get(i).contains("DEFAULT_INSTALL_HOME=\"$HOME/.$PROJECT_NAME\"")) {
+				res.set(i, "DEFAULT_INSTALL_HOME=\"" + homeConfig.acmeShDir + "\"");
 			}
+		}
+		FileUtil.writeUtf8Lines(res, homeConfig.acmeSh);
 
-			FileUtil.writeUtf8Lines(res, homeConfig.acmeSh);
+		if (SystemTool.isLinux()) {
 			RuntimeUtil.exec("chmod a+x " + homeConfig.acmeSh);
 
 			// 查找ngx_stream_module模块

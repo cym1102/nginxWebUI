@@ -51,7 +51,6 @@ public class ServerService {
 		return page;
 	}
 
-	
 	public void deleteById(String id) {
 		sqlHelper.deleteById(id, Server.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("serverId", id), Location.class);
@@ -61,7 +60,6 @@ public class ServerService {
 		return sqlHelper.findListByQuery(new ConditionAndWrapper().eq("serverId", serverId), Location.class);
 	}
 
-	
 	public void addOver(Server server, String serverParamJson, List<Location> locations) throws Exception {
 
 		if (server.getDef() != null && server.getDef() == 1) {
@@ -84,6 +82,7 @@ public class ServerService {
 			sqlHelper.insert(param);
 		}
 
+		List<Location> locationOlds = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
 
 		if (locations != null) {
@@ -92,7 +91,7 @@ public class ServerService {
 
 			for (Location location : locations) {
 				location.setServerId(server.getId());
-
+				location.setDescr(findLocationDescr(locationOlds, location));
 				sqlHelper.insert(location);
 
 				paramList = new ArrayList<Param>();
@@ -110,6 +109,19 @@ public class ServerService {
 		}
 	}
 
+	// 找到location的描述
+	private String findLocationDescr(List<Location> locationOlds, Location locationNew) {
+
+		for (Location location : locationOlds) {
+			if (location.getPath().equals(locationNew.getPath()) && location.getType() == locationNew.getType()) {
+				return location.getDescr();
+			}
+
+		}
+
+		return null;
+	}
+
 	private void clearDef() {
 		List<Server> servers = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("def", 1), Server.class);
 		for (Server server : servers) {
@@ -118,7 +130,6 @@ public class ServerService {
 		}
 	}
 
-	
 	public void addOverTcp(Server server, String serverParamJson) {
 		sqlHelper.insertOrUpdate(server);
 

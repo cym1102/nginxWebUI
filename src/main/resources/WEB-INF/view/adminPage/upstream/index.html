@@ -84,6 +84,7 @@
 						<tr>
 							<th>${upstreamStr.proxyType}</th>
 							<th>${commonStr.name}</th>
+							<th>${commonStr.descr}</th>
 							<th>${upstreamStr.strategy}</th>
 							<th>${upstreamStr.server}</th>
 							<#if upstreamMonitor=='true'>
@@ -97,9 +98,26 @@
 						<tr>
 							<td><#if ext.upstream.proxyType==0>http/https</#if> <#if ext.upstream.proxyType==1>TCP/UDP</#if></td>
 							<td>${ext.upstream.name}</td>
-							<td><#if ext.upstream.tactics==""> ${upstreamStr.default} </#if> <#if ext.upstream.tactics=="ip_hash"> ${upstreamStr.ipHash} </#if> <#if ext.upstream.tactics=="sticky">
-								${upstreamStr.sticky} </#if> <#if ext.upstream.tactics=="least_conn"> ${upstreamStr.leastConn} </#if> <#if ext.upstream.tactics=="least_time"> ${upstreamStr.leastTime} </#if> <#if
-									ext.upstream.tactics=="fair"> ${upstreamStr.fair} </#if> <#if ext.upstream.tactics=="url_hash"> ${upstreamStr.urlHash} </#if></td>
+							<td style="max-width: 150px;">
+								<#if ext.upstream.descr != null && ext.upstream.descr != "">
+									<a href="javascript:editDescr('${ext.upstream.id}')" style="color: #bbbbbb; text-decoration: underline;">${ext.upstream.descr}</a>
+								</#if>
+								<#if ext.upstream.descr == null || ext.upstream.descr == "">
+									<a href="javascript:editDescr('${ext.upstream.id}')" style="color: #bbbbbb; text-decoration: underline;">${commonStr.edit}</a>
+								</#if>
+							</td>
+							
+							<td>
+								<#if ext.upstream.tactics==""> ${upstreamStr.default} </#if> 
+								<#if ext.upstream.tactics=="ip_hash"> ${upstreamStr.ipHash} </#if> 
+								<#if ext.upstream.tactics=="sticky">
+									${upstreamStr.sticky} 
+								</#if> 
+								<#if ext.upstream.tactics=="least_conn"> ${upstreamStr.leastConn} </#if> 
+								<#if ext.upstream.tactics=="least_time"> ${upstreamStr.leastTime} </#if> 
+								<#if ext.upstream.tactics=="fair"> ${upstreamStr.fair} </#if> 
+								<#if ext.upstream.tactics=="url_hash"> ${upstreamStr.urlHash} </#if>
+							</td>
 							<td style="padding: 0px;">
 								<table class="server">${ext.serverStr}
 								</table>
@@ -300,6 +318,20 @@
 					
 					</textarea>
 				</div>
+			</div>
+		</div>
+		
+		
+		<div class="layui-form" id="descrDiv" style="padding: 15px; display: none">
+			<input type="hidden" id="upstreamId" name="upstreamId">
+			<div class="layui-form-item">
+				<div class="layui-input-inline" style="width: 100%;">
+					<textarea type="text" id="descr" name="descr" class="layui-textarea" style="height: 200px;"></textarea>
+				</div>
+			</div>
+			<div class="layui-form-item center">
+				<button type="button" class="layui-btn layui-btn-normal" onclick="editDescrOver()">${commonStr.ok}</button>
+				<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 			</div>
 		</div>
 	</div>

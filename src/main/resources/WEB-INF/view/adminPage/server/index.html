@@ -36,6 +36,20 @@
 	overflow: hidden;
 }
 
+.descrBtn{
+	display: inline-block;
+	margin-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	max-width: 100px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	color: #bbbbbb!important;
+	text-decoration: underline;
+	
+}
+
 .liteBtn {
 	width: 100px;
 }
@@ -131,7 +145,7 @@
 								<th>
 									${serverStr.serverName}
 								</th>
-								<th>${serverStr.ssl}</th>
+								<!-- <th>${serverStr.ssl}</th> -->
 								<th>${serverStr.sslOption}</th>
 								<th>${serverStr.proxyTarget}</th>
 								<th>${serverStr.status}</th>
@@ -160,13 +174,13 @@
 									
 								</td>
 								<td>
+									<span class="blk">${serverStr.ssl}：</span>
 									<span class="descr">
-									<#if ext.server.ssl==0>${commonStr.no}</#if>
-									<#if ext.server.ssl==1>${commonStr.yes}</#if>
+										<#if ext.server.ssl==0>${commonStr.no}</#if>
+										<#if ext.server.ssl==1>${commonStr.yes}</#if>
 									</span>
-								</td>
-								<td>
 									<#if ext.server.ssl==1> 
+										<br>
 										<span class="blk">${serverStr.httpToHttps}：</span> 
 										<span class="descr">
 										<#if ext.server.rewrite==0>${commonStr.no}</#if> 
@@ -189,8 +203,12 @@
 								</td>
 
 								<td style="max-width: 150px;">
-									${ext.server.descr}
-									<a href="javascript:editDescr('${ext.server.id}')" style="color: blue; text-decoration: underline;">${commonStr.edit}</a>
+									<#if ext.server.descr != null && ext.server.descr != "">
+										<a href="javascript:editDescr('${ext.server.id}')" style="color: #bbbbbb; text-decoration: underline;">${ext.server.descr}</a>
+									</#if>
+									<#if ext.server.descr == null || ext.server.descr == "">
+										<a href="javascript:editDescr('${ext.server.id}')" style="color: #bbbbbb; text-decoration: underline;">${commonStr.edit}</a>
+									</#if>
 								</td>
 
 

@@ -2,12 +2,10 @@ package com.cym.model;
 
 import com.cym.sqlhelper.bean.BaseModel;
 import com.cym.sqlhelper.config.InitValue;
-import com.cym.sqlhelper.config.SingleIndex;
 import com.cym.sqlhelper.config.Table;
 
 @Table
 public class Admin extends BaseModel {
-	@SingleIndex(unique = true)
 	String name;
 	String pass;
 	// 谷歌秘钥

@@ -843,15 +843,15 @@ function editDescr(id) {
 		success: function(data) {
 			if (data.success) {
 				$("#serverId").val(id);
-				$("#descr").val(data.obj!=null?data.obj:'');
-				
+				$("#descr").val(data.obj != null ? data.obj : '');
+
 				layer.open({
 					type: 1,
 					title: serverStr.descr,
 					area: ['500px', '360px'], // 宽高
 					content: $('#descrDiv')
 				});
-				
+
 			} else {
 				layer.msg(data.msg)
 			}
@@ -860,9 +860,6 @@ function editDescr(id) {
 			layer.alert(commonStr.errorInfo);
 		}
 	});
-
-
-
 
 }
 
@@ -912,4 +909,67 @@ function setOrder(id, count) {
 			layer.alert(commonStr.errorInfo);
 		}
 	});
+}
+
+
+function editLocationDescr(id) {
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/server/getLocationDescr',
+		data: {
+			id: id
+		},
+		dataType: 'json',
+		success: function(data) {
+			if (data.success) {
+				/*$("#serverId").val(id);
+				$("#descr").val(data.obj!=null?data.obj:'');
+				
+				layer.open({
+					type: 1,
+					title: serverStr.descr,
+					area: ['500px', '360px'], // 宽高
+					content: $('#descrDiv')
+				});*/
+
+				layer.prompt({
+					formType: 0,
+					value: data.obj,
+					title: commonStr.descr,
+					area: ['400px', '350px'] //自定义文本域宽高
+				}, function(value, index, elem) {
+					//alert(value); //得到value
+					layer.close(index);
+
+					$.ajax({
+						type: 'POST',
+						url: ctx + '/adminPage/server/setLocationDescr',
+						data: {
+							id: id,
+							descr: value
+						},
+						dataType: 'json',
+						success: function(data) {
+							if (data.success) {
+								location.reload();
+							} else {
+								layer.msg(data.msg)
+							}
+						},
+						error: function() {
+							closeLoad();
+							layer.alert(commonStr.errorInfo);
+						}
+					});
+				});
+
+			} else {
+				layer.msg(data.msg)
+			}
+		},
+		error: function() {
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+
 }

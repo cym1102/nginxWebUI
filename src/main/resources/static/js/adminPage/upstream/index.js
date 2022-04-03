@@ -520,3 +520,58 @@ function setOrder(id, count){
 		}
 	});
 }
+
+function editDescr(id){
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/upstream/getDescr',
+		data: {
+			id: id
+		},
+		dataType: 'json',
+		success: function(data) {
+			if (data.success) {
+				$("#upstreamId").val(id);
+				$("#descr").val(data.obj!=null?data.obj:'');
+				
+				layer.open({
+					type: 1,
+					title: upstreamStr.descr,
+					area: ['500px', '360px'], // 宽高
+					content: $('#descrDiv')
+				});
+				
+			} else {
+				layer.msg(data.msg)
+			}
+		},
+		error: function() {
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+
+}
+
+
+
+function editDescrOver() {
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/upstream/editDescr',
+		data: {
+			id: $("#upstreamId").val(),
+			descr: $("#descr").val()
+		},
+		dataType: 'json',
+		success: function(data) {
+			if (data.success) {
+				location.reload();
+			} else {
+				layer.msg(data.msg)
+			}
+		},
+		error: function() {
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+}

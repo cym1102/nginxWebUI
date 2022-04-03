@@ -46,23 +46,27 @@ public class ImportOrExportUtil {
 			page.setLimit(1000);
 
 			for (Class<?> clazz : set) {
-				Table table = clazz.getAnnotation(Table.class);
-				if (table != null) {
-					page.setCurr(1);
-					while (true) {
-						page = sqlHelper.findPage(page, clazz);
-						if (page.getRecords().size() == 0) {
-							break;
-						}
+				try {
+					Table table = clazz.getAnnotation(Table.class);
+					if (table != null) {
+						page.setCurr(1);
+						while (true) {
+							page = sqlHelper.findPage(page, clazz);
+							if (page.getRecords().size() == 0) {
+								break;
+							}
 
-						List<String> lines = new ArrayList<String>();
-						for (Object object : page.getRecords()) {
-							lines.add(JSONUtil.toJsonStr(object));
+							List<String> lines = new ArrayList<String>();
+							for (Object object : page.getRecords()) {
+								lines.add(JSONUtil.toJsonStr(object));
+							}
+							FileUtil.appendLines(lines, path + File.separator + clazz.getSimpleName() + ".json", "UTF-8");
+							System.out.println(clazz.getSimpleName() + "表导出了" + page.getRecords().size() + "条数据");
+							page.setCurr(page.getCurr() + 1);
 						}
-						FileUtil.appendLines(lines, path + File.separator + clazz.getSimpleName() + ".json", "UTF-8");
-						System.out.println(clazz.getSimpleName() + "表导出了" + page.getRecords().size() + "条数据");
-						page.setCurr(page.getCurr() + 1);
 					}
+				} catch (Exception e) {
+					System.err.println(e.getMessage());
 				}
 			}
 			ZipUtil.zip(path);

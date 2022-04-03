@@ -69,6 +69,19 @@ public class Location extends BaseModel {
 	 */
 	@InitValue("0")
 	Integer websocket;
+	/**
+	 * 描述
+	 */
+	String descr; 
+	
+	
+	public String getDescr() {
+		return descr;
+	}
+
+	public void setDescr(String descr) {
+		this.descr = descr;
+	}
 
 	public String getUpstreamType() {
 		return upstreamType;

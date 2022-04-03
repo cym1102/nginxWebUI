@@ -58,50 +58,24 @@ public class NginxWebUI {
 		String myPid = runtimeMXBean.getName().split("@")[0];
 
 		List<String> list = new ArrayList<String>();
-		Set<String> pids = new HashSet<String>();
 
-		if (SystemTool.isWindows()) {
-			String port = getPort(args);
-			list = RuntimeUtil.execForLines("netstat -aon");
-			for (String line : list) {
-				if (line.contains(":" + port) && line.contains("LISTENING")) {
-					String pid = line.split("LISTENING")[1].trim();
-					if (!pid.equals(myPid)) {
-						pids.add(pid);
-					}
-				}
-			}
-		} else if (SystemTool.isLinux()) {
-			list = RuntimeUtil.execForLines("ps -ef");
-			for (String line : list) {
-				if (line.contains("java") && line.contains("nginxWebUI") && line.contains(".jar")) {
-					String pid = line.split("\\s+")[1].trim();
-					if (!pid.equals(myPid)) {
-						pids.add(pid);
+		list = RuntimeUtil.execForLines("jps");
+		for (String line : list) {
+			if (line.contains("nginxWebUI") && line.contains(".jar")) {
+				String pid = line.split("\\s+")[0].trim();
+				if (!pid.equals(myPid)) {
+					logger.info("杀掉旧进程:" + pid);
+					if (SystemTool.isWindows()) {
+						RuntimeUtil.exec("taskkill /im " + pid + " /f");
+					} else if (SystemTool.isLinux()) {
+						RuntimeUtil.exec("kill -9 " + pid);
 					}
 				}
 			}
 		}
 
-		for (String pid : pids) {
-			logger.info("杀掉旧进程:" + pid);
-			if (SystemTool.isWindows()) {
-				RuntimeUtil.exec("taskkill /im " + pid + " /f");
-			} else if (SystemTool.isLinux()) {
-				RuntimeUtil.exec("kill -9 " + pid);
-			}
-		}
-
 	}
 
-	private static String getPort(String[] args) {
-		for (String arg : args) {
-			if (arg.contains("--server.port")) {
-				return arg.split("=")[1];
-			}
-		}
-		return "8080";
-	}
 
 	private static void removeJar() {
 		File[] list = new File(JarUtil.getCurrentFilePath()).getParentFile().listFiles();

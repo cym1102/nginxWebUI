@@ -3,6 +3,8 @@ package com.cym.ext;
 import java.util.List;
 
 import com.cym.model.Basic;
+import com.cym.model.Cert;
+import com.cym.model.CertCode;
 import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Param;
@@ -25,12 +27,35 @@ public class AsycPack {
 	List<Param> paramList;
 	List<Password> passwordList;
 	
-//	ConfExt confExt;
-
-//	String decompose;
-
-
+	List<Cert> certList;
+	List<CertCode> certCodeList;
 	
+	String acmeZip;
+	
+	public String getAcmeZip() {
+		return acmeZip;
+	}
+
+	public void setAcmeZip(String acmeZip) {
+		this.acmeZip = acmeZip;
+	}
+
+	public List<Cert> getCertList() {
+		return certList;
+	}
+
+	public void setCertList(List<Cert> certList) {
+		this.certList = certList;
+	}
+
+	public List<CertCode> getCertCodeList() {
+		return certCodeList;
+	}
+
+	public void setCertCodeList(List<CertCode> certCodeList) {
+		this.certCodeList = certCodeList;
+	}
+
 	public List<Template> getTemplateList() {
 		return templateList;
 	}
