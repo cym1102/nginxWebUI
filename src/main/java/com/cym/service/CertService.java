@@ -1,11 +1,9 @@
 package com.cym.service;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.extend.aspect.annotation.Service;
 import org.slf4j.Logger;
@@ -17,7 +15,6 @@ import com.cym.model.CertCode;
 import com.cym.sqlhelper.bean.Page;
 import com.cym.sqlhelper.utils.ConditionAndWrapper;
 import com.cym.sqlhelper.utils.SqlHelper;
-import com.cym.utils.MyZipUtils;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
@@ -28,7 +25,6 @@ import cn.hutool.core.util.ZipUtil;
 public class CertService {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	
 	@Inject
 	SqlHelper sqlHelper;
 	@Inject
@@ -106,11 +102,7 @@ public class CertService {
 
 		Base64.decodeToFile(acmeZip, new File(homeConfig.home + "acme.zip"));
 		FileUtil.mkdir(homeConfig.acmeShDir);
-		try {
-			MyZipUtils.unzip(homeConfig.home + "acme.zip", homeConfig.acmeShDir);
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e); 
-		}
+		ZipUtil.unzip(homeConfig.home + "acme.zip", homeConfig.acmeShDir);
 		FileUtil.del(homeConfig.home + "acme.zip");
 
 	}

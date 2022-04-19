@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cym</groupId>
 	<artifactId>nginxWebUI</artifactId>
-	<version>3.2.6</version>
+	<version>3.2.7</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.noear</groupId>
 		<artifactId>solon-parent</artifactId>
-		<version>1.6.33</version>
+		<version>1.7.1</version>
 	</parent>
 	<dependencies>
 		<dependency>
@@ -63,7 +63,7 @@
 			<artifactId>commons-compress</artifactId>
 			<version>1.21</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>com.github.odiszapc</groupId>
 			<artifactId>nginxparser</artifactId>
@@ -97,8 +97,9 @@
 		<dependency>
 			<groupId>cn.hutool</groupId>
 			<artifactId>hutool-all</artifactId>
-			<version>5.7.17</version>
+			<version>5.8.0.M2</version>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>

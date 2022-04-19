@@ -177,6 +177,11 @@ function getKey() {
 	}
 }
 
+function getKeyCode() {
+	if (event.keyCode == 13) {
+		login();
+	}
+}
 
 function refreshCode(id) {
 	$("#" + id).attr("src", ctx + "/adminPage/login/getCode?t=" + (new Date()).getTime());

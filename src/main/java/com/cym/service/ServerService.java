@@ -39,14 +39,23 @@ public class ServerService {
 	SqlHelper sqlHelper;
 
 	public Page search(Page page, String keywords) {
-		ConditionAndWrapper conditionAndWrapper = new ConditionAndWrapper();
+		ConditionOrWrapper conditionOrWrapper = new ConditionOrWrapper();
 		if (StrUtil.isNotEmpty(keywords)) {
-			conditionAndWrapper.and(new ConditionOrWrapper().like("descr", keywords.trim()).like("serverName", keywords.trim()).like("listen", keywords.trim()));
+			conditionOrWrapper.like(Server::getDescr, keywords.trim())//
+					.like(Server::getServerName, keywords.trim())//
+					.like(Server::getListen, keywords.trim());
+
+			List<String> serverIds = sqlHelper.findPropertiesByQuery(new ConditionOrWrapper() //
+					.like(Location::getDescr, keywords)//
+					.like(Location::getValue, keywords)//
+					.like(Location::getPath, keywords), //
+					Location.class, Location::getServerId);
+			conditionOrWrapper.in(Server::getId, serverIds);
 		}
 
 		Sort sort = new Sort().add("seq", Direction.DESC);
 
-		page = sqlHelper.findPage(conditionAndWrapper, sort, page, Server.class);
+		page = sqlHelper.findPage(conditionOrWrapper, sort, page, Server.class);
 
 		return page;
 	}
