@@ -129,13 +129,18 @@ public class InitConfig {
 
 			// 查找ngx_stream_module模块
 			if (!basicService.contain("ngx_stream_module.so")) {
-				logger.info(m.get("commonStr.ngxStream"));
-				List<String> list = RuntimeUtil.execForLines(CharsetUtil.systemCharset(), "find / -name ngx_stream_module.so");
-				for (String path : list) {
-					if (path.contains("ngx_stream_module.so") && path.length() < 80) {
-						Basic basic = new Basic("load_module", path, -10l);
-						sqlHelper.insert(basic);
-						break;
+				if (FileUtil.exist("/usr/lib/nginx/modules/ngx_stream_module.so")) {
+					Basic basic = new Basic("load_module", "/usr/lib/nginx/modules/ngx_stream_module.so", -10l);
+					sqlHelper.insert(basic);
+				} else {
+					logger.info(m.get("commonStr.ngxStream"));
+					List<String> list = RuntimeUtil.execForLines(CharsetUtil.systemCharset(), "find / -name ngx_stream_module.so");
+					for (String path : list) {
+						if (path.contains("ngx_stream_module.so") && path.length() < 80) {
+							Basic basic = new Basic("load_module", path, -10l);
+							sqlHelper.insert(basic);
+							break;
+						}
 					}
 				}
 			}

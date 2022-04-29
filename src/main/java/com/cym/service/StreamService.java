@@ -5,6 +5,7 @@ import java.util.List;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.extend.aspect.annotation.Service;
 
+import com.cym.model.Http;
 import com.cym.model.Param;
 import com.cym.model.Stream;
 import com.cym.sqlhelper.bean.Sort;
@@ -52,11 +53,9 @@ public class StreamService {
 
 	}
 
-
 	public List<Stream> findAll() {
 		return sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
 	}
-
 
 	public void addTemplate(String templateId) {
 		List<Param> parmList = sqlHelper.findListByQuery(new ConditionAndWrapper().eq(Param::getTemplateId, templateId), Param.class);
@@ -66,12 +65,23 @@ public class StreamService {
 			stream.setName(param.getName());
 			stream.setValue(param.getValue());
 			stream.setSeq(SnowFlakeUtils.getId());
+
+			sqlHelper.insert(stream);
+		}
+
+	}
+
+	public void setAll(List<Stream> streams) {
+		for (Stream stream : streams) {
+			Stream streamOrg = sqlHelper.findOneByQuery(new ConditionAndWrapper().eq("name", stream.getName()), Stream.class);
+
+			if (streamOrg != null) {
+				sqlHelper.deleteById(streamOrg.getId(), Stream.class);
+			}
 			
 			sqlHelper.insert(stream);
 		}
-		
+
 	}
 
-	
-	
 }

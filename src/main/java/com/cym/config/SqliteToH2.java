@@ -34,11 +34,11 @@ public class SqliteToH2 {
 	@Init
 	public void init() {
 		logger.info("databaseType:" + databaseType);
-		logger.info("sqlite:" + homeConfig.home + "sqlite.db");
 
 		// 检查是否存在sqlite.db, 进行数据备份
 		if ((databaseType.equals("h2") || databaseType.equals("sqlite")) && FileUtil.exist(homeConfig.home + "sqlite.db")) {
-			logger.info("开始进行数据转移");
+			logger.info("开始进行数据转移 " + homeConfig.home + "sqlite.db");
+
 			// 创建sqliteDataSource
 			dataSourceTemp = dataSourceEmbed.getDataSource();
 			DataSource dataSource = new SimpleDataSource("jdbc:sqlite:" + homeConfig.home + "sqlite.db", "", "");

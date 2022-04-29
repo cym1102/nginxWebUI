@@ -26,12 +26,6 @@ function addOver() {
 		layer.msg(stream.noname);
 		return;
 	}
-	/*if ($("#value").val() == "") {
-		layer.msg(stream.novalue);
-		return;
-	}*/
-	
-	
 	$.ajax({
 		type : 'POST',
 		url : ctx + '/adminPage/stream/addOver',
@@ -125,3 +119,33 @@ function setOrder(id, count){
 	});
 }
 
+function guide(){
+	layer.open({
+		type: 1,
+		title: httpStr.guide,
+		area: ['800px', '200px'], // 宽高
+		content: $('#guideDiv')
+	});
+}
+
+
+function addGiudeOver(){
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/stream/addGiudeOver',
+		data: {
+			logStatus: $("#logStatus").prop("checked")
+		},
+		dataType: 'json',
+		success: function(data) {
+			if (data.success) {
+				location.reload();
+			} else {
+				layer.msg(data.msg)
+			}
+		},
+		error: function() {
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+}
