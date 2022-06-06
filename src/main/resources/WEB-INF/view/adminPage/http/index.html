@@ -62,19 +62,19 @@ input[name='param']{
 							<td>${http.value}</td>
 							<td>
 								<div class="layui-inline">
-								<button class="layui-btn layui-btn-sm " onclick="edit('${http.id}')">${commonStr.edit}</button>
+								<button type="button" class="layui-btn layui-btn-sm " onclick="edit('${http.id}')">${commonStr.edit}</button>
 								</div>
 								
 								<div class="layui-inline">
-								<button class="layui-btn layui-btn-danger layui-btn-sm " onclick="del('${http.id}')">${commonStr.del}</button>
+								<button type="button" class="layui-btn layui-btn-danger layui-btn-sm " onclick="del('${http.id}')">${commonStr.del}</button>
 								</div>
 								
 								<div class="layui-inline">
-								<button class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${http.id}', -1)">${commonStr.up}</button>
+								<button type="button" class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${http.id}', -1)">${commonStr.up}</button>
 								</div>
 								
 								<div class="layui-inline">
-								<button class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${http.id}', 1)">${commonStr.down}</button>
+								<button type="button" class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${http.id}', 1)">${commonStr.down}</button>
 								</div>
 							</td>
 						</tr>

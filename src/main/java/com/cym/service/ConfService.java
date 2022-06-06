@@ -19,6 +19,7 @@ import com.cym.ext.ConfFile;
 import com.cym.model.Bak;
 import com.cym.model.BakSub;
 import com.cym.model.Basic;
+import com.cym.model.Cert;
 import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Param;
@@ -855,6 +856,11 @@ public class ConfService {
 			logger.error(e.getMessage(), e);
 		}
 
+	}
+
+	public List<Cert> getApplyCerts() {
+		List<Cert> certs = sqlHelper.findListByQuery(new ConditionAndWrapper().ne(Cert::getType, 1), Cert.class);
+		return certs;
 	}
 
 }

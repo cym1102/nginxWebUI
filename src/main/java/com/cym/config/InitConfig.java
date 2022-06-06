@@ -1,7 +1,6 @@
 package com.cym.config;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -16,12 +15,13 @@ import org.slf4j.LoggerFactory;
 
 import com.cym.model.Admin;
 import com.cym.model.Basic;
+import com.cym.model.Cert;
 import com.cym.model.Http;
 import com.cym.service.BasicService;
+import com.cym.service.ConfService;
 import com.cym.service.SettingService;
 import com.cym.sqlhelper.utils.JdbcTemplate;
 import com.cym.sqlhelper.utils.SqlHelper;
-import com.cym.utils.FilePermissionUtil;
 import com.cym.utils.MessageUtils;
 import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
@@ -53,6 +53,8 @@ public class InitConfig {
 	SqlHelper sqlHelper;
 	@Inject
 	JdbcTemplate jdbcTemplate;
+	@Inject
+	ConfService confService;
 
 	@Inject("${project.findPass}")
 	Boolean findPass;
@@ -164,6 +166,24 @@ public class InitConfig {
 				}
 				logger.info("runCmd:" + cmd);
 				RuntimeUtil.execForStr("/bin/sh", "-c", cmd);
+			}
+		}
+
+		// 将复制的证书文件还原到acme文件夹里面
+		List<Cert> certs = confService.getApplyCerts();
+		for (Cert cert : certs) {
+			boolean update = false;
+			if (cert.getPem().equals(homeConfig.home + "cert/" + cert.getDomain() + ".fullchain.cer")) {
+				cert.setPem(homeConfig.acmeShDir + cert.getDomain() + "/fullchain.cer");
+				update = true;
+			}
+			if (cert.getKey().equals(homeConfig.home + "cert/" + cert.getDomain() + ".key")) {
+				cert.setKey(homeConfig.acmeShDir + cert.getDomain() + "/" + cert.getDomain() + ".key");
+				update = true;
+			}
+
+			if (update) {
+				sqlHelper.updateById(cert);
 			}
 		}
 

@@ -107,39 +107,39 @@
 								<#if cert.type==0 || cert.type==2>
 									<#if cert.pem == null || cert.pem == "">
 									<div class="layui-inline">
-									<button class="layui-btn layui-btn-sm" onclick="issue('${cert.id}')">${commonStr.apply}</button>
+									<button type="button" class="layui-btn layui-btn-sm" onclick="issue('${cert.id}')">${commonStr.apply}</button>
 									</div>
 									</#if>
 									 
 									<#if cert.pem != null && cert.pem != "">
 									<div class="layui-inline">
-									<button class="layui-btn layui-btn-sm" onclick="renew('${cert.id}')">${certStr.renew}</button>
+									<button type="button" class="layui-btn layui-btn-sm" onclick="renew('${cert.id}')">${certStr.renew}</button>
 									</div>
 									</#if>
 								</#if>
 
 								<div class="layui-inline">
-								<button class="layui-btn layui-btn-sm" onclick="edit('${cert.id}')">${commonStr.edit}</button> 
+								<button type="button" class="layui-btn layui-btn-sm" onclick="edit('${cert.id}')">${commonStr.edit}</button> 
 								</div>
 								
 								<#if cert.type == 2>
 									<div class="layui-inline">
-									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="getTxtValue('${cert.id}')">${certStr.hostRecords}</button>
+									<button type="button" class="layui-btn layui-btn-normal layui-btn-sm" onclick="getTxtValue('${cert.id}')">${certStr.hostRecords}</button>
 									</div>
 								</#if>
 								
 								<#if cert.pem!=null && cert.pem!='' && cert.key!=null&& cert.key!=''>
 									<div class="layui-inline">
-									<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="download('${cert.id}')">${certStr.download}</button>
+									<button type="button" class="layui-btn layui-btn-normal layui-btn-sm" onclick="download('${cert.id}')">${certStr.download}</button>
 									</div>
 								</#if>
 								
 								
 								<div class="layui-inline">
-								<button class="layui-btn layui-btn-sm" onclick="clone('${cert.id}')">${commonStr.clone}</button>
+								<button type="button" class="layui-btn layui-btn-sm" onclick="clone('${cert.id}')">${commonStr.clone}</button>
 								</div>
 								<div class="layui-inline">
-								<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">${commonStr.del}</button>
+								<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${cert.id}')">${commonStr.del}</button>
 								</div>
 								</td>
 								

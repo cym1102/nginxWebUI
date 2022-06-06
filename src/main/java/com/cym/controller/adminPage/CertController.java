@@ -98,11 +98,7 @@ public class CertController extends BaseController {
 		}
 
 		Cert cert = sqlHelper.findById(id, Cert.class);
-		String keylength = "";
-		if ("ECC".equals(cert.getEncryption())) {
-			keylength = " --keylength ec-256 ";
-		}
-
+		
 		if (cert.getDnsType() == null) {
 			return renderError(m.get("certStr.error3"));
 		}
@@ -112,6 +108,13 @@ public class CertController extends BaseController {
 		}
 		isInApply = true;
 
+		String keylength = "";
+		String ecc = "";
+		if ("ECC".equals(cert.getEncryption())) {
+			keylength = " --keylength ec-256 ";
+			ecc = " --ecc";
+		}
+		
 		String rs = "";
 		String cmd = "";
 		// 设置dns账号
@@ -145,11 +148,12 @@ public class CertController extends BaseController {
 			}
 		} else if (type.equals("renew")) {
 			// 续签,以第一个域名为证书名
+			String domain = cert.getDomain().split(",")[0];
+			
 			if (cert.getType() == 0) {
-				String domain = cert.getDomain().split(",")[0];
-				cmd = homeConfig.acmeSh + " --renew --force -d " + domain;
+				cmd = homeConfig.acmeSh + " --renew --force " + ecc + " -d " + domain;
 			} else if (cert.getType() == 2) {
-				cmd = homeConfig.acmeSh + " --renew --force -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+				cmd = homeConfig.acmeSh + " --renew --force " + ecc + " -d " + domain + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
 			}
 		}
 		logger.info(cmd);

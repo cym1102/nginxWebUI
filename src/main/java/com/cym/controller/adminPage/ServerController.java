@@ -69,7 +69,7 @@ public class ServerController extends BaseController {
 
 			// 描述回车转<br>
 			if (StrUtil.isNotEmpty(server.getDescr())) {
-				server.setDescr(server.getDescr().replace("\n", "<br>"));
+				server.setDescr(server.getDescr().replace("\n", "<br>").replace(" ", "&nbsp;"));
 			}
 
 			serverExt.setServer(server);

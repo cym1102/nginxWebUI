@@ -43,19 +43,19 @@
 							<td>${log.path}</td>
 							<td>
 								<div class="layui-inline">
-								<button class="layui-btn layui-btn-sm " onclick="tail('${log.id}','${log.path}')">${logStr.tail}</button>
+								<button type="button" class="layui-btn layui-btn-sm " onclick="tail('${log.id}','${log.path}')">${logStr.tail}</button>
 								</div>
 								
 								<div class="layui-inline">
-								<button class="layui-btn layui-btn-sm " onclick="down('${log.id}')">${logStr.download}</button>
+								<button type="button" class="layui-btn layui-btn-sm " onclick="down('${log.id}')">${logStr.download}</button>
 								</div>
 								
 								<div class="layui-inline">
-								<button class="layui-btn layui-btn-sm " onclick="edit('${log.id}')">${commonStr.edit}</button>
+								<button type="button" class="layui-btn layui-btn-sm " onclick="edit('${log.id}')">${commonStr.edit}</button>
 								</div>
 								
 								<div class="layui-inline">
-								<button class="layui-btn layui-btn-sm layui-btn-danger " onclick="del('${log.id}')">${commonStr.del}</button>
+								<button type="button" class="layui-btn layui-btn-sm layui-btn-danger " onclick="del('${log.id}')">${commonStr.del}</button>
 								</div>
 							</td>
 						</tr>
