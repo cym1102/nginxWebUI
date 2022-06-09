@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.noear.solon.annotation.Controller;
@@ -76,11 +77,13 @@ public class CertController extends BaseController {
 	public JsonResult detail(String id) {
 		return renderSuccess(sqlHelper.findById(id, Cert.class));
 	}
-
+	
 	@Mapping("del")
 	public JsonResult del(String id) {
 		Cert cert = sqlHelper.findById(id, Cert.class);
-		String path = homeConfig.acmeShDir + cert.getDomain();
+		String domain = cert.getDomain().split(",")[0];
+		String path = homeConfig.acmeShDir + domain;
+		
 		if ("ECC".equals(cert.getEncryption())) {
 			path += "_ecc";
 		}
@@ -121,7 +124,10 @@ public class CertController extends BaseController {
 		String[] env = getEnv(cert);
 
 		if (type.equals("issue")) {
-
+			String[] split = cert.getDomain().split(",");
+			StringBuffer sb = new StringBuffer();
+			Arrays.stream(split).forEach(s -> sb.append(" -d ").append(s));
+			String domain = sb.toString();
 			// 申请
 			if (cert.getType() == 0) {
 				String dnsType = "";
@@ -136,13 +142,12 @@ public class CertController extends BaseController {
 				} else if (cert.getDnsType().equals("hw")) {
 					dnsType = "dns_huaweicloud";
 				}
-
-				cmd = homeConfig.acmeSh + " --issue --force --dns " + dnsType + " -d " + cert.getDomain() + keylength + " --server letsencrypt";
+				cmd = homeConfig.acmeSh + " --issue --force --dns " + dnsType + domain + keylength + " --server letsencrypt";
 			} else if (cert.getType() == 2) {
 				if (certService.hasCode(cert.getId())) {
-					cmd = homeConfig.acmeSh + " --renew --force --dns -d " + cert.getDomain() + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+					cmd = homeConfig.acmeSh + " --renew --force --dns" + domain + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
 				} else {
-					cmd = homeConfig.acmeSh + " --issue --force --dns -d " + cert.getDomain() + keylength + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+					cmd = homeConfig.acmeSh + " --issue --force --dns" + domain + keylength + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
 				}
 
 			}
@@ -162,7 +167,7 @@ public class CertController extends BaseController {
 		logger.info(rs);
 
 		if (rs.contains("Your cert is in")) {
-			// 申请成功, 将证书复制到/home/nginxWebUI
+			// 申请成功, 定位证书
 			String domain = cert.getDomain().split(",")[0];
 			String certDir = homeConfig.acmeShDir + domain;
 			if ("ECC".equals(cert.getEncryption())) {
