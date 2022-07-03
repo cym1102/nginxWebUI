@@ -51,6 +51,10 @@ public class CertController extends BaseController {
 			if (cert.getType() == 0 || cert.getType() == 2) {
 				cert.setDomain(cert.getDomain() + "(" + cert.getEncryption() + ")");
 			}
+
+			if (cert.getMakeTime() != null) {
+				cert.setEndTime(cert.getMakeTime() + 90 * 24 * 60 * 60 * 1000l);
+			}
 		}
 
 		modelAndView.put("keywords", keywords);
@@ -77,13 +81,13 @@ public class CertController extends BaseController {
 	public JsonResult detail(String id) {
 		return renderSuccess(sqlHelper.findById(id, Cert.class));
 	}
-	
+
 	@Mapping("del")
 	public JsonResult del(String id) {
 		Cert cert = sqlHelper.findById(id, Cert.class);
 		String domain = cert.getDomain().split(",")[0];
 		String path = homeConfig.acmeShDir + domain;
-		
+
 		if ("ECC".equals(cert.getEncryption())) {
 			path += "_ecc";
 		}
@@ -101,7 +105,7 @@ public class CertController extends BaseController {
 		}
 
 		Cert cert = sqlHelper.findById(id, Cert.class);
-		
+
 		if (cert.getDnsType() == null) {
 			return renderError(m.get("certStr.error3"));
 		}
@@ -117,7 +121,7 @@ public class CertController extends BaseController {
 			keylength = " --keylength ec-256 ";
 			ecc = " --ecc";
 		}
-		
+
 		String rs = "";
 		String cmd = "";
 		// 设置dns账号
@@ -154,7 +158,7 @@ public class CertController extends BaseController {
 		} else if (type.equals("renew")) {
 			// 续签,以第一个域名为证书名
 			String domain = cert.getDomain().split(",")[0];
-			
+
 			if (cert.getType() == 0) {
 				cmd = homeConfig.acmeSh + " --renew --force " + ecc + " -d " + domain;
 			} else if (cert.getType() == 2) {
@@ -238,7 +242,8 @@ public class CertController extends BaseController {
 		if (cert.getDnsType().equals("hw")) {
 			list.add("HUAWEICLOUD_Username=" + cert.getHwUsername());
 			list.add("HUAWEICLOUD_Password=" + cert.getHwPassword());
-			list.add("HUAWEICLOUD_ProjectID=" + cert.getHwProjectID());
+			list.add("HUAWEICLOUD_ProjectID=" + cert.getHwProjectId());
+			list.add("HUAWEICLOUD_DomainName=" + cert.getHwDomainName());
 		}
 
 		return list.toArray(new String[] {});

@@ -117,7 +117,8 @@ function add() {
 
 	$("#hwUsername").val("");
 	$("#hwPassword").val("");
-	$("#hwProjectID").val("");
+	$("#hwProjectId").val("");
+	$("#hwDomainName").val("");
 
 	$("#pem").val("");
 	$("#key").val("");
@@ -167,8 +168,9 @@ function edit(id, clone) {
 
 				$("#hwUsername").val(cert.hwUsername);
 				$("#hwPassword").val(cert.hwPassword);
-				$("#hwProjectID").val(cert.hwProjectID);
-
+				$("#hwProjectId").val(cert.hwProjectId);
+				$("#hwDomainName").val(cert.hwDomainName);
+				
 				$("#pemPath").html(cert.pem);
 				$("#keyPath").html(cert.key);
 				
@@ -221,7 +223,7 @@ function showWindow(title) {
 	layer.open({
 		type: 1,
 		title: title,
-		area: ['1000px', '550px'], // 宽高
+		area: ['1000px', '560px'], // 宽高
 		content: $('#windowDiv')
 	});
 }
@@ -258,7 +260,7 @@ function addOver() {
 			}
 		}
 		if ($("#dnsType").val() == 'hw') {
-			if ($("#hwUsername").val() == '' || $("#hwPassword").val() == '' || $("#hwProjectID").val() == '') {
+			if ($("#hwUsername").val() == '' || $("#hwPassword").val() == '' || $("#hwProjectId").val() == '') {
 				layer.msg(commonStr.IncompleteEntry);
 				return;
 			}

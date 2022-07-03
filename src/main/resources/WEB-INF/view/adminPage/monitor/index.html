@@ -64,7 +64,6 @@
 								
 								<div class="layui-card-body">
 									<#list list as disk>
-										${disk.usedSpace}
 										<span class="layui-breadcrumb"><a href="javacript:">${disk.path} (${disk.useSpace} / ${disk.totalSpace})</a></span>
 										<div class="layui-progress" lay-showpercent="true" style="margin-top: 20px;margin-bottom: 10px;">
 											<div class="layui-progress-bar layui-bg-blue" lay-percent="${disk.percent}"></div>
@@ -74,7 +73,7 @@
 							</div>
 						</div>
 						
-						<!-- 广告 -->
+						<!-- 网速 -->
 						<div class="layui-col-md6">
 							<div class="layui-card" id="netDiv" style="height: 500px;">
 								

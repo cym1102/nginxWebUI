@@ -39,6 +39,10 @@ public class Cert extends BaseModel {
 	 */
 	Long makeTime; 
 	/**
+	 * 到期时间戳
+	 */
+	Long endTime; 
+	/**
 	 * 是否自动续签 0否 1是
 	 */
 	@InitValue("0")
@@ -90,10 +94,29 @@ public class Cert extends BaseModel {
 	/**
 	 * hwProjectID(华为云需要的参数)
 	 */
-	String hwProjectID;
+	String hwProjectId;
+	/**
+	 * hwProjectID(华为云需要的参数)
+	 */
+	String hwDomainName;
 	
 	
-	
+	public String getHwDomainName() {
+		return hwDomainName;
+	}
+
+	public void setHwDomainName(String hwDomainName) {
+		this.hwDomainName = hwDomainName;
+	}
+
+	public Long getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Long endTime) {
+		this.endTime = endTime;
+	}
+
 	public String getEncryption() {
 		return encryption;
 	}
@@ -118,12 +141,13 @@ public class Cert extends BaseModel {
 		this.hwPassword = hwPassword;
 	}
 
-	public String getHwProjectID() {
-		return hwProjectID;
+
+	public String getHwProjectId() {
+		return hwProjectId;
 	}
 
-	public void setHwProjectID(String hwProjectID) {
-		this.hwProjectID = hwProjectID;
+	public void setHwProjectId(String hwProjectId) {
+		this.hwProjectId = hwProjectId;
 	}
 
 	public String getGdKey() {

@@ -18,9 +18,7 @@ solon:
       html: FreemarkerRender
   logging:
     logger:
-      "org.eclipse.jetty":
-        level: "WARN"
-      "com.zaxxer":
+      "io.undertow":
         level: "WARN"
     appender:
       file:

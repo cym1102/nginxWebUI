@@ -37,7 +37,7 @@
 						</div>
 						
 						<div class="layui-inline">
-							<input type="text" name="keywords" class="layui-input layui-input-sm" value="${keywords}" onkeydown="if(event.keyCode==13)return false;">
+							<input type="text" name="keywords" class="layui-input layui-input-sm" value="${keywords}">
 						</div>
 
 						<button type="button" class="layui-btn layui-btn-sm" onclick="search()">${commonStr.search}</button>
@@ -93,9 +93,14 @@
 
 							<td>
 								<#if cert.makeTime!=null>
-									${cert.makeTime?number_to_datetime?string('yyyy-MM-dd HH:mm:ss')} 
+									${certStr.signTime} : ${cert.makeTime?number_to_datetime?string('yyyy-MM-dd HH:mm:ss')} 
+								</#if>
+								<br>
+								<#if cert.endTime!=null>
+									${certStr.endTime} : ${cert.endTime?number_to_datetime?string('yyyy-MM-dd HH:mm:ss')} 
 								</#if>
 							</td>
+							
 							<td>pem: ${cert.pem} <br> key: ${cert.key}
 							</td>
 							<td>
@@ -270,6 +275,13 @@
 
 					<div id="hw">
 						<div class="layui-form-item">
+							<label class="layui-form-label">HW_DomainName</label>
+							<div class="layui-input-block">
+								<input type="text" name="hwDomainName" id="hwDomainName" class="layui-input">
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
 							<label class="layui-form-label">HW_Username</label>
 							<div class="layui-input-block">
 								<input type="text" name="hwUsername" id="hwUsername" class="layui-input">
@@ -286,7 +298,7 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">HW_ProjectID</label>
 							<div class="layui-input-block">
-								<input type="text" name="hwProjectID" id="hwProjectID" class="layui-input">
+								<input type="text" name="hwProjectId" id="hwProjectId" class="layui-input">
 							</div>
 						</div>
 					</div>
