@@ -38,6 +38,8 @@ public class CertController extends BaseController {
 	CertService certService;
 	@Inject
 	TimeExeUtils timeExeUtils;
+	@Inject
+	ConfController confController;
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -184,6 +186,12 @@ public class CertController extends BaseController {
 
 			cert.setMakeTime(System.currentTimeMillis());
 			sqlHelper.updateById(cert);
+
+			// 续签,重载nginx使证书生效
+			if (type.equals("renew")) {
+				confController.reload(null, null, null);
+			}
+
 			isInApply = false;
 			return renderSuccess();
 		} else if (rs.contains("TXT value")) {

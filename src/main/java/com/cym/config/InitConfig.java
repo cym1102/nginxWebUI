@@ -17,11 +17,13 @@ import com.cym.model.Admin;
 import com.cym.model.Basic;
 import com.cym.model.Cert;
 import com.cym.model.Http;
+import com.cym.model.Password;
 import com.cym.service.BasicService;
 import com.cym.service.ConfService;
 import com.cym.service.SettingService;
 import com.cym.sqlhelper.utils.JdbcTemplate;
 import com.cym.sqlhelper.utils.SqlHelper;
+import com.cym.utils.EncodePassUtils;
 import com.cym.utils.MessageUtils;
 import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
@@ -32,6 +34,7 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
+import cn.hutool.crypto.SecureUtil;
 
 @Component
 public class InitConfig {
@@ -66,8 +69,9 @@ public class InitConfig {
 		if (findPass) {
 			List<Admin> admins = sqlHelper.findAll(Admin.class);
 			for (Admin admin : admins) {
-				System.out.println(m.get("adminStr.name") + ":" + admin.getName() + " " + m.get("adminStr.pass") + ":" + admin.getPass());
+				System.out.println(m.get("adminStr.name") + ":" + admin.getName() + " " + m.get("adminStr.pass") + ":" + EncodePassUtils.defaultPass);
 				admin.setAuth(false); // 关闭二次验证
+				admin.setPass(EncodePassUtils.encodeDefaultPass());
 				sqlHelper.updateById(admin);
 			}
 			System.exit(1);
@@ -187,9 +191,17 @@ public class InitConfig {
 			}
 		}
 
+		// 将密码加密
+		List<Admin> admins = sqlHelper.findAll(Admin.class);
+		for (Admin admin : admins) {
+			if (!StrUtil.endWith(admin.getPass(), SecureUtil.md5(EncodePassUtils.defaultPass))) {
+				admin.setPass(EncodePassUtils.encode(admin.getPass()));
+				sqlHelper.updateById(admin);
+			}
+		}
+
 		// 展示logo
 		showLogo();
-
 	}
 
 	private boolean hasNginx() {

@@ -25,6 +25,7 @@ import com.cym.service.SettingService;
 import com.cym.sqlhelper.bean.Page;
 import com.cym.utils.AuthUtils;
 import com.cym.utils.BaseController;
+import com.cym.utils.EncodePassUtils;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SendMailUtils;
 import com.google.zxing.BarcodeFormat;
@@ -54,9 +55,8 @@ public class AdminController extends BaseController {
 	RemoteController remoteController;
 
 	@Mapping("")
-	public ModelAndView index( ModelAndView modelAndView, Page page) {
+	public ModelAndView index(ModelAndView modelAndView, Page page) {
 		page = adminService.search(page);
-
 		modelAndView.put("page", page);
 		modelAndView.view("/adminPage/admin/index.html");
 		return modelAndView;
@@ -81,7 +81,7 @@ public class AdminController extends BaseController {
 		} else {
 			admin.setKey("");
 		}
-		
+
 		adminService.addOver(admin, parentId);
 
 		return renderSuccess();
@@ -92,7 +92,7 @@ public class AdminController extends BaseController {
 		AdminExt adminExt = new AdminExt();
 		adminExt.setAdmin(sqlHelper.findById(id, Admin.class));
 		adminExt.setGroupIds(adminService.getGroupIds(adminExt.getAdmin().getId()));
-
+		adminExt.getAdmin().setPass(""); 
 		return renderSuccess(adminExt);
 	}
 
@@ -114,12 +114,12 @@ public class AdminController extends BaseController {
 		map.put("mail_pass", settingService.get("mail_pass"));
 		map.put("mail_ssl", settingService.get("mail_ssl"));
 		map.put("mail_interval", settingService.get("mail_interval"));
-		
+
 		return renderSuccess(map);
 	}
 
 	@Mapping("updateMailSetting")
-	public JsonResult updateMailSetting(String mailType, String mail_user, String mail_host, String mail_port, String mail_from, String mail_pass, String mail_ssl,String mail_interval) {
+	public JsonResult updateMailSetting(String mailType, String mail_user, String mail_host, String mail_port, String mail_from, String mail_pass, String mail_ssl, String mail_interval) {
 		settingService.set("mail_host", mail_host);
 		settingService.set("mail_port", mail_port);
 		settingService.set("mail_user", mail_user);
@@ -127,7 +127,7 @@ public class AdminController extends BaseController {
 		settingService.set("mail_pass", mail_pass);
 		settingService.set("mail_ssl", mail_ssl);
 		settingService.set("mail_interval", mail_interval);
-		
+
 		return renderSuccess();
 	}
 
@@ -144,17 +144,16 @@ public class AdminController extends BaseController {
 			return renderError(m.get("commonStr.error") + ": " + e.getMessage());
 		}
 	}
-	
-	
+
 	@Mapping("testAuth")
 	public JsonResult testAuth(String key, String code) {
-		
+
 		Boolean rs = authUtils.testKey(key, code);
 		return renderSuccess(rs);
 	}
 
 	@Mapping(value = "qr")
-	public void getqcode( String url, Integer w, Integer h) throws IOException {
+	public void getqcode(String url, Integer w, Integer h) throws IOException {
 		if (url != null && !"".equals(url)) {
 
 			if (w == null) {
@@ -172,10 +171,9 @@ public class AdminController extends BaseController {
 				MatrixToImageWriter.writeToStream(matrix, "png", Context.current().outputStream());
 			} catch (WriterException e) {
 				logger.error(e.getMessage(), e);
-			} 
+			}
 		}
 	}
-	
 
 	@Mapping("getGroupTree")
 	public JsonResult getGroupTree() {
