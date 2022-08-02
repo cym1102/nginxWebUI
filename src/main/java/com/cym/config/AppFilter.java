@@ -179,7 +179,7 @@ public class AppFilter implements Filter {
 				ctx.charset("utf-8");
 				ctx.contentType("text/html;charset=utf-8");
 
-				if (JSONUtil.isJson(rs)) {
+				if (JSONUtil.isTypeJSON(rs)) {
 					String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
 					ctx.header("Content-Type", "application/octet-stream");
 					ctx.header("content-disposition", "attachment;filename=" + URLEncoder.encode(date + ".json", "UTF-8")); // 设置文件名

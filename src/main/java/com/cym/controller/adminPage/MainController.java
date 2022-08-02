@@ -56,27 +56,27 @@ public class MainController extends BaseController {
 			File temp = new File(FileUtil.getTmpDir() + "/" + file.name);
 			file.transferTo(temp);
 
-			// 移动文件
-			File dest = new File(homeConfig.home + "cert/" + file.name);
-			while(FileUtil.exist(dest)) {
-				dest = new File(dest.getPath() + "_1");
-			}
-			FileUtil.move(temp, dest, true);
+//			// 移动文件
+//			File dest = new File(homeConfig.home + "cert/" + file.name);
+//			while(FileUtil.exist(dest)) {
+//				dest = new File(dest.getPath() + "_1");
+//			}
+//			FileUtil.move(temp, dest, true);
 
-			String localType = (String) context.session("localType");
-			if ("remote".equals(localType)) {
-				Remote remote = (Remote) context.session("remote");
+//			String localType = (String) context.session("localType");
+//			if ("remote".equals(localType)) {
+//				Remote remote = (Remote) context.session("remote");
+//
+//				HashMap<String, Object> paramMap = new HashMap<>();
+//				paramMap.put("file", temp);
+//
+//				String rs = HttpUtil.post(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/upload", paramMap);
+//				JsonResult jsonResult = JSONUtil.toBean(rs, JsonResult.class);
+//				FileUtil.del(temp);
+//				return jsonResult;
+//			}
 
-				HashMap<String, Object> paramMap = new HashMap<>();
-				paramMap.put("file", dest);
-
-				String rs = HttpUtil.post(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/upload", paramMap);
-				JsonResult jsonResult = JSONUtil.toBean(rs, JsonResult.class);
-				FileUtil.del(dest);
-				return jsonResult;
-			}
-
-			return renderSuccess(dest.getPath().replace("\\", "/"));
+			return renderSuccess(temp.getPath().replace("\\", "/"));
 		} catch (IllegalStateException | IOException e) {
 			logger.error(e.getMessage(), e);
 		}

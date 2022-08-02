@@ -169,7 +169,11 @@
 								<td>	
 									
 									<#if ext.server.serverName==''>${serverStr.all}</#if>
-									<#if ext.server.serverName!=''>${ext.server.serverName}</#if>
+									<#if ext.server.serverName!=''>
+										<a href='//${ext.server.serverName}' target="_blank" style="text-decoration: underline;">
+											${ext.server.serverName}
+										</a>
+									</#if>
 									
 								</td>
 								<td>

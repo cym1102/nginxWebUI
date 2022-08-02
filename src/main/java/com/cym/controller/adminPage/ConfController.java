@@ -30,6 +30,7 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.net.URLDecoder;
+import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.net.URLEncoder;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
@@ -136,14 +137,13 @@ public class ConfController extends BaseController {
 		String decompose = settingService.get("decompose");
 		ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"), false);
 
-		URLEncoder urlEncoder = new URLEncoder();
 
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.set("nginxContent", Base64.encode(urlEncoder.encode(confExt.getConf(), CharsetUtil.CHARSET_UTF_8)));
+		jsonObject.set("nginxContent", Base64.encode(URLEncodeUtil.encode(confExt.getConf(), CharsetUtil.CHARSET_UTF_8)));
 		jsonObject.set("subContent", new JSONArray());
 		jsonObject.set("subName", new JSONArray());
 		for (ConfFile confFile : confExt.getFileList()) {
-			jsonObject.getJSONArray("subContent").add(Base64.encode(urlEncoder.encode(confFile.getConf(), CharsetUtil.CHARSET_UTF_8)));
+			jsonObject.getJSONArray("subContent").add(Base64.encode(URLEncodeUtil.encode(confFile.getConf(), CharsetUtil.CHARSET_UTF_8)));
 			jsonObject.getJSONArray("subName").add(confFile.getName());
 		}
 		return jsonObject.toStringPretty();

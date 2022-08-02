@@ -17,6 +17,7 @@ import com.cym.service.CreditService;
 import com.cym.service.SettingService;
 import com.cym.utils.AuthUtils;
 import com.cym.utils.BaseController;
+import com.cym.utils.EncodePassUtils;
 import com.cym.utils.JsonResult;
 import com.cym.utils.PwdCheckUtil;
 import com.cym.utils.SystemTool;
@@ -45,13 +46,10 @@ public class LoginController extends BaseController {
 	AuthUtils authUtils;
 	@Inject
 	SettingService settingService;
-//	@Inject("${project.captcha}")
-//	Boolean captcha;
 
 	@Mapping("")
 	public ModelAndView admin(ModelAndView modelAndView, String adminId) {
 		modelAndView.put("adminCount", sqlHelper.findAllCount(Admin.class));
-//		modelAndView.put("captcha", captcha);
 		modelAndView.view("/adminPage/login/index.html");
 		return modelAndView;
 	}
@@ -234,7 +232,6 @@ public class LoginController extends BaseController {
 	}
 
 	@Mapping("addAdmin")
-
 	public JsonResult addAdmin(String name, String pass) {
 
 		Long adminCount = sqlHelper.findAllCount(Admin.class);
@@ -248,7 +245,7 @@ public class LoginController extends BaseController {
 
 		Admin admin = new Admin();
 		admin.setName(name);
-		admin.setPass(pass);
+		admin.setPass(EncodePassUtils.encode(pass));
 		admin.setAuth(false);
 		admin.setType(0);
 

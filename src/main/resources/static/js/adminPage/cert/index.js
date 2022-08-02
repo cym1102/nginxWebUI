@@ -32,7 +32,8 @@ $(function() {
 				// 上传完毕回调
 				if (res.success) {
 					$("#pem").val(res.obj);
-					$("#pemPath").html(res.obj);
+					var path = res.obj.split('/');
+					$("#pemPath").html(path[path.length-1]);
 				}
 
 			},
@@ -49,7 +50,8 @@ $(function() {
 				// 上传完毕回调
 				if (res.success) {
 					$("#key").val(res.obj);
-					$("#keyPath").html(res.obj);
+					var path = res.obj.split('/');
+					$("#keyPath").html(path[path.length-1]);
 				}
 			},
 			error: function() {
@@ -171,9 +173,6 @@ function edit(id, clone) {
 				$("#hwProjectId").val(cert.hwProjectId);
 				$("#hwDomainName").val(cert.hwDomainName);
 				
-				$("#pemPath").html(cert.pem);
-				$("#keyPath").html(cert.key);
-				
 				if(!clone){
 					$("#domain").attr("disabled", true);
 					$("#domain").addClass("disabled");
@@ -191,6 +190,10 @@ function edit(id, clone) {
 					$("#id").val(cert.id);
 					$("#pem").val(cert.pem);
 					$("#key").val(cert.key);
+					var path = cert.pem.split('/');
+					$("#pemPath").html(path[path.length-1]);
+					path = cert.key.split('/');
+					$("#keyPath").html(path[path.length-1]);
 				} else {
 					$("#domain").attr("disabled", false);
 					$("#domain").removeClass("disabled");
@@ -201,6 +204,8 @@ function edit(id, clone) {
 					$("#id").val("");
 					$("#pem").val("");
 					$("#key").val("");
+					$("#pemPath").html("");
+					$("#keyPath").html("");
 				}
 				
 				checkType(cert.type);

@@ -90,9 +90,6 @@ public class ScheduleTask {
 			// 大于50天的续签
 			if (cert.getMakeTime() != null && cert.getAutoRenew() == 1 && time - cert.getMakeTime() > TimeUnit.DAYS.toMillis(50)) {
 				certController.apply(cert.getId(), "renew");
-
-				// 重载nginx使证书生效
-				confController.reload(null, null, null);
 			}
 		}
 	}

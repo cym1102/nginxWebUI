@@ -12,6 +12,7 @@ import com.cym.model.Credit;
 import com.cym.sqlhelper.bean.Page;
 import com.cym.sqlhelper.utils.ConditionAndWrapper;
 import com.cym.sqlhelper.utils.SqlHelper;
+import com.cym.utils.EncodePassUtils;
 
 @Service
 public class AdminService {
@@ -19,7 +20,7 @@ public class AdminService {
 	SqlHelper sqlHelper;
 
 	public Admin login(String name, String pass) {
-		return sqlHelper.findOneByQuery(new ConditionAndWrapper().eq(Admin::getName, name).eq(Admin::getPass, pass), Admin.class);
+		return sqlHelper.findOneByQuery(new ConditionAndWrapper().eq(Admin::getName, name).eq(Admin::getPass, EncodePassUtils.encode(pass)), Admin.class);
 	}
 
 	public Page search(Page page) {
@@ -70,6 +71,7 @@ public class AdminService {
 	}
 
 	public void addOver(Admin admin, String[] groupIds) {
+		admin.setPass(EncodePassUtils.encode(admin.getPass()));  
 		sqlHelper.insertOrUpdate(admin);
 
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq(AdminGroup::getAdminId, admin.getId()), AdminGroup.class);

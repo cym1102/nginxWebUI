@@ -38,6 +38,8 @@ public class CertController extends BaseController {
 	CertService certService;
 	@Inject
 	TimeExeUtils timeExeUtils;
+	@Inject
+	ConfController confController;
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -65,6 +67,26 @@ public class CertController extends BaseController {
 
 	@Mapping("addOver")
 	public JsonResult addOver(Cert cert, String[] domains, String[] types, String[] values) {
+		Integer type = cert.getType();
+		if (type == null && StrUtil.isNotEmpty(cert.getId())) {
+			Cert certOrg = sqlHelper.findById(cert.getId(), Cert.class);
+			type = certOrg.getType();
+		}
+
+		if (type != null && type == 1) {
+			// 手动上传
+			if (cert.getKey().contains(FileUtil.getTmpDir().toString().replace("\\", "/"))) {
+				String keyName = new File(cert.getKey()).getName();
+				FileUtil.move(new File(cert.getKey()), new File(homeConfig.home + "cert/" + keyName), true);
+				cert.setKey(homeConfig.home + "cert/" + keyName);
+			}
+
+			if (cert.getPem().contains(FileUtil.getTmpDir().toString().replace("\\", "/"))) {
+				String pemName = new File(cert.getPem()).getName();
+				FileUtil.move(new File(cert.getPem()), new File(homeConfig.home + "cert/"), true);
+				cert.setPem(homeConfig.home + "cert/" + pemName);
+			}
+		}
 
 		certService.insertOrUpdate(cert, domains, types, values);
 
@@ -85,15 +107,28 @@ public class CertController extends BaseController {
 	@Mapping("del")
 	public JsonResult del(String id) {
 		Cert cert = sqlHelper.findById(id, Cert.class);
-		String domain = cert.getDomain().split(",")[0];
-		String path = homeConfig.acmeShDir + domain;
 
-		if ("ECC".equals(cert.getEncryption())) {
-			path += "_ecc";
+		if (cert.getType() == 1) {
+			// 手动上传
+			if (cert.getPem().contains(homeConfig.home + "cert/")) {
+				FileUtil.del(cert.getPem());
+			}
+			if (cert.getKey().contains(homeConfig.home + "cert/")) {
+				FileUtil.del(cert.getKey());
+			}
+		} else {
+			// 申请获得
+			String domain = cert.getDomain().split(",")[0];
+			String path = homeConfig.acmeShDir + domain;
+
+			if ("ECC".equals(cert.getEncryption())) {
+				path += "_ecc";
+			}
+			if (FileUtil.exist(path)) {
+				FileUtil.del(path);
+			}
 		}
-		if (FileUtil.exist(path)) {
-			FileUtil.del(path);
-		}
+
 		sqlHelper.deleteById(id, Cert.class);
 		return renderSuccess();
 	}
@@ -184,6 +219,12 @@ public class CertController extends BaseController {
 
 			cert.setMakeTime(System.currentTimeMillis());
 			sqlHelper.updateById(cert);
+
+			// 续签,重载nginx使证书生效
+			if (type.equals("renew")) {
+				confController.reload(null, null, null);
+			}
+
 			isInApply = false;
 			return renderSuccess();
 		} else if (rs.contains("TXT value")) {
