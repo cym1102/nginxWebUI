@@ -281,7 +281,7 @@ public class ConfService {
 			}
 
 		}
-		
+
 		if (StrUtil.isNotEmpty(upstream.getTactics())) {
 			ngxParam = new NgxParam();
 			ngxParam.addValue(upstream.getTactics());
@@ -381,7 +381,7 @@ public class ConfService {
 				NgxBlock ngxBlockLocation = new NgxBlock();
 				ngxBlockLocation.addValue("location");
 				ngxBlockLocation.addValue(location.getPath());
-				
+
 				if (StrUtil.isNotEmpty(location.getDescr())) {
 					String[] descrs = location.getDescr().split("\n");
 					for (String d : descrs) {
@@ -390,9 +390,9 @@ public class ConfService {
 						ngxBlockLocation.addEntry(ngxParam);
 					}
 				}
-				
+
 				if (location.getType() == 0 || location.getType() == 2) { // location或负载均衡
-					
+
 					if (location.getType() == 0) {
 						ngxParam = new NgxParam();
 						ngxParam.addValue("proxy_pass " + location.getValue());
@@ -734,18 +734,16 @@ public class ConfService {
 	}
 
 	public AsycPack getAsycPack(String[] asycData) {
-		String data = StrUtil.join(",", Arrays.asList(asycData));
-
 		AsycPack asycPack = new AsycPack();
-		if (data.contains("basic") || data.contains("all")) {
+		if (hasStr(asycData, "basic") || hasStr(asycData, "all")) {
 			asycPack.setBasicList(sqlHelper.findAll(Basic.class));
 		}
 
-		if (data.contains("http") || data.contains("all")) {
+		if (hasStr(asycData, "http") || hasStr(asycData, "all")) {
 			asycPack.setHttpList(sqlHelper.findAll(Http.class));
 		}
 
-		if (data.contains("server") || data.contains("all")) {
+		if (hasStr(asycData, "server") || hasStr(asycData, "all")) {
 			List<Server> serverList = sqlHelper.findAll(Server.class);
 			for (Server server : serverList) {
 				if (StrUtil.isNotEmpty(server.getPem()) && FileUtil.exist(server.getPem())) {
@@ -760,7 +758,7 @@ public class ConfService {
 			asycPack.setLocationList(sqlHelper.findAll(Location.class));
 		}
 
-		if (data.contains("password") || data.contains("all")) {
+		if (hasStr(asycData, "password") || hasStr(asycData, "all")) {
 			List<Password> passwordList = sqlHelper.findAll(Password.class);
 			for (Password password : passwordList) {
 				if (StrUtil.isNotEmpty(password.getPath()) && FileUtil.exist(password.getPath())) {
@@ -771,21 +769,30 @@ public class ConfService {
 			asycPack.setPasswordList(passwordList);
 		}
 
-		if (data.contains("upstream") || data.contains("all")) {
+		if (hasStr(asycData, "upstream") || hasStr(asycData, "all")) {
 			asycPack.setUpstreamList(sqlHelper.findAll(Upstream.class));
 			asycPack.setUpstreamServerList(sqlHelper.findAll(UpstreamServer.class));
 		}
 
-		if (data.contains("stream") || data.contains("all")) {
+		if (hasStr(asycData, "stream") || hasStr(asycData, "all")) {
 			asycPack.setStreamList(sqlHelper.findAll(Stream.class));
 		}
 
-		if (data.contains("param") || data.contains("all")) {
+		if (hasStr(asycData, "param") || hasStr(asycData, "all")) {
 			asycPack.setTemplateList(sqlHelper.findAll(Template.class));
 			asycPack.setParamList(sqlHelper.findAll(Param.class));
 		}
 
 		return asycPack;
+	}
+
+	private boolean hasStr(String[] asycData, String data) {
+		for (String str : asycData) {
+			if (str.equals(data)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void setAsycPack(AsycPack asycPack) {

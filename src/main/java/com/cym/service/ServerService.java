@@ -78,7 +78,7 @@ public class ServerService {
 		sqlHelper.insertOrUpdate(server);
 
 		List<Param> paramList = new ArrayList<Param>();
-		if (StrUtil.isNotEmpty(serverParamJson) && JSONUtil.isJson(serverParamJson)) {
+		if (StrUtil.isNotEmpty(serverParamJson) && JSONUtil.isTypeJSON(serverParamJson)) {
 			paramList = JSONUtil.toList(JSONUtil.parseArray(serverParamJson), Param.class);
 		}
 		List<String> locationIds = sqlHelper.findIdsByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
@@ -145,7 +145,7 @@ public class ServerService {
 		List<String> locationIds = sqlHelper.findIdsByQuery(new ConditionAndWrapper().eq("serverId", server.getId()), Location.class);
 		sqlHelper.deleteByQuery(new ConditionOrWrapper().eq("serverId", server.getId()).in("locationId", locationIds), Param.class);
 		List<Param> paramList = new ArrayList<Param>();
-		if (StrUtil.isNotEmpty(serverParamJson) && JSONUtil.isJson(serverParamJson)) {
+		if (StrUtil.isNotEmpty(serverParamJson) && JSONUtil.isTypeJSON(serverParamJson)) {
 			paramList = JSONUtil.toList(JSONUtil.parseArray(serverParamJson), Param.class);
 		}
 

@@ -53,7 +53,7 @@ public class UpstreamService {
 		sqlHelper.insertOrUpdate(upstream);
 
 		List<Param> paramList = new ArrayList<Param>();
-		if (StrUtil.isNotEmpty(upstreamParamJson) && JSONUtil.isJson(upstreamParamJson)) {
+		if (StrUtil.isNotEmpty(upstreamParamJson) && JSONUtil.isTypeJSON(upstreamParamJson)) {
 			paramList = JSONUtil.toList(JSONUtil.parseArray(upstreamParamJson), Param.class);
 		}
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("upstreamId", upstream.getId()), Param.class);
