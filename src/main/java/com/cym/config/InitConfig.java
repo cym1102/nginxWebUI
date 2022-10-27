@@ -177,11 +177,11 @@ public class InitConfig {
 		List<Cert> certs = confService.getApplyCerts();
 		for (Cert cert : certs) {
 			boolean update = false;
-			if (cert.getPem().equals(homeConfig.home + "cert/" + cert.getDomain() + ".fullchain.cer")) {
+			if (cert.getPem() != null && cert.getPem().equals(homeConfig.home + "cert/" + cert.getDomain() + ".fullchain.cer")) {
 				cert.setPem(homeConfig.acmeShDir + cert.getDomain() + "/fullchain.cer");
 				update = true;
 			}
-			if (cert.getKey().equals(homeConfig.home + "cert/" + cert.getDomain() + ".key")) {
+			if (cert.getKey() != null && cert.getKey().equals(homeConfig.home + "cert/" + cert.getDomain() + ".key")) {
 				cert.setKey(homeConfig.acmeShDir + cert.getDomain() + "/" + cert.getDomain() + ".key");
 				update = true;
 			}
