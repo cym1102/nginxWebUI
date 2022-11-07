@@ -230,7 +230,7 @@ systemctl start nginxwebui.service
 
 #### 使用说明
 
-打开 http://xxx.xxx.xxx.xxx:8080 进入主页
+打开 http://xxx.xxx.xxx:8080 进入主页
 
 ![输入图片说明](http://www.nginxwebui.cn/img/login.jpeg "login.jpg")
 
