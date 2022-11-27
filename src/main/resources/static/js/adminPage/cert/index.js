@@ -271,6 +271,11 @@ function addOver() {
 			}
 		}
 	}
+	
+	if ($("#type").val() == 1 && $("#pem").val() == $("#key").val()) {
+		layer.msg(certStr.error5);
+		return;
+	}
 
 	$.ajax({
 		type: 'POST',

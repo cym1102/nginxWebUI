@@ -320,5 +320,4 @@ public class CertController extends BaseController {
 
 		return null;
 	}
-
 }

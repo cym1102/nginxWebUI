@@ -91,6 +91,15 @@ function showWindow(title){
 }
 
 function addOver() {
+	if ($("#name").val() == '') {
+		layer.msg(loginStr.error1);
+		return;
+	}
+	if ($("#pass").val() == '') {
+		layer.msg(loginStr.error2);
+		return;
+	}
+	
 	$.ajax({
 		type : 'POST',
 		url : ctx + '/adminPage/admin/addOver',

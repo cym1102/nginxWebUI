@@ -74,9 +74,10 @@ reboot
 2.Download the latest release of the distribution jar
 
 ```
-Linux: wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.3.9.jar
+Linux: mkdir /home/nginxWebUI/   
+       wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.4.4.jar
 
-Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-3.3.9.jar
+Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-3.4.4.jar into D:/home/nginxWebUI/
 ```
 
 With a new version, you just need to change the version in the path

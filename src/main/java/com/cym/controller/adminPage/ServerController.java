@@ -1,12 +1,17 @@
 package com.cym.controller.adminPage;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
+import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.ModelAndView;
+import org.noear.solon.core.handle.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +20,7 @@ import com.cym.model.Cert;
 import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Password;
+import com.cym.model.Remote;
 import com.cym.model.Server;
 import com.cym.model.Stream;
 import com.cym.model.Upstream;
@@ -39,6 +45,7 @@ import com.github.odiszapc.nginxparser.NgxParam;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 
 @Controller
@@ -331,5 +338,38 @@ public class ServerController extends BaseController {
 		return renderSuccess();
 	}
 	
-	
+
+	@Mapping("upload")
+	public JsonResult upload(Context context, UploadedFile file) {
+		try {
+			File temp = new File(FileUtil.getTmpDir() + "/" + file.name);
+			file.transferTo(temp);
+
+			// 移动文件
+			File dest = new File(homeConfig.home + "cert/" + file.name);
+			while(FileUtil.exist(dest)) {
+				dest = new File(dest.getPath() + "_1");
+			}
+			FileUtil.move(temp, dest, true);
+
+			String localType = (String) context.session("localType");
+			if ("remote".equals(localType)) {
+				Remote remote = (Remote) context.session("remote");
+
+				HashMap<String, Object> paramMap = new HashMap<>();
+				paramMap.put("file", temp);
+
+				String rs = HttpUtil.post(remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/upload", paramMap);
+				JsonResult jsonResult = JSONUtil.toBean(rs, JsonResult.class);
+				FileUtil.del(temp);
+				return jsonResult;
+			}
+
+			return renderSuccess(dest.getPath().replace("\\", "/"));
+		} catch (IllegalStateException | IOException e) {
+			logger.error(e.getMessage(), e);
+		}
+
+		return renderError();
+	}
 }
