@@ -21,6 +21,7 @@ import com.cym.model.Password;
 import com.cym.service.BasicService;
 import com.cym.service.ConfService;
 import com.cym.service.SettingService;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
 import com.cym.sqlhelper.utils.JdbcTemplate;
 import com.cym.sqlhelper.utils.SqlHelper;
 import com.cym.utils.EncodePassUtils;
@@ -189,6 +190,13 @@ public class InitConfig {
 			if (update) {
 				sqlHelper.updateById(cert);
 			}
+		}
+
+		// 证书加密方式RAS改为RSA
+		certs = sqlHelper.findListByQuery(new ConditionAndWrapper().eq(Cert::getEncryption, "RAS"), Cert.class);
+		for (Cert cert : certs) {
+			cert.setEncryption("RSA");
+			sqlHelper.updateById(cert);
 		}
 
 		// 将密码加密

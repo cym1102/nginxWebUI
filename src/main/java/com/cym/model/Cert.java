@@ -30,9 +30,9 @@ public class Cert extends BaseModel {
 	Integer type; 
 	
 	/**
-	 * 加密方式 'RAS' 'ECC'
+	 * 加密方式 'RSA' 'ECC'
 	 */
-	@InitValue("RAS")
+	@InitValue("RSA")
 	String encryption; 
 	/**
 	 * 签发时间戳

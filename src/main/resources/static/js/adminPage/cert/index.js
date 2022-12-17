@@ -130,7 +130,9 @@ function add() {
 	$("#domain").attr("disabled", false);
 	$("#domain").removeClass("disabled");
 	$("#type").attr("disabled", false);
-					
+	$("#encryption").attr("disabled", false);
+	$("#encryption").removeClass("disabled");
+			
 	checkType(0);
 	checkDnsType('ali');
 
@@ -158,7 +160,7 @@ function edit(id, clone) {
 				$("#domain").val(cert.domain);
 				$("#type").val(cert.type);
 				$("#dnsType").val(cert.dnsType != null ? cert.dnsType : 'ali');
-				$("#encryption").val(cert.encryption != null ? cert.encryption : 'RAS');
+				$("#encryption").val(cert.encryption != null ? cert.encryption : 'RSA');
 				$("#aliKey").val(cert.aliKey);
 				$("#aliSecret").val(cert.aliSecret);
 				$("#dpId").val(cert.dpId);

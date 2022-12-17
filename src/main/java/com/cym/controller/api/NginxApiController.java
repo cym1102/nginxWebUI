@@ -90,9 +90,9 @@ public class NginxApiController extends BaseController {
 	 */
 	@Mapping("getNginxStartCmd")
 	public JsonResult<List<String>> getNginxStartCmd() {
-		String nginxExe = settingService.get("nginxExe");
-		String nginxPath = settingService.get("nginxPath");
-		String nginxDir = settingService.get("nginxDir");
+		String nginxExe = StrUtil.nullToEmpty(settingService.get("nginxExe"));
+		String nginxPath = StrUtil.nullToEmpty(settingService.get("nginxPath"));
+		String nginxDir = StrUtil.nullToEmpty(settingService.get("nginxDir"));
 
 		if (StrUtil.isNotEmpty(nginxDir)) {
 			nginxDir = " -p " + nginxDir;
@@ -112,8 +112,8 @@ public class NginxApiController extends BaseController {
 	 */
 	@Mapping("getNginxStopCmd")
 	public JsonResult<List<String>> getNginxStopCmd() {
-		String nginxExe = settingService.get("nginxExe");
-		String nginxDir = settingService.get("nginxDir");
+		String nginxExe = StrUtil.nullToEmpty(settingService.get("nginxExe"));
+		String nginxDir = StrUtil.nullToEmpty(settingService.get("nginxDir"));
 
 		if (StrUtil.isNotEmpty(nginxDir)) {
 			nginxDir = " -p " + nginxDir;
