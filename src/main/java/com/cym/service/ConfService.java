@@ -406,9 +406,9 @@ public class ConfService {
 						}
 					}
 
-					if (location.getHeader() == 1) { // 设置header
+					if (location.getHeader() == 1) { // 设置header参数
 						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header Host $host");
+						ngxParam.addValue("proxy_set_header Host " + location.getHeaderHost());
 						ngxBlockLocation.addEntry(ngxParam);
 
 						ngxParam = new NgxParam();
@@ -432,7 +432,7 @@ public class ConfService {
 						ngxBlockLocation.addEntry(ngxParam);
 					}
 
-					if (location.getWebsocket() == 1) { // 设置header
+					if (location.getWebsocket() == 1) { // 设置websocket
 						ngxParam = new NgxParam();
 						ngxParam.addValue("proxy_http_version 1.1");
 						ngxBlockLocation.addEntry(ngxParam);
@@ -444,6 +444,35 @@ public class ConfService {
 						ngxParam = new NgxParam();
 						ngxParam.addValue("proxy_set_header Connection \"upgrade\"");
 						ngxBlockLocation.addEntry(ngxParam);
+					}
+					
+					
+					if (location.getCros() == 1) { // 设置跨域
+						ngxParam = new NgxParam();
+						ngxParam.addValue("add_header Access-Control-Allow-Origin *");
+						ngxBlockLocation.addEntry(ngxParam);
+
+						ngxParam = new NgxParam();
+						ngxParam.addValue("add_header Access-Control-Allow-Methods *");
+						ngxBlockLocation.addEntry(ngxParam);
+
+						ngxParam = new NgxParam();
+						ngxParam.addValue("add_header Access-Control-Allow-Headers *");
+						ngxBlockLocation.addEntry(ngxParam);
+						
+						ngxParam = new NgxParam();
+						ngxParam.addValue("add_header Access-Control-Allow-Credentials true");
+						ngxBlockLocation.addEntry(ngxParam);
+						
+						NgxBlock ngxBlock = new NgxBlock();
+						ngxBlock.addValue("if ($request_method = 'OPTIONS')");
+						ngxParam = new NgxParam();
+
+						ngxParam.addValue("return 204");
+						ngxBlock.addEntry(ngxParam);
+
+						ngxBlockLocation.addEntry(ngxBlock);
+						
 					}
 
 					if (server.getSsl() == 1 && server.getRewrite() == 1) { // redirect http转https

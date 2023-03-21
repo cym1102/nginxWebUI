@@ -6,7 +6,7 @@
     <meta name="generator" content="smart-doc">
     <title>nginxWebUI</title>
     <link rel="stylesheet" href="font.css">
-    <link rel="stylesheet" href="AllInOne.css?v=1646038809454"/>
+    <link rel="stylesheet" href="AllInOne.css?v=1679370721004"/>
     
     <style>.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint {
         background: #f7f7f8;
@@ -275,7 +275,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/upstream/getPage?keywords=c66mx8&current=528&limit=10</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/upstream/getPage?current=951&limit=10&keywords=v0jvzx</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -368,7 +368,7 @@
                     <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─tactics</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">负载策略: '':无(默认) 'sticky':会话保持 'ip_hash':ip绑定 'least_conn':最少连接 'least_time':最短时间</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">负载策略: '':无(默认) 'sticky':会话保持 'ip_hash':ip绑定 'least_conn':最少连接<br>'least_time':最短时间</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
 
@@ -385,6 +385,13 @@
                         <td class="tableblock halign-left valign-top"><p class="tableblock">监控邮件通知 0:否(默认) 1:是</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─descr</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">描述</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
                     </tbody>
                 </table>
                 <div class="paragraph"><p><strong>Response-example:</strong></p></div>
@@ -392,19 +399,20 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "1geotn",
-  "msg": "fcgz7b",
+  "status": "98s5v2",
+  "msg": "wyhn6z",
   "obj": {
-    "count": 431,
-    "curr": 678,
+    "count": 815,
+    "curr": 765,
     "limit": 10,
     "records": [
       {
-        "id": "87",
-        "name": "georgianna.stracke",
-        "tactics": "xaiuko",
-        "proxyType": 585,
-        "monitor": 319
+        "id": "9",
+        "name": "timothy.borer",
+        "tactics": "m73ciq",
+        "proxyType": 636,
+        "monitor": 245,
+        "descr": "664iyq"
       }
     ]
   }
@@ -460,7 +468,7 @@
                     <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">tactics</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">负载策略: '':无(默认) 'sticky':会话保持 'ip_hash':ip绑定 'least_conn':最少连接 'least_time':最短时间</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">负载策略: '':无(默认) 'sticky':会话保持 'ip_hash':ip绑定 'least_conn':最少连接<br>'least_time':最短时间</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
@@ -480,12 +488,20 @@
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">descr</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">描述</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
                     </tbody>
                 </table>
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/upstream/insertOrUpdate?proxyType=167&name=georgianna.stracke&id=87&tactics=eatkle&seq=838&updateTime=1646038811217&createTime=1646038811217&monitor=998</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/upstream/insertOrUpdate?tactics=2bk5hz&seq=598&proxyType=727&id=9&createTime=1679370722159&descr=rz6jx9&updateTime=1679370722159&name=timothy.borer&monitor=599</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -539,8 +555,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "wtjh5u",
-  "msg": "b4sf09",
+  "status": "spmwek",
+  "msg": "2njh73",
   "obj": {}
 }</code></pre>
                     </div>
@@ -587,7 +603,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/upstream/delete?id=87</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/upstream/delete?id=9</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -641,8 +657,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "sicqg8",
-  "msg": "pydqfc",
+  "status": "3j0i2d",
+  "msg": "ls943r",
   "obj": {}
 }</code></pre>
                     </div>
@@ -689,7 +705,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/upstream/getServerByUpstreamId?upstreamId=87</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/upstream/getServerByUpstreamId?upstreamId=9</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -806,19 +822,19 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "rnwo0a",
-  "msg": "lbpjt7",
+  "status": "8nyka8",
+  "msg": "z2jfxc",
   "obj": [
     {
-      "id": "87",
-      "upstreamId": "87",
-      "server": "12a3u8",
-      "port": 998,
-      "weight": 799,
-      "failTimeout": 880,
-      "maxFails": 272,
-      "maxConns": 711,
-      "status": "sz2pp1"
+      "id": "9",
+      "upstreamId": "9",
+      "server": "x5d4am",
+      "port": 714,
+      "weight": 38,
+      "failTimeout": 636,
+      "maxFails": 904,
+      "maxConns": 148,
+      "status": "chmmn6"
     }
   ]
 }</code></pre>
@@ -930,7 +946,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/upstream/insertOrUpdateServer?status=87fwhw&updateTime=1646038811217&upstreamId=87&monitorStatus=609&failTimeout=658&weight=213&createTime=1646038811217&maxConns=441&id=87&port=476&server=tfc182&maxFails=256</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/upstream/insertOrUpdateServer?weight=954&updateTime=1679370722159&server=mul1mx&upstreamId=9&failTimeout=970&createTime=1679370722159&status=63oivn&maxFails=223&maxConns=67&id=9&monitorStatus=789&port=576</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -984,8 +1000,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "v5pdix",
-  "msg": "um0i1p",
+  "status": "pmllj9",
+  "msg": "d8lbyy",
   "obj": {}
 }</code></pre>
                     </div>
@@ -993,12 +1009,12 @@
             </div>
         </div>
     </div>
-    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2022-02-28 17:00:09</span><span
+    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2023-03-21 11:52:01</span><span
             class="footer-modification">Suggestions,contact,support and error reporting on<a
             href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">&nbsp;Gitee</a>&nbsp;or<a
             href="https://github.com/smart-doc-group/smart-doc.git" target="_blank">&nbsp;Github</a></span></footer>
 </div>
-<script src="search.js?v=1646038809454"></script>
+<script src="search.js?v=1679370721004"></script>
 <script>
     $(function () {
         const Accordion = function (el, multiple) {

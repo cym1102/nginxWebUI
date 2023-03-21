@@ -93,6 +93,10 @@
 	padding-bottom: 0px !important;
 	height: 110px;
 }
+
+.layui-form-item .layui-form-checkbox[lay-skin=primary] {
+
+}
 </style>
 </head>
 <body class="layui-layout-body">
@@ -263,7 +267,7 @@
 								<label class="layui-form-label">${serverStr.transpondType}</label>
 								<div class="layui-input-inline">
 									<select name="proxyType" id="proxyType" lay-filter="proxyType">
-										<option value="0">http</option>
+										<option value="0">http/https</option>
 										<option value="1">TCP</option>
 										<option value="2">UDP</option>
 									</select>
@@ -338,11 +342,9 @@
 
 						<div class="layui-col-md8 pemDiv">
 							<div class="layui-form-item">
-								
 								<label class="layui-form-label">&nbsp;</label>
 								<div class="layui-input-block">
 									<button type="button" class="layui-btn layui-btn-normal" onclick="selectCert()">${serverStr.selectCert}</button>
-									<div class="layui-form-mid layui-word-aux"></div>
 								</div>
 							</div>
 
@@ -352,7 +354,7 @@
 								<div class="layui-input-block">
 									<button type="button" class="layui-btn layui-btn-sm liteBtn" id="pemBtn">${serverStr.uploadPem}</button>
 
-									<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectPem()">${commonStr.selectPath}</button>
+									<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" style="width: 120px;" onclick="selectPem()">${commonStr.selectPath}</button>
 
 									<input type="hidden" name="pem" id="pem" class="layui-input">
 									<div class="layui-form-mid layui-word-aux ellipsis" id="pemPath"></div>
@@ -364,7 +366,7 @@
 								<div class="layui-input-block">
 									<button type="button" class="layui-btn layui-btn-sm liteBtn" id="keyBtn">${serverStr.uploadKey}</button>
 
-									<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" onclick="selectKey()">${commonStr.selectPath}</button>
+									<button type="button" class="layui-btn layui-btn-sm layui-btn-normal liteBtn" style="width: 120px;" onclick="selectKey()">${commonStr.selectPath}</button>
 
 									<input type="hidden" name="key" id="key" class="layui-input">
 									<div class="layui-form-mid layui-word-aux ellipsis" id="keyPath"></div>
@@ -427,7 +429,7 @@
 				
 				
 							
-				<div class="layui-form-item proxyHttp">
+				<div class="proxyHttp">
 					<table class="layui-table" lay-size="sm">
 						<thead>
 							<tr>

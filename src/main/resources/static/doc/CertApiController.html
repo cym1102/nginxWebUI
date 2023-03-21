@@ -6,7 +6,7 @@
     <meta name="generator" content="smart-doc">
     <title>nginxWebUI</title>
     <link rel="stylesheet" href="font.css">
-    <link rel="stylesheet" href="AllInOne.css?v=1646038809454"/>
+    <link rel="stylesheet" href="AllInOne.css?v=1679370721004"/>
     
     <style>.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint {
         background: #f7f7f8;
@@ -275,7 +275,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/cert/getPage?current=215&limit=10&keywords=fsugla</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/cert/getPage?current=246&keywords=ynutm5&limit=10</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -387,9 +387,23 @@
                     </tr>
 
                     <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─encryption</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">加密方式 'RSA' 'ECC'</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─makeTime</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">int64</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">签发时间戳</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─endTime</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int64</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">到期时间戳</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
 
@@ -478,7 +492,14 @@
                     </tr>
 
                     <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─hwProjectID</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─hwProjectId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">hwProjectID(华为云需要的参数)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─hwDomainName</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">hwProjectID(华为云需要的参数)</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
@@ -490,33 +511,36 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "yzyzvp",
-  "msg": "9f17by",
+  "status": "0cmbh1",
+  "msg": "c11wxj",
   "obj": {
-    "count": 419,
-    "curr": 353,
+    "count": 656,
+    "curr": 573,
     "limit": 10,
     "records": [
       {
-        "id": "87",
-        "domain": "walter.net",
-        "pem": "asilom",
-        "key": "fcadjd",
-        "type": 664,
-        "makeTime": 1646038811217,
-        "autoRenew": 423,
-        "dnsType": "34pdeg",
-        "dpId": "87",
-        "dpKey": "9nk0eg",
-        "aliKey": "hrjdiw",
-        "aliSecret": "knt5lu",
-        "cfEmail": "johnsie.ernser@yahoo.com",
-        "cfKey": "ti6y67",
-        "gdKey": "936vgv",
-        "gdSecret": "qj8wcb",
-        "hwUsername": "georgianna.stracke",
-        "hwPassword": "1tt793",
-        "hwProjectID": "87"
+        "id": "9",
+        "domain": "ernser.name",
+        "pem": "qvkoc0",
+        "key": "dqfy06",
+        "type": 626,
+        "encryption": "bsnffp",
+        "makeTime": 1679370722159,
+        "endTime": 1679370722159,
+        "autoRenew": 457,
+        "dnsType": "c9nkm7",
+        "dpId": "9",
+        "dpKey": "szid9v",
+        "aliKey": "qxpmae",
+        "aliSecret": "cexyef",
+        "cfEmail": "jayson.dibbert@hotmail.com",
+        "cfKey": "oash43",
+        "gdKey": "e5ybot",
+        "gdSecret": "kfjy4f",
+        "hwUsername": "timothy.borer",
+        "hwPassword": "jpli26",
+        "hwProjectId": "9",
+        "hwDomainName": "timothy.borer"
       }
     ]
   }
@@ -594,9 +618,25 @@
                     </tr>
 
                     <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">encryption</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">加密方式 'RSA' 'ECC'</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">makeTime</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">int64</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">签发时间戳</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">endTime</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int64</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">到期时间戳</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
@@ -698,7 +738,15 @@
                     </tr>
 
                     <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">hwProjectID</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">hwProjectId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">hwProjectID(华为云需要的参数)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">hwDomainName</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">hwProjectID(华为云需要的参数)</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
@@ -709,7 +757,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/cert/addOver?hwUsername=georgianna.stracke&gdKey=n8ge0j&domain=walter.net&hwPassword=d1sffy&cfKey=t5nu7u&gdSecret=qqp0qx&id=87&dnsType=4io05v&dpKey=a4v45s&aliSecret=16pm4u&key=hofks9&createTime=1646038811217&dpId=87&aliKey=oylvgw&pem=oz4gsf&type=402&autoRenew=797&makeTime=1646038811217&updateTime=1646038811217&cfEmail=johnsie.ernser@yahoo.com&hwProjectID=87</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/cert/addOver?dnsType=8jj6ki&createTime=1679370722159&makeTime=1679370722159&hwProjectId=9&hwPassword=fapmub&updateTime=1679370722159&key=e915b5&id=9&autoRenew=986&pem=a5wed5&encryption=gf2r11&cfEmail=jayson.dibbert@hotmail.com&aliSecret=1vc72p&dpId=9&cfKey=lq2qux&hwDomainName=timothy.borer&hwUsername=timothy.borer&type=231&gdSecret=c2eodi&dpKey=c6829p&gdKey=j80y8b&domain=ernser.name&aliKey=89tipo&endTime=1679370722159</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -763,8 +811,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "f56b40",
-  "msg": "fzry3k",
+  "status": "25up3v",
+  "msg": "4qbugd",
   "obj": {}
 }</code></pre>
                     </div>
@@ -811,7 +859,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/cert/getTxtValue?certId=87</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/cert/getTxtValue?certId=9</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -900,15 +948,15 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "6zeo2g",
-  "msg": "4ljdtm",
+  "status": "gl2tnm",
+  "msg": "8s7xca",
   "obj": [
     {
-      "id": "87",
-      "certId": "87",
-      "domain": "walter.net",
-      "type": "ani0xm",
-      "value": "3ps95b"
+      "id": "9",
+      "certId": "9",
+      "domain": "ernser.name",
+      "type": "yb44hj",
+      "value": "oph7c3"
     }
   ]
 }</code></pre>
@@ -964,7 +1012,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/cert/setAutoRenew?id=87&autoRenew=39</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/cert/setAutoRenew?id=9&autoRenew=985</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -1018,8 +1066,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "byla56",
-  "msg": "k94094",
+  "status": "fs6142",
+  "msg": "a0ealv",
   "obj": {}
 }</code></pre>
                     </div>
@@ -1066,7 +1114,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/cert/del?id=87</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/cert/del?id=9</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -1120,8 +1168,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "u48in9",
-  "msg": "tkjux2",
+  "status": "134cih",
+  "msg": "u3kbsi",
   "obj": {}
 }</code></pre>
                     </div>
@@ -1176,7 +1224,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/cert/apply?type=owyng3&id=87</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/cert/apply?type=7osdas&id=9</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -1265,15 +1313,15 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "g92hjx",
-  "msg": "4jzody",
+  "status": "54d6g6",
+  "msg": "0gnsrg",
   "obj": [
     {
-      "id": "87",
-      "certId": "87",
-      "domain": "walter.net",
-      "type": "aeijgs",
-      "value": "g2k2d0"
+      "id": "9",
+      "certId": "9",
+      "domain": "ernser.name",
+      "type": "hqeob4",
+      "value": "jyd0lq"
     }
   ]
 }</code></pre>
@@ -1321,7 +1369,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/cert/download?id=87</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/cert/download?id=9</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-example:</strong></p></div>
@@ -1333,12 +1381,12 @@
             </div>
         </div>
     </div>
-    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2022-02-28 17:00:09</span><span
+    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2023-03-21 11:52:01</span><span
             class="footer-modification">Suggestions,contact,support and error reporting on<a
             href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">&nbsp;Gitee</a>&nbsp;or<a
             href="https://github.com/smart-doc-group/smart-doc.git" target="_blank">&nbsp;Github</a></span></footer>
 </div>
-<script src="search.js?v=1646038809454"></script>
+<script src="search.js?v=1679370721004"></script>
 <script>
     $(function () {
         const Accordion = function (el, multiple) {

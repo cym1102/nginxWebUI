@@ -320,6 +320,16 @@ public class ConfController extends BaseController {
 
 		try {
 			String rs = "";
+			// 过滤特殊字符，防止命令拼接
+			cmd = cmd.replaceAll(";","\\\\;");
+     		cmd = cmd.replaceAll("`","\\\\`");
+     		cmd = cmd.replaceAll("\\|","\\\\|");
+     		cmd = cmd.replaceAll("\\{","\\\\{");
+     		cmd = cmd.replaceAll("\\}","\\\\}");
+			//仅执行nginx相关的命令，而不是其他的恶意命令
+			if(!cmd.contains("nginx")){
+            	cmd = "nginx restart";
+        	}
 			if (SystemTool.isWindows()) {
 				RuntimeUtil.exec("cmd /c start " + cmd);
 			} else {

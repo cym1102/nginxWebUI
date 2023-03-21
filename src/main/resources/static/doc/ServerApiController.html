@@ -6,7 +6,7 @@
     <meta name="generator" content="smart-doc">
     <title>nginxWebUI</title>
     <link rel="stylesheet" href="font.css">
-    <link rel="stylesheet" href="AllInOne.css?v=1646038809454"/>
+    <link rel="stylesheet" href="AllInOne.css?v=1679370721004"/>
     
     <style>.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint {
         background: #f7f7f8;
@@ -275,7 +275,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/getPage?current=958&limit=10&keywords=l2uhwj</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/getPage?keywords=yju2qh&current=550&limit=10</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -476,31 +476,31 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "f1rkem",
-  "msg": "na9y84",
+  "status": "60jvku",
+  "msg": "u8asml",
   "obj": {
-    "count": 371,
-    "curr": 573,
+    "count": 12,
+    "curr": 862,
     "limit": 10,
     "records": [
       {
-        "id": "87",
-        "serverName": "georgianna.stracke",
-        "listen": "ve0szg",
-        "def": 274,
-        "rewrite": 966,
-        "rewriteListen": "fpps51",
-        "ssl": 480,
-        "http2": 23,
-        "proxyProtocol": 217,
-        "pem": "ctweie",
-        "key": "vk4d6b",
-        "proxyType": 457,
-        "proxyUpstreamId": "87",
+        "id": "9",
+        "serverName": "timothy.borer",
+        "listen": "zcqw4z",
+        "def": 757,
+        "rewrite": 226,
+        "rewriteListen": "zar5sm",
+        "ssl": 51,
+        "http2": 357,
+        "proxyProtocol": 661,
+        "pem": "sn14um",
+        "key": "shdr7x",
+        "proxyType": 603,
+        "proxyUpstreamId": "9",
         "enable": true,
-        "descr": "7udts9",
-        "protocols": "b9uv2g",
-        "passwordId": "87"
+        "descr": "7ivxdt",
+        "protocols": "7e79ac",
+        "passwordId": "9"
       }
     ]
   }
@@ -677,7 +677,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdate?pemStr=oiq0hz&ssl=266&http2=78&keyStr=g3mth2&pem=atx1lr&rewriteListen=b64vyj&descr=g0ftc8&proxyUpstreamId=87&def=264&serverName=georgianna.stracke&updateTime=1646038811217&enable=true&key=olqgp9&protocols=19owo0&proxyProtocol=153&listen=53icc0&passwordId=87&rewrite=621&id=87&proxyType=416&createTime=1646038811217&seq=770</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdate?serverName=timothy.borer&ssl=848&http2=689&protocols=atc07w&seq=664&updateTime=1679370722159&def=207&rewrite=310&enable=true&createTime=1679370722159&passwordId=9&listen=agiage&pem=gmqhwa&keyStr=6i53hb&proxyUpstreamId=9&pemStr=i2anl4&descr=gsmtao&rewriteListen=dj45yf&key=j5px59&proxyType=19&proxyProtocol=201&id=9</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -731,8 +731,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "jx051f",
-  "msg": "a8cnjq",
+  "status": "wozdlb",
+  "msg": "670y58",
   "obj": {}
 }</code></pre>
                     </div>
@@ -779,7 +779,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/delete?id=87</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/delete?id=9</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -833,8 +833,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "eehzp2",
-  "msg": "a4t4nu",
+  "status": "82ctuz",
+  "msg": "wolxz8",
   "obj": {}
 }</code></pre>
                     </div>
@@ -881,7 +881,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/getLocationByServerId?serverId=87</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/getLocationByServerId?serverId=9</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -1014,9 +1014,30 @@
                     </tr>
 
                     <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─headerHost</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">Host参数类型 $host(默认) $http_host $host:$proxy_port</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">└─websocket</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启websocket支持 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─cros</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启跨域支持 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─descr</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">描述</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
                     </tbody>
@@ -1026,23 +1047,26 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "l45gtu",
-  "msg": "mvix1d",
+  "status": "6okus6",
+  "msg": "u0nnoo",
   "obj": [
     {
-      "id": "87",
-      "serverId": "87",
-      "path": "zfzx26",
-      "type": 930,
-      "value": "sfpiw6",
-      "upstreamType": "7dbdim",
-      "upstreamId": "87",
-      "upstreamPath": "vchp32",
-      "rootPath": "pd09q2",
-      "rootPage": "ryy3qq",
-      "rootType": "b6q1me",
-      "header": 541,
-      "websocket": 60
+      "id": "9",
+      "serverId": "9",
+      "path": "vgzxp4",
+      "type": 400,
+      "value": "er5u7r",
+      "upstreamType": "cu3o63",
+      "upstreamId": "9",
+      "upstreamPath": "8mrdt8",
+      "rootPath": "jox5c1",
+      "rootPage": "dw7igi",
+      "rootType": "gijz9d",
+      "header": 84,
+      "headerHost": "oodyc4",
+      "websocket": 83,
+      "cros": 851,
+      "descr": "g1v11w"
     }
   ]
 }</code></pre>
@@ -1175,9 +1199,33 @@
                     </tr>
 
                     <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">headerHost</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">Host参数类型 $host(默认) $http_host $host:$proxy_port</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">websocket</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启websocket支持 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">cros</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启跨域支持 0否(默认) 1是</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">descr</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">描述</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
@@ -1186,7 +1234,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdateLocation?rootPage=zrorof&updateTime=1646038811217&websocket=499&value=pggazb&type=118&createTime=1646038811217&id=87&path=4w0tzv&rootPath=r5hoz7&locationParamJson=ywl79q&upstreamType=49sztj&serverId=87&rootType=udo5dr&upstreamId=87&header=874&upstreamPath=c8a4fx</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdateLocation?header=91&createTime=1679370722159&value=h8it4a&id=9&type=232&rootPath=y40u6g&cros=318&locationParamJson=n09ldx&upstreamPath=focqd4&upstreamType=jkgi31&websocket=531&headerHost=hvyr75&descr=iagjn9&upstreamId=9&rootType=czgrog&updateTime=1679370722159&rootPage=lo50o1&serverId=9&path=yq3s44</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -1240,8 +1288,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "jeraiw",
-  "msg": "2rq9go",
+  "status": "t4cmps",
+  "msg": "cs9dpd",
   "obj": {}
 }</code></pre>
                     </div>
@@ -1288,7 +1336,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/deleteLocation?id=87</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/deleteLocation?id=9</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -1342,8 +1390,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "f04p4w",
-  "msg": "ymvkpq",
+  "status": "z6lvjy",
+  "msg": "bo0l99",
   "obj": {}
 }</code></pre>
                     </div>
@@ -1351,12 +1399,12 @@
             </div>
         </div>
     </div>
-    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2022-02-28 17:00:09</span><span
+    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2023-03-21 11:52:01</span><span
             class="footer-modification">Suggestions,contact,support and error reporting on<a
             href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">&nbsp;Gitee</a>&nbsp;or<a
             href="https://github.com/smart-doc-group/smart-doc.git" target="_blank">&nbsp;Github</a></span></footer>
 </div>
-<script src="search.js?v=1646038809454"></script>
+<script src="search.js?v=1679370721004"></script>
 <script>
     $(function () {
         const Accordion = function (el, multiple) {
