@@ -14,10 +14,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class TimeExeUtils {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Inject
 	MessageUtils m;
-	
 
 	/**
 	 * 命令执行
@@ -31,13 +30,13 @@ public class TimeExeUtils {
 		Process process = null;
 		StringBuilder sbStd = new StringBuilder();
 
-		String[] allEnvs = ArrayUtil.addAll(System.getenv()
-						.entrySet()
-						.stream()
-						.map(r -> String.format("%s=%s", r.getKey(), r.getValue()))
-						.toArray(String[]::new), envs);
+		String[] allEnvs = ArrayUtil.addAll(System.getenv() //
+				.entrySet()//
+				.stream()//
+				.map(r -> String.format("%s=%s", r.getKey(), r.getValue()))//
+				.toArray(String[]::new), envs);
 
-		long start = System.currentTimeMillis() ;
+		long start = System.currentTimeMillis();
 		try {
 			process = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", cmd }, allEnvs);
 
@@ -61,9 +60,9 @@ public class TimeExeUtils {
 					}
 				}
 
-				if (System.currentTimeMillis()  - start > timeout) {
-					line = m.get("certStr.timeout"); 
-					
+				if (System.currentTimeMillis() - start > timeout) {
+					line = m.get("certStr.timeout");
+
 					sbStd.append(line + "\n");
 					logger.info(line);
 					break;

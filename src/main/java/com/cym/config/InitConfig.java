@@ -17,12 +17,10 @@ import com.cym.model.Admin;
 import com.cym.model.Basic;
 import com.cym.model.Cert;
 import com.cym.model.Http;
-import com.cym.model.Password;
 import com.cym.service.BasicService;
 import com.cym.service.ConfService;
 import com.cym.service.SettingService;
 import com.cym.sqlhelper.utils.ConditionAndWrapper;
-import com.cym.sqlhelper.utils.JdbcTemplate;
 import com.cym.sqlhelper.utils.SqlHelper;
 import com.cym.utils.EncodePassUtils;
 import com.cym.utils.MessageUtils;
@@ -56,16 +54,13 @@ public class InitConfig {
 	@Inject
 	SqlHelper sqlHelper;
 	@Inject
-	JdbcTemplate jdbcTemplate;
-	@Inject
 	ConfService confService;
 
 	@Inject("${project.findPass}")
 	Boolean findPass;
 
 	@Init
-	public void init() throws IOException {
-
+	public void start() throws Throwable {
 		// 找回密码
 		if (findPass) {
 			List<Admin> admins = sqlHelper.findAll(Admin.class);

@@ -1,7 +1,6 @@
 package com.cym.utils;
 
 import org.noear.solon.annotation.Component;
-import org.noear.solon.annotation.Init;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,8 +12,7 @@ public class AuthUtils {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	GoogleAuthenticator gAuth;
 
-	@Init
-	public void init() {
+	public AuthUtils() {
 		gAuth = new GoogleAuthenticator();
 	}
 

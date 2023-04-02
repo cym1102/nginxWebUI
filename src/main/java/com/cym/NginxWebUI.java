@@ -4,12 +4,13 @@ import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.noear.solon.Solon;
-import org.noear.solon.schedule.annotation.EnableScheduling;
+import org.noear.solon.annotation.SolonMain;
+import org.noear.solon.core.util.LogUtil;
+import org.noear.solon.logging.utils.LogUtilToSlf4j;
+import org.noear.solon.scheduling.annotation.EnableScheduling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +21,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RuntimeUtil;
 
 @EnableScheduling
+@SolonMain
 public class NginxWebUI {
 	static Logger logger = LoggerFactory.getLogger(NginxWebUI.class);
 
@@ -35,6 +37,8 @@ public class NginxWebUI {
 		}
 
 		Solon.start(NginxWebUI.class, args, app -> {
+			LogUtil.globalSet(new LogUtilToSlf4j());
+
 			app.onError(e -> logger.error(e.getMessage(), e));
 
 			app.before(c -> {

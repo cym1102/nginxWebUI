@@ -31,7 +31,6 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.net.URLDecoder;
 import cn.hutool.core.net.URLEncodeUtil;
-import cn.hutool.core.net.URLEncoder;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;

@@ -53,7 +53,7 @@ public class MainController extends BaseController {
 	@Mapping("/adminPage/main/upload")
 	public JsonResult upload(Context context, UploadedFile file) {
 		try {
-			File temp = new File(FileUtil.getTmpDir() + "/" + file.name);
+			File temp = new File(FileUtil.getTmpDir() + "/" + file.getName());
 			file.transferTo(temp);
 
 //			// 移动文件

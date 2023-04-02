@@ -1,7 +1,6 @@
 package com.cym.sqlhelper.utils;
 
 import java.lang.reflect.Field;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,7 +12,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.noear.solon.annotation.Component;
-import org.noear.solon.annotation.Configuration;
 import org.noear.solon.annotation.Init;
 import org.noear.solon.annotation.Inject;
 import org.slf4j.Logger;
@@ -45,9 +43,9 @@ public class SqlHelper extends SqlUtils {
 
 	static Logger logger = LoggerFactory.getLogger(SqlHelper.class);
 	SnowFlake snowFlake = new SnowFlake(1, 1);
-	
+
 	@Init
-	public void init() throws SQLException {
+	public void start() throws Throwable {
 		Set<Class<?>> set = ClassUtil.scanPackage(packageName);
 		for (Class<?> clazz : set) {
 			tableUtils.initTable(clazz);

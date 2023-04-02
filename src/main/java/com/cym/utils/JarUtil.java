@@ -24,6 +24,7 @@ public class JarUtil {
 		if (!root.exists()) {
 			throw new IllegalStateException("Unable to determine code source archive from " + root);
 		}
+		
 		return root.getAbsolutePath();
 	}
 

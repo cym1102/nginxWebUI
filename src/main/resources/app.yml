@@ -20,6 +20,14 @@ solon:
     logger:
       "io.undertow":
         level: "WARN"
+      "org.xnio":
+        level: "WARN"
+      "o.xnio":
+        level: "WARN"
+      "com.zaxxer.hikari":
+        level: "WARN"
+      "org.jboss":
+        level: "WARN"
     appender:
       file:
         name: ${project.home}/log/${solon.app.name}

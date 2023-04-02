@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -163,7 +162,7 @@ public class AppFilter implements Filter {
 
 					UploadedFile uploadedFile = ctx.file("file");
 
-					File temp = new File(FileUtil.getTmpDir() + "/" + uploadedFile.name);
+					File temp = new File(FileUtil.getTmpDir() + "/" + uploadedFile.getName());
 					uploadedFile.transferTo(temp);
 					map.put("file", temp);
 
