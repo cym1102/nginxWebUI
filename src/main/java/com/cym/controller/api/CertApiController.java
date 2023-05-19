@@ -6,6 +6,7 @@ import java.util.List;
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
+import org.noear.solon.annotation.Param;
 
 import com.cym.controller.adminPage.CertController;
 import com.cym.model.Cert;
@@ -39,8 +40,8 @@ public class CertApiController extends BaseController {
 	 * 
 	 */
 	@Mapping("getPage")
-	public JsonResult<Page<Cert>> getPage(Integer current, //
-			Integer limit, //
+	public JsonResult<Page<Cert>> getPage(@Param(defaultValue = "1") Integer current, //
+			@Param(defaultValue = "10") Integer limit, //
 			String keywords) {
 		Page page = new Page();
 		page.setCurr(current);

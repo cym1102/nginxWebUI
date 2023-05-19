@@ -148,7 +148,7 @@ public class InitConfig {
 			}
 
 			// 判断是否存在nginx命令
-			if (hasNginx()) {
+			if (hasNginx() && StrUtil.isEmpty(settingService.get("nginxExe"))) {
 				// 设置nginx执行文件
 				settingService.set("nginxExe", "nginx");
 			}

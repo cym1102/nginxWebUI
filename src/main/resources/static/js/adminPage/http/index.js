@@ -1,3 +1,24 @@
+$(function() {
+	form.on('switch(enable)', function(data) {
+
+		$.ajax({
+			type: 'POST',
+			url: ctx + '/adminPage/http/setEnable',
+			data: {
+				enable: data.elem.checked ? 1 : 0,
+				id: data.elem.value
+			},
+			dataType: 'json',
+			success: function(data) {
+
+			},
+			error: function() {
+				layer.alert(commonStr.errorInfo);
+			}
+		});
+	});
+})
+
 function search() {
 	$("input[name='curr']").val(1);
 	$("#searchForm").submit();

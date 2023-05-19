@@ -183,15 +183,15 @@
 				</div>
 				
 				<div class="layui-form-item">
-					<label class="layui-form-label">同步数据</label>
+					<label class="layui-form-label">${remoteStr.asycData}</label>
 					<div class="layui-input-block">
-						<input type="checkbox" class="asycData" name="asycData" id="basic" lay-skin="primary" value="basic" title="基本参数">
-						<input type="checkbox" class="asycData" name="asycData" id="http" lay-skin="primary" value="http" title="http参数">
-						<input type="checkbox" class="asycData" name="asycData" id="stream" lay-skin="primary" value="stream" title="stream参数">
-						<input type="checkbox" class="asycData" name="asycData" id="server" lay-skin="primary" value="server" title="反向代理server">
-						<input type="checkbox" class="asycData" name="asycData" id="upstream" lay-skin="primary" value="upstream" title="负载均衡upstream">
-						<input type="checkbox" class="asycData" name="asycData" id="password" lay-skin="primary" value="password" title="密码文件">
-						<input type="checkbox" class="asycData" name="asycData" id="param" lay-skin="primary" value="param" title="额外参数及模板">
+						<input type="checkbox" class="asycData" name="asycData" id="basic" lay-skin="primary" value="basic" title="${remoteStr.dataBasic}">
+						<input type="checkbox" class="asycData" name="asycData" id="http" lay-skin="primary" value="http" title="${remoteStr.dataHttp}">
+						<input type="checkbox" class="asycData" name="asycData" id="stream" lay-skin="primary" value="stream" title="${remoteStr.dataStream}">
+						<input type="checkbox" class="asycData" name="asycData" id="server" lay-skin="primary" value="server" title="${remoteStr.dataServer}">
+						<input type="checkbox" class="asycData" name="asycData" id="upstream" lay-skin="primary" value="upstream" title="${remoteStr.dataUpstream}">
+						<input type="checkbox" class="asycData" name="asycData" id="password" lay-skin="primary" value="password" title="${remoteStr.dataPassword}">
+						<input type="checkbox" class="asycData" name="asycData" id="param" lay-skin="primary" value="param" title="${remoteStr.dataParam}">
 					</div>
 				</div>
 
@@ -256,12 +256,12 @@
 								
 							<optgroup label="${remoteStr.nginxStart}">
 								<#list startCmds as cmd>
-									<option value="start ${cmd}">${cmd}</option>
+									<option value="startNginx ${cmd}">${cmd}</option>
 								</#list>
 							</optgroup>
 							<optgroup label="${remoteStr.nginxStop}">
 								<#list stopCmds as cmd>
-									<option value="stop ${cmd}">${cmd}</option>
+									<option value="stopNginx ${cmd}">${cmd}</option>
 								</#list>
 							</optgroup>
 						</select>

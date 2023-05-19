@@ -5,6 +5,7 @@ import java.util.List;
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
+import org.noear.solon.annotation.Param;
 
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
@@ -34,8 +35,8 @@ public class UpstreamApiController extends BaseController {
 	 * 
 	 */
 	@Mapping("getPage")
-	public JsonResult<Page<Upstream>> getPage(Integer current, //
-			Integer limit, //
+	public JsonResult<Page<Upstream>> getPage(@Param(defaultValue = "1") Integer current, //
+			@Param(defaultValue = "10") Integer limit, //
 			String keywords) {
 		Page page = new Page();
 		page.setCurr(current);

@@ -47,11 +47,12 @@ input[name='param']{
 					</div>
 				</form>
 
-				<table class="layui-table" lay-size="sm" style="table-layout:fixed; WORD-BREAK:break-all;">
+				<table class="layui-table layui-form" lay-size="sm" style="table-layout:fixed; WORD-BREAK:break-all;">
 					<thead>
 						<tr>
 							<th>${commonStr.name}</th>
 							<th>${commonStr.value}</th>
+							<th>${serverStr.status}</th>
 							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
@@ -60,6 +61,9 @@ input[name='param']{
 						<tr>
 							<td>${http.name}</td>
 							<td>${http.value}</td>
+							<td>
+								<input type="checkbox" name="enable" lay-filter="enable" value="${http.id}" lay-text="ON|OFF" lay-skin="switch"${(http.enable)?string('checked','')}>
+							</td>
 							<td>
 								<div class="layui-inline">
 								<button type="button" class="layui-btn layui-btn-sm " onclick="edit('${http.id}')">${commonStr.edit}</button>

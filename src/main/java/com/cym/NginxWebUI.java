@@ -53,7 +53,8 @@ public class NginxWebUI {
 				cfg.setSetting("classic_compatible", "true");
 				cfg.setSetting("number_format", "0.##");
 			});
-
+			
+			app.router().caseSensitive(true);
 		});
 	}
 

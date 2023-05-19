@@ -301,8 +301,8 @@ public class RemoteController extends BaseController {
 				if (cmd.contentEquals("replace")) {
 					jsonResult = confController.replace(confController.getReplaceJson(), null);
 				}
-				if (cmd.startsWith("start") || cmd.startsWith("stop")) {
-					jsonResult = confController.runCmd(cmd.replace("start ", "").replace("stop ", ""), null);
+				if (cmd.startsWith("startNginx") || cmd.startsWith("stopNginx")) {
+					jsonResult = confController.runCmd(cmd.replaceFirst("startNginx ", "").replaceFirst("stopNginx ", ""), null);
 				}
 				if (cmd.contentEquals("update")) {
 					jsonResult = renderError(m.get("remoteStr.notAllow"));
@@ -318,15 +318,15 @@ public class RemoteController extends BaseController {
 
 				try {
 					String action = cmd;
-					if (cmd.startsWith("start") || cmd.startsWith("stop")) {
+					if (cmd.startsWith("startNginx") || cmd.startsWith("stopNginx")) {
 						action = "runCmd";
 					}
 
 					String url = remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort() + "/adminPage/conf/" + action + "?creditKey=" + remote.getCreditKey();
 
 					Map<String, Object> map = new HashMap<>();
-					if (cmd.startsWith("start") || cmd.startsWith("stop")) {
-						map.put("cmd", cmd.replace("start ", "").replace("stop ", ""));
+					if (cmd.startsWith("startNginx") || cmd.startsWith("stopNginx")) {
+						map.put("cmd", cmd.replaceFirst("startNginx ", "").replaceFirst("stopNginx ", ""));
 					}
 
 					String json = HttpUtil.post(url, map);

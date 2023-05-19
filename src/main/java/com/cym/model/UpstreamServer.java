@@ -48,9 +48,25 @@ public class UpstreamServer extends BaseModel {
 	 */
 	@InitValue("none")
 	String status;
+	
+	/**
+	 * 其他参数
+	 */
+	String param;
+	
+	
 	@JsonIgnore
 	@InitValue("-1")
 	Integer monitorStatus;
+
+	
+	public String getParam() {
+		return param;
+	}
+
+	public void setParam(String param) {
+		this.param = param;
+	}
 
 	public Integer getMaxConns() {
 		return maxConns;

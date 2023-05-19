@@ -1,6 +1,7 @@
 package com.cym.model;
 
 import com.cym.sqlhelper.bean.BaseModel;
+import com.cym.sqlhelper.config.InitValue;
 import com.cym.sqlhelper.config.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -25,6 +26,12 @@ public class Http extends BaseModel {
 	@JsonIgnore
 	Long seq;
 
+	/**
+	 * 是否启用 true:启用(默认) false:禁用
+	 */
+	@InitValue("true")
+	Boolean enable;
+	
 	public Http() {
 
 	}
@@ -33,6 +40,16 @@ public class Http extends BaseModel {
 		this.name = name;
 		this.value = value;
 		this.seq = seq;
+	}
+
+	
+	
+	public Boolean getEnable() {
+		return enable;
+	}
+
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
 	}
 
 	public Long getSeq() {

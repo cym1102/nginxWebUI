@@ -69,8 +69,25 @@ public class LoginController extends BaseController {
 		return modelAndView;
 	}
 
+	/**
+	 * 判断参数长度是否大于1000
+	 * 
+	 * @param param
+	 * @return
+	 */
+	private boolean testLenth(String param) {
+		if (StrUtil.isNotEmpty(param) && param.length() > 1000) {
+			return true;
+		}
+		return false;
+	}
+
 	@Mapping("login")
-	public JsonResult submitLogin(String name, String pass, String code, String authCode, String remember) {
+	public JsonResult submitLogin(String name, String pass, String code, String authCode) {
+		if (testLenth(name) || testLenth(pass) || testLenth(code) || testLenth(authCode)) {
+			return renderError(m.get("loginStr.backError7"));
+		}
+
 		// 解码
 		if (StrUtil.isNotEmpty(name)) {
 			name = Base64.decodeStr(Base64.decodeStr(name));
@@ -140,6 +157,9 @@ public class LoginController extends BaseController {
 
 	@Mapping("getAuth")
 	public JsonResult getAuth(String name, String pass, String code, Integer remote) {
+		if (testLenth(name) || testLenth(pass) || testLenth(code)) {
+			return renderError(m.get("loginStr.backError7"));
+		}
 
 		// 解码
 		if (StrUtil.isNotEmpty(name)) {
@@ -175,6 +195,10 @@ public class LoginController extends BaseController {
 
 	@Mapping("getCredit")
 	public JsonResult getCredit(String name, String pass, String code, String auth) {
+		if (testLenth(name) || testLenth(pass) || testLenth(code)) {
+			return renderError(m.get("loginStr.backError7"));
+		}
+
 		// 解码
 		if (StrUtil.isNotEmpty(name)) {
 			name = Base64.decodeStr(Base64.decodeStr(name));

@@ -75,16 +75,18 @@ public class CertController extends BaseController {
 
 		if (type != null && type == 1) {
 			// 手动上传
+			String dir = homeConfig.home + "cert/" + cert.getDomain() + "/";
+			
 			if (cert.getKey().contains(FileUtil.getTmpDir().toString().replace("\\", "/"))) {
 				String keyName = new File(cert.getKey()).getName();
-				FileUtil.move(new File(cert.getKey()), new File(homeConfig.home + "cert/" + keyName), true);
-				cert.setKey(homeConfig.home + "cert/" + keyName);
+				FileUtil.move(new File(cert.getKey()), new File(dir + keyName), true);
+				cert.setKey(dir + keyName);
 			}
 
 			if (cert.getPem().contains(FileUtil.getTmpDir().toString().replace("\\", "/"))) {
 				String pemName = new File(cert.getPem()).getName();
-				FileUtil.move(new File(cert.getPem()), new File(homeConfig.home + "cert/"), true);
-				cert.setPem(homeConfig.home + "cert/" + pemName);
+				FileUtil.move(new File(cert.getPem()), new File(dir + pemName), true);
+				cert.setPem(dir + pemName);
 			}
 		}
 

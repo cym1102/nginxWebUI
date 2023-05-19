@@ -106,7 +106,8 @@ function addOver() {
 		upstreamServer.maxConns = $(this).find("input[name='maxConns']").val();
 		upstreamServer.failTimeout = $(this).find("input[name='failTimeout']").val();
 		upstreamServer.status = $(this).find("select[name='status']").val();
-
+		upstreamServer.param = $(this).find("input[name='param']").val();
+		
 		upstreamServers.push(upstreamServer);
 	})
 
@@ -190,6 +191,7 @@ function edit(id,clone) {
 											<option ${upstreamServer.status == 'backup' ? 'selected' : ''} value="backup">${upstreamStr.backup}</option>
 										</select>
 									</td>
+									<td><input type="text" name="param" class="layui-input" value="${upstreamServer.param}"></td>
 									<td><button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button></td>
 							</tr>`
 				}
@@ -249,6 +251,7 @@ function addItem() {
 								<option value="backup">${upstreamStr.backup}</option>
 							</select>
 						</td>
+						<td><input type="text" name="param" class="layui-input"></td>
 						<td><button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button></td>
 				</tr>`
 	$("#itemList").append(html);

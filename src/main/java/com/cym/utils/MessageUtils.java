@@ -7,7 +7,6 @@ import org.noear.solon.annotation.Init;
 import org.noear.solon.annotation.Inject;
 
 import com.cym.service.SettingService;
-import org.noear.solon.core.bean.InitializingBean;
 
 /**
  * 国际化工具类

@@ -1,8 +1,9 @@
 server:
   port: 8080
   request:
-    maxBodySize: 2048mb
-    maxHeaderSize: 20mb
+    maxBodySize: 20mb
+    maxFileSize: 2048mb
+    maxHeaderSize: 200kb
 
 project:
   sqlPrint: false

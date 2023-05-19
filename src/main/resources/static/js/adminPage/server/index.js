@@ -576,6 +576,8 @@ function buildHtml(uuid, location, upstreamSelect) {
 								<option ${location.headerHost == '$host' ? 'selected' : ''}>$host</option>
 								<option ${location.headerHost == '$http_host' ? 'selected' : ''}>$http_host</option>
 								<option ${location.headerHost == '$host:$proxy_port' ? 'selected' : ''}>$host:$proxy_port</option>
+								<option ${location.headerHost == '$host:$server_port' ? 'selected' : ''}>$host:$server_port</option>
+								
 							</select>
 						</div>
 					</span>

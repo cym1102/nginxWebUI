@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:3.17
 ENV LANG=zh_CN.UTF-8 \
     TZ=Asia/Shanghai \
     PS1="\u@\h:\w \$ "

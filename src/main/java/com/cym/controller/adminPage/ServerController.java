@@ -87,6 +87,7 @@ public class ServerController extends BaseController {
 				serverExt.setLocationStr(m.get("serverStr.server") + ": " + (upstream != null ? upstream.getName() : ""));
 			}
 
+			serverExt.setHref((server.getSsl() == 1 ? "https" : "http") + ("://" + server.getServerName() + ":" + server.getListen()));
 			exts.add(serverExt);
 		}
 		page.setRecords(exts);
@@ -287,6 +288,10 @@ public class ServerController extends BaseController {
 			ngxBlock = new NgxBlock();
 			ngxBlock.addValue("http");
 			for (Http http : httpList) {
+				if (http.getEnable() == null || !http.getEnable()) {
+					continue;
+				}
+				
 				NgxParam ngxParam = new NgxParam();
 				ngxParam.addValue(http.getName().trim() + " " + http.getValue().trim());
 				ngxBlock.addEntry(ngxParam);
@@ -320,14 +325,13 @@ public class ServerController extends BaseController {
 		Server server = sqlHelper.findById(id, Server.class);
 		return renderSuccess(server.getDescr());
 	}
-	
+
 	@Mapping("getLocationDescr")
 	public JsonResult getLocationDescr(String id) {
 		Location location = sqlHelper.findById(id, Location.class);
 		return renderSuccess(location.getDescr());
 	}
-	
-	
+
 	@Mapping("setLocationDescr")
 	public JsonResult setLocationDescr(String id, String descr) {
 		Location location = new Location();
@@ -337,7 +341,6 @@ public class ServerController extends BaseController {
 
 		return renderSuccess();
 	}
-	
 
 	@Mapping("upload")
 	public JsonResult upload(Context context, UploadedFile file) {
@@ -347,7 +350,7 @@ public class ServerController extends BaseController {
 
 			// 移动文件
 			File dest = new File(homeConfig.home + "cert/" + file.getName());
-			while(FileUtil.exist(dest)) {
+			while (FileUtil.exist(dest)) {
 				dest = new File(dest.getPath() + "_1");
 			}
 			FileUtil.move(temp, dest, true);

@@ -24,7 +24,7 @@
 }
 
 .server .short100 {
-	width: 100px;
+	width: 150px;
 	text-align: center;
 }
 
@@ -198,15 +198,21 @@
 					</div>
 				</div>
 
-				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addItem()">${upstreamStr.addServer}</button>
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addBatch()">${upstreamStr.addServerBatch}</button>
-
-					<button type="button" class="layui-btn layui-btn-sm" onclick="upstreamParam()">${upstreamStr.extParam}</button>
+				<div>
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addItem()">${upstreamStr.addServer}</button>
+					</div>
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addBatch()">${upstreamStr.addServerBatch}</button>
+					</div>
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-sm" onclick="upstreamParam()">${upstreamStr.extParam}</button>
+					</div>
+					
 					<textarea style="display: none;" id="upstreamParamJson" name="upstreamParamJson"></textarea>
 				</div>
 
-				<div class="layui-form-item">
+				<div>
 
 					<table class="layui-table" lay-size="sm">
 						<thead>
@@ -218,7 +224,9 @@
 								<th>${upstreamStr.maxConns}</th>
 								<th>${upstreamStr.failWait}</th>
 								<th>${upstreamStr.status}</th>
+								<th>${upstreamStr.otherParm}</th>
 								<th>${commonStr.operation}</th>
+								
 							</tr>
 						</thead>
 						<tbody id="itemList" class="itemList">

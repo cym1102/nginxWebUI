@@ -9,6 +9,7 @@ import org.noear.solon.core.handle.ModelAndView;
 
 import com.cym.config.InitConfig;
 import com.cym.model.Http;
+import com.cym.model.Server;
 import com.cym.service.HttpService;
 import com.cym.service.SettingService;
 import com.cym.utils.BaseController;
@@ -99,11 +100,15 @@ public class HttpController extends BaseController {
 		return renderSuccess();
 	}
 
-
-
 	@Mapping("setOrder")
 	public JsonResult setOrder(String id, Integer count) {
 		httpService.setSeq(id, count);
+		return renderSuccess();
+	}
+
+	@Mapping("setEnable")
+	public JsonResult setEnable(Http http) {
+		sqlHelper.updateById(http);
 		return renderSuccess();
 	}
 }
