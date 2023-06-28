@@ -33,6 +33,7 @@ import com.cym.sqlhelper.bean.Sort;
 import com.cym.sqlhelper.bean.Sort.Direction;
 import com.cym.sqlhelper.utils.ConditionAndWrapper;
 import com.cym.sqlhelper.utils.SqlHelper;
+import com.cym.utils.SystemTool;
 import com.cym.utils.ToolUtils;
 import com.github.odiszapc.nginxparser.NgxBlock;
 import com.github.odiszapc.nginxparser.NgxConfig;
@@ -95,7 +96,7 @@ public class ConfService {
 				if (http.getEnable() == null || !http.getEnable()) {
 					continue;
 				}
-				
+
 				NgxParam ngxParam = new NgxParam();
 				ngxParam.addValue(http.getName().trim() + " " + http.getValue().trim());
 				ngxBlockHttp.addEntry(ngxParam);
@@ -851,10 +852,12 @@ public class ConfService {
 				for (Server server : asycPack.getServerList()) {
 					try {
 						if (StrUtil.isNotEmpty(server.getPem()) && StrUtil.isNotEmpty(server.getPemStr())) {
-							FileUtil.writeString(server.getPemStr(), server.getPem(), StandardCharsets.UTF_8);
+							String pemPath = SystemTool.isWindows() ? server.getPem().replace("*", "_") : server.getPem();
+							FileUtil.writeString(server.getPemStr(), pemPath, StandardCharsets.UTF_8);
 						}
 						if (StrUtil.isNotEmpty(server.getKey()) && StrUtil.isNotEmpty(server.getKeyStr())) {
-							FileUtil.writeString(server.getKeyStr(), server.getKey(), StandardCharsets.UTF_8);
+							String keyPath = SystemTool.isWindows() ? server.getKey().replace("*", "_") : server.getKey();
+							FileUtil.writeString(server.getKeyStr(), keyPath, StandardCharsets.UTF_8);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();

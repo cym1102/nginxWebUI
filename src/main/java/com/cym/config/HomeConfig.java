@@ -33,7 +33,7 @@ public class HomeConfig  {
 			File file = new File(JarUtil.getCurrentFilePath());
 
 			if (file.getPath().contains("target") && file.getPath().contains("classes")) {
-				home = FileUtil.getUserHomePath() + File.separator + "svnWebUI";
+				home = FileUtil.getUserHomePath() + File.separator + "nginxWebUI";
 			} else {
 				home = file.getParent();
 			}

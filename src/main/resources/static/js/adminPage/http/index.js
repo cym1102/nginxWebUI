@@ -47,10 +47,6 @@ function addOver() {
 		layer.msg(httpStr.noname);
 		return;
 	}
-	/*if ($("#value").val() == "") {
-		layer.msg(httpStr.novalue);
-		return;
-	}*/
 
 	$.ajax({
 		type: 'POST',

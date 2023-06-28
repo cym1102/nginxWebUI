@@ -62,7 +62,7 @@ input[name='param']{
 							<td>${http.name}</td>
 							<td>${http.value}</td>
 							<td>
-								<input type="checkbox" name="enable" lay-filter="enable" value="${http.id}" lay-text="ON|OFF" lay-skin="switch"${(http.enable)?string('checked','')}>
+								<input type="checkbox" name="enable" lay-filter="enable" value="${http.id}" lay-text="ON|OFF" lay-skin="switch" ${(http.enable!true)?string('checked','')}>
 							</td>
 							<td>
 								<div class="layui-inline">

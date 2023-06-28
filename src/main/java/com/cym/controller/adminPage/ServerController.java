@@ -209,13 +209,6 @@ public class ServerController extends BaseController {
 		return renderSuccess();
 	}
 
-//	@Mapping("clone")
-//	
-//	public JsonResult clone(String id) {
-//		serverService.clone(id);
-//
-//		return renderSuccess();
-//	}
 
 	@Mapping("importServer")
 	public JsonResult importServer(String nginxPath) {

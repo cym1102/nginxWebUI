@@ -36,7 +36,7 @@ public class StreamController extends BaseController {
 	@Mapping("addOver")
 	public JsonResult addOver(Stream stream) {
 		if (StrUtil.isEmpty(stream.getId())) {
-			stream.setSeq( SnowFlakeUtils.getId());
+			stream.setSeq(SnowFlakeUtils.getId());
 		}
 		sqlHelper.insertOrUpdate(stream);
 
@@ -78,16 +78,19 @@ public class StreamController extends BaseController {
 			Stream stream = new Stream();
 			stream.setName("log_format basic");
 			stream.setValue("'$remote_addr [$time_local] $protocol $status $bytes_sent $bytes_received $session_time \"$upstream_addr\" \"$upstream_bytes_sent\" \"$upstream_bytes_received\" \"$upstream_connect_time\"'");
+			stream.setSeq(SnowFlakeUtils.getId());
 			streams.add(stream);
 
 			stream = new Stream();
 			stream.setName("access_log");
 			stream.setValue(homeConfig.home + "log/stream_access.log basic");
+			stream.setSeq(SnowFlakeUtils.getId());
 			streams.add(stream);
 
 			stream = new Stream();
 			stream.setName("open_log_file_cache");
 			stream.setValue("off");
+			stream.setSeq(SnowFlakeUtils.getId());
 			streams.add(stream);
 		}
 

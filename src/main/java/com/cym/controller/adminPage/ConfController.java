@@ -254,7 +254,7 @@ public class ConfController extends BaseController {
 		}
 
 		cmd = "<span class='blue'>" + cmd + "</span>";
-		if (rs.contains("successful")) {
+		if (rs.contains("test is successful")) {
 			return renderSuccess(cmd + "<br>" + m.get("confStr.verifySuccess") + "<br>" + rs.replace("\n", "<br>"));
 		} else {
 			return renderSuccess(cmd + "<br>" + m.get("confStr.verifyFail") + "<br>" + rs.replace("\n", "<br>"));

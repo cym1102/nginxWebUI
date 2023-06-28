@@ -184,11 +184,6 @@ function addOver() {
 		return;
 	}
 
-	/*if ($("#ssl").val() == 1 && $("#serverName").val() == '') {
-		layer.msg(serverStr.sslTips);
-		return;
-	}*/
-
 	var over = true;
 	$("input[name='path']").each(function() {
 		if ($(this).val().trim() == '') {
