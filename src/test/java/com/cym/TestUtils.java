@@ -11,7 +11,6 @@ import org.noear.solon.test.HttpTester;
 import org.noear.solon.test.SolonJUnit4ClassRunner;
 import org.noear.solon.test.SolonTest;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpUtil;
 
 @RunWith(SolonJUnit4ClassRunner.class)
@@ -54,4 +53,5 @@ public class TestUtils extends HttpTester {
 		String rs = HttpUtil.post("http://127.0.0.1:8080/adminPage/login/login", map);
 		System.err.println(rs);
 	}
+	
 }

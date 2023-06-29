@@ -2,7 +2,9 @@ package com.cym.controller.adminPage;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
@@ -11,7 +13,6 @@ import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cym.config.InitConfig;
 import com.cym.config.VersionConfig;
 import com.cym.ext.ConfExt;
 import com.cym.ext.ConfFile;
@@ -58,14 +59,17 @@ public class ConfController extends BaseController {
 
 	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView) {
-
-		String nginxPath = settingService.get("nginxPath");
+		// 获取并过滤数据库中的路径
+		String nginxPath = ToolUtils.handleConf(settingService.get("nginxPath"));
+		settingService.set("nginxPath", nginxPath);
 		modelAndView.put("nginxPath", nginxPath);
 
-		String nginxExe = settingService.get("nginxExe");
+		String nginxExe = ToolUtils.handleConf(settingService.get("nginxExe"));
+		settingService.set("nginxExe", nginxExe);
 		modelAndView.put("nginxExe", nginxExe);
 
-		String nginxDir = settingService.get("nginxDir");
+		String nginxDir = ToolUtils.handleConf(settingService.get("nginxDir"));
+		settingService.set("nginxDir", nginxDir);
 		modelAndView.put("nginxDir", nginxDir);
 
 		String decompose = settingService.get("decompose");
@@ -136,7 +140,6 @@ public class ConfController extends BaseController {
 		String decompose = settingService.get("decompose");
 		ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"), false);
 
-
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.set("nginxContent", Base64.encode(URLEncodeUtil.encode(confExt.getConf(), CharsetUtil.CHARSET_UTF_8)));
 		jsonObject.set("subContent", new JSONArray());
@@ -158,9 +161,11 @@ public class ConfController extends BaseController {
 	 */
 	@Mapping(value = "checkBase")
 	public JsonResult checkBase() {
-		String nginxExe = settingService.get("nginxExe");
-		String nginxDir = settingService.get("nginxDir");
-
+		String nginxExe = ToolUtils.handleConf(settingService.get("nginxExe"));
+		settingService.set("nginxExe", nginxExe);
+		String nginxDir = ToolUtils.handleConf(settingService.get("nginxDir"));
+		settingService.set("nginxDir", nginxDir);
+		
 		String rs = null;
 		String cmd = null;
 
@@ -205,10 +210,12 @@ public class ConfController extends BaseController {
 	@Mapping(value = "check")
 	public JsonResult check(String nginxPath, String nginxExe, String nginxDir, String json) {
 		if (nginxExe == null) {
-			nginxExe = settingService.get("nginxExe");
+			nginxExe = ToolUtils.handleConf(settingService.get("nginxExe"));
+			settingService.set("nginxExe", nginxExe);
 		}
 		if (nginxDir == null) {
-			nginxDir = settingService.get("nginxDir");
+			nginxDir = ToolUtils.handleConf(settingService.get("nginxDir"));
+			settingService.set("nginxDir", nginxDir);
 		}
 
 		JSONObject jsonObject = JSONUtil.parseObj(json);
@@ -273,19 +280,27 @@ public class ConfController extends BaseController {
 		nginxDir = ToolUtils.handlePath(nginxDir);
 		settingService.set("nginxDir", nginxDir);
 
-		return renderSuccess();
+		Map<String, String> map = new HashMap<>();
+		map.put("nginxPath", nginxPath);
+		map.put("nginxExe", nginxExe);
+		map.put("nginxDir", nginxDir);
+
+		return renderSuccess(map);
 	}
 
 	@Mapping(value = "reload")
 	public synchronized JsonResult reload(String nginxPath, String nginxExe, String nginxDir) {
 		if (nginxPath == null) {
-			nginxPath = settingService.get("nginxPath");
+			nginxPath = ToolUtils.handlePath(settingService.get("nginxPath"));
+			settingService.set("nginxPath", nginxPath);
 		}
 		if (nginxExe == null) {
-			nginxExe = settingService.get("nginxExe");
+			nginxExe = ToolUtils.handlePath(settingService.get("nginxExe"));
+			settingService.set("nginxExe", nginxExe);
 		}
 		if (nginxDir == null) {
-			nginxDir = settingService.get("nginxDir");
+			nginxDir = ToolUtils.handlePath(settingService.get("nginxDir"));
+			settingService.set("nginxDir", nginxDir);
 		}
 
 		try {
@@ -313,22 +328,18 @@ public class ConfController extends BaseController {
 
 	@Mapping(value = "runCmd")
 	public JsonResult runCmd(String cmd, String type) {
+
 		if (StrUtil.isNotEmpty(type)) {
 			settingService.set(type, cmd);
 		}
 
+		// 仅执行nginx相关的命令，而不是其他的恶意命令
+		if (!isAvailableCmd(cmd)) {
+			return renderSuccess(m.get("confStr.notAvailableCmd"));
+		}
+
 		try {
 			String rs = "";
-			// 过滤特殊字符，防止命令拼接
-			cmd = cmd.replaceAll(";","\\\\;");
-     		cmd = cmd.replaceAll("`","\\\\`");
-     		cmd = cmd.replaceAll("\\|","\\\\|");
-     		cmd = cmd.replaceAll("\\{","\\\\{");
-     		cmd = cmd.replaceAll("\\}","\\\\}");
-			//仅执行nginx相关的命令，而不是其他的恶意命令
-			if(!cmd.contains("nginx")){
-            	cmd = "nginx restart";
-        	}
 			if (SystemTool.isWindows()) {
 				RuntimeUtil.exec("cmd /c start " + cmd);
 			} else {
@@ -349,6 +360,52 @@ public class ConfController extends BaseController {
 			logger.error(e.getMessage(), e);
 			return renderSuccess(m.get("confStr.runFail") + "<br>" + e.getMessage().replace("\n", "<br>"));
 		}
+	}
+
+	// 仅执行nginx相关的命令，而不是其他的恶意命令
+	private boolean isAvailableCmd(String cmd) {
+		// 过滤数据库中的路径
+		String nginxPath = ToolUtils.handleConf(settingService.get("nginxPath"));
+		settingService.set("nginxPath", nginxPath);
+		String nginxExe = ToolUtils.handleConf(settingService.get("nginxExe"));
+		settingService.set("nginxExe", nginxExe);
+		String nginxDir = ToolUtils.handleConf(settingService.get("nginxDir"));
+		settingService.set("nginxDir", nginxDir);
+
+		// 检查命令格式
+		switch (cmd) {
+		case "pkill nginx":
+			return true;
+		case "taskkill /f /im nginx.exe":
+			return true;
+		case "systemctl stop nginx":
+			return true;
+		case "service nginx stop":
+			return true;
+		case "net stop nginx":
+			return true;
+		case "systemctl start nginx":
+			return true;
+		case "service nginx start":
+			return true;
+		case "net start nginx":
+			return true;
+		}
+
+		String dir = "";
+		if (StrUtil.isNotEmpty(settingService.get("nginxDir"))) {
+			dir = " -p " + settingService.get("nginxDir");
+		}
+
+		if (cmd.equals(settingService.get("nginxExe") + " -s stop" + dir)) {
+			return true;
+		}
+
+		if (cmd.equals(settingService.get("nginxExe") + " -c " + settingService.get("nginxPath") + dir)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@Mapping(value = "getLastCmd")
