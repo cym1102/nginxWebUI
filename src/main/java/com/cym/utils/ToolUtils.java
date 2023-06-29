@@ -1,5 +1,7 @@
 package com.cym.utils;
 
+import cn.hutool.core.util.StrUtil;
+
 public class ToolUtils {
 
 	/**
@@ -9,6 +11,9 @@ public class ToolUtils {
 	 * @return
 	 */
 	public static String handleConf(String path) {
+		if (StrUtil.isEmpty(path)) {
+			return path;
+		}
 		return path.replace("};", "  }");
 	}
 
@@ -19,9 +24,11 @@ public class ToolUtils {
 	 * @return
 	 */
 	public static String handlePath(String path) {
+		if (StrUtil.isEmpty(path)) {
+			return path;
+		}
 		return path.replace("\\", "/") //
 				.replace("//", "/") //
-				// 删除 *
 				// 删除 ?
 				// 删除 <>
 				// 删除 |
@@ -32,7 +39,7 @@ public class ToolUtils {
 				// 删除 '
 				// 删除 `
 				// 删除 空格
-				.replaceAll("[\\s*?<>|\"#&;'`]", "");
+				.replaceAll("[\\s?<>|\"#&;'`]", "");
 	}
 
 	/**
@@ -42,6 +49,9 @@ public class ToolUtils {
 	 * @return
 	 */
 	public static String endDir(String path) {
+		if (StrUtil.isEmpty(path)) {
+			return path;
+		}
 		if (!path.endsWith("/")) {
 			path += "/";
 		}
