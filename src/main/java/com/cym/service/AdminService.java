@@ -20,7 +20,13 @@ public class AdminService {
 	SqlHelper sqlHelper;
 
 	public Admin login(String name, String pass) {
-		return sqlHelper.findOneByQuery(new ConditionAndWrapper().eq(Admin::getName, name).eq(Admin::getPass, EncodePassUtils.encode(pass)), Admin.class);
+		Admin admin = sqlHelper.findOneByQuery(new ConditionAndWrapper().eq(Admin::getName, name).eq(Admin::getPass, EncodePassUtils.encode(pass)), Admin.class);
+		
+		return admin;
+	}
+	
+	public Admin getByAutoKey(String autoKey) {
+		return sqlHelper.findOneByQuery(new ConditionAndWrapper().eq(Admin::getAutoKey, autoKey), Admin.class); 
 	}
 
 	public Page search(Page page) {
@@ -84,5 +90,7 @@ public class AdminService {
 			}
 		}
 	}
+
+	
 
 }

@@ -10,6 +10,7 @@ import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cym.model.Server;
 import com.cym.model.Www;
 import com.cym.service.WwwService;
 import com.cym.sqlhelper.bean.Sort;
@@ -37,11 +38,13 @@ public class WwwController extends BaseController {
 
 	@Mapping("addOver")
 	public JsonResult addOver(Www www, String dirTemp) {
-		if (wwwService.hasDir(www.getDir(),www.getId())) {
+		if (wwwService.hasDir(www.getDir(), www.getId())) {
 			return renderError(m.get("wwwStr.sameDir"));
 		}
 
 		try {
+			FileUtil.clean(www.getDir());
+
 			try {
 				ZipUtil.unzip(dirTemp, www.getDir());
 			} catch (Exception e) {
@@ -60,8 +63,6 @@ public class WwwController extends BaseController {
 
 		return renderError(m.get("wwwStr.zipError"));
 	}
-
-
 
 	@Mapping("del")
 	public JsonResult del(String id) {
@@ -101,5 +102,21 @@ public class WwwController extends BaseController {
 			logger.error(e.getMessage(), e);
 			throw e;
 		}
+	}
+
+	@Mapping("getDescr")
+	public JsonResult getDescr(String id) {
+		Www www = sqlHelper.findById(id, Www.class);
+		return renderSuccess(www.getDescr());
+	}
+
+	@Mapping("editDescr")
+	public JsonResult editDescr(String id, String descr) {
+		Www www = new Www();
+		www.setId(id);
+		www.setDescr(descr);
+		sqlHelper.updateById(www);
+
+		return renderSuccess();
 	}
 }

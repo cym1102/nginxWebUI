@@ -25,6 +25,7 @@ import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 
 /**
@@ -57,8 +58,13 @@ public class LoginController extends BaseController {
 	@Mapping("loginOut")
 	public ModelAndView loginOut(ModelAndView modelAndView) {
 
+		Admin admin = (Admin) Context.current().session("admin");
+		admin.setAutoKey(null);
+		sqlHelper.updateAllColumnById(admin);
+		
 		Context.current().sessionRemove(("isLogin"));
-		;
+		Context.current().sessionRemove("admin");
+		
 		modelAndView.view("/adminPage/index.html");
 		return modelAndView;
 	}
@@ -122,11 +128,15 @@ public class LoginController extends BaseController {
 		}
 
 		// 登录成功
+		admin.setAutoKey(UUID.randomUUID().toString()); // 生成自动登录code
+		sqlHelper.updateById(admin);
+		
 		Context.current().sessionSet("localType", "local");
 		Context.current().sessionSet("isLogin", true);
 		Context.current().sessionSet("admin", admin);
 		Context.current().sessionRemove("imgCode"); // 立刻销毁验证码
 
+		
 		// 检查更新
 		versionConfig.checkVersion();
 
@@ -134,10 +144,10 @@ public class LoginController extends BaseController {
 	}
 
 	@Mapping("autoLogin")
-	public JsonResult autoLogin(String adminId) {
+	public JsonResult autoLogin(String autoKey) {
 
 		// 用户名密码
-		Admin admin = sqlHelper.findById(adminId, Admin.class);
+		Admin admin = adminService.getByAutoKey(autoKey);
 		if (admin != null) {
 			// 登录成功
 			Context.current().sessionSet("localType", "local");

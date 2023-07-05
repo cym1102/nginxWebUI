@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ## 需要安装好docker，并登陆docker login
-## 需要安装好docker-buildx：https://docs.docker.com/buildx/working-with-buildx/
+## 需要安装好docker-buildx：https://docs.docker.com/engine/install/ubuntu/
 ## 如需自动推送readme至dockerhub，需要安装docker-pushrm：https://github.com/christian-korneck/docker-pushrm
 ## Dockerfile同目录下运行此脚本
 ## 如果在同目录下存在maven的镜像加速配置文件settings.xml，也会作为编译时的加速配置

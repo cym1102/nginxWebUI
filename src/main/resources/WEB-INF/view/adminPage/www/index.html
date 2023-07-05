@@ -29,6 +29,7 @@
 					<thead>
 						<tr>
 							<th>${commonStr.path}</th>
+							<th>${commonStr.descr}</th>
 							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
@@ -36,6 +37,14 @@
 						<#list list as www>
 						<tr>
 							<td>${www.dir} &nbsp;&nbsp; <a style="color: blue;" href="javascript:copy('${www.dir}')">${commonStr.copy}</a></td>
+							<td style="width: 400px;">
+								<#if www.descr != null && www.descr != "">
+									<a href="javascript:editDescr('${www.id}')" style="color: #bbbbbb; text-decoration: underline;">${www.descr}</a>
+								</#if>
+								<#if www.descr == null || www.descr == "">
+									<a href="javascript:editDescr('${www.id}')" style="color: #bbbbbb; text-decoration: underline;">${commonStr.edit}</a>
+								</#if>
+							</td>
 							<td>
 								<div class="layui-inline">
 								<button type="button" class="layui-btn layui-btn-sm " onclick="edit('${www.id}')">${wwwStr.editOrUpdate}</button>
@@ -96,7 +105,19 @@
 				
 			</form>
 		</div>
-
+		
+		<div class="layui-form" id="descrDiv" style="padding: 15px; display: none">
+			<input type="hidden" id="wwwId" name="wwwId">
+			<div class="layui-form-item">
+				<div class="layui-input-inline" style="width: 100%;">
+					<textarea id="descr" name="descr" class="layui-textarea" style="height: 200px;"></textarea>
+				</div>
+			</div>
+			<div class="layui-form-item center">
+				<button type="button" class="layui-btn layui-btn-normal" onclick="editDescrOver()">${commonStr.ok}</button>
+				<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
+			</div>
+		</div>
 	</div>
 
 

@@ -81,7 +81,7 @@ public class ExportController extends BaseController {
 			}
 			if (asycPack.getCertCodeList() != null) {
 				sqlHelper.deleteByQuery(new ConditionAndWrapper(), CertCode.class);
-				sqlHelper.insertAll(asycPack.getCertList());
+				sqlHelper.insertAll(asycPack.getCertCodeList());
 			}
 			
 			certService.writeAcmeZipBase64(asycPack.getAcmeZip());

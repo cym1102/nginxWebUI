@@ -71,7 +71,6 @@ function addOver() {
 		layer.alert(wwwStr.noUpload);
 		return;
 	}
-	showLoad();
 	$.ajax({
 		type : 'POST',
 		url : ctx + '/adminPage/www/addOver',
@@ -162,5 +161,59 @@ function selectRootCustom(){
 	rootSelect.selectOne(function callBack(val){
 		$("#dir").val(val);
 		//$("#fileName").html(val);
+	});
+}
+
+
+function editDescr(id) {
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/www/getDescr',
+		data: {
+			id: id
+		},
+		dataType: 'json',
+		success: function(data) {
+			if (data.success) {
+				$("#wwwId").val(id);
+				$("#descr").val(data.obj != null ? data.obj : '');
+
+				layer.open({
+					type: 1,
+					title: commonStr.descr,
+					area: ['500px', '360px'], // 宽高
+					content: $('#descrDiv')
+				});
+
+			} else {
+				layer.msg(data.msg)
+			}
+		},
+		error: function() {
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+
+}
+
+function editDescrOver() {
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/www/editDescr',
+		data: {
+			id: $("#wwwId").val(),
+			descr: $("#descr").val()
+		},
+		dataType: 'json',
+		success: function(data) {
+			if (data.success) {
+				location.reload();
+			} else {
+				layer.msg(data.msg)
+			}
+		},
+		error: function() {
+			layer.alert(commonStr.errorInfo);
+		}
 	});
 }

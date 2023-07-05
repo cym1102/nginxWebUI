@@ -183,8 +183,8 @@ public class AppFilter implements Filter {
 
 				if (JSONUtil.isTypeJSON(rs)) {
 					String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
-					ctx.header("Content-Type", "application/octet-stream");
-					ctx.header("content-disposition", "attachment;filename=" + URLEncoder.encode(date + ".json", "UTF-8")); // 设置文件名
+					ctx.headerOrDefault("Content-Type", "application/octet-stream");
+					ctx.headerOrDefault("content-disposition", "attachment;filename=" + URLEncoder.encode(date + ".json", "UTF-8")); // 设置文件名
 
 					byte[] buffer = new byte[1024];
 					BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(rs.getBytes(Charset.forName("UTF-8"))));

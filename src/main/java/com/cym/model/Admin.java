@@ -19,12 +19,22 @@ public class Admin extends BaseModel {
 	Boolean api;
 
 	String token;
-
+	// 自动登录key
+	String autoKey;
+	
 	// 类型 0 超管 1 受限用户
 	@InitValue("0")
 	Integer type;
 	
 	
+	public String getAutoKey() {
+		return autoKey;
+	}
+
+	public void setAutoKey(String autoKey) {
+		this.autoKey = autoKey;
+	}
+
 	public String getToken() {
 		return token;
 	}

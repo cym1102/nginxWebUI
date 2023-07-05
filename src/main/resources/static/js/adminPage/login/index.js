@@ -1,15 +1,15 @@
 $(function() {
 	if ($("#adminCount").val() > 0) {
-		var adminId = window.localStorage.getItem("adminId");
+		var autoKey = window.localStorage.getItem("autoKey");
 		var time = window.localStorage.getItem("time");
 		
-		if(adminId != null && adminId != '' && new Date().getTime() - time < 7 * 24 * 60 * 60 * 1000){
+		if(autoKey != null && autoKey != '' && new Date().getTime() - time < 7 * 24 * 60 * 60 * 1000){
 			// 自动登录
 			$.ajax({
 				type: 'POST',
 				url: ctx + '/adminPage/login/autoLogin',
 				data: {
-					adminId : adminId
+					autoKey : autoKey
 				},
 				dataType: 'json',
 				success: function(data) {
@@ -68,9 +68,9 @@ function login() {
 			if (data.success) {
 				if($("#remember").prop("checked")){
 					window.localStorage.setItem("time", new Date().getTime());
-					window.localStorage.setItem("adminId",data.obj.id);
+					window.localStorage.setItem("autoKey", data.obj.autoKey);
 				} else {
-					window.localStorage.removeItem("adminId");
+					window.localStorage.removeItem("autoKey");
 				}
 				
 				location.href = ctx + "/adminPage/monitor";

@@ -6,7 +6,16 @@ import com.cym.sqlhelper.config.Table;
 @Table
 public class Www extends BaseModel {
 	String dir;
-	
+
+	String descr;
+
+	public String getDescr() {
+		return descr;
+	}
+
+	public void setDescr(String descr) {
+		this.descr = descr;
+	}
 
 	public String getDir() {
 		return dir;
