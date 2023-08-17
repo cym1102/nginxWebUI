@@ -56,7 +56,7 @@ public class TimeExeUtils {
 						process.exitValue();
 						break;
 					} catch (IllegalThreadStateException e) {
-						System.err.println(e.getMessage());
+						//System.err.println(e.getMessage());
 					}
 				}
 
@@ -71,6 +71,7 @@ public class TimeExeUtils {
 				try {
 					TimeUnit.MILLISECONDS.sleep(500);
 				} catch (InterruptedException e) {
+					//System.err.println(e.getMessage());
 				}
 			}
 		} catch (IOException e) {

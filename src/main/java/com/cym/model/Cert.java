@@ -48,7 +48,7 @@ public class Cert extends BaseModel {
 	@InitValue("0")
 	Integer autoRenew; 
 	/**
-	 * dns提供商 ali:阿里云  dp:腾讯云  cf:Cloudflare  gd:Godaddy
+	 * dns提供商 ali:阿里云  dp:腾讯云  cf:Cloudflare  gd:Godaddy   hw:华为云
 	 */
 	String dnsType; 
 	/**
@@ -75,6 +75,7 @@ public class Cert extends BaseModel {
 	 * cfKey(Cloudflare需要的参数)
 	 */
 	String cfKey;
+	
 	/**
 	 * gdKey(Godaddy需要的参数)
 	 */
@@ -91,10 +92,6 @@ public class Cert extends BaseModel {
 	 * hwPassword(华为云需要的参数)
 	 */
 	String hwPassword;
-	/**
-	 * hwProjectID(华为云需要的参数)
-	 */
-	String hwProjectId;
 	/**
 	 * hwProjectID(华为云需要的参数)
 	 */
@@ -142,13 +139,13 @@ public class Cert extends BaseModel {
 	}
 
 
-	public String getHwProjectId() {
-		return hwProjectId;
-	}
-
-	public void setHwProjectId(String hwProjectId) {
-		this.hwProjectId = hwProjectId;
-	}
+//	public String getHwProjectId() {
+//		return hwProjectId;
+//	}
+//
+//	public void setHwProjectId(String hwProjectId) {
+//		this.hwProjectId = hwProjectId;
+//	}
 
 	public String getGdKey() {
 		return gdKey;
@@ -285,5 +282,6 @@ public class Cert extends BaseModel {
 	public void setKey(String key) {
 		this.key = key;
 	}
+
 
 }

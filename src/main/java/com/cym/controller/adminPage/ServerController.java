@@ -166,11 +166,7 @@ public class ServerController extends BaseController {
 		}
 
 		if (server.getProxyType() == 0) {
-			try {
-				serverService.addOver(server, serverParamJson, locations);
-			} catch (Exception e) {
-				return renderError(e.getMessage());
-			}
+			serverService.addOver(server, serverParamJson, locations);
 		} else {
 			serverService.addOverTcp(server, serverParamJson);
 		}

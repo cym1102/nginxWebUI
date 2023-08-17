@@ -169,39 +169,39 @@ public class InitConfig {
 			}
 		}
 
-		// 将复制的证书文件还原到acme文件夹里面
-		List<Cert> certs = confService.getApplyCerts();
-		for (Cert cert : certs) {
-			boolean update = false;
-			if (cert.getPem() != null && cert.getPem().equals(homeConfig.home + "cert/" + cert.getDomain() + ".fullchain.cer")) {
-				cert.setPem(homeConfig.acmeShDir + cert.getDomain() + "/fullchain.cer");
-				update = true;
-			}
-			if (cert.getKey() != null && cert.getKey().equals(homeConfig.home + "cert/" + cert.getDomain() + ".key")) {
-				cert.setKey(homeConfig.acmeShDir + cert.getDomain() + "/" + cert.getDomain() + ".key");
-				update = true;
-			}
+//		// 将复制的证书文件还原到acme文件夹里面
+//		List<Cert> certs = confService.getApplyCerts();
+//		for (Cert cert : certs) {
+//			boolean update = false;
+//			if (cert.getPem() != null && cert.getPem().equals(homeConfig.home + "cert/" + cert.getDomain() + ".fullchain.cer")) {
+//				cert.setPem(homeConfig.acmeShDir + cert.getDomain() + "/fullchain.cer");
+//				update = true;
+//			}
+//			if (cert.getKey() != null && cert.getKey().equals(homeConfig.home + "cert/" + cert.getDomain() + ".key")) {
+//				cert.setKey(homeConfig.acmeShDir + cert.getDomain() + "/" + cert.getDomain() + ".key");
+//				update = true;
+//			}
+//
+//			if (update) {
+//				sqlHelper.updateById(cert);
+//			}
+//		}
 
-			if (update) {
-				sqlHelper.updateById(cert);
-			}
-		}
+//		// 证书加密方式RAS改为RSA
+//		certs = sqlHelper.findListByQuery(new ConditionAndWrapper().eq(Cert::getEncryption, "RAS"), Cert.class);
+//		for (Cert cert : certs) {
+//			cert.setEncryption("RSA");
+//			sqlHelper.updateById(cert);
+//		}
 
-		// 证书加密方式RAS改为RSA
-		certs = sqlHelper.findListByQuery(new ConditionAndWrapper().eq(Cert::getEncryption, "RAS"), Cert.class);
-		for (Cert cert : certs) {
-			cert.setEncryption("RSA");
-			sqlHelper.updateById(cert);
-		}
-
-		// 将密码加密
-		List<Admin> admins = sqlHelper.findAll(Admin.class);
-		for (Admin admin : admins) {
-			if (!StrUtil.endWith(admin.getPass(), SecureUtil.md5(EncodePassUtils.defaultPass))) {
-				admin.setPass(EncodePassUtils.encode(admin.getPass()));
-				sqlHelper.updateById(admin);
-			}
-		}
+//		// 将密码加密
+//		List<Admin> admins = sqlHelper.findAll(Admin.class);
+//		for (Admin admin : admins) {
+//			if (!StrUtil.endWith(admin.getPass(), SecureUtil.md5(EncodePassUtils.defaultPass))) {
+//				admin.setPass(EncodePassUtils.encode(admin.getPass()));
+//				sqlHelper.updateById(admin);
+//			}
+//		}
 
 		// 展示logo
 		showLogo();

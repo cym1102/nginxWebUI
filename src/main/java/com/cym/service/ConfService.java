@@ -526,7 +526,7 @@ public class ConfService {
 				value += " proxy_protocol";
 			}
 			if (server.getProxyType() == 2) {
-				value += " udp reuseport";
+				value += " udp";
 			}
 			if (server.getSsl() != null && server.getSsl() == 1) {
 				value += " ssl";

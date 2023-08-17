@@ -3,8 +3,12 @@ package com.cym.controller.adminPage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.noear.solon.annotation.Controller;
@@ -76,7 +80,7 @@ public class CertController extends BaseController {
 		if (type != null && type == 1) {
 			// 手动上传
 			String dir = homeConfig.home + "cert/" + cert.getDomain() + "/";
-			
+
 			if (cert.getKey().contains(FileUtil.getTmpDir().toString().replace("\\", "/"))) {
 				String keyName = new File(cert.getKey()).getName();
 				FileUtil.move(new File(cert.getKey()), new File(dir + keyName), true);
@@ -87,6 +91,19 @@ public class CertController extends BaseController {
 				String pemName = new File(cert.getPem()).getName();
 				FileUtil.move(new File(cert.getPem()), new File(dir + pemName), true);
 				cert.setPem(dir + pemName);
+			}
+
+			// 计算到期时间
+			try {
+				CertificateFactory cf = CertificateFactory.getInstance("X.509");
+				FileInputStream in = new FileInputStream(cert.getPem());
+				X509Certificate certFile = (X509Certificate) cf.generateCertificate(in);
+				Date effDate = certFile.getNotBefore();
+				Date expDate = certFile.getNotAfter();
+				cert.setMakeTime(effDate.getTime());
+				cert.setEndTime(expDate.getTime());
+			} catch (Exception e) {
+				logger.info(e.getMessage(), e);
 			}
 		}
 
@@ -152,9 +169,9 @@ public class CertController extends BaseController {
 		}
 		isInApply = true;
 
-		String keylength = "";
+		String keylength = " --keylength 2048 "; // RSA模式
 		String ecc = "";
-		if ("ECC".equals(cert.getEncryption())) {
+		if ("ECC".equals(cert.getEncryption())) { // ECC模式
 			keylength = " --keylength ec-256 ";
 			ecc = " --ecc";
 		}
@@ -162,7 +179,7 @@ public class CertController extends BaseController {
 		String rs = "";
 		String cmd = "";
 		// 设置dns账号
-		String[] env = getEnv(cert);
+		String[] envs = getEnv(cert);
 
 		if (type.equals("issue")) {
 			String[] split = cert.getDomain().split(",");
@@ -171,6 +188,7 @@ public class CertController extends BaseController {
 			String domain = sb.toString();
 			// 申请
 			if (cert.getType() == 0) {
+				// DNS API申请
 				String dnsType = "";
 				if (cert.getDnsType().equals("ali")) {
 					dnsType = "dns_ali";
@@ -183,28 +201,30 @@ public class CertController extends BaseController {
 				} else if (cert.getDnsType().equals("hw")) {
 					dnsType = "dns_huaweicloud";
 				}
-				cmd = homeConfig.acmeSh + " --issue --force --dns " + dnsType + domain + keylength + " --server letsencrypt";
+				cmd = homeConfig.acmeSh + " --issue --dns " + dnsType + domain + keylength + " --server letsencrypt";
 			} else if (cert.getType() == 2) {
-				if (certService.hasCode(cert.getId())) {
-					cmd = homeConfig.acmeSh + " --renew --force --dns" + domain + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
-				} else {
-					cmd = homeConfig.acmeSh + " --issue --force --dns" + domain + keylength + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+				// DNS TXT申请
+				if (!certService.hasCode(cert.getId())) {
+					isInApply = false;
+					return renderError(m.get("certStr.error6"));
 				}
-
+				cmd = homeConfig.acmeSh + " --renew --force --dns" + domain + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
 			}
 		} else if (type.equals("renew")) {
 			// 续签,以第一个域名为证书名
 			String domain = cert.getDomain().split(",")[0];
 
 			if (cert.getType() == 0) {
+				// DNS API申请
 				cmd = homeConfig.acmeSh + " --renew --force " + ecc + " -d " + domain;
 			} else if (cert.getType() == 2) {
+				// DNS txt申请
 				cmd = homeConfig.acmeSh + " --renew --force " + ecc + " -d " + domain + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
 			}
 		}
 		logger.info(cmd);
 
-		rs = timeExeUtils.execCMD(cmd, env, 2 * 60 * 1000);
+		rs = timeExeUtils.execCMD(cmd, envs, 5 * 60 * 1000);
 		logger.info(rs);
 
 		if (rs.contains("Your cert is in")) {
@@ -229,35 +249,6 @@ public class CertController extends BaseController {
 
 			isInApply = false;
 			return renderSuccess();
-		} else if (rs.contains("TXT value")) {
-			// 获取到dns配置txt, 显示出来, 并保存到数据库
-			List<CertCode> mapList = new ArrayList<>();
-
-			CertCode map1 = null;
-			CertCode map2 = null;
-			for (String str : rs.split("\n")) {
-				logger.info(str);
-				if (str.contains("Domain:")) {
-					map1 = new CertCode();
-					map1.setDomain(str.split("'")[1]);
-					map1.setType("TXT");
-
-					map2 = new CertCode();
-					map2.setDomain(map1.getDomain().replace("_acme-challenge.", ""));
-					map2.setType(m.get("certStr.any"));
-				}
-
-				if (str.contains("TXT value:")) {
-					map1.setValue(str.split("'")[1]);
-					mapList.add(map1);
-
-					map2.setValue(m.get("certStr.any"));
-					mapList.add(map2);
-				}
-			}
-			certService.saveCertCode(id, mapList);
-			isInApply = false;
-			return renderSuccess(mapList);
 		} else {
 			isInApply = false;
 			return renderError("<span class='blue'>" + cmd + "</span><br>" + m.get("certStr.applyFail") + "<br>" + rs.replace("\n", "<br>"));
@@ -285,7 +276,6 @@ public class CertController extends BaseController {
 		if (cert.getDnsType().equals("hw")) {
 			list.add("HUAWEICLOUD_Username=" + cert.getHwUsername());
 			list.add("HUAWEICLOUD_Password=" + cert.getHwPassword());
-			list.add("HUAWEICLOUD_ProjectID=" + cert.getHwProjectId());
 			list.add("HUAWEICLOUD_DomainName=" + cert.getHwDomainName());
 		}
 
@@ -294,9 +284,61 @@ public class CertController extends BaseController {
 
 	@Mapping("getTxtValue")
 	public JsonResult getTxtValue(String id) {
-
+		Cert cert = sqlHelper.findById(id, Cert.class);
 		List<CertCode> certCodes = certService.getCertCodes(id);
-		return renderSuccess(certCodes);
+
+		if (certCodes.size() > 0) {
+			return renderSuccess(certCodes);
+		} else {
+			String keylength = " --keylength 2048 "; // RSA模式
+			if ("ECC".equals(cert.getEncryption())) { // ECC模式
+				keylength = " --keylength ec-256 ";
+			}
+
+			String[] split = cert.getDomain().split(",");
+			StringBuffer sb = new StringBuffer();
+			Arrays.stream(split).forEach(s -> sb.append(" -d ").append(s));
+			String domain = sb.toString();
+
+			String cmd = homeConfig.acmeSh + " --issue --dns" + domain + keylength + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+			logger.info(cmd);
+			String rs = timeExeUtils.execCMD(cmd, new String[] {}, 5 * 60 * 1000);
+			logger.info(rs);
+
+			if (rs.contains("TXT value")) {
+				// 获取到dns配置txt, 显示出来, 并保存到数据库
+				List<CertCode> mapList = new ArrayList<>();
+
+				CertCode map1 = null;
+				CertCode map2 = null;
+				for (String str : rs.split("\n")) {
+					logger.info(str);
+					if (str.contains("Domain:")) {
+						map1 = new CertCode();
+						map1.setDomain(str.split("'")[1]);
+						map1.setType("TXT");
+
+						map2 = new CertCode();
+						map2.setDomain(map1.getDomain().replace("_acme-challenge.", ""));
+						map2.setType(m.get("certStr.any"));
+					}
+
+					if (str.contains("TXT value:")) {
+						map1.setValue(str.split("'")[1]);
+						mapList.add(map1);
+
+						map2.setValue(m.get("certStr.any"));
+						mapList.add(map2);
+					}
+				}
+				certService.saveCertCode(id, mapList);
+
+				certCodes = certService.getCertCodes(id);
+				return renderSuccess(certCodes);
+			}
+		}
+
+		return renderError(m.get("certStr.error7"));
 	}
 
 	@Mapping("download")

@@ -431,7 +431,7 @@ function testMail() {
 		loadIndex = layer.load();
 		$.ajax({
 			type: 'POST',
-			url: ctx + 'adminPage/admin/testMail',
+			url: ctx + '/adminPage/admin/testMail',
 			data: {
 				mail: $("#mail").val(),
 			},
