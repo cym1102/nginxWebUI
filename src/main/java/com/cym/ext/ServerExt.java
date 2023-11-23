@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.cym.model.Location;
 import com.cym.model.Server;
-import com.cym.model.Upstream;
 
 public class ServerExt {
 	Server server;

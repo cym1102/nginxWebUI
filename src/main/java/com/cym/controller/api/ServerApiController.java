@@ -92,7 +92,7 @@ public class ServerApiController extends BaseController {
 		List<Location> locationList = serverService.getLocationByServerId(serverId);
 		for (Location location : locationList) {
 			String json = paramService.getJsonByTypeId(location.getId(), "location");
-			location.setLocationParamJson(json != null ? json : null);
+			location.setLocationParamJson(json);
 		}
 		return renderSuccess(locationList);
 	}

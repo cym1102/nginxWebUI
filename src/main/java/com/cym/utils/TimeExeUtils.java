@@ -46,7 +46,7 @@ public class TimeExeUtils {
 			while (true) {
 				if (brStd.ready()) {
 					line = brStd.readLine();
-					sbStd.append(line + "\n");
+					sbStd.append(line).append("\n");
 					logger.info(line);
 					continue;
 				}
@@ -63,7 +63,7 @@ public class TimeExeUtils {
 				if (System.currentTimeMillis() - start > timeout) {
 					line = m.get("certStr.timeout");
 
-					sbStd.append(line + "\n");
+					sbStd.append(line).append("\n");
 					logger.info(line);
 					break;
 				}

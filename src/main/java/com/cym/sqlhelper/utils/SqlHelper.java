@@ -421,7 +421,7 @@ public class SqlHelper extends SqlUtils {
 			sql += " WHERE " + conditionWrapper.build(values);
 		}
 		if (sort != null) {
-			sql += " " + sort.toString();
+			sql += " " + sort;
 		} else {
 			sql += " ORDER BY id DESC";
 		}
@@ -502,7 +502,7 @@ public class SqlHelper extends SqlUtils {
 			sql += " WHERE " + conditionWrapper.build(values);
 		}
 		if (sort != null) {
-			sql += " " + sort.toString();
+			sql += " " + sort;
 		} else {
 			sql += " ORDER BY id DESC";
 		}
@@ -553,7 +553,7 @@ public class SqlHelper extends SqlUtils {
 			sql += " WHERE " + conditionWrapper.build(values);
 		}
 		if (sort != null) {
-			sql += " " + sort.toString();
+			sql += " " + sort;
 		} else {
 			sql += " ORDER BY id DESC";
 		}

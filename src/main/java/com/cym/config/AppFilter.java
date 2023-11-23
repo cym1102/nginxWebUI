@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -137,7 +137,7 @@ public class AppFilter implements Filter {
 		}
 
 		String creditKey = ctx.param("creditKey");
-		Boolean isCredit = creditService.check(creditKey);
+		boolean isCredit = creditService.check(creditKey);
 
 		Boolean isLogin = (Boolean) ctx.session("isLogin");
 		if (!((isLogin != null && isLogin) || isCredit)) {
@@ -187,7 +187,7 @@ public class AppFilter implements Filter {
 					ctx.headerOrDefault("content-disposition", "attachment;filename=" + URLEncoder.encode(date + ".json", "UTF-8")); // 设置文件名
 
 					byte[] buffer = new byte[1024];
-					BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(rs.getBytes(Charset.forName("UTF-8"))));
+					BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(rs.getBytes(StandardCharsets.UTF_8)));
 					OutputStream os = ctx.outputStream();
 					int i = bis.read(buffer);
 					while (i != -1) {

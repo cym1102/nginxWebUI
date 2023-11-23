@@ -18,7 +18,7 @@ public class AuthUtils {
 
 	public Boolean testKey(String key, String code) {
 		try {
-			Integer value = Integer.parseInt(code);
+			int value = Integer.parseInt(code);
 
 			// 用户登录时使用
 			// 根据用户密钥和用户输入的密码，验证是否一致。（近3个密码都有效：前一个，当前，下一个）

@@ -12,21 +12,26 @@ import com.cym.model.Credit;
 import com.cym.sqlhelper.bean.Page;
 import com.cym.sqlhelper.utils.ConditionAndWrapper;
 import com.cym.sqlhelper.utils.SqlHelper;
+import com.cym.utils.AuthUtils;
 import com.cym.utils.EncodePassUtils;
+
+import cn.hutool.core.util.StrUtil;
 
 @Service
 public class AdminService {
 	@Inject
 	SqlHelper sqlHelper;
+	@Inject
+	AuthUtils authUtils;
 
 	public Admin login(String name, String pass) {
 		Admin admin = sqlHelper.findOneByQuery(new ConditionAndWrapper().eq(Admin::getName, name).eq(Admin::getPass, EncodePassUtils.encode(pass)), Admin.class);
-		
+
 		return admin;
 	}
-	
+
 	public Admin getByAutoKey(String autoKey) {
-		return sqlHelper.findOneByQuery(new ConditionAndWrapper().eq(Admin::getAutoKey, autoKey), Admin.class); 
+		return sqlHelper.findOneByQuery(new ConditionAndWrapper().eq(Admin::getAutoKey, autoKey), Admin.class);
 	}
 
 	public Page search(Page page) {
@@ -77,11 +82,10 @@ public class AdminService {
 	}
 
 	public void addOver(Admin admin, String[] groupIds) {
-		admin.setPass(EncodePassUtils.encode(admin.getPass()));  
 		sqlHelper.insertOrUpdate(admin);
 
 		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq(AdminGroup::getAdminId, admin.getId()), AdminGroup.class);
-		if (admin.getType() == 1) {
+		if (admin.getType() == 1 && groupIds != null) {
 			for (String id : groupIds) {
 				AdminGroup adminGroup = new AdminGroup();
 				adminGroup.setAdminId(admin.getId());
@@ -91,6 +95,23 @@ public class AdminService {
 		}
 	}
 
-	
+	public void changePassOver(Admin admin) {
+		if (admin.getAuth()) {
+			Admin adminOrg = sqlHelper.findById(admin.getId(), Admin.class);
+			if (StrUtil.isEmpty(adminOrg.getKey())) {
+				admin.setKey(authUtils.makeKey());
+			}
+		} else {
+			admin.setKey("");
+		}
+
+		if (StrUtil.isNotEmpty(admin.getPass())) {
+			admin.setPass(EncodePassUtils.encode(admin.getPass()));
+		} else {
+			admin.setPass(null);
+		}
+		sqlHelper.updateById(admin);
+
+	}
 
 }

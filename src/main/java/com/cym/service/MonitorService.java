@@ -1,8 +1,7 @@
 package com.cym.service;
 
-import java.lang.management.ManagementFactory;
-import com.sun.management.OperatingSystemMXBean;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.noear.solon.annotation.Component;
@@ -10,11 +9,18 @@ import org.noear.solon.annotation.Init;
 
 import com.cym.ext.DiskInfo;
 import com.cym.ext.MonitorInfo;
+import com.cym.ext.NetworkInfo;
+import com.cym.utils.OshiUtils;
+import com.cym.utils.SystemTool;
+import com.cym.utils.oshi.NetDomain;
+import com.cym.utils.oshi.NetDomain.NetInterfaceDomain;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.system.oshi.OshiUtil;
 import oshi.software.os.OSFileStore;
 import oshi.util.FormatUtil;
+import oshi.util.GlobalConfig;
 
 /**
  * 获取系统信息的业务逻辑实现类.
@@ -24,11 +30,12 @@ import oshi.util.FormatUtil;
 @Component
 public class MonitorService {
 
-	OperatingSystemMXBean osmxb;
-
 	@Init
 	public void afterInjection() {
-		osmxb = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+		if (SystemTool.isWindows()) {
+			// oshi适配windows cpu占用率
+			GlobalConfig.set(GlobalConfig.OSHI_OS_WINDOWS_CPU_UTILITY, true);
+		}
 	}
 
 	public MonitorInfo getMonitorInfoOshi() {
@@ -40,7 +47,7 @@ public class MonitorService {
 		infoBean.setUsedMemory(FormatUtil.formatBytes(OshiUtil.getMemory().getTotal() - OshiUtil.getMemory().getAvailable()));
 		infoBean.setTotalMemorySize(FormatUtil.formatBytes(OshiUtil.getMemory().getTotal()));
 
-		infoBean.setCpuRatio(NumberUtil.decimalFormat("#.##%", osmxb.getSystemCpuLoad()));
+		infoBean.setCpuRatio(NumberUtil.decimalFormat("#.00", 100d - OshiUtil.getCpuInfo().getFree()) + "%");
 		infoBean.setMemRatio(NumberUtil.decimalFormat("#.##%", NumberUtil.div(OshiUtil.getMemory().getTotal() - OshiUtil.getMemory().getAvailable(), OshiUtil.getMemory().getTotal())));
 
 		return infoBean;
@@ -65,4 +72,33 @@ public class MonitorService {
 		return list;
 	}
 
+	public NetworkInfo getNetworkInfo() {
+		NetworkInfo networkInfo = new NetworkInfo();
+		NetDomain netDomain = OshiUtils.getNetInfo();
+		networkInfo.setSend(getNetUp(netDomain));
+		networkInfo.setReceive(getNetDown(netDomain));
+		networkInfo.setTime(DateUtil.format(new Date(), "HH:mm:ss"));
+
+		return networkInfo;
+	}
+
+	private Double getNetUp(NetDomain netDomain) {
+		Double uploadBps = 0d;
+		if (netDomain != null) {
+			for (NetInterfaceDomain netInterfaceDomain : netDomain.getNetList()) {
+				uploadBps += netInterfaceDomain.getUploadBps();
+			}
+		}
+		return uploadBps;
+	}
+
+	private Double getNetDown(NetDomain netDomain) {
+		Double downloadBps = 0d;
+		if (netDomain != null) {
+			for (NetInterfaceDomain netInterfaceDomain : netDomain.getNetList()) {
+				downloadBps += netInterfaceDomain.getDownloadBps();
+			}
+		}
+		return downloadBps;
+	}
 }

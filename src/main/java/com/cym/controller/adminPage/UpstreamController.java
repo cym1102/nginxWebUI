@@ -11,7 +11,6 @@ import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.ModelAndView;
 
 import com.cym.ext.UpstreamExt;
-import com.cym.model.Server;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
 import com.cym.service.ParamService;

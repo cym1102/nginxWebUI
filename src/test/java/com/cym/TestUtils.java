@@ -2,6 +2,7 @@ package com.cym;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Ignore;
@@ -11,14 +12,14 @@ import org.noear.solon.test.HttpTester;
 import org.noear.solon.test.SolonJUnit4ClassRunner;
 import org.noear.solon.test.SolonTest;
 
-import cn.hutool.http.HttpUtil;
+import cn.hutool.core.util.RuntimeUtil;
 
 @RunWith(SolonJUnit4ClassRunner.class)
 @SolonTest(NginxWebUI.class)
 public class TestUtils extends HttpTester {
 	@Test
 	@Ignore
-	public void test() throws Exception {
+	public void test() {
 
 		StringBuilder pass = new StringBuilder(1000);
 		for (int i = 0; i < 2000000; i++) {
@@ -41,17 +42,11 @@ public class TestUtils extends HttpTester {
 	}
 
 	public static void main(String[] args) {
-		StringBuilder pass = new StringBuilder(1000);
-		for (int i = 0; i < 2000000; i++) {
-			pass.append("abcde12345");
+		List<String> list = RuntimeUtil.execForLines("/bin/sh", "-c", "ps -ef | grep nginxWebUI");
+
+		for (String line : list) {
+			System.out.println(line);
 		}
-
-		Map<String, Object> map = new HashMap<>();
-		map.put("name", "admin");
-		map.put("pass", pass.toString());
-
-		String rs = HttpUtil.post("http://127.0.0.1:8080/adminPage/login/login", map);
-		System.err.println(rs);
 	}
-	
+
 }

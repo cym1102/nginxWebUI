@@ -9,7 +9,6 @@ import org.noear.solon.annotation.Inject;
 import com.cym.config.HomeConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.noear.solon.core.bean.InitializingBean;
 
 @Component
 public class DataSourceEmbed  {

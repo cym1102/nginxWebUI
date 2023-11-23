@@ -7,9 +7,7 @@ import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.ModelAndView;
 
-import com.cym.config.InitConfig;
 import com.cym.model.Http;
-import com.cym.model.Server;
 import com.cym.service.HttpService;
 import com.cym.service.SettingService;
 import com.cym.utils.BaseController;

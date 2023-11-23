@@ -59,6 +59,19 @@ $(function() {
 			}
 		});
 	});
+	
+	
+	layui.use('laydate', function() {
+		layui.laydate.render({
+			elem: '#makeTime, #endTime',
+			type: 'datetime',
+			format: 'yyyy-MM-dd HH:mm:ss'
+		});
+	})
+
+	layui.use('util', function() {
+
+	});
 
 	form.on('select(dnsType)', function(data) {
 		checkDnsType(data.value);
@@ -132,12 +145,16 @@ function add() {
 	$("#encryption").attr("disabled", false);
 	$("#encryption").removeClass("disabled");
 
+	$("#makeTime").val("");
+	$("#endTime").val("");
+
 	checkType(0);
 	checkDnsType('ali');
 
 	form.render();
 	showWindow(certStr.add);
 }
+
 
 
 function edit(id, clone) {
@@ -195,6 +212,13 @@ function edit(id, clone) {
 					$("#pemPath").html(path[path.length - 1]);
 					path = cert.key.split('/');
 					$("#keyPath").html(path[path.length - 1]);
+
+					if (cert.makeTime != null) {
+						$("#makeTime").val(layui.util.toDateString(cert.makeTime, 'yyyy-MM-dd HH:mm:ss'));
+					}
+					if (cert.endTime != null) {
+						$("#endTime").val(layui.util.toDateString(cert.endTime, 'yyyy-MM-dd HH:mm:ss'));
+					}
 				} else {
 					$("#domain").attr("disabled", false);
 					$("#domain").removeClass("disabled");
@@ -207,6 +231,8 @@ function edit(id, clone) {
 					$("#key").val("");
 					$("#pemPath").html("");
 					$("#keyPath").html("");
+					$("#makeTime").val("");
+					$("#endTime").val("");
 				}
 
 				checkType(cert.type);
@@ -276,6 +302,14 @@ function addOver() {
 	if ($("#type").val() == 1 && $("#pem").val() == $("#key").val()) {
 		layer.msg(certStr.error5);
 		return;
+	}
+
+	// 将时间字段的值转换为时间戳
+	if ($("#makeTime").val() !== '') {
+		$("#makeTime").val(new Date($("#makeTime").val()).getTime());
+	}
+	if ($("#endTime").val() !== '') {
+		$("#endTime").val(new Date($("#endTime").val()).getTime());
 	}
 
 	$.ajax({

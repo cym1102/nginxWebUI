@@ -277,6 +277,15 @@ $(function(){
 									}
 									return "";
 								}
+							},{	
+								title : remoteStr.select,
+								template : function(remote) {
+									if(remote.select == 1){
+										return `<span class="green">${remoteStr.yes}</span>`
+									}
+									
+									return "";
+								}
 							},{
 								title :commonStr.operation,
 								template : function(remote) {

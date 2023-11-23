@@ -206,7 +206,7 @@
 								<td>${ext.locationStr}</td>
 
 								<td>
-									<input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="ON|OFF" lay-skin="switch"${(ext.server.enable)?string('checked','')}>
+									<input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="ON|OFF" lay-skin="switch" ${(ext.server.enable)?string('checked','')}>
 								</td>
 
 								<td style="max-width: 150px;">
@@ -418,15 +418,11 @@
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-sm" style="margin-left: 195px;" onclick="serverParam()">${serverStr.extParm}</button>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal proxyHttp" style="margin-left: 50px;" onclick="addItem()">${serverStr.addLocation}</button>
+					
+					<button type="button" class="layui-btn layui-btn-sm"  onclick="serverParam()">${serverStr.extParm}</button>
 					<textarea style="display: none;" id="serverParamJson" name="serverParamJson"></textarea>
 				</div>
-				
-		
-				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal proxyHttp" onclick="addItem()">${serverStr.addLocation}</button>
-				</div>
-				
 				
 							
 				<div class="proxyHttp">

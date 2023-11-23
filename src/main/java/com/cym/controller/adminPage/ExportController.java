@@ -2,10 +2,9 @@ package com.cym.controller.adminPage;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Date;
 
 import org.noear.solon.annotation.Controller;
@@ -21,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import com.cym.ext.AsycPack;
 import com.cym.model.Cert;
 import com.cym.model.CertCode;
-import com.cym.model.Stream;
 import com.cym.service.CertService;
 import com.cym.service.ConfService;
 import com.cym.sqlhelper.utils.ConditionAndWrapper;
@@ -48,7 +46,7 @@ public class ExportController extends BaseController {
 	}
 
 	@Mapping("dataExport")
-	public DownloadedFile dataExport(Context context) throws IOException {
+	public DownloadedFile dataExport(Context context) {
 		AsycPack asycPack = confService.getAsycPack(new String[] { "all" });
 		// 导出证书
 		asycPack.setCertList(sqlHelper.findAll(Cert.class));
@@ -58,17 +56,17 @@ public class ExportController extends BaseController {
 		String json = JSONUtil.toJsonPrettyStr(asycPack);
 
 		String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
-		DownloadedFile downloadedFile = new DownloadedFile("application/octet-stream", new ByteArrayInputStream(json.getBytes(Charset.forName("UTF-8"))), date + ".json");
+		DownloadedFile downloadedFile = new DownloadedFile("application/octet-stream", new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)), date + ".json");
 		return downloadedFile;
 	}
 
 	@Mapping(value = "dataImport")
 	public void dataImport(UploadedFile file, Context context) throws IOException {
 		if (file != null) {
-			File tempFile = new File(homeConfig.home + "temp" + File.separator + file.getName());
+			File tempFile = new File(homeConfig.home + "temp" + File.separator + file.getName().replace("..", ""));
 			FileUtil.mkdir(tempFile.getParentFile());
 			file.transferTo(tempFile);
-			String json = FileUtil.readString(tempFile, Charset.forName("UTF-8"));
+			String json = FileUtil.readString(tempFile, StandardCharsets.UTF_8);
 			tempFile.delete();
 
 			AsycPack asycPack = JSONUtil.toBean(json, AsycPack.class);
@@ -90,10 +88,10 @@ public class ExportController extends BaseController {
 	}
 
 	@Mapping("logExport")
-	public DownloadedFile logExport(Context context) throws FileNotFoundException {
+	public DownloadedFile logExport(Context context) throws IOException {
 		File file = new File(homeConfig.home + "log/nginxWebUI.log");
 		if (file.exists()) {
-			DownloadedFile downloadedFile = new DownloadedFile("application/octet-stream", new FileInputStream(file), file.getName());
+			DownloadedFile downloadedFile = new DownloadedFile("application/octet-stream", Files.newInputStream(file.toPath()), file.getName());
 			return downloadedFile;
 		}
 

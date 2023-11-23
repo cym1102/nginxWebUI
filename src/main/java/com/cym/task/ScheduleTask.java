@@ -1,7 +1,5 @@
 package com.cym.task;
 
-import java.io.File;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +19,6 @@ import com.cym.controller.adminPage.CertController;
 import com.cym.controller.adminPage.ConfController;
 import com.cym.controller.adminPage.RemoteController;
 import com.cym.model.Cert;
-import com.cym.model.Http;
 import com.cym.model.Remote;
 import com.cym.model.Upstream;
 import com.cym.model.UpstreamServer;
@@ -36,12 +33,9 @@ import com.cym.utils.MessageUtils;
 import com.cym.utils.SendMailUtils;
 import com.cym.utils.TelnetUtils;
 
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.ZipUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 

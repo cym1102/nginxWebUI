@@ -39,12 +39,12 @@ public class PwdCheckUtil {
     public static boolean checkPasswordLength(String password, String minNum, String maxNum) {
         boolean flag =false;
         if (StrUtil.isBlank(maxNum))  {
-            minNum = StrUtil.isBlank(minNum) == true ? "0":minNum;
+            minNum = StrUtil.isBlank(minNum) ? "0":minNum;
              if (password.length() >= Integer.parseInt(minNum)) {
                  flag = true;
              }
         } else {
-            minNum = StrUtil.isBlank(minNum) == true ? "0":minNum;
+            minNum = StrUtil.isBlank(minNum) ? "0":minNum;
              if (password.length() >= Integer.parseInt(minNum) &&
                      password.length() <= Integer.parseInt(maxNum)) {
                  flag = true;

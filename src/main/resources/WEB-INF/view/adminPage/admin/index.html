@@ -77,6 +77,11 @@
 								<div class="layui-inline">
 									<button type="button" class="layui-btn layui-btn-sm" onclick="edit('${admin.id}')">${commonStr.edit}</button>
 								</div>
+								
+								<div class="layui-inline">
+									<button type="button" class="layui-btn layui-btn-sm" onclick="changePass('${admin.id}')">${commonStr.editPass}</button>
+								</div>
+								
 								<div class="layui-inline">
 									<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="del('${admin.id}')">${commonStr.del}</button>
 								</div>
@@ -103,23 +108,7 @@
 					</div>
 				</div>
 
-				<div class="layui-form-item">
-					<label class="layui-form-label">${adminStr.pass}</label>
-					<div class="layui-input-block">
-						<input type="password" name="pass" id="pass" class="layui-input">
-					</div>
-				</div>
 
-				<div class="layui-form-item">
-					<label class="layui-form-label">${adminStr.twoStep}</label>
-					<div class="layui-input-block">
-						<select id="auth" name="auth">
-							<option value="false">${commonStr.no}</option>
-							<option value="true">${commonStr.yes}</option>
-						</select>
-					</div>
-				</div>
-				
 				<div class="layui-form-item">
 					<label class="layui-form-label">${adminStr.api}</label>
 					<div class="layui-input-block">
@@ -150,6 +139,43 @@
 
 				<div class="layui-form-item center">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
+				</div>
+			</form>
+		</div>
+		
+		
+		<div class="layui-form" id="passDiv" style="padding: 15px; display: none">
+			<form id="passForm">
+				<input type="hidden" name="id" id="idPass">
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">${adminStr.name}</label>
+					<div class="layui-input-block">
+						<div class="layui-form-mid layui-text-em" id="adminName"></div>
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">${adminStr.pass}</label>
+					<div class="layui-input-block">
+						<input type="password" name="pass" id="pass" class="layui-input" placeholder="${adminStr.passHint}">
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">${adminStr.twoStep}</label>
+					<div class="layui-input-block">
+						<select id="auth" name="auth">
+							<option value="false">${commonStr.no}</option>
+							<option value="true">${commonStr.yes}</option>
+						</select>
+					</div>
+				</div>
+				
+				
+				<div class="layui-form-item center">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="changePassOver()">${commonStr.submit}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>

@@ -170,10 +170,19 @@ function add() {
 }
 
 function showWindow(title) {
+	
+	var width = "1350px";
+	var height = "90%";
+	if(window.innerWidth <= 1000){
+		// 手机端
+		width = "1000px";
+		height = "1500px";
+	}
+	
 	layer.open({
 		type: 1,
 		title: title,
-		area: ['1350px', '90%'], // 宽高
+		area: [width, height], // 宽高
 		content: $('#windowDiv')
 	});
 }

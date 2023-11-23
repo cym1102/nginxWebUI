@@ -35,7 +35,7 @@ function load(){
 
 	$.ajax({
 		type : 'POST',
-		url : ctx + '/adminPage/monitor/check',
+		url : ctx + '/adminPage/monitor/load',
 		dataType : 'json',
 		success : function(data) {
 			if (data.success) {

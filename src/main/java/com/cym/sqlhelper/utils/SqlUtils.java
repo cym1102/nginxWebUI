@@ -38,7 +38,7 @@ public class SqlUtils {
 		return sql;
 	}
 
-	public void checkOrCreateTable(Class<?> clazz) throws SQLException {
+	public void checkOrCreateTable(Class<?> clazz) {
 		String sql = "CREATE TABLE IF NOT EXISTS `" + StrUtil.toUnderlineCase(clazz.getSimpleName()) + "` (id VARCHAR(32) NOT NULL PRIMARY KEY)";
 		logQuery(formatSql(sql));
 		jdbcTemplate.execute(formatSql(sql));
@@ -71,18 +71,18 @@ public class SqlUtils {
 		}
 	}
 
-	public void checkOrCreateIndex(Class<?> clazz, String name, boolean unique, List<Map<String, Object>> indexs) throws SQLException {
+	public void checkOrCreateIndex(Class<?> clazz, String name, boolean unique, List<Map<String, Object>> indexs) {
 		checkOrCreateIndex(clazz, new String[] { name }, unique, indexs);
 	}
 
-	public void checkOrCreateIndex(Class<?> clazz, String[] colums, boolean unique, List<Map<String, Object>> indexs) throws SQLException {
+	public void checkOrCreateIndex(Class<?> clazz, String[] colums, boolean unique, List<Map<String, Object>> indexs) {
 		List<String> columList = new ArrayList<String>();
 		for (String colum : colums) {
 			columList.add(StrUtil.toUnderlineCase(colum));
 		}
 		String name = StrUtil.join("&", columList) + "@" + StrUtil.toUnderlineCase(clazz.getSimpleName());
 
-		Boolean hasIndex = false;
+		boolean hasIndex = false;
 		for (Map<String, Object> map : indexs) {
 			if (StrUtil.toUnderlineCase(name).equalsIgnoreCase((String) map.get("name")) || StrUtil.toUnderlineCase(name).equalsIgnoreCase((String) map.get("Key_name"))) {
 				hasIndex = true;
@@ -105,7 +105,7 @@ public class SqlUtils {
 
 	}
 
-	public void checkOrCreateColumn(Class<?> clazz, String name, Set<String> columns) throws SQLException {
+	public void checkOrCreateColumn(Class<?> clazz, String name, Set<String> columns) {
 		if (!columns.contains(StrUtil.toUnderlineCase(name).toLowerCase())) {
 			String sql = "ALTER TABLE `" + StrUtil.toUnderlineCase(clazz.getSimpleName()) + "` ADD COLUMN `" + StrUtil.toUnderlineCase(name) + "` LONGTEXT";
 			logQuery(formatSql(sql));
@@ -114,7 +114,7 @@ public class SqlUtils {
 
 	}
 
-	public void updateDefaultValue(Class<?> clazz, String column, String value) throws SQLException {
+	public void updateDefaultValue(Class<?> clazz, String column, String value) {
 		String sql = "SELECT COUNT(*) FROM `" + StrUtil.toUnderlineCase(clazz.getSimpleName()) + "` WHERE `" + StrUtil.toUnderlineCase(column) + "` IS NULL";
 		logQuery(formatSql(sql));
 		Long count = jdbcTemplate.queryForCount(formatSql(sql));

@@ -3,7 +3,8 @@ package com.cym.controller.adminPage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.cert.CertificateException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class CertController extends BaseController {
 				cert.setDomain(cert.getDomain() + "(" + cert.getEncryption() + ")");
 			}
 
-			if (cert.getMakeTime() != null) {
+			if (cert.getMakeTime() != null && cert.getType() != 1) {
 				cert.setEndTime(cert.getMakeTime() + 90 * 24 * 60 * 60 * 1000l);
 			}
 		}
@@ -71,15 +72,27 @@ public class CertController extends BaseController {
 
 	@Mapping("addOver")
 	public JsonResult addOver(Cert cert, String[] domains, String[] types, String[] values) {
+		
+		// 检查是否重名
+		if(certService.hasName(cert)) {
+			return renderError(m.get("certStr.nameRepetition")); 
+		}
+		
 		Integer type = cert.getType();
 		if (type == null && StrUtil.isNotEmpty(cert.getId())) {
 			Cert certOrg = sqlHelper.findById(cert.getId(), Cert.class);
 			type = certOrg.getType();
 		}
 
+		String domain = cert.getDomain();
+		if (StrUtil.isEmpty(domain) && StrUtil.isNotEmpty(cert.getId())) {
+			Cert certOrg = sqlHelper.findById(cert.getId(), Cert.class);
+			domain = certOrg.getDomain();
+		}
+
 		if (type != null && type == 1) {
 			// 手动上传
-			String dir = homeConfig.home + "cert/" + cert.getDomain() + "/";
+			String dir = homeConfig.home + "cert/" + domain + "/";
 
 			if (cert.getKey().contains(FileUtil.getTmpDir().toString().replace("\\", "/"))) {
 				String keyName = new File(cert.getKey()).getName();
@@ -94,16 +107,18 @@ public class CertController extends BaseController {
 			}
 
 			// 计算到期时间
-			try {
-				CertificateFactory cf = CertificateFactory.getInstance("X.509");
-				FileInputStream in = new FileInputStream(cert.getPem());
-				X509Certificate certFile = (X509Certificate) cf.generateCertificate(in);
-				Date effDate = certFile.getNotBefore();
-				Date expDate = certFile.getNotAfter();
-				cert.setMakeTime(effDate.getTime());
-				cert.setEndTime(expDate.getTime());
-			} catch (Exception e) {
-				logger.info(e.getMessage(), e);
+			if (cert.getEndTime() == null) {
+				try {
+					CertificateFactory cf = CertificateFactory.getInstance("X.509");
+					FileInputStream in = new FileInputStream(cert.getPem());
+					X509Certificate certFile = (X509Certificate) cf.generateCertificate(in);
+					Date effDate = certFile.getNotBefore();
+					Date expDate = certFile.getNotAfter();
+					cert.setMakeTime(effDate.getTime());
+					cert.setEndTime(expDate.getTime());
+				} catch (Exception e) {
+					logger.info(e.getMessage(), e);
+				}
 			}
 		}
 
@@ -181,8 +196,8 @@ public class CertController extends BaseController {
 		// 设置dns账号
 		String[] envs = getEnv(cert);
 
-		if (type.equals("issue")) {
-			String[] split = cert.getDomain().split(",");
+		String[] split = cert.getDomain().split(",");
+		if (type.equals("issue") || FileUtil.isEmpty(new File(homeConfig.acmeShDir, split[0]))) {
 			StringBuffer sb = new StringBuffer();
 			Arrays.stream(split).forEach(s -> sb.append(" -d ").append(s));
 			String domain = sb.toString();
@@ -212,7 +227,7 @@ public class CertController extends BaseController {
 			}
 		} else if (type.equals("renew")) {
 			// 续签,以第一个域名为证书名
-			String domain = cert.getDomain().split(",")[0];
+			String domain = split[0];
 
 			if (cert.getType() == 0) {
 				// DNS API申请
@@ -358,7 +373,7 @@ public class CertController extends BaseController {
 			ZipUtil.zip(dir);
 			FileUtil.del(dir);
 
-			DownloadedFile downloadedFile = new DownloadedFile("application/octet-stream", new FileInputStream(dir + ".zip"), "cert.zip");
+			DownloadedFile downloadedFile = new DownloadedFile("application/octet-stream", Files.newInputStream(Paths.get(dir + ".zip")), "cert.zip");
 			return downloadedFile;
 		}
 

@@ -30,8 +30,6 @@ import com.cym.utils.ToolUtils;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
-import cn.hutool.core.net.URLDecoder;
-import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
@@ -53,9 +51,10 @@ public class ConfController extends BaseController {
 	ConfService confService;
 	@Inject
 	MainController mainController;
-
 	@Inject
 	VersionConfig versionConfig;
+	
+	String aesKey = "aes";
 
 	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView) {
@@ -101,13 +100,11 @@ public class ConfController extends BaseController {
 		JSONObject jsonObject = JSONUtil.parseObj(json);
 
 		String nginxPath = jsonObject.getStr("nginxPath");
-		String nginxContent = Base64.decodeStr(jsonObject.getStr("nginxContent"), CharsetUtil.CHARSET_UTF_8);
-		nginxContent = URLDecoder.decode(nginxContent, CharsetUtil.CHARSET_UTF_8).replace("<wave>", "~");
+		String nginxContent = Base64.decodeStr(jsonObject.getStr("nginxContent"));
 
 		List<String> subContent = jsonObject.getJSONArray("subContent").toList(String.class);
 		for (int i = 0; i < subContent.size(); i++) {
-			String content = Base64.decodeStr(subContent.get(i), CharsetUtil.CHARSET_UTF_8);
-			content = URLDecoder.decode(content, CharsetUtil.CHARSET_UTF_8).replace("<wave>", "~");
+			String content = Base64.decodeStr(subContent.get(i));
 			subContent.set(i, content);
 		}
 		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
@@ -141,15 +138,16 @@ public class ConfController extends BaseController {
 		ConfExt confExt = confService.buildConf(StrUtil.isNotEmpty(decompose) && decompose.equals("true"), false);
 
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.set("nginxContent", Base64.encode(URLEncodeUtil.encode(confExt.getConf(), CharsetUtil.CHARSET_UTF_8)));
+		jsonObject.set("nginxContent", Base64.encode(confExt.getConf()));
 		jsonObject.set("subContent", new JSONArray());
 		jsonObject.set("subName", new JSONArray());
 		for (ConfFile confFile : confExt.getFileList()) {
-			jsonObject.getJSONArray("subContent").add(Base64.encode(URLEncodeUtil.encode(confFile.getConf(), CharsetUtil.CHARSET_UTF_8)));
+			jsonObject.getJSONArray("subContent").add(Base64.encode(confFile.getConf()));
 			jsonObject.getJSONArray("subName").add(confFile.getName());
 		}
 		return jsonObject.toStringPretty();
 	}
+	
 
 	/**
 	 * 检查数据库内部配置
@@ -220,12 +218,10 @@ public class ConfController extends BaseController {
 
 		JSONObject jsonObject = JSONUtil.parseObj(json);
 		String nginxContent = Base64.decodeStr(jsonObject.getStr("nginxContent"), CharsetUtil.CHARSET_UTF_8);
-		nginxContent = URLDecoder.decode(nginxContent, CharsetUtil.CHARSET_UTF_8).replace("<wave>", "~");
 
 		List<String> subContent = jsonObject.getJSONArray("subContent").toList(String.class);
 		for (int i = 0; i < subContent.size(); i++) {
 			String content = Base64.decodeStr(subContent.get(i), CharsetUtil.CHARSET_UTF_8);
-			content = URLDecoder.decode(content, CharsetUtil.CHARSET_UTF_8).replace("<wave>", "~");
 			subContent.set(i, content);
 		}
 

@@ -1,13 +1,10 @@
 package com.cym.controller.adminPage;
 
-import java.io.IOException;
-
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.ModelAndView;
 
-import com.cym.config.InitConfig;
 import com.cym.model.Password;
 import com.cym.service.PasswordService;
 import com.cym.sqlhelper.bean.Page;
@@ -35,7 +32,7 @@ public class PasswordController extends BaseController {
 	}
 
 	@Mapping("addOver")
-	public JsonResult addOver(Password password) throws IOException {
+	public JsonResult addOver(Password password){
 
 		if (StrUtil.isEmpty(password.getId())) {
 			Long count = passwordService.getCountByName(password.getName());

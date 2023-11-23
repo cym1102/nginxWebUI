@@ -48,11 +48,11 @@ function nginxStatus() {
 function buildJson() {
 	var json = {};
 	json.nginxPath = $("#nginxPath").val();
-	json.nginxContent = Base64.encode(encodeURIComponent($("#nginxContent").val().replace(/\~/g, "<wave>")));
+	json.nginxContent = Base64.encode($("#nginxContent").val());
 	json.subContent = [];
 	json.subName = [];
 	$("textarea[name='subContent']").each(function() {
-		json.subContent.push(Base64.encode(encodeURIComponent($(this).val().replace(/\~/g, "<wave>"))));
+		json.subContent.push(Base64.encode($(this).val()));
 	})
 	$("input[name='subName']").each(function() {
 		json.subName.push($(this).val());

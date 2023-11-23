@@ -1,6 +1,5 @@
 package com.cym.controller.api;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.noear.solon.annotation.Controller;
@@ -51,8 +50,8 @@ public class ParamApiController extends BaseController {
 	 * 
 	 */
 	@Mapping("insertOrUpdate")
-	public JsonResult<?> insertOrUpdate(Param param) throws IOException {
-		Integer count = 0;
+	public JsonResult<?> insertOrUpdate(Param param) {
+		int count = 0;
 		if (StrUtil.isNotEmpty(param.getLocationId())) {
 			count++;
 		}

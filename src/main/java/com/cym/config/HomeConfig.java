@@ -5,7 +5,6 @@ import java.io.File;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Init;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.core.bean.InitializingBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

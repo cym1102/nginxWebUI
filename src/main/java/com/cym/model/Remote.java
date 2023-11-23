@@ -24,8 +24,18 @@ public class Remote extends BaseModel{
 	Integer type; //0 服务器 1分组
 	Integer nginx; //0未运行 1在运行 2未知
 	
+	Boolean select;
 	
 	
+	
+	public Boolean getSelect() {
+		return select;
+	}
+
+	public void setSelect(Boolean select) {
+		this.select = select;
+	}
+
 	public Integer getMonitor() {
 		return monitor;
 	}

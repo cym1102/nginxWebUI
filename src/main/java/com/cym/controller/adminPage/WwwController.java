@@ -3,6 +3,7 @@ package com.cym.controller.adminPage;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import cn.hutool.core.util.StrUtil;
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
@@ -10,7 +11,6 @@ import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cym.model.Server;
 import com.cym.model.Www;
 import com.cym.service.WwwService;
 import com.cym.sqlhelper.bean.Sort;
@@ -78,7 +78,7 @@ public class WwwController extends BaseController {
 		return renderSuccess(www);
 	}
 
-	public String getClassPath() throws Exception {
+	public String getClassPath() {
 		try {
 			String strClassName = getClass().getName();
 			String strPackageName = "";
@@ -86,7 +86,7 @@ public class WwwController extends BaseController {
 				strPackageName = getClass().getPackage().getName();
 			}
 			String strClassFileName = "";
-			if (!"".equals(strPackageName)) {
+			if (StrUtil.isNotBlank(strPackageName)) {
 				strClassFileName = strClassName.substring(strPackageName.length() + 1, strClassName.length());
 			} else {
 				strClassFileName = strClassName;

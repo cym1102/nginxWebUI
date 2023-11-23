@@ -1,6 +1,5 @@
 package com.cym.utils;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
@@ -239,11 +238,11 @@ public class Crypt {
 
 			t = skb[4][(d) & 0x3f] | skb[5][((d >>> 7) & 0x03) | ((d >>> 8) & 0x3c)] | skb[6][(d >>> 15) & 0x3f] | skb[7][((d >>> 21) & 0x0f) | ((d >>> 22) & 0x30)];
 
-			schedule[j++] = ((t << 16) | (s & 0x0000ffff)) & 0xffffffff;
+			schedule[j++] = ((t << 16) | (s & 0x0000ffff));
 			s = ((s >>> 16) | (t & 0xffff0000));
 
 			s = (s << 4) | (s >>> 28);
-			schedule[j++] = s & 0xffffffff;
+			schedule[j++] = s;
 		}
 		return (schedule);
 	}
@@ -386,7 +385,7 @@ public class Crypt {
 	/**
 	 * @param args the command line arguments
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		System.out.println(getString("name", "name"));
 		
 		

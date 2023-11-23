@@ -1,7 +1,6 @@
 package com.cym.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.noear.solon.annotation.Inject;
@@ -105,6 +104,22 @@ public class CertService {
 		ZipUtil.unzip(homeConfig.home + "acme.zip", homeConfig.acmeShDir);
 		FileUtil.del(homeConfig.home + "acme.zip");
 
+	}
+
+	public boolean hasName(Cert cert) {
+		if (StrUtil.isEmpty(cert.getId())) {
+			Long count = sqlHelper.findCountByQuery(new ConditionAndWrapper().eq(Cert::getDomain, cert.getDomain()), Cert.class);
+			if (count > 0) {
+				return true;
+			}
+		} else {
+			Long count = sqlHelper.findCountByQuery(new ConditionAndWrapper().eq(Cert::getDomain, cert.getDomain()).ne(Cert::getId, cert.getId()), Cert.class);
+			if (count > 0) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 }

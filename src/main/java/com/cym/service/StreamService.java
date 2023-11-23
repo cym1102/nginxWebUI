@@ -5,7 +5,6 @@ import java.util.List;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.aspect.annotation.Service;
 
-import com.cym.model.Http;
 import com.cym.model.Param;
 import com.cym.model.Stream;
 import com.cym.sqlhelper.bean.Sort;

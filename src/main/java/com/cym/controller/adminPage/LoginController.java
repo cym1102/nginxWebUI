@@ -61,10 +61,10 @@ public class LoginController extends BaseController {
 		Admin admin = (Admin) Context.current().session("admin");
 		admin.setAutoKey(null);
 		sqlHelper.updateAllColumnById(admin);
-		
+
 		Context.current().sessionRemove(("isLogin"));
 		Context.current().sessionRemove("admin");
-		
+
 		modelAndView.view("/adminPage/index.html");
 		return modelAndView;
 	}
@@ -130,13 +130,12 @@ public class LoginController extends BaseController {
 		// 登录成功
 		admin.setAutoKey(UUID.randomUUID().toString()); // 生成自动登录code
 		sqlHelper.updateById(admin);
-		
+
 		Context.current().sessionSet("localType", "local");
 		Context.current().sessionSet("isLogin", true);
 		Context.current().sessionSet("admin", admin);
 		Context.current().sessionRemove("imgCode"); // 立刻销毁验证码
 
-		
 		// 检查更新
 		versionConfig.checkVersion();
 

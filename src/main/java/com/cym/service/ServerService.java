@@ -122,7 +122,7 @@ public class ServerService {
 	private String findLocationDescr(List<Location> locationOlds, Location locationNew) {
 
 		for (Location location : locationOlds) {
-			if (location.getPath().equals(locationNew.getPath()) && location.getType() == locationNew.getType()) {
+			if (location.getPath().equals(locationNew.getPath()) && location.getType().equals(locationNew.getType())) {
 				return location.getDescr();
 			}
 
@@ -294,7 +294,7 @@ public class ServerService {
 			rs.add(str);
 		}
 
-		String initNginxPath = FileUtil.getTmpDirPath() + UUID.randomUUID().toString();
+		String initNginxPath = FileUtil.getTmpDirPath() + UUID.randomUUID();
 		FileUtil.writeLines(rs, initNginxPath, CharsetUtil.CHARSET_UTF_8);
 		return initNginxPath;
 	}

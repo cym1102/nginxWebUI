@@ -43,7 +43,7 @@ public class PasswordApiController extends BaseController {
 	 * 
 	 */
 	@Mapping("insertOrUpdate")
-	public JsonResult<?> insertOrUpdate(Password password) throws IOException {
+	public JsonResult<?> insertOrUpdate(Password password){
 		return renderSuccess(passwordController.addOver(password));
 	}
 
