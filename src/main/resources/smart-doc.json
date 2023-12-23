@@ -1,5 +1,5 @@
 {
 	"framework": "solon",
 	"outPath": "src/main/resources/static/doc",
-	"packageFilters": "com.cym.controller.api.*,com.cym.model.*,com.cym.sqlhelper.*,com.cym.utils.*"
+	"packageFilters": "com.cym.controller.api.*,com.cym.model.*,com.cym.sqlhelper.bean.*,com.cym.utils.JsonResult"
 }

@@ -62,27 +62,37 @@ public class AdminController extends BaseController {
 	}
 
 	@Mapping("addOver")
-	public JsonResult addOver(Admin admin, String[] parentId) {
-		if (StrUtil.isEmpty(admin.getId())) {
-			Long count = adminService.getCountByName(admin.getName());
+	public JsonResult addOver(String id, String name, Boolean api, Integer type, String[] parentId) {
+
+		if (StrUtil.isEmpty(id)) {
+			Long count = adminService.getCountByName(name);
 			if (count > 0) {
 				return renderError(m.get("adminStr.nameRepetition"));
 			}
 		} else {
-			Long count = adminService.getCountByNameWithOutId(admin.getName(), admin.getId());
+			Long count = adminService.getCountByNameWithOutId(name, id);
 			if (count > 0) {
 				return renderError(m.get("adminStr.nameRepetition"));
 			}
 		}
 
+		Admin admin = new Admin();
+		admin.setId(id);
+		admin.setName(name);
+		admin.setApi(api);
+		admin.setType(type);
+
 		adminService.addOver(admin, parentId);
 
 		return renderSuccess();
 	}
-	
-	
+
 	@Mapping("changePassOver")
-	public JsonResult changePassOver(Admin admin) {
+	public JsonResult changePassOver(String id, String pass, Boolean auth) {
+		Admin admin = new Admin();
+		admin.setId(id);
+		admin.setPass(pass);
+		admin.setAuth(auth);
 
 		adminService.changePassOver(admin);
 
@@ -94,7 +104,7 @@ public class AdminController extends BaseController {
 		AdminExt adminExt = new AdminExt();
 		adminExt.setAdmin(sqlHelper.findById(id, Admin.class));
 		adminExt.setGroupIds(adminService.getGroupIds(adminExt.getAdmin().getId()));
-		adminExt.getAdmin().setPass(""); 
+		adminExt.getAdmin().setPass("");
 		return renderSuccess(adminExt);
 	}
 

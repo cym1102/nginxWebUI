@@ -29,7 +29,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 
 /**
- * mongodb操作器
+ * jdbc操作器
  *
  */
 @Component

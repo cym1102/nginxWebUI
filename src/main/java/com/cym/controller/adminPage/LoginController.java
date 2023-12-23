@@ -3,6 +3,8 @@ package com.cym.controller.adminPage;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JPanel;
+
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
@@ -59,6 +61,8 @@ public class LoginController extends BaseController {
 	public ModelAndView loginOut(ModelAndView modelAndView) {
 
 		Admin admin = (Admin) Context.current().session("admin");
+		// 将自动登录key设为空
+		admin = sqlHelper.findById(admin.getId(), Admin.class);
 		admin.setAutoKey(null);
 		sqlHelper.updateAllColumnById(admin);
 

@@ -66,9 +66,9 @@ public class AppFilter implements Filter {
 
 	@Override
 	public void doFilter(Context ctx, FilterChain chain) throws Throwable {
-		
+
 		String path = ctx.path().toLowerCase();
-		
+
 		// 全局过滤器
 		if (!path.contains("/lib/") //
 				&& !path.toLowerCase().contains("/js/") //
@@ -228,7 +228,10 @@ public class AppFilter implements Filter {
 		if (versionConfig.newVersion != null) {
 			ctx.attrSet("newVersion", versionConfig.newVersion);
 
-			if (Integer.parseInt(versionConfig.currentVersion.replace(".", "").replace("v", "")) < Integer.parseInt(versionConfig.newVersion.getVersion().replace(".", "").replace("v", ""))) {
+			int currentVersion = Integer.parseInt(versionConfig.currentVersion.replace(".", "").replace("v", ""));
+			int newVersion = Integer.parseInt(versionConfig.newVersion.getVersion().replace(".", "").replace("v", ""));
+
+			if (currentVersion < newVersion) {
 				ctx.attrSet("hasNewVersion", 1);
 			}
 		}

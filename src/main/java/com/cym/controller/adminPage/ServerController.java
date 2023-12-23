@@ -205,7 +205,6 @@ public class ServerController extends BaseController {
 		return renderSuccess();
 	}
 
-
 	@Mapping("importServer")
 	public JsonResult importServer(String nginxPath) {
 
@@ -240,8 +239,17 @@ public class ServerController extends BaseController {
 				port = server.getListen();
 			}
 
-			if (TelnetUtils.isRunning(ip, Integer.parseInt(port)) && !ips.contains(server.getListen())) {
-				ips.add(server.getListen());
+			// 如果是范围端口,只检测第一个
+			if (port.contains("-")) {
+				port = port.split("-")[0];
+			}
+
+			try {
+				if (TelnetUtils.isRunning(ip, Integer.parseInt(port)) && !ips.contains(server.getListen())) {
+					ips.add(server.getListen());
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
 			}
 		}
 
@@ -280,7 +288,7 @@ public class ServerController extends BaseController {
 				if (http.getEnable() == null || !http.getEnable()) {
 					continue;
 				}
-				
+
 				NgxParam ngxParam = new NgxParam();
 				ngxParam.addValue(http.getName().trim() + " " + http.getValue().trim());
 				ngxBlock.addEntry(ngxParam);

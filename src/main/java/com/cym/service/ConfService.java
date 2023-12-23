@@ -143,10 +143,10 @@ public class ConfService {
 				hasHttp = true;
 
 				if (decompose) {
-					addConfFile(confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
+					String filename = addConfFile(nginxPath, confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/upstreams." + upstream.getName().replace(" ", "_").replace("*", "-") + ".conf");
+					ngxParam.addValue("include " + filename);
 					ngxBlockHttp.addEntry(ngxParam);
 
 				} else {
@@ -173,10 +173,10 @@ public class ConfService {
 						name = server.getServerName();
 					}
 
-					addConfFile(confExt, name + ".conf", ngxBlockServer);
+					String filename = addConfFile(nginxPath, confExt, name + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/" + name.replace(" ", "_").replace("*", "-") + ".conf");
+					ngxParam.addValue("include " + filename);
 
 					if (noContain(ngxBlockHttp, ngxParam)) {
 						ngxBlockHttp.addEntry(ngxParam);
@@ -211,10 +211,10 @@ public class ConfService {
 				NgxBlock ngxBlockServer = buildBlockUpstream(upstream);
 
 				if (decompose) {
-					addConfFile(confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
+					String filename = addConfFile(nginxPath, confExt, "upstreams." + upstream.getName() + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/upstreams." + upstream.getName().replace(" ", "_").replace("*", "-") + ".conf");
+					ngxParam.addValue("include " + filename);
 					ngxBlockStream.addEntry(ngxParam);
 				} else {
 					ngxBlockStream.addEntry(ngxBlockServer);
@@ -242,10 +242,10 @@ public class ConfService {
 						type = "udp";
 					}
 
-					addConfFile(confExt, type + "." + server.getListen() + ".conf", ngxBlockServer);
+					String filename = addConfFile(nginxPath, confExt, type + "." + server.getListen() + ".conf", ngxBlockServer);
 
 					ngxParam = new NgxParam();
-					ngxParam.addValue("include " + new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/" + type + "." + server.getListen() + ".conf");
+					ngxParam.addValue("include " + filename);
 					ngxBlockStream.addEntry(ngxParam);
 				} else {
 					ngxBlockStream.addEntry(ngxBlockServer);
@@ -259,6 +259,11 @@ public class ConfService {
 			}
 
 			String conf = ToolUtils.handleConf(new NgxDumper(ngxConfig).dump());
+			// 将多个;替换成单一;
+			while (conf.contains(";;")) {
+				conf = conf.replaceAll(";;", ";");
+			}
+
 			confExt.setConf(conf);
 
 			return confExt;
@@ -688,8 +693,8 @@ public class ConfService {
 		}
 	}
 
-	private void addConfFile(ConfExt confExt, String name, NgxBlock ngxBlockServer) {
-		name = name.replace(" ", "_").replace("*", "-");
+	private String addConfFile(String nginxPath, ConfExt confExt, String name, NgxBlock ngxBlockServer) {
+		name = name.replace(" ", "_").replaceAll("[!@#$%^&*()_+=\\{\\}\\[\\]\"<>,/;':\\\\|`~]+", "_");
 
 		boolean hasSameName = false;
 		for (ConfFile confFile : confExt.getFileList()) {
@@ -705,6 +710,8 @@ public class ConfService {
 			confFile.setConf(buildStr(ngxBlockServer));
 			confExt.getFileList().add(confFile);
 		}
+
+		return new File(nginxPath).getParent().replace("\\", "/") + "/conf.d/" + name;
 	}
 
 	private String buildStr(NgxBlock ngxBlockServer) {

@@ -9,7 +9,7 @@
   </parent>
   <groupId>com.cym</groupId>
   <artifactId>nginxWebUI</artifactId>
-  <version>3.4.0</version>
+  <version>3.8.1</version>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>

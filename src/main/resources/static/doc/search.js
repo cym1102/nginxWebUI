@@ -223,7 +223,7 @@ document.onkeydown = keyDownSearch;
 function keyDownSearch(e) {
     const theEvent = e;
     const code = theEvent.keyCode || theEvent.which || theEvent.charCode;
-    if (code == 13) {
+    if (code === 13) {
         const search = document.getElementById('search');
         const searchValue = search.value;
         let searchArr = [];
@@ -262,7 +262,7 @@ function keyDownSearch(e) {
             }
         }
         let html;
-        if (searchValue == '') {
+        if (searchValue === '') {
             const liClass = "";
             const display = "display: none";
             html = buildAccordion(api,liClass,display);
@@ -281,7 +281,7 @@ function keyDownSearch(e) {
         };
         Accordion.prototype.dropdown = function (e) {
             const $el = e.data.el;
-            $this = $(this), $next = $this.next();
+            let $this = $(this), $next = $this.next();
             $next.slideToggle();
             $this.parent().toggleClass('open');
             if (!e.data.multiple) {
@@ -294,13 +294,12 @@ function keyDownSearch(e) {
 
 function buildAccordion(apiData, liClass, display) {
     let html = "";
-    let doc;
     if (apiData.length > 0) {
          for (let j = 0; j < apiData.length; j++) {
             html += '<li class="'+liClass+'">';
             html += '<a class="dd" href="' + apiData[j].alias + '.html#header">' + apiData[j].order + '.&nbsp;' + apiData[j].desc + '</a>';
             html += '<ul class="sectlevel2" style="'+display+'">';
-            doc = apiData[j].list;
+            let doc = apiData[j].list;
             for (let m = 0; m < doc.length; m++) {
                 html += '<li><a href="' + apiData[j].alias + '.html#_' + apiData[j].order + '_' + doc[m].order + '_' + doc[m].desc + '">' + apiData[j].order + '.' + doc[m].order + '.&nbsp;' + doc[m].desc + '</a> </li>';
             }

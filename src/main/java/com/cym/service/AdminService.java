@@ -52,18 +52,20 @@ public class AdminService {
 		return sqlHelper.findOneByQuery(new ConditionAndWrapper().eq(Admin::getName, name), Admin.class);
 	}
 
-	public String makeToken(String id) {
+	public Admin makeToken(String id) {
 		String token = UUID.randomUUID().toString();
 		Admin admin = new Admin();
 		admin.setId(id);
 		admin.setToken(token);
+		admin.setTokenTimeout(System.currentTimeMillis() + 24 * 60 * 60 * 1000l); 
 		sqlHelper.updateById(admin);
 
-		return token;
+		return admin;
 	}
 
 	public Admin getByToken(String token) {
-		return sqlHelper.findOneByQuery(new ConditionAndWrapper().eq(Admin::getToken, token), Admin.class);
+		Long time = System.currentTimeMillis();
+		return sqlHelper.findOneByQuery(new ConditionAndWrapper().eq(Admin::getToken, token).gt(Admin::getTokenTimeout, time), Admin.class); 
 	}
 
 	public Admin getByCreditKey(String creditKey) {
