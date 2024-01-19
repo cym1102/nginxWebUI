@@ -145,7 +145,7 @@ public class Crypt {
 			0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A };
 
 	private static final int byteToUnsigned(byte b) {
-		int value = (int) b;
+		int value = b;
 
 		return (value >= 0 ? value : value + 256);
 	}

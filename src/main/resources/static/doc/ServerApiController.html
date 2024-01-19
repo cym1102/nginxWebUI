@@ -6,7 +6,7 @@
     <meta name="generator" content="smart-doc">
     <title>nginxWebUI</title>
     <link rel="stylesheet" href="font.css">
-    <link rel="stylesheet" href="AllInOne.css?v=1679370721004"/>
+    <link rel="stylesheet" href="AllInOne.css?v=1701413184079"/>
     
     <style>.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint {
         background: #f7f7f8;
@@ -226,7 +226,7 @@
                 <div class="paragraph"><p><strong>URL:</strong><a href="/api/server/getPage" class="bare">&nbsp;/api/server/getPage</a>
                 </p></div>
                 <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
-                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=UTF-8</p></div>
                 <div class="paragraph"><p><strong>Description:</strong>&nbsp;获取server分页列表</p></div>
                 <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
                 <table class="tableblock frame-all grid-all spread">
@@ -251,7 +251,7 @@
                         <td class="tableblock halign-left valign-top"><p class="tableblock">current</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock"> 当前页数(从1开始)</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
 
@@ -259,7 +259,7 @@
                         <td class="tableblock halign-left valign-top"><p class="tableblock">limit</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">   每页数量(默认为10)</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
 
@@ -275,7 +275,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/getPage?keywords=yju2qh&current=550&limit=10</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/getPage?current=1&limit=10&keywords=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -352,121 +352,9 @@
                     </tr>
 
                     <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─id</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">主键</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─serverName</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">监听域名</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─listen</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">监听ip端口 (格式 ip:port或port)</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─def</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否为默认server 0否(默认) 1是</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─rewrite</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否http跳转https 0否(默认) 1是</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─rewriteListen</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">http跳转https监听ip端口,默认为80 (格式 ip:port或port)</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ssl</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启ssl 0否(默认) 1是</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─http2</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启http2 0否(默认) 1是</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─proxyProtocol</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否开启proxy_protocol 0否(默认) 1是</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─pem</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">ssl证书pem文件路径</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─key</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">ssl证书key文件路径</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─proxyType</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理类型 0:http(默认) 1:tcp 2:udp</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─proxyUpstreamId</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理upstream的id</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─enable</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">是否启用 true:启用(默认) false:禁用</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─descr</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">描述</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─protocols</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">加密协议 (默认:TLSv1 TLSv1.1 TLSv1.2 TLSv1.3)</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─passwordId</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">使用的password文件Id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─any object</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">any object.</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
                     </tbody>
@@ -476,31 +364,31 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "60jvku",
-  "msg": "u8asml",
+  "status": "",
+  "msg": "",
   "obj": {
-    "count": 12,
-    "curr": 862,
-    "limit": 10,
+    "count": 0,
+    "curr": 0,
+    "limit": 0,
     "records": [
       {
-        "id": "9",
-        "serverName": "timothy.borer",
-        "listen": "zcqw4z",
-        "def": 757,
-        "rewrite": 226,
-        "rewriteListen": "zar5sm",
-        "ssl": 51,
-        "http2": 357,
-        "proxyProtocol": 661,
-        "pem": "sn14um",
-        "key": "shdr7x",
-        "proxyType": 603,
-        "proxyUpstreamId": "9",
+        "id": "",
+        "serverName": "",
+        "listen": "",
+        "def": 0,
+        "rewrite": 0,
+        "rewriteListen": "",
+        "ssl": 0,
+        "http2": 0,
+        "proxyProtocol": 0,
+        "pem": "",
+        "key": "",
+        "proxyType": 0,
+        "proxyUpstreamId": "",
         "enable": true,
-        "descr": "7ivxdt",
-        "protocols": "7e79ac",
-        "passwordId": "9"
+        "descr": "",
+        "protocols": "",
+        "passwordId": ""
       }
     ]
   }
@@ -516,9 +404,9 @@
                 <div class="paragraph"><p><strong>URL:</strong><a href="/api/server/insertOrUpdate" class="bare">&nbsp;/api/server/insertOrUpdate</a>
                 </p></div>
                 <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
-                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=UTF-8</p></div>
                 <div class="paragraph"><p><strong>Description:</strong>&nbsp;添加或编辑server</p></div>
-                <div class="paragraph"><p><strong>Body-parameters:</strong></p></div>
+                <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
                 <table class="tableblock frame-all grid-all spread">
                     <colgroup>
                         <col style="width: 20%;">
@@ -557,7 +445,7 @@
                         <td class="tableblock halign-left valign-top"><p class="tableblock">listen</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">监听ip端口 (格式 ip:port或port)</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
 
@@ -677,7 +565,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdate?serverName=timothy.borer&ssl=848&http2=689&protocols=atc07w&seq=664&updateTime=1679370722159&def=207&rewrite=310&enable=true&createTime=1679370722159&passwordId=9&listen=agiage&pem=gmqhwa&keyStr=6i53hb&proxyUpstreamId=9&pemStr=i2anl4&descr=gsmtao&rewriteListen=dj45yf&key=j5px59&proxyType=19&proxyProtocol=201&id=9</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdate?def=0&rewrite=0&ssl=0&http2=0&proxyProtocol=0&proxyType=0&enable=true&id=&key=&descr=&pem=&proxyUpstreamId=&passwordId=&listen=&serverName=&protocols=&rewriteListen=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -731,8 +619,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "wozdlb",
-  "msg": "670y58",
+  "status": "",
+  "msg": "",
   "obj": {}
 }</code></pre>
                     </div>
@@ -746,7 +634,7 @@
                 <div class="paragraph"><p><strong>URL:</strong><a href="/api/server/delete" class="bare">&nbsp;/api/server/delete</a>
                 </p></div>
                 <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
-                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=UTF-8</p></div>
                 <div class="paragraph"><p><strong>Description:</strong>&nbsp;删除server</p></div>
                 <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
                 <table class="tableblock frame-all grid-all spread">
@@ -779,7 +667,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/delete?id=9</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/delete?id=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -833,8 +721,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "82ctuz",
-  "msg": "wolxz8",
+  "status": "",
+  "msg": "",
   "obj": {}
 }</code></pre>
                     </div>
@@ -848,7 +736,7 @@
                 <div class="paragraph"><p><strong>URL:</strong><a href="/api/server/getLocationByServerId" class="bare">&nbsp;/api/server/getLocationByServerId</a>
                 </p></div>
                 <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
-                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=UTF-8</p></div>
                 <div class="paragraph"><p><strong>Description:</strong>&nbsp;根据serverId获取location列表</p></div>
                 <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
                 <table class="tableblock frame-all grid-all spread">
@@ -881,7 +769,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/getLocationByServerId?serverId=9</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/getLocationByServerId?serverId=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -1047,26 +935,26 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "6okus6",
-  "msg": "u0nnoo",
+  "status": "",
+  "msg": "",
   "obj": [
     {
-      "id": "9",
-      "serverId": "9",
-      "path": "vgzxp4",
-      "type": 400,
-      "value": "er5u7r",
-      "upstreamType": "cu3o63",
-      "upstreamId": "9",
-      "upstreamPath": "8mrdt8",
-      "rootPath": "jox5c1",
-      "rootPage": "dw7igi",
-      "rootType": "gijz9d",
-      "header": 84,
-      "headerHost": "oodyc4",
-      "websocket": 83,
-      "cros": 851,
-      "descr": "g1v11w"
+      "id": "",
+      "serverId": "",
+      "path": "",
+      "type": 0,
+      "value": "",
+      "upstreamType": "",
+      "upstreamId": "",
+      "upstreamPath": "",
+      "rootPath": "",
+      "rootPage": "",
+      "rootType": "",
+      "header": 0,
+      "headerHost": "",
+      "websocket": 0,
+      "cros": 0,
+      "descr": ""
     }
   ]
 }</code></pre>
@@ -1081,9 +969,9 @@
                 <div class="paragraph"><p><strong>URL:</strong><a href="/api/server/insertOrUpdateLocation" class="bare">&nbsp;/api/server/insertOrUpdateLocation</a>
                 </p></div>
                 <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
-                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=UTF-8</p></div>
                 <div class="paragraph"><p><strong>Description:</strong>&nbsp;添加或编辑location</p></div>
-                <div class="paragraph"><p><strong>Body-parameters:</strong></p></div>
+                <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
                 <table class="tableblock frame-all grid-all spread">
                     <colgroup>
                         <col style="width: 20%;">
@@ -1114,7 +1002,7 @@
                         <td class="tableblock halign-left valign-top"><p class="tableblock">serverId</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">所属反向代理serverId</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
 
@@ -1122,7 +1010,7 @@
                         <td class="tableblock halign-left valign-top"><p class="tableblock">path</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">监控路径 例:/</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
 
@@ -1234,7 +1122,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdateLocation?header=91&createTime=1679370722159&value=h8it4a&id=9&type=232&rootPath=y40u6g&cros=318&locationParamJson=n09ldx&upstreamPath=focqd4&upstreamType=jkgi31&websocket=531&headerHost=hvyr75&descr=iagjn9&upstreamId=9&rootType=czgrog&updateTime=1679370722159&rootPage=lo50o1&serverId=9&path=yq3s44</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdateLocation?type=0&header=0&websocket=0&cros=0&serverId=&rootPath=&path=&value=&descr=&rootPage=&rootType=&upstreamId=&headerHost=&id=&upstreamType=&upstreamPath=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -1288,8 +1176,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "t4cmps",
-  "msg": "cs9dpd",
+  "status": "",
+  "msg": "",
   "obj": {}
 }</code></pre>
                     </div>
@@ -1303,7 +1191,7 @@
                 <div class="paragraph"><p><strong>URL:</strong><a href="/api/server/deleteLocation" class="bare">&nbsp;/api/server/deleteLocation</a>
                 </p></div>
                 <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
-                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=UTF-8</p></div>
                 <div class="paragraph"><p><strong>Description:</strong>&nbsp;删除location</p></div>
                 <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
                 <table class="tableblock frame-all grid-all spread">
@@ -1336,7 +1224,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/deleteLocation?id=9</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/deleteLocation?id=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -1390,8 +1278,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "z6lvjy",
-  "msg": "bo0l99",
+  "status": "",
+  "msg": "",
   "obj": {}
 }</code></pre>
                     </div>
@@ -1399,12 +1287,12 @@
             </div>
         </div>
     </div>
-    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2023-03-21 11:52:01</span><span
+    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2023-12-01 14:46:24</span><span
             class="footer-modification">Suggestions,contact,support and error reporting on<a
             href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">&nbsp;Gitee</a>&nbsp;or<a
             href="https://github.com/smart-doc-group/smart-doc.git" target="_blank">&nbsp;Github</a></span></footer>
 </div>
-<script src="search.js?v=1679370721004"></script>
+<script src="search.js?v=1701413184079"></script>
 <script>
     $(function () {
         const Accordion = function (el, multiple) {

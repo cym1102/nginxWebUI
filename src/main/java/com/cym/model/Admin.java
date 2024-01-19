@@ -17,8 +17,10 @@ public class Admin extends BaseModel {
 	// 是否开启api
 	@InitValue("false")
 	Boolean api;
-
+	// api token
 	String token;
+	// token 失效时间
+	Long tokenTimeout;
 	// 自动登录key
 	String autoKey;
 	
@@ -89,6 +91,14 @@ public class Admin extends BaseModel {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public Long getTokenTimeout() {
+		return tokenTimeout;
+	}
+
+	public void setTokenTimeout(Long tokenTimeout) {
+		this.tokenTimeout = tokenTimeout;
 	}
 
 }

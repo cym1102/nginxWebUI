@@ -370,22 +370,17 @@ public class ConfController extends BaseController {
 
 		// 检查命令格式
 		switch (cmd) {
-		case "pkill nginx":
-			return true;
-		case "taskkill /f /im nginx.exe":
-			return true;
-		case "systemctl stop nginx":
-			return true;
-		case "service nginx stop":
-			return true;
-		case "net stop nginx":
-			return true;
-		case "systemctl start nginx":
-			return true;
-		case "service nginx start":
-			return true;
-		case "net start nginx":
-			return true;
+			case "net start nginx":
+			case "service nginx start":
+			case "systemctl start nginx":
+			case "net stop nginx":
+			case "service nginx stop":
+			case "systemctl stop nginx":
+			case "taskkill /f /im nginx.exe":
+			case "pkill nginx":
+				return true;
+			default:
+				break;
 		}
 
 		String dir = "";

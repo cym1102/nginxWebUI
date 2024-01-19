@@ -9,7 +9,7 @@
   </parent>
   <groupId>com.cym</groupId>
   <artifactId>nginxWebUI</artifactId>
-  <version>3.4.0</version>
+  <version>3.8.3</version>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -124,7 +124,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.8.3</version>
         <configuration>
           <compilerArgument>-parameters</compilerArgument>
           <source>1.8</source>

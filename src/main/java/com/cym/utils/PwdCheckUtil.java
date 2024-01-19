@@ -169,7 +169,7 @@ public class PwdCheckUtil {
      * @return  含有横向连续字符串 返回true
      */
     public static boolean checkLateralKeyboardSite(String password, int repetitions, boolean isLower) {
-        String t_password = new String(password);
+        String t_password = password;
         //将所有输入字符转为小写
         t_password = t_password.toLowerCase();
         int n = t_password.length();
@@ -232,7 +232,7 @@ public class PwdCheckUtil {
      * @throws
      */
     public static boolean checkKeyboardSlantSite(String password, int repetitions, boolean isLower) {
-        String t_password = new String(password);
+        String t_password = password;
         t_password = t_password.toLowerCase();
         int n = t_password.length();
         /**
@@ -288,7 +288,7 @@ public class PwdCheckUtil {
      * @throws
      */
     public static boolean checkSequentialChars(String password, int repetitions, boolean isLower) {
-        String t_password = new String(password);
+        String t_password = password;
         boolean flag = false;
         int limit_num = repetitions;
         int normal_count = 0;
@@ -333,7 +333,7 @@ public class PwdCheckUtil {
      * @throws
      */
     public static boolean checkSequentialSameChars(String password, int repetitions) {
-        String t_password = new String(password);
+        String t_password = password;
         int n = t_password.length();
         char[] pwdCharArr = t_password.toCharArray();
         boolean flag = false;

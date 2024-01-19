@@ -33,9 +33,8 @@ public class MonitorController extends BaseController {
 
 	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView) {
-
+	
 		modelAndView.put("list", monitorService.getDiskInfo());
-
 		String nginxPath = settingService.get("nginxPath");
 		String nginxExe = settingService.get("nginxExe");
 		String nginxDir = settingService.get("nginxDir");

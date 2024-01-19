@@ -29,7 +29,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 
 /**
- * mongodb操作器
+ * jdbc操作器
  *
  */
 @Component
@@ -297,7 +297,7 @@ public class SqlHelper extends SqlUtils {
 				paramValues.add(ReflectUtil.getFieldValue(object, field));
 			}
 		}
-		paramValues.add((String) ReflectUtil.getFieldValue(object, "id"));
+		paramValues.add(ReflectUtil.getFieldValue(object, "id"));
 
 		String sql = "UPDATE `" + StrUtil.toUnderlineCase(object.getClass().getSimpleName()) + "` SET " + StrUtil.join(",", fieldsPart) + " WHERE id = ?";
 
@@ -571,7 +571,7 @@ public class SqlHelper extends SqlUtils {
 	 * @return List 列表
 	 */
 	public <T> List<T> findListByQuery(ConditionWrapper conditionWrapper, Class<T> clazz) {
-		return (List<T>) findListByQuery(conditionWrapper, null, clazz);
+		return findListByQuery(conditionWrapper, null, clazz);
 	}
 
 	/**
@@ -583,7 +583,7 @@ public class SqlHelper extends SqlUtils {
 	 * @return List 列表
 	 */
 	public <T> List<T> findListByQuery(Sort sort, Class<T> clazz) {
-		return (List<T>) findListByQuery(null, sort, clazz);
+		return findListByQuery(null, sort, clazz);
 	}
 
 	/**

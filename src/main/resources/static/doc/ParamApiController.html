@@ -6,7 +6,7 @@
     <meta name="generator" content="smart-doc">
     <title>nginxWebUI</title>
     <link rel="stylesheet" href="font.css">
-    <link rel="stylesheet" href="AllInOne.css?v=1679370721004"/>
+    <link rel="stylesheet" href="AllInOne.css?v=1701413184079"/>
     
     <style>.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint {
         background: #f7f7f8;
@@ -226,7 +226,7 @@
                 <div class="paragraph"><p><strong>URL:</strong><a href="/api/param/getList" class="bare">&nbsp;/api/param/getList</a>
                 </p></div>
                 <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
-                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=UTF-8</p></div>
                 <div class="paragraph"><p><strong>Description:</strong>&nbsp;根据项目获取参数列表</p></div>
                 <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
                 <table class="tableblock frame-all grid-all spread">
@@ -275,7 +275,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/param/getList?locationId=9&upstreamId=9&serverId=9</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/param/getList?upstreamId=&locationId=&serverId=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -371,16 +371,16 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "q4v0yv",
-  "msg": "r2m0vn",
+  "status": "",
+  "msg": "",
   "obj": [
     {
-      "id": "9",
-      "serverId": "9",
-      "locationId": "9",
-      "upstreamId": "9",
-      "name": "timothy.borer",
-      "value": "23sg18"
+      "id": "",
+      "serverId": "",
+      "locationId": "",
+      "upstreamId": "",
+      "name": "",
+      "value": ""
     }
   ]
 }</code></pre>
@@ -395,9 +395,9 @@
                 <div class="paragraph"><p><strong>URL:</strong><a href="/api/param/insertOrUpdate" class="bare">&nbsp;/api/param/insertOrUpdate</a>
                 </p></div>
                 <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
-                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=UTF-8</p></div>
                 <div class="paragraph"><p><strong>Description:</strong>&nbsp;添加或编辑参数</p></div>
-                <div class="paragraph"><p><strong>Body-parameters:</strong></p></div>
+                <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
                 <table class="tableblock frame-all grid-all spread">
                     <colgroup>
                         <col style="width: 20%;">
@@ -468,7 +468,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/param/insertOrUpdate?upstreamId=9&serverId=9&createTime=1679370722159&name=timothy.borer&value=z1294d&templateId=9&templateValue=4zdpoa&id=9&updateTime=1679370722159&locationId=9&templateName=timothy.borer</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/param/insertOrUpdate?name=&upstreamId=&id=&serverId=&value=&locationId=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -522,8 +522,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "s8rxuo",
-  "msg": "hgpjdp",
+  "status": "",
+  "msg": "",
   "obj": {}
 }</code></pre>
                     </div>
@@ -537,7 +537,7 @@
                 <div class="paragraph"><p><strong>URL:</strong><a href="/api/param/del" class="bare">&nbsp;/api/param/del</a>
                 </p></div>
                 <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
-                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=utf-8</p></div>
+                <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=UTF-8</p></div>
                 <div class="paragraph"><p><strong>Description:</strong>&nbsp;删除额外参数</p></div>
                 <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
                 <table class="tableblock frame-all grid-all spread">
@@ -570,7 +570,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/param/del?id=9</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/param/del?id=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -624,8 +624,8 @@
                     <div class="content">
                         <pre><code class="json">{
   "success": true,
-  "status": "uy2e74",
-  "msg": "zbhp9r",
+  "status": "",
+  "msg": "",
   "obj": {}
 }</code></pre>
                     </div>
@@ -633,12 +633,12 @@
             </div>
         </div>
     </div>
-    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2023-03-21 11:52:01</span><span
+    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2023-12-01 14:46:24</span><span
             class="footer-modification">Suggestions,contact,support and error reporting on<a
             href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">&nbsp;Gitee</a>&nbsp;or<a
             href="https://github.com/smart-doc-group/smart-doc.git" target="_blank">&nbsp;Github</a></span></footer>
 </div>
-<script src="search.js?v=1679370721004"></script>
+<script src="search.js?v=1701413184079"></script>
 <script>
     $(function () {
         const Accordion = function (el, multiple) {

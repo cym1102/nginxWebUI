@@ -37,7 +37,7 @@ public class UpdateUtils {
 
 		String param = " --server.port=" + port + " --project.home=" + home;
 
-		if ("mysql".equals(type.toLowerCase())) {
+		if ("mysql".equalsIgnoreCase(type)) {
 			param += " --spring.database.type=" + type //
 					+ " --spring.datasource.url=" + url //
 					+ " --spring.datasource.username=" + username //

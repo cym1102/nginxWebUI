@@ -88,7 +88,7 @@ public class HttpController extends BaseController {
 			http.setName("map");
 			http.setValue("$http_upgrade $connection_upgrade {\r\n" //
 					+ "    default upgrade;\r\n" //
-					+ "    '' close;\r\n" + "}\r\n" + "");//
+					+ "    '' close;\r\n" + "}\r\n");//
 			http.setUnit("");
 			https.add(http);
 		}
