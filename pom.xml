@@ -15,7 +15,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<commons-compress.version>1.21</commons-compress.version>
+		<commons-compress.version>1.26.0</commons-compress.version>
 		<nginxparser.version>0.9.6</nginxparser.version>
 		<h2.version>2.1.214</h2.version>
 		<mysql.version>8.0.33</mysql.version>
