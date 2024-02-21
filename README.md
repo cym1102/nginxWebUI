@@ -50,7 +50,7 @@ nginx本身功能复杂, nginxWebUI并不能涵盖nginx所有功能, 但能覆�
 
  **注意：本项目需要在root用户下运行系统命令，极容易被黑客利用，请一定修改密码为复杂密码**
 
-1.安装java运行环境和nginx
+1.安装java环境和nginx
 
 Ubuntu:
 
@@ -72,7 +72,7 @@ Windows:
 ```
 下载JDK安装包 https://www.oracle.com/java/technologies/downloads/
 下载nginx http://nginx.org/en/download.html
-配置JAVA运行环境 
+配置JAVA环境变量 
 JAVA_HOME : JDK安装目录
 Path : JDK安装目录\bin
 重启电脑
@@ -83,9 +83,9 @@ Path : JDK安装目录\bin
 
 ```
 Linux: mkdir /home/nginxWebUI/ 
-       wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.8.3.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.8.5.jar
 
-Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-3.8.3.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
+Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-3.8.5.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
 ```
 
 有新版本只需要修改路径中的版本即可
