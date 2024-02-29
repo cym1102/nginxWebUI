@@ -144,7 +144,7 @@ docker pull cym1102/nginxwebui:latest
 docker run -itd \
   -v /home/nginxWebUI:/home/nginxWebUI \
   -e BOOT_OPTIONS="--server.port=8080" \
-  --privileged=true \
+  --cap-add=CAP_CHOWN \
   --net=host \
   cym1102/nginxwebui:latest
 ```
