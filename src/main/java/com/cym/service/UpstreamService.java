@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.aspect.annotation.Service;
 
 import com.cym.model.Param;
 import com.cym.model.Upstream;
@@ -21,7 +21,7 @@ import com.cym.sqlhelper.utils.SqlHelper;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
-@Service
+@Component
 public class UpstreamService {
 	@Inject
 	SqlHelper sqlHelper;

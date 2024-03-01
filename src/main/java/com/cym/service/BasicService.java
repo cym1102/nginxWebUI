@@ -2,8 +2,8 @@ package com.cym.service;
 
 import java.util.List;
 
+import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.aspect.annotation.Service;
 
 import com.cym.model.Basic;
 import com.cym.sqlhelper.bean.Sort;
@@ -11,7 +11,7 @@ import com.cym.sqlhelper.bean.Sort.Direction;
 import com.cym.sqlhelper.utils.ConditionOrWrapper;
 import com.cym.sqlhelper.utils.SqlHelper;
 
-@Service
+@Component
 public class BasicService {
 	@Inject
 	SqlHelper sqlHelper;

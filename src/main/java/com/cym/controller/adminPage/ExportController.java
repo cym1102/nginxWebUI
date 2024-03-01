@@ -48,10 +48,6 @@ public class ExportController extends BaseController {
 	@Mapping("dataExport")
 	public DownloadedFile dataExport(Context context) {
 		AsycPack asycPack = confService.getAsycPack(new String[] { "all" });
-		// 导出证书
-		asycPack.setCertList(sqlHelper.findAll(Cert.class));
-		asycPack.setCertCodeList(sqlHelper.findAll(CertCode.class));
-		asycPack.setAcmeZip(certService.getAcmeZipBase64());
 		
 		String json = JSONUtil.toJsonPrettyStr(asycPack);
 
@@ -72,17 +68,6 @@ public class ExportController extends BaseController {
 			AsycPack asycPack = JSONUtil.toBean(json, AsycPack.class);
 			confService.setAsycPack(asycPack);
 			
-			// 导入证书
-			if (asycPack.getCertList() != null) {
-				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Cert.class);
-				sqlHelper.insertAll(asycPack.getCertList());
-			}
-			if (asycPack.getCertCodeList() != null) {
-				sqlHelper.deleteByQuery(new ConditionAndWrapper(), CertCode.class);
-				sqlHelper.insertAll(asycPack.getCertCodeList());
-			}
-			
-			certService.writeAcmeZipBase64(asycPack.getAcmeZip());
 		}
 		context.redirect("/adminPage/export?over=true");
 	}

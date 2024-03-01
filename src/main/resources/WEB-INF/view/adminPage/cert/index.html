@@ -82,6 +82,7 @@
 
 							<td>	
 								<#if cert.type==0>
+									<#if cert.dnsType=='tencent'> ${certStr.tencent} </#if> 
 									<#if cert.dnsType=='dp'> ${certStr.dnsPod} </#if> 
 									<#if cert.dnsType=='ali'> ${certStr.aliDns} </#if>
 									<#if cert.dnsType=='cf'> Cloudflare </#if>
@@ -198,6 +199,7 @@
 							<select name="dnsType" id="dnsType" lay-filter='dnsType'>
 								<option value="ali">${certStr.aliDns}</option>
 								<option value="dp">${certStr.dnsPod}</option>
+								<option value="tencent">${certStr.tencent}</option>
 								<option value="cf">Cloudflare</option>
 								<option value="gd">Godaddy</option>
 								<option value="hw">${certStr.huawei}</option>
@@ -235,6 +237,23 @@
 							<label class="layui-form-label">DP_Key</label>
 							<div class="layui-input-block">
 								<input type="text" name="dpKey" id="dpKey" class="layui-input">
+							</div>
+						</div>
+					</div>
+					
+					
+					<div id="tencent">
+						<div class="layui-form-item">
+							<label class="layui-form-label">Tencent_SecretId</label>
+							<div class="layui-input-block">
+								<input type="text" name="tencentSecretId" id="tencentSecretId" class="layui-input">
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">Tencent_SecretKey</label>
+							<div class="layui-input-block">
+								<input type="text" name="tencentSecretKey" id="tencentSecretKey" class="layui-input">
 							</div>
 						</div>
 					</div>

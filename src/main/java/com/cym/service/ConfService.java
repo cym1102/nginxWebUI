@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.aspect.annotation.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +19,7 @@ import com.cym.model.Bak;
 import com.cym.model.BakSub;
 import com.cym.model.Basic;
 import com.cym.model.Cert;
+import com.cym.model.CertCode;
 import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Param;
@@ -44,7 +45,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 
-@Service
+@Component
 public class ConfService {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Inject
@@ -65,6 +66,8 @@ public class ConfService {
 	OperateLogService operateLogService;
 	@Inject
 	HomeConfig homeConfig;
+	@Inject
+	CertService certService;
 
 	public synchronized ConfExt buildConf(Boolean decompose, Boolean check) {
 		ConfExt confExt = new ConfExt();
@@ -823,6 +826,12 @@ public class ConfService {
 			asycPack.setParamList(sqlHelper.findAll(Param.class));
 		}
 
+		if (hasStr(asycData, "cert") || hasStr(asycData, "all")) {
+			asycPack.setCertList(sqlHelper.findAll(Cert.class));
+			asycPack.setCertCodeList(sqlHelper.findAll(CertCode.class));
+			asycPack.setAcmeZip(certService.getAcmeZipBase64());
+		}
+
 		return asycPack;
 	}
 
@@ -900,6 +909,18 @@ public class ConfService {
 					}
 				}
 			}
+
+			// 导入证书
+			if (asycPack.getCertList() != null) {
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Cert.class);
+				sqlHelper.insertAll(asycPack.getCertList());
+			}
+			if (asycPack.getCertCodeList() != null) {
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), CertCode.class);
+				sqlHelper.insertAll(asycPack.getCertCodeList());
+			}
+
+			certService.writeAcmeZipBase64(asycPack.getAcmeZip());
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

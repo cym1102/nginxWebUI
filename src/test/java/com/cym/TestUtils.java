@@ -1,8 +1,8 @@
 package com.cym;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Ignore;
@@ -12,7 +12,7 @@ import org.noear.solon.test.HttpTester;
 import org.noear.solon.test.SolonJUnit4ClassRunner;
 import org.noear.solon.test.SolonTest;
 
-import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.io.FileUtil;
 
 @RunWith(SolonJUnit4ClassRunner.class)
 @SolonTest(NginxWebUI.class)
@@ -42,11 +42,8 @@ public class TestUtils extends HttpTester {
 	}
 
 	public static void main(String[] args) {
-		List<String> list = RuntimeUtil.execForLines("/bin/sh", "-c", "ps -ef | grep nginxWebUI");
-
-		for (String line : list) {
-			System.out.println(line);
-		}
+		File file = FileUtil.getUserHomeDir();
+		System.out.println(file.getPath());
 	}
 
 }

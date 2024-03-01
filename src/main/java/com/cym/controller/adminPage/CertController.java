@@ -95,7 +95,7 @@ public class CertController extends BaseController {
 			String dir = homeConfig.home + "cert/" + domain + "/";
 
 			// windows下不允许*作为文件路径
-			if (SystemTool.isWindows()) { 
+			if (SystemTool.isWindows()) {
 				dir = dir.replace("*", "_");
 			}
 
@@ -140,7 +140,8 @@ public class CertController extends BaseController {
 
 	@Mapping("detail")
 	public JsonResult detail(String id) {
-		return renderSuccess(sqlHelper.findById(id, Cert.class));
+		Cert cert = sqlHelper.findById(id, Cert.class);
+		return renderSuccess(cert);
 	}
 
 	@Mapping("del")
@@ -158,7 +159,7 @@ public class CertController extends BaseController {
 		} else {
 			// 申请获得
 			String domain = cert.getDomain().split(",")[0];
-			String path = homeConfig.acmeShDir + domain;
+			String path = FileUtil.getUserHomeDir() + File.separator + ".acme.sh" + File.separator + domain;
 
 			if ("ECC".equals(cert.getEncryption())) {
 				path += "_ecc";
@@ -180,10 +181,6 @@ public class CertController extends BaseController {
 
 		Cert cert = sqlHelper.findById(id, Cert.class);
 
-//		if (cert.getDnsType() == null) {
-//			return renderError(m.get("certStr.error3"));
-//		}
-
 		if (isInApply) {
 			return renderError(m.get("certStr.error4"));
 		}
@@ -202,7 +199,7 @@ public class CertController extends BaseController {
 		String[] envs = getEnv(cert);
 
 		String[] split = cert.getDomain().split(",");
-		if (type.equals("issue") || FileUtil.isEmpty(new File(homeConfig.acmeShDir, split[0]))) {
+		if (type.equals("issue")) {
 			StringBuffer sb = new StringBuffer();
 			Arrays.stream(split).forEach(s -> sb.append(" -d ").append(s));
 			String domain = sb.toString();
@@ -214,6 +211,8 @@ public class CertController extends BaseController {
 					dnsType = "dns_ali";
 				} else if (cert.getDnsType().equals("dp")) {
 					dnsType = "dns_dp";
+				} else if (cert.getDnsType().equals("tencent")) {
+					dnsType = "dns_tencent";
 				} else if (cert.getDnsType().equals("cf")) {
 					dnsType = "dns_cf";
 				} else if (cert.getDnsType().equals("gd")) {
@@ -249,15 +248,8 @@ public class CertController extends BaseController {
 
 		if (rs.contains("Your cert is in")) {
 			// 申请成功, 定位证书
-			String domain = cert.getDomain().split(",")[0];
-			String certDir = homeConfig.acmeShDir + domain;
-			if ("ECC".equals(cert.getEncryption())) {
-				certDir += "_ecc";
-			}
-			certDir += "/";
-
-			cert.setPem(certDir + "fullchain.cer");
-			cert.setKey(certDir + domain + ".key");
+			cert.setPem(getPem(rs));
+			cert.setKey(getKey(rs));
 
 			cert.setMakeTime(System.currentTimeMillis());
 			sqlHelper.updateById(cert);
@@ -275,6 +267,28 @@ public class CertController extends BaseController {
 		}
 	}
 
+	private String getPem(String rs) {
+		String[] lines = rs.split("\n");
+		for (String line : lines) {
+			if (line.contains("Your cert key is in:")) {
+				return line.split("Your cert key is in:")[1].trim();
+			}
+		}
+
+		return null;
+	}
+
+	private String getKey(String rs) {
+		String[] lines = rs.split("\n");
+		for (String line : lines) {
+			if (line.contains("And the full chain certs is there:")) {
+				return line.split("And the full chain certs is there:")[1].trim();
+			}
+		}
+
+		return null;
+	}
+
 	private String[] getEnv(Cert cert) {
 		List<String> list = new ArrayList<>();
 		if (cert.getDnsType().equals("ali")) {
@@ -284,6 +298,10 @@ public class CertController extends BaseController {
 		if (cert.getDnsType().equals("dp")) {
 			list.add("DP_Id=" + cert.getDpId());
 			list.add("DP_Key=" + cert.getDpKey());
+		}
+		if (cert.getDnsType().equals("tencent")) {
+			list.add("Tencent_SecretId=" + cert.getTencentSecretId());
+			list.add("Tencent_SecretKey=" + cert.getTencentSecretKey());
 		}
 		if (cert.getDnsType().equals("cf")) {
 			list.add("CF_Email=" + cert.getCfEmail());

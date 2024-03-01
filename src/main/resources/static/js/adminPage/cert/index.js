@@ -90,6 +90,7 @@ function search() {
 function checkDnsType(value) {
 	$("#ali").hide();
 	$("#dp").hide();
+	$("#tencent").hide();
 	$("#cf").hide();
 	$("#gd").hide();
 	$("#hw").hide();
@@ -125,6 +126,8 @@ function add() {
 	$("#aliSecret").val("");
 	$("#dpId").val("");
 	$("#dpKey").val("");
+	$("#tencentSecretId").val("");
+	$("#tencentSecretKey").val("");
 	$("#cfEmail").val("");
 	$("#cfKey").val("");
 	$("#gdKey").val("");
@@ -181,6 +184,9 @@ function edit(id, clone) {
 				$("#aliSecret").val(cert.aliSecret);
 				$("#dpId").val(cert.dpId);
 				$("#dpKey").val(cert.dpKey);
+				$("#tencentSecretId").val(cert.tencentSecretId);
+				$("#tencentSecretKey").val(cert.tencentSecretKey);
+	
 				$("#cfEmail").val(cert.cfEmail);
 				$("#cfKey").val(cert.cfKey);
 

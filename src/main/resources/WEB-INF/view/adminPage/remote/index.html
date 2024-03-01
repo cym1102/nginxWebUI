@@ -192,10 +192,12 @@
 						<input type="checkbox" class="asycData" name="asycData" id="upstream" lay-skin="primary" value="upstream" title="${remoteStr.dataUpstream}">
 						<input type="checkbox" class="asycData" name="asycData" id="password" lay-skin="primary" value="password" title="${remoteStr.dataPassword}">
 						<input type="checkbox" class="asycData" name="asycData" id="param" lay-skin="primary" value="param" title="${remoteStr.dataParam}">
+						<input type="checkbox" class="asycData" name="asycData" id="cert" lay-skin="primary" value="cert" title="${remoteStr.dataCert}">
 					</div>
 				</div>
 
 				<div class="layui-form-item center">
+					<button type="button" class="layui-btn layui-bg-orange" onclick="selectAll()">${remoteStr.selectAll}</button>
 					<button type="button" class="layui-btn layui-btn-normal" onclick="asycOver()">${remoteStr.asyc}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>

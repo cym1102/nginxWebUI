@@ -1,7 +1,7 @@
 package com.cym.service;
 
+import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.aspect.annotation.Service;
 
 import com.cym.model.Credit;
 import com.cym.sqlhelper.utils.ConditionAndWrapper;
@@ -10,7 +10,7 @@ import com.cym.sqlhelper.utils.SqlHelper;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 
-@Service
+@Component
 public class CreditService {
 	@Inject
 	SqlHelper sqlHelper;

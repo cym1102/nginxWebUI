@@ -2,8 +2,8 @@ package com.cym.service;
 
 import java.util.List;
 
+import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.aspect.annotation.Service;
 
 import com.cym.model.Group;
 import com.cym.model.Remote;
@@ -13,7 +13,7 @@ import com.cym.sqlhelper.utils.SqlHelper;
 
 import cn.hutool.core.util.StrUtil;
 
-@Service
+@Component
 public class GroupService {
 	@Inject
 	SqlHelper sqlHelper;

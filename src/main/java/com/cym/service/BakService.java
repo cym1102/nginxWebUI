@@ -2,8 +2,8 @@ package com.cym.service;
 
 import java.util.List;
 
+import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.aspect.annotation.Service;
 
 import com.cym.model.Bak;
 import com.cym.model.BakSub;
@@ -13,7 +13,7 @@ import com.cym.sqlhelper.bean.Sort.Direction;
 import com.cym.sqlhelper.utils.ConditionAndWrapper;
 import com.cym.sqlhelper.utils.SqlHelper;
 
-@Service
+@Component
 public class BakService {
 	@Inject
 	SqlHelper sqlHelper;

@@ -1,6 +1,7 @@
 package com.cym.config;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cym.model.Admin;
 import com.cym.model.Basic;
+import com.cym.model.Cert;
 import com.cym.model.Http;
 import com.cym.service.BasicService;
 import com.cym.service.ConfService;
@@ -27,7 +29,6 @@ import com.cym.utils.SystemTool;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
-import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
@@ -107,23 +108,41 @@ public class InitConfig {
 		}
 
 		// 释放acme全新包
+		String acmeShDir = homeConfig.home + ".acme.sh/";
 		ClassPathResource resource = new ClassPathResource("acme.zip");
 		InputStream inputStream = resource.getStream();
 		FileUtil.writeFromStream(inputStream, homeConfig.home + "acme.zip");
-		FileUtil.mkdir(homeConfig.acmeShDir);
-		ZipUtil.unzip(homeConfig.home + "acme.zip", homeConfig.acmeShDir);
+		FileUtil.mkdir(acmeShDir);
+		ZipUtil.unzip(homeConfig.home + "acme.zip", acmeShDir);
 		FileUtil.del(homeConfig.home + "acme.zip");
 
-		// 修改acme.sh文件
-		List<String> res = FileUtil.readUtf8Lines(homeConfig.acmeSh);
-		for (int i = 0; i < res.size(); i++) {
-			if (res.get(i).contains("DEFAULT_INSTALL_HOME=\"$HOME/.$PROJECT_NAME\"")) {
-				res.set(i, "DEFAULT_INSTALL_HOME=\"" + homeConfig.acmeShDir + "\"");
+		// 转到证书文件夹到FileUtil.getUserHomeDir()/.acme.sh/下
+		File[] files = new File(acmeShDir).listFiles();
+		for (File file : files) {
+			if (file.isDirectory() && notInAcmeFile(file)) {
+				FileUtil.copy(file, new File(FileUtil.getUserHomeDir() + File.separator + ".acme.sh"), true);
 			}
 		}
-		FileUtil.writeUtf8Lines(res, homeConfig.acmeSh);
+		// 修改数据库中证书路径
+		List<Cert> certs = sqlHelper.findAll(Cert.class);
+		for (Cert cert : certs) {
+			boolean changed = false;
+			if (StrUtil.isNotEmpty(cert.getPem()) && cert.getPem().contains(acmeShDir)) {
+				cert.setPem(cert.getPem().replace(acmeShDir, FileUtil.getUserHomePath() + File.separator + ".acme.sh" + File.separator));
+				changed = true;
+			}
+			if (StrUtil.isNotEmpty(cert.getKey()) && cert.getKey().contains(acmeShDir)) {
+				cert.setKey(cert.getKey().replace(acmeShDir, FileUtil.getUserHomePath() + File.separator + ".acme.sh" + File.separator));
+				changed = true;
+			}
+
+			if (changed) {
+				sqlHelper.updateById(cert);
+			}
+		}
 
 		if (SystemTool.isLinux()) {
+			// 授予acme.sh执行权限
 			RuntimeUtil.exec("chmod a+x " + homeConfig.acmeSh);
 
 			// 查找ngx_stream_module模块
@@ -154,42 +173,17 @@ public class InitConfig {
 			}
 		}
 
-//		// 将复制的证书文件还原到acme文件夹里面
-//		List<Cert> certs = confService.getApplyCerts();
-//		for (Cert cert : certs) {
-//			boolean update = false;
-//			if (cert.getPem() != null && cert.getPem().equals(homeConfig.home + "cert/" + cert.getDomain() + ".fullchain.cer")) {
-//				cert.setPem(homeConfig.acmeShDir + cert.getDomain() + "/fullchain.cer");
-//				update = true;
-//			}
-//			if (cert.getKey() != null && cert.getKey().equals(homeConfig.home + "cert/" + cert.getDomain() + ".key")) {
-//				cert.setKey(homeConfig.acmeShDir + cert.getDomain() + "/" + cert.getDomain() + ".key");
-//				update = true;
-//			}
-//
-//			if (update) {
-//				sqlHelper.updateById(cert);
-//			}
-//		}
-
-//		// 证书加密方式RAS改为RSA
-//		certs = sqlHelper.findListByQuery(new ConditionAndWrapper().eq(Cert::getEncryption, "RAS"), Cert.class);
-//		for (Cert cert : certs) {
-//			cert.setEncryption("RSA");
-//			sqlHelper.updateById(cert);
-//		}
-
-//		// 将密码加密
-//		List<Admin> admins = sqlHelper.findAll(Admin.class);
-//		for (Admin admin : admins) {
-//			if (!StrUtil.endWith(admin.getPass(), SecureUtil.md5(EncodePassUtils.defaultPass))) {
-//				admin.setPass(EncodePassUtils.encode(admin.getPass()));
-//				sqlHelper.updateById(admin);
-//			}
-//		}
-
 		// 展示logo
 		showLogo();
+	}
+
+	private boolean notInAcmeFile(File file) {
+		String name = file.getName();
+		if (name.equalsIgnoreCase(".github") || name.equalsIgnoreCase("deploy") || name.equalsIgnoreCase("dnsapi") || name.equalsIgnoreCase("notify") || name.equalsIgnoreCase("acme.sh")) {
+			return false;
+		}
+
+		return true;
 	}
 
 	private boolean hasNginx() {

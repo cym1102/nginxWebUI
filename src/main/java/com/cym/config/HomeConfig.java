@@ -20,7 +20,6 @@ import cn.hutool.core.util.StrUtil;
 public class HomeConfig  {
 	@Inject("${project.home}")
 	public String home;
-	public String acmeShDir;
 	public String acmeSh;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -54,7 +53,6 @@ public class HomeConfig  {
 		}
 		
 		// acme路径
-		acmeShDir = home + ".acme.sh/";
 		acmeSh = home + ".acme.sh/acme.sh";
 	}
 

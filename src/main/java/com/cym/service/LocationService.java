@@ -1,11 +1,11 @@
 package com.cym.service;
 
+import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.aspect.annotation.Service;
 
 import com.cym.sqlhelper.utils.SqlHelper;
 
-@Service
+@Component
 public class LocationService {
 	@Inject
 	SqlHelper sqlHelper;

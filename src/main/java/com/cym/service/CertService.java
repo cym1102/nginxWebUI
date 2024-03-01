@@ -3,8 +3,8 @@ package com.cym.service;
 import java.io.File;
 import java.util.List;
 
+import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.aspect.annotation.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +20,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 
-@Service
+@Component
 public class CertService {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -91,19 +91,25 @@ public class CertService {
 	}
 
 	public String getAcmeZipBase64() {
-		File file = ZipUtil.zip(homeConfig.home + ".acme.sh", homeConfig.home + "temp" + File.separator + "cert.zip");
-		String str = Base64.encode(file);
-		file.delete();
-		return str;
+		try {
+			File file = ZipUtil.zip(FileUtil.getUserHomeDir() + File.separator + ".acme.sh", homeConfig.home + "temp" + File.separator + "acme.zip");
+			String str = Base64.encode(file);
+			file.delete();
+			return str;
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
 	}
 
 	public void writeAcmeZipBase64(String acmeZip) {
-
-		Base64.decodeToFile(acmeZip, new File(homeConfig.home + "acme.zip"));
-		FileUtil.mkdir(homeConfig.acmeShDir);
-		ZipUtil.unzip(homeConfig.home + "acme.zip", homeConfig.acmeShDir);
-		FileUtil.del(homeConfig.home + "acme.zip");
-
+		if (StrUtil.isNotEmpty(acmeZip)) {
+			Base64.decodeToFile(acmeZip, new File(homeConfig.home + "temp" + File.separator + "acme.zip"));
+			FileUtil.del(FileUtil.getUserHomeDir() + File.separator + ".acme.sh/");
+			FileUtil.mkdir(FileUtil.getUserHomeDir() + File.separator + ".acme.sh/");
+			ZipUtil.unzip(homeConfig.home + "temp" + File.separator + "acme.zip", FileUtil.getUserHomeDir() + File.separator + ".acme.sh/");
+			FileUtil.del(homeConfig.home + "temp" + File.separator + "acme.zip");
+		}
 	}
 
 	public boolean hasName(Cert cert) {
@@ -118,7 +124,7 @@ public class CertService {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 

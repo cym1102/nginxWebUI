@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.aspect.annotation.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
-@Service
+@Component
 public class ServerService {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 

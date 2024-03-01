@@ -48,17 +48,26 @@ public class Cert extends BaseModel {
 	@InitValue("0")
 	Integer autoRenew; 
 	/**
-	 * dns提供商 ali:阿里云  dp:腾讯云  cf:Cloudflare  gd:Godaddy   hw:华为云
+	 * dns提供商 ali:阿里云  dp:dnsPod  cf:Cloudflare  gd:Godaddy   hw:华为云 tencent:腾讯云
 	 */
 	String dnsType; 
 	/**
-	 * dpId(腾讯云需要的参数)
+	 * dpId(dnsPod需要的参数)
 	 */
 	String dpId;
 	/**
-	 * dpKey(腾讯云需要的参数)
+	 * dpKey(dnsPod需要的参数)
 	 */
 	String dpKey;
+	
+	/**
+	 * tencentSecretId(腾讯云需要的参数)
+	 */
+	String tencentSecretId;
+	/**
+	 * tencentSecretKey(腾讯云需要的参数)
+	 */
+	String tencentSecretKey;
 	/**
 	 * aliKey(阿里云需要的参数)
 	 */
@@ -281,6 +290,22 @@ public class Cert extends BaseModel {
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+
+	public String getTencentSecretId() {
+		return tencentSecretId;
+	}
+
+	public void setTencentSecretId(String tencentSecretId) {
+		this.tencentSecretId = tencentSecretId;
+	}
+
+	public String getTencentSecretKey() {
+		return tencentSecretKey;
+	}
+
+	public void setTencentSecretKey(String tencentSecretKey) {
+		this.tencentSecretKey = tencentSecretKey;
 	}
 
 

@@ -3,8 +3,8 @@ package com.cym.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.aspect.annotation.Service;
 
 import com.cym.model.Admin;
 import com.cym.model.AdminGroup;
@@ -17,7 +17,7 @@ import com.cym.utils.EncodePassUtils;
 
 import cn.hutool.core.util.StrUtil;
 
-@Service
+@Component
 public class AdminService {
 	@Inject
 	SqlHelper sqlHelper;

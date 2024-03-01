@@ -502,6 +502,10 @@ function asycSelect(){
 	});
 }
 
+function selectAll(){
+	$("input[name='asycData']").prop("checked", true);
+	form.render();
+}
 
 function asycOver(){
 	
