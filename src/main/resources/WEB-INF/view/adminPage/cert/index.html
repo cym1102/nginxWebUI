@@ -88,6 +88,7 @@
 									<#if cert.dnsType=='cf'> Cloudflare </#if>
 									<#if cert.dnsType=='gd'> Godaddy </#if>
 									<#if cert.dnsType=='hw'> ${certStr.huawei} </#if>
+									<#if cert.dnsType=='aws'> ${certStr.aws} </#if> 
 								</#if>
 							</td>
 
@@ -203,6 +204,7 @@
 								<option value="cf">Cloudflare</option>
 								<option value="gd">Godaddy</option>
 								<option value="hw">${certStr.huawei}</option>
+								<option value="aws">${certStr.aws}</option>
 							</select>
 						</div>
 					</div>
@@ -254,6 +256,22 @@
 							<label class="layui-form-label">Tencent_SecretKey</label>
 							<div class="layui-input-block">
 								<input type="text" name="tencentSecretKey" id="tencentSecretKey" class="layui-input">
+							</div>
+						</div>
+					</div>
+					
+					<div id="aws">
+						<div class="layui-form-item">
+							<label class="layui-form-label">aws_access_key_id</label>
+							<div class="layui-input-block">
+								<input type="text" name="awsAccessKeyId" id="awsAccessKeyId" class="layui-input">
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">aws_secret_access_key</label>
+							<div class="layui-input-block">
+								<input type="text" name="awsSecretAccessKey" id="awsSecretAccessKey" class="layui-input">
 							</div>
 						</div>
 					</div>

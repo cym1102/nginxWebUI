@@ -42,8 +42,8 @@ public class TestUtils extends HttpTester {
 	}
 
 	public static void main(String[] args) {
-		File file = FileUtil.getUserHomeDir();
-		System.out.println(file.getPath());
+		File file = new File("d:/home/");
+		System.out.println(file.listFiles());
 	}
 
 }

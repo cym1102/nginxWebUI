@@ -830,6 +830,7 @@ public class ConfService {
 			asycPack.setCertList(sqlHelper.findAll(Cert.class));
 			asycPack.setCertCodeList(sqlHelper.findAll(CertCode.class));
 			asycPack.setAcmeZip(certService.getAcmeZipBase64());
+			asycPack.setCertZip(certService.getCertZipBase64());
 		}
 
 		return asycPack;
@@ -919,8 +920,12 @@ public class ConfService {
 				sqlHelper.deleteByQuery(new ConditionAndWrapper(), CertCode.class);
 				sqlHelper.insertAll(asycPack.getCertCodeList());
 			}
-
-			certService.writeAcmeZipBase64(asycPack.getAcmeZip());
+			if (asycPack.getAcmeZip() != null) {
+				certService.writeAcmeZipBase64(asycPack.getAcmeZip());
+			}
+			if (asycPack.getCertZip() != null) {
+				certService.writeCertZipBase64(asycPack.getCertZip());
+			}
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

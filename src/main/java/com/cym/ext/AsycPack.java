@@ -32,6 +32,18 @@ public class AsycPack {
 	
 	String acmeZip;
 	
+	String certZip;
+	
+	
+	
+	public String getCertZip() {
+		return certZip;
+	}
+
+	public void setCertZip(String certZip) {
+		this.certZip = certZip;
+	}
+
 	public String getAcmeZip() {
 		return acmeZip;
 	}

@@ -27,6 +27,8 @@ public class TimeExeUtils {
 	 * @return
 	 */
 	public String execCMD(String cmd, String[] envs, long timeout) {
+		logger.info(cmd);
+		
 		Process process = null;
 		StringBuilder sbStd = new StringBuilder();
 
@@ -82,6 +84,7 @@ public class TimeExeUtils {
 			}
 		}
 
+		logger.info(sbStd.toString());
 		return sbStd.toString();
 	}
 }

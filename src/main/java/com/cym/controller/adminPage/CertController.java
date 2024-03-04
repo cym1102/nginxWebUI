@@ -29,6 +29,7 @@ import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 import com.cym.utils.SystemTool;
 import com.cym.utils.TimeExeUtils;
+import com.cym.utils.ToolUtils;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
@@ -159,7 +160,7 @@ public class CertController extends BaseController {
 		} else {
 			// 申请获得
 			String domain = cert.getDomain().split(",")[0];
-			String path = FileUtil.getUserHomeDir() + File.separator + ".acme.sh" + File.separator + domain;
+			String path = homeConfig.home + File.separator + ".acme.sh" + File.separator + domain;
 
 			if ("ECC".equals(cert.getEncryption())) {
 				path += "_ecc";
@@ -193,8 +194,7 @@ public class CertController extends BaseController {
 			ecc = " --ecc";
 		}
 
-		String rs = "";
-		String cmd = "";
+		String cmd = "sh ";
 		// 设置dns账号
 		String[] envs = getEnv(cert);
 
@@ -219,15 +219,17 @@ public class CertController extends BaseController {
 					dnsType = "dns_gd";
 				} else if (cert.getDnsType().equals("hw")) {
 					dnsType = "dns_huaweicloud";
+				} else if (cert.getDnsType().equals("aws")) {
+					dnsType = "dns_aws";
 				}
-				cmd = homeConfig.acmeSh + " --issue --dns " + dnsType + domain + keylength + " --server letsencrypt";
+				cmd += homeConfig.acmeSh + " --issue --dns " + dnsType + domain + keylength + " --server letsencrypt";
 			} else if (cert.getType() == 2) {
 				// DNS TXT申请
 				if (!certService.hasCode(cert.getId())) {
 					isInApply = false;
 					return renderError(m.get("certStr.error6"));
 				}
-				cmd = homeConfig.acmeSh + " --renew --force --dns" + domain + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+				cmd += homeConfig.acmeSh + " --renew --force --dns" + domain + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
 			}
 		} else if (type.equals("renew")) {
 			// 续签,以第一个域名为证书名
@@ -235,16 +237,14 @@ public class CertController extends BaseController {
 
 			if (cert.getType() == 0) {
 				// DNS API申请
-				cmd = homeConfig.acmeSh + " --renew --force " + ecc + " -d " + domain;
+				cmd += homeConfig.acmeSh + " --renew --force " + ecc + " -d " + domain;
 			} else if (cert.getType() == 2) {
 				// DNS txt申请
-				cmd = homeConfig.acmeSh + " --renew --force " + ecc + " -d " + domain + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+				cmd += homeConfig.acmeSh + " --renew --force " + ecc + " -d " + domain + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
 			}
 		}
-		logger.info(cmd);
 
-		rs = timeExeUtils.execCMD(cmd, envs, 5 * 60 * 1000);
-		logger.info(rs);
+		String rs = timeExeUtils.execCMD(cmd, envs, 5 * 60 * 1000);
 
 		if (rs.contains("Your cert is in")) {
 			// 申请成功, 定位证书
@@ -267,22 +267,22 @@ public class CertController extends BaseController {
 		}
 	}
 
-	private String getPem(String rs) {
+	private String getKey(String rs) {
 		String[] lines = rs.split("\n");
 		for (String line : lines) {
 			if (line.contains("Your cert key is in:")) {
-				return line.split("Your cert key is in:")[1].trim();
+				return line.split("Your cert key is in:")[1].trim().replace("\\", "/").replace("//", "/");
 			}
 		}
 
 		return null;
 	}
 
-	private String getKey(String rs) {
+	private String getPem(String rs) {
 		String[] lines = rs.split("\n");
 		for (String line : lines) {
 			if (line.contains("And the full chain certs is there:")) {
-				return line.split("And the full chain certs is there:")[1].trim();
+				return line.split("And the full chain certs is there:")[1].trim().replace("\\", "/").replace("//", "/");
 			}
 		}
 
@@ -291,6 +291,8 @@ public class CertController extends BaseController {
 
 	private String[] getEnv(Cert cert) {
 		List<String> list = new ArrayList<>();
+		list.add("HOME=" + homeConfig.home); // 指定acme证书存放目录
+
 		if (cert.getDnsType().equals("ali")) {
 			list.add("Ali_Key=" + cert.getAliKey());
 			list.add("Ali_Secret=" + cert.getAliSecret());
@@ -302,6 +304,10 @@ public class CertController extends BaseController {
 		if (cert.getDnsType().equals("tencent")) {
 			list.add("Tencent_SecretId=" + cert.getTencentSecretId());
 			list.add("Tencent_SecretKey=" + cert.getTencentSecretKey());
+		}
+		if (cert.getDnsType().equals("aws")) {
+			list.add("AWS_ACCESS_KEY_ID=" + cert.getAwsAccessKeyId());
+			list.add("AWS_SECRET_ACCESS_KEY=" + cert.getAwsSecretAccessKey());
 		}
 		if (cert.getDnsType().equals("cf")) {
 			list.add("CF_Email=" + cert.getCfEmail());
@@ -338,10 +344,9 @@ public class CertController extends BaseController {
 			Arrays.stream(split).forEach(s -> sb.append(" -d ").append(s));
 			String domain = sb.toString();
 
-			String cmd = homeConfig.acmeSh + " --issue --dns" + domain + keylength + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
-			logger.info(cmd);
+			String cmd = "sh " + homeConfig.acmeSh + " --issue --dns" + domain + keylength + " --server letsencrypt --yes-I-know-dns-manual-mode-enough-go-ahead-please";
+
 			String rs = timeExeUtils.execCMD(cmd, new String[] {}, 5 * 60 * 1000);
-			logger.info(rs);
 
 			if (rs.contains("TXT value")) {
 				// 获取到dns配置txt, 显示出来, 并保存到数据库

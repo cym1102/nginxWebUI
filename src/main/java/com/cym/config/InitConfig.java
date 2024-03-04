@@ -108,7 +108,7 @@ public class InitConfig {
 		}
 
 		// 释放acme全新包
-		String acmeShDir = homeConfig.home + ".acme.sh/";
+		String acmeShDir = homeConfig.home + ".acme.sh" + File.separator;
 		ClassPathResource resource = new ClassPathResource("acme.zip");
 		InputStream inputStream = resource.getStream();
 		FileUtil.writeFromStream(inputStream, homeConfig.home + "acme.zip");
@@ -116,35 +116,10 @@ public class InitConfig {
 		ZipUtil.unzip(homeConfig.home + "acme.zip", acmeShDir);
 		FileUtil.del(homeConfig.home + "acme.zip");
 
-		// 转到证书文件夹到FileUtil.getUserHomeDir()/.acme.sh/下
-		File[] files = new File(acmeShDir).listFiles();
-		for (File file : files) {
-			if (file.isDirectory() && notInAcmeFile(file)) {
-				FileUtil.copy(file, new File(FileUtil.getUserHomeDir() + File.separator + ".acme.sh"), true);
-			}
-		}
-		// 修改数据库中证书路径
-		List<Cert> certs = sqlHelper.findAll(Cert.class);
-		for (Cert cert : certs) {
-			boolean changed = false;
-			if (StrUtil.isNotEmpty(cert.getPem()) && cert.getPem().contains(acmeShDir)) {
-				cert.setPem(cert.getPem().replace(acmeShDir, FileUtil.getUserHomePath() + File.separator + ".acme.sh" + File.separator));
-				changed = true;
-			}
-			if (StrUtil.isNotEmpty(cert.getKey()) && cert.getKey().contains(acmeShDir)) {
-				cert.setKey(cert.getKey().replace(acmeShDir, FileUtil.getUserHomePath() + File.separator + ".acme.sh" + File.separator));
-				changed = true;
-			}
-
-			if (changed) {
-				sqlHelper.updateById(cert);
-			}
-		}
+		// 把acme的证书转移回来
+		returnAcme(acmeShDir);
 
 		if (SystemTool.isLinux()) {
-			// 授予acme.sh执行权限
-			RuntimeUtil.exec("chmod a+x " + homeConfig.acmeSh);
-
 			// 查找ngx_stream_module模块
 			if (!basicService.contain("ngx_stream_module.so") && FileUtil.exist("/usr/lib/nginx/modules/ngx_stream_module.so")) {
 				Basic basic = new Basic("load_module", "/usr/lib/nginx/modules/ngx_stream_module.so", -10l);
@@ -177,6 +152,38 @@ public class InitConfig {
 		showLogo();
 	}
 
+	@Deprecated
+	private void returnAcme(String acmeShDir) {
+		// 把FileUtil.getUserHomeDir()/.acme.sh/下证书转移回去
+		File[] files = new File(FileUtil.getUserHomePath() + File.separator + ".acme.sh").listFiles();
+		if (files != null) {
+			for (File file : files) {
+				if (file.isDirectory() && notInAcmeFile(file)) {
+					FileUtil.move(file, new File(homeConfig.home + ".acme.sh"), true);
+				}
+			}
+		}
+
+		// 修改回数据库中证书路径
+		List<Cert> certs = sqlHelper.findAll(Cert.class);
+		for (Cert cert : certs) {
+			boolean changed = false;
+			if (StrUtil.isNotEmpty(cert.getPem()) && cert.getPem().contains(FileUtil.getUserHomePath() + File.separator + ".acme.sh")) {
+				cert.setPem(cert.getPem().replace(FileUtil.getUserHomePath() + File.separator + ".acme.sh" + File.separator, acmeShDir));
+				changed = true;
+			}
+			if (StrUtil.isNotEmpty(cert.getKey()) && cert.getKey().contains(FileUtil.getUserHomePath() + File.separator + ".acme.sh")) {
+				cert.setKey(cert.getKey().replace(FileUtil.getUserHomePath() + File.separator + ".acme.sh" + File.separator, acmeShDir));
+				changed = true;
+			}
+
+			if (changed) {
+				sqlHelper.updateById(cert);
+			}
+		}
+	}
+
+	@Deprecated
 	private boolean notInAcmeFile(File file) {
 		String name = file.getName();
 		if (name.equalsIgnoreCase(".github") || name.equalsIgnoreCase("deploy") || name.equalsIgnoreCase("dnsapi") || name.equalsIgnoreCase("notify") || name.equalsIgnoreCase("acme.sh")) {

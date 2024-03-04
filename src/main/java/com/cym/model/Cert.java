@@ -106,7 +106,34 @@ public class Cert extends BaseModel {
 	 */
 	String hwDomainName;
 	
+	/**
+	 * AWS_ACCESS_KEY_ID(亚马逊云需要的参数)
+	 */
+	String awsAccessKeyId;
+	/**
+	 * AWS_SECRET_ACCESS_KEY(亚马逊云需要的参数)
+	 */
+	String awsSecretAccessKey;
 	
+	
+	
+	
+	public String getAwsAccessKeyId() {
+		return awsAccessKeyId;
+	}
+
+	public void setAwsAccessKeyId(String awsAccessKeyId) {
+		this.awsAccessKeyId = awsAccessKeyId;
+	}
+
+	public String getAwsSecretAccessKey() {
+		return awsSecretAccessKey;
+	}
+
+	public void setAwsSecretAccessKey(String awsSecretAccessKey) {
+		this.awsSecretAccessKey = awsSecretAccessKey;
+	}
+
 	public String getHwDomainName() {
 		return hwDomainName;
 	}

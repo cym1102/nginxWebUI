@@ -75,9 +75,9 @@ reboot
 
 ```
 Linux: mkdir /home/nginxWebUI/   
-       wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.8.6.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.9.0.jar
 
-Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-3.8.6.jar into D:/home/nginxWebUI/
+Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-3.9.0.jar into D:/home/nginxWebUI/
 ```
 
 With a new version, you just need to change the version in the path
@@ -136,7 +136,6 @@ docker pull cym1102/nginxwebui:latest
 docker run -itd \
   -v /home/nginxWebUI:/home/nginxWebUI \
   -e BOOT_OPTIONS="--server.port=8080" \
-  --cap-add=CAP_CHOWN \
   --net=host \
   cym1102/nginxwebui:latest
 ```

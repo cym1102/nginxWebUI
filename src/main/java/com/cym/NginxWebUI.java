@@ -35,7 +35,7 @@ public class NginxWebUI {
 		}
 
 		Solon.start(NginxWebUI.class, args, app -> {
-			//app.onError(e -> logger.error(e.getMessage(), e));
+			app.onError(e -> logger.error(e.getMessage(), e));
 
 			app.before(c -> {
 				String path = c.path();

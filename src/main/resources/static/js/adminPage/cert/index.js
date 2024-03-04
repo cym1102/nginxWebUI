@@ -91,6 +91,7 @@ function checkDnsType(value) {
 	$("#ali").hide();
 	$("#dp").hide();
 	$("#tencent").hide();
+	$("#aws").hide();
 	$("#cf").hide();
 	$("#gd").hide();
 	$("#hw").hide();
@@ -128,6 +129,8 @@ function add() {
 	$("#dpKey").val("");
 	$("#tencentSecretId").val("");
 	$("#tencentSecretKey").val("");
+	$("#awsAccessKeyId").val("");
+	$("#awsSecretAccessKey").val("");
 	$("#cfEmail").val("");
 	$("#cfKey").val("");
 	$("#gdKey").val("");
@@ -186,7 +189,8 @@ function edit(id, clone) {
 				$("#dpKey").val(cert.dpKey);
 				$("#tencentSecretId").val(cert.tencentSecretId);
 				$("#tencentSecretKey").val(cert.tencentSecretKey);
-	
+				$("#awsAccessKeyId").val(cert.awsAccessKeyId);
+				$("#awsSecretAccessKey").val(cert.awsSecretAccessKey);
 				$("#cfEmail").val(cert.cfEmail);
 				$("#cfKey").val(cert.cfKey);
 
