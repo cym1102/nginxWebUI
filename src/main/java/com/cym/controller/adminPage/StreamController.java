@@ -23,7 +23,7 @@ public class StreamController extends BaseController {
 	StreamService streamService;
 
 	@Mapping("")
-	public ModelAndView index( ModelAndView modelAndView) {
+	public ModelAndView index(ModelAndView modelAndView) {
 		List<Stream> streamList = streamService.findAll();
 
 		modelAndView.put("streamList", streamList);
@@ -40,12 +40,11 @@ public class StreamController extends BaseController {
 
 		return renderSuccess();
 	}
-	
 
 	@Mapping("addTemplate")
 	public JsonResult addTemplate(String templateId) {
 		streamService.addTemplate(templateId);
-		
+
 		return renderSuccess();
 	}
 
@@ -56,7 +55,8 @@ public class StreamController extends BaseController {
 
 	@Mapping("del")
 	public JsonResult del(String id) {
-		sqlHelper.deleteById(id, Stream.class);
+		String[] ids = id.split(",");
+		sqlHelper.deleteByIds(ids, Stream.class);
 
 		return renderSuccess();
 	}
@@ -67,7 +67,7 @@ public class StreamController extends BaseController {
 
 		return renderSuccess();
 	}
-	
+
 	@Mapping("addGiudeOver")
 	public JsonResult addGiudeOver(Boolean logStatus) {
 		List<Stream> streams = new ArrayList<Stream>();
@@ -75,7 +75,8 @@ public class StreamController extends BaseController {
 
 			Stream stream = new Stream();
 			stream.setName("log_format basic");
-			stream.setValue("'$remote_addr [$time_local] $protocol $status $bytes_sent $bytes_received $session_time \"$upstream_addr\" \"$upstream_bytes_sent\" \"$upstream_bytes_received\" \"$upstream_connect_time\"'");
+			stream.setValue(
+					"'$remote_addr [$time_local] $protocol $status $bytes_sent $bytes_received $session_time \"$upstream_addr\" \"$upstream_bytes_sent\" \"$upstream_bytes_received\" \"$upstream_connect_time\"'");
 			stream.setSeq(SnowFlakeUtils.getId());
 			streams.add(stream);
 

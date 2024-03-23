@@ -35,12 +35,19 @@ input[name='param']{
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${templateStr.add}</button>
 						</div>
+						
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="delMany()">${commonStr.delAll}</button>
+						</div>
 					</div>
 				</form>
 
-				<table class="layui-table" lay-size="sm" style="table-layout:fixed; WORD-BREAK:break-all;">
+				<table class="layui-table layui-form" lay-size="sm" style="table-layout:fixed; WORD-BREAK:break-all;">
 					<thead>
 						<tr>
+							<th style="width: 20px;">
+								<input type="checkbox" id="checkAll" lay-filter="checkAll" lay-skin="primary">
+							</th>
 							<th>${commonStr.name}</th>
 							<th>${templateStr.paramCount}</th>
 							<th>
@@ -52,6 +59,9 @@ input[name='param']{
 					<tbody>
 						<#list templateList as ext>
 						<tr>
+							<td>
+								<input type="checkbox" name="ids" title="" lay-skin="primary" value="${ext.template.id}">
+							</td>
 							<td>${ext.template.name}</td>
 							<td>${ext.count}</td>
 							<td>${ext.template.def}

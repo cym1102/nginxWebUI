@@ -25,7 +25,10 @@ table.diff {
 				</fieldset>
 
 				<form action="${ctx}/adminPage/operateLog" id="searchForm" method="post">
-
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delAll()">${operateLogStr.clear}</button>
+					</div>
+				
 					<input type="hidden" name="curr" value="${page.curr}">
 					<input type="hidden" name="limit" value="${page.limit}">
 				</form>

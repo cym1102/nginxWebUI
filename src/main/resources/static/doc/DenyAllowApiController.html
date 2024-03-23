@@ -94,8 +94,8 @@
                     </li>
                 </ul>
             </li>
-            <li class=""><a class="dd" href="DenyAllowApiController.html#header">3.&nbsp;IP黑白名单接口</a>
-                <ul class="sectlevel2" style="display: none">
+            <li class="open"><a class="dd" href="DenyAllowApiController.html#header">3.&nbsp;IP黑白名单接口</a>
+                <ul class="sectlevel2" style="display: block">
                     <li><a
                             href="DenyAllowApiController.html#_3_1_获取全部IP黑白名单列表">3.1.&nbsp;获取全部IP黑白名单列表</a>
                     </li>
@@ -155,8 +155,8 @@
                     </li>
                 </ul>
             </li>
-            <li class="open"><a class="dd" href="PasswordApiController.html#header">6.&nbsp;密码文件接口</a>
-                <ul class="sectlevel2" style="display: block">
+            <li class=""><a class="dd" href="PasswordApiController.html#header">6.&nbsp;密码文件接口</a>
+                <ul class="sectlevel2" style="display: none">
                     <li><a
                             href="PasswordApiController.html#_6_1_获取全部密码文件列表">6.1.&nbsp;获取全部密码文件列表</a>
                     </li>
@@ -231,22 +231,22 @@
     </div>
 </div>
 <div id="content">
-    <div class="sect1"><h2 id="_密码文件接口"><a class="anchor" href="#_密码文件接口"></a><a class="link" href="#_密码文件接口">6.&nbsp;密码文件接口</a>
+    <div class="sect1"><h2 id="_IP黑白名单接口"><a class="anchor" href="#_IP黑白名单接口"></a><a class="link" href="#_IP黑白名单接口">3.&nbsp;IP黑白名单接口</a>
     </h2>
         <div class="sectionbody">
-            <div class="sect2"><h3 id="_6_1_获取全部密码文件列表">
-                <a class="anchor" href="#_6_1_获取全部密码文件列表"></a>
-                <a class="link" href="#_6_1_获取全部密码文件列表">6.1.&nbsp;获取全部密码文件列表</a>
+            <div class="sect2"><h3 id="_3_1_获取全部IP黑白名单列表">
+                <a class="anchor" href="#_3_1_获取全部IP黑白名单列表"></a>
+                <a class="link" href="#_3_1_获取全部IP黑白名单列表">3.1.&nbsp;获取全部IP黑白名单列表</a>
             </h3>
-                <div class="paragraph"><p><strong>URL:</strong><a href="/api/password/getList" class="bare">&nbsp;/api/password/getList</a>
+                <div class="paragraph"><p><strong>URL:</strong><a href="/api/denyAllow/getList" class="bare">&nbsp;/api/denyAllow/getList</a>
                 </p></div>
                 <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
                 <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=UTF-8</p></div>
-                <div class="paragraph"><p><strong>Description:</strong>&nbsp;获取全部密码文件列表</p></div>
+                <div class="paragraph"><p><strong>Description:</strong>&nbsp;获取全部IP黑白名单列表</p></div>
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/password/getList</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/denyAllow/getList</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -304,21 +304,14 @@
                     <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">└─name</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">用户名</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">名单名称</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
 
                     <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─pass</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─ip</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">密码</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─descr</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">No comments found.</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">ip名单(用回车分隔)</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
                     </tbody>
@@ -334,8 +327,7 @@
     {
       "id": "",
       "name": "",
-      "pass": "",
-      "descr": ""
+      "ip": ""
     }
   ]
 }</code></pre>
@@ -343,15 +335,15 @@
                 </div>
             </div>
 
-            <div class="sect2"><h3 id="_6_2_添加或编辑密码文件">
-                <a class="anchor" href="#_6_2_添加或编辑密码文件"></a>
-                <a class="link" href="#_6_2_添加或编辑密码文件">6.2.&nbsp;添加或编辑密码文件</a>
+            <div class="sect2"><h3 id="_3_2_添加或编辑IP黑白名单">
+                <a class="anchor" href="#_3_2_添加或编辑IP黑白名单"></a>
+                <a class="link" href="#_3_2_添加或编辑IP黑白名单">3.2.&nbsp;添加或编辑IP黑白名单</a>
             </h3>
-                <div class="paragraph"><p><strong>URL:</strong><a href="/api/password/insertOrUpdate" class="bare">&nbsp;/api/password/insertOrUpdate</a>
+                <div class="paragraph"><p><strong>URL:</strong><a href="/api/denyAllow/insertOrUpdate" class="bare">&nbsp;/api/denyAllow/insertOrUpdate</a>
                 </p></div>
                 <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
                 <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=UTF-8</p></div>
-                <div class="paragraph"><p><strong>Description:</strong>&nbsp;添加或编辑密码文件</p></div>
+                <div class="paragraph"><p><strong>Description:</strong>&nbsp;添加或编辑IP黑白名单</p></div>
                 <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
                 <table class="tableblock frame-all grid-all spread">
                     <colgroup>
@@ -382,23 +374,15 @@
                     <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">用户名</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">名单名称</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
 
                     <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">pass</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">ip</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">密码</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-                    </tr>
-
-                    <tr>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">descr</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">No comments found.</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">ip名单(用回车分隔)</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
@@ -407,7 +391,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/password/insertOrUpdate?name=&id=&pass=&descr=</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/denyAllow/insertOrUpdate?id=&ip=&name=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -469,15 +453,15 @@
                 </div>
             </div>
 
-            <div class="sect2"><h3 id="_6_3_删除密码文件">
-                <a class="anchor" href="#_6_3_删除密码文件"></a>
-                <a class="link" href="#_6_3_删除密码文件">6.3.&nbsp;删除密码文件</a>
+            <div class="sect2"><h3 id="_3_3_删除IP黑白名单">
+                <a class="anchor" href="#_3_3_删除IP黑白名单"></a>
+                <a class="link" href="#_3_3_删除IP黑白名单">3.3.&nbsp;删除IP黑白名单</a>
             </h3>
-                <div class="paragraph"><p><strong>URL:</strong><a href="/api/password/del" class="bare">&nbsp;/api/password/del</a>
+                <div class="paragraph"><p><strong>URL:</strong><a href="/api/denyAllow/del" class="bare">&nbsp;/api/denyAllow/del</a>
                 </p></div>
                 <div class="paragraph"><p><strong>Type:</strong>&nbsp;GET</p></div>
                 <div class="paragraph"><p><strong>Content-Type:</strong>&nbsp;application/x-www-form-urlencoded;charset=UTF-8</p></div>
-                <div class="paragraph"><p><strong>Description:</strong>&nbsp;删除密码文件</p></div>
+                <div class="paragraph"><p><strong>Description:</strong>&nbsp;删除IP黑白名单</p></div>
                 <div class="paragraph"><p><strong>Query-parameters:</strong></p></div>
                 <table class="tableblock frame-all grid-all spread">
                     <colgroup>
@@ -500,7 +484,7 @@
                     <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">密码文件id</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">IP黑白名单id</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
@@ -509,7 +493,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/password/del?id=</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/denyAllow/del?id=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>

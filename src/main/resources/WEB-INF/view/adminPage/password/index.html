@@ -22,14 +22,22 @@
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${commonStr.add}</button>
 						</div>
+						
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="delMany()">${commonStr.delAll}</button>
+						</div>
 
-						<input type="hidden" name="curr" value="${page.curr}"> <input type="hidden" name="limit" value="${page.limit}">
+						<input type="hidden" name="curr" value="${page.curr}"> 
+						<input type="hidden" name="limit" value="${page.limit}">
 					</div>
 				</form>
 
-				<table class="layui-table" lay-size="sm">
+				<table class="layui-table layui-form" lay-size="sm">
 					<thead>
 						<tr>
+							<th style="width: 20px;">
+								<input type="checkbox" id="checkAll" lay-filter="checkAll" lay-skin="primary">
+							</th>
 							<th>${passwordStr.name}</th>
 							<th>${passwordStr.descr}</th>
 							<th>${passwordStr.path}</th>
@@ -39,6 +47,9 @@
 					<tbody>
 						<#list page.records as password>
 						<tr>
+							<td>
+								<input type="checkbox" name="ids" title="" lay-skin="primary" value="${password.id}">
+							</td>
 							<td>${password.name}</td>
 							<td>${password.descr}</td>
 							<td>${password.path}</td>

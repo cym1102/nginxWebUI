@@ -48,7 +48,7 @@ public class Cert extends BaseModel {
 	@InitValue("0")
 	Integer autoRenew; 
 	/**
-	 * dns提供商 ali:阿里云  dp:dnsPod  cf:Cloudflare  gd:Godaddy   hw:华为云 tencent:腾讯云
+	 * dns提供商 ali:阿里云  dp:dnsPod  cf:Cloudflare  gd:Godaddy   hw:华为云 tencent:腾讯云 aws:亚马逊云 ipv64:IPv64
 	 */
 	String dnsType; 
 	/**
@@ -115,9 +115,22 @@ public class Cert extends BaseModel {
 	 */
 	String awsSecretAccessKey;
 	
+	/**
+	 * IPv64_Token(IPv64需要的参数)
+	 */
+	String ipv64Token;
 	
 	
 	
+
+	public String getIpv64Token() {
+		return ipv64Token;
+	}
+
+	public void setIpv64Token(String ipv64Token) {
+		this.ipv64Token = ipv64Token;
+	}
+
 	public String getAwsAccessKeyId() {
 		return awsAccessKeyId;
 	}

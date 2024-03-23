@@ -8,6 +8,7 @@ import org.noear.solon.core.handle.ModelAndView;
 import com.cym.model.OperateLog;
 import com.cym.service.OperateLogService;
 import com.cym.sqlhelper.bean.Page;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
 
@@ -31,5 +32,12 @@ public class OperateLogController extends BaseController{
 	@Mapping("detail")
 	public JsonResult detail(String id) {
 		return renderSuccess(sqlHelper.findById(id, OperateLog.class));
+	}
+	
+	@Mapping("delAll")
+	public JsonResult delAll() {
+		sqlHelper.deleteByQuery(new ConditionAndWrapper(), OperateLog.class);
+
+		return renderSuccess();
 	}
 }

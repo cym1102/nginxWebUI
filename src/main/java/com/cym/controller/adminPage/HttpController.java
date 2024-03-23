@@ -58,7 +58,8 @@ public class HttpController extends BaseController {
 
 	@Mapping("del")
 	public JsonResult del(String id) {
-		sqlHelper.deleteById(id, Http.class);
+		String[] ids = id.split(",");		
+		sqlHelper.deleteByIds(ids, Http.class);
 
 		return renderSuccess();
 	}

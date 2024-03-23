@@ -31,6 +31,19 @@ $(function() {
 	form.on('select(rewrite)', function(data) {
 		checkRewrite(data.value);
 	});
+	form.on('select(denyAllowValue)', function(data) {
+		checkDenyAllow(data.value);
+	});
+	
+	form.on('checkbox(checkAll)', function(data) {
+		if (data.elem.checked) {
+			$("input[name='ids']").prop("checked", true)
+		} else {
+			$("input[name='ids']").prop("checked", false)
+		}
+
+		form.render();
+	});	
 
 	layui.use('upload', function() {
 		var upload = layui.upload;
@@ -119,7 +132,6 @@ function checkProxyType(value) {
 		$(".proxyHttp").hide();
 		$(".proxyTcp").show();
 	}
-
 }
 
 function checkRewrite(value) {
@@ -132,7 +144,24 @@ function checkRewrite(value) {
 	}
 }
 
+function checkDenyAllow(value){
+	$("#denyDiv").hide();
+	$("#allowDiv").hide();
+
+	if (value == 1) {
+		$("#denyDiv").show();
+	}
+	if (value == 2) {
+		$("#allowDiv").show();
+	}
+	if (value == 3) {
+		$("#denyDiv").show();
+		$("#allowDiv").show();
+	}
+}
+
 function search() {
+	$("input[name='curr']").val(1);
 	$("#searchForm").submit();
 }
 
@@ -158,13 +187,17 @@ function add() {
 	$("#keyPath").html("");
 	$("#itemList").html("");
 	$("#paramJson").val("");
-
+	
+	$("#denyAllow").val("0");
+	$("#denyId option:first").prop("selected", true);
+	$("#allowId option:first").prop("selected", true);
+				
 	$(".protocols").prop("checked", true);
 
 	checkProxyType(0);
 	checkSsl(0);
 	checkRewrite(1);
-
+	
 	form.render();
 	showWindow(serverStr.add);
 }
@@ -257,7 +290,6 @@ function addOver() {
 		}
 	}
 	server.http2 = $("#http2").val();
-	//debugger
 	server.passwordId = $("#passwordId").val();
 
 	var protocols = [];
@@ -268,7 +300,10 @@ function addOver() {
 	});
 	server.protocols = protocols.join(" ");
 
-
+	server.denyAllow = $("#denyAllow").val();
+	server.denyId = $("#denyId").val();
+	server.allowId = $("#allowId").val();
+	
 	var serverParamJson = $("#serverParamJson").val();
 
 	var locations = [];
@@ -367,6 +402,9 @@ function edit(id, clone) {
 				$("#proxyType").val(server.proxyType);
 				$("#proxyUpstreamId").val(server.proxyUpstreamId);
 				$("#serverParamJson").val(data.obj.paramJson);
+				$("#denyAllow").val(server.denyAllow);
+				$("#denyId").val(server.denyId);
+				$("#allowId").val(server.allowId);
 				$("#passwordId").val(server.passwordId);
 
 
@@ -481,6 +519,44 @@ function del(id) {
 			},
 			error: function() {
 				layer.alert(commonStr.errorInfo);
+			}
+		});
+	}
+}
+
+
+
+function delMany() {
+	if (confirm(commonStr.confirmDel)) {
+		var ids = [];
+
+		$("input[name='ids']").each(function() {
+			if ($(this).prop("checked")) {
+				ids.push($(this).val());
+			}
+		})
+
+		if (ids.length == 0) {
+			layer.msg(commonStr.unselected);
+			return;
+		}
+
+		$.ajax({
+			type: 'POST',
+			url : ctx + '/adminPage/server/del',
+			data: {
+				id: ids.join(",")
+			},
+			dataType: 'json',
+			success: function(data) {
+				if (data.success) {
+					location.reload();
+				} else {
+					layer.msg(data.msg)
+				}
+			},
+			error: function() {
+				layer.alert("请求失败，请刷新重试");
 			}
 		});
 	}
@@ -677,11 +753,45 @@ function serverParam() {
 
 }
 
+
 function locationParam(uuid) {
 	var json = $("#locationParamJson_" + uuid).val();
 	$("#targertId").val("locationParamJson_" + uuid);
 	var params = json != '' ? JSON.parse(json) : [];
 	fillTable(params);
+} 
+
+var denyAllowIndex;
+function setDenyAllow(){
+	var denyAllow = $("#denyAllow").val();
+	var denyId = $("#denyId").val();
+	var allowId = $("#allowId").val();
+	
+	$("#denyAllowValue").val(denyAllow);
+	$("#denyIdValue").val(denyId);
+	$("#allowIdValue").val(allowId);
+	
+	checkDenyAllow(denyAllow);
+	
+	form.render();
+	denyAllowIndex = layer.open({
+		type: 1,
+		title: serverStr.denyAllowModel,
+		area: ['600px', '500px'], // 宽高
+		content: $('#denyAllowDiv')
+	});
+}
+
+function setDenyAllowOver(){
+	var denyAllow = $("#denyAllowValue").val();
+	var denyId = $("#denyIdValue").val();
+	var allowId = $("#allowIdValue").val();
+	
+	$("#denyAllow").val(denyAllow);
+	$("#denyId").val(denyId);
+	$("#allowId").val(allowId);
+	
+	layer.close(denyAllowIndex)
 }
 
 var paramIndex;
@@ -1008,3 +1118,5 @@ function editLocationDescr(id) {
 	});
 
 }
+
+

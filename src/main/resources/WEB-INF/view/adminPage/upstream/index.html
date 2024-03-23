@@ -64,9 +64,15 @@
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${upstreamStr.add}</button>
 						</div>
+						
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="upstreamMonitor()">${upstreamStr.upstreamMonitor}</button>
 						</div>
+						
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="delMany()">${commonStr.delAll}</button>
+						</div>
+						
 						<div class="layui-input-inline">
 							<input type="text" name="keywords" class="layui-input layui-input-sm" value="${keywords}" onkeydown="if(event.keyCode==13)return false;">
 						</div>
@@ -82,6 +88,9 @@
 				<table class="layui-table layui-form" lay-size="sm">
 					<thead>
 						<tr>
+							<th style="width: 20px;">
+								<input type="checkbox" id="checkAll" lay-filter="checkAll" lay-skin="primary">
+							</th>
 							<th>${upstreamStr.proxyType}</th>
 							<th>${commonStr.name}</th>
 							<th>${commonStr.descr}</th>
@@ -96,6 +105,9 @@
 					<tbody>
 						<#list page.records as ext>
 						<tr>
+							<td>
+								<input type="checkbox" name="ids" title="" lay-skin="primary" value="${ext.upstream.id}">
+							</td>
 							<td><#if ext.upstream.proxyType==0>http/https</#if> <#if ext.upstream.proxyType==1>TCP/UDP</#if></td>
 							<td>${ext.upstream.name}</td>
 							<td style="max-width: 150px;">

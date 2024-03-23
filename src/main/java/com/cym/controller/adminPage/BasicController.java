@@ -54,7 +54,8 @@ public class BasicController extends BaseController {
 
 	@Mapping("del")
 	public JsonResult del(String id) {
-		sqlHelper.deleteById(id, Basic.class);
+		String[] ids = id.split(",");		
+		sqlHelper.deleteByIds(ids, Basic.class);
 
 		return renderSuccess();
 	}

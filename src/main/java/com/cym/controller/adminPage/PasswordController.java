@@ -32,7 +32,7 @@ public class PasswordController extends BaseController {
 	}
 
 	@Mapping("addOver")
-	public JsonResult addOver(Password password){
+	public JsonResult addOver(Password password) {
 
 		if (StrUtil.isEmpty(password.getId())) {
 			Long count = passwordService.getCountByName(password.getName());
@@ -68,10 +68,13 @@ public class PasswordController extends BaseController {
 
 	@Mapping("del")
 	public JsonResult del(String id) {
-		Password password = sqlHelper.findById(id, Password.class);
-		sqlHelper.deleteById(id, Password.class);
-		FileUtil.del(password.getPath());
+		String[] ids = id.split(",");
 
+		for (String i : ids) {
+			Password password = sqlHelper.findById(i, Password.class);
+			sqlHelper.deleteById(i, Password.class);
+			FileUtil.del(password.getPath());
+		}
 		return renderSuccess();
 	}
 

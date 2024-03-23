@@ -71,13 +71,8 @@ public class LogController extends BaseController {
 
 	@Mapping("del")
 	public JsonResult del(String id) {
-		sqlHelper.deleteById(id, Log.class);
-		return renderSuccess();
-	}
-
-	@Mapping("clean")
-	public JsonResult clean() {
-		sqlHelper.deleteByQuery(new ConditionAndWrapper(), Log.class);
+		String[] ids = id.split(",");
+		sqlHelper.deleteByIds(ids, Log.class);
 		return renderSuccess();
 	}
 

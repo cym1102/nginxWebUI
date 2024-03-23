@@ -2,7 +2,15 @@
 <html>
 <head>
 <#include "/adminPage/common.html"/>
+<style type="text/css">
+.layui-form-label {
+	width: 140px;
+}
 
+.layui-input-block {
+	margin-left: 170px;
+}
+</style>
 </head>
 <body class="layui-layout-body">
 	<div class="layui-layout layui-layout-admin">
@@ -14,14 +22,14 @@
 			<!-- 内容主体区域 -->
 			<div style="padding: 15px">
 				<fieldset class="layui-elem-field layui-field-title">
-					<legend>${menuStr.log}</legend>
+					<legend>${menuStr.denyAllow}</legend>
 				</fieldset>
 
-				<form action="${ctx}/adminPage/log" id="searchForm" method="post">
+				<form action="${ctx}/adminPage/denyAllow" id="searchForm" method="post">
 					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${logStr.add}</button>
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${commonStr.add}</button>
 					</div>
-					
+
 					<div class="layui-inline">
 						<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="delMany()">${commonStr.delAll}</button>
 					</div>
@@ -36,32 +44,26 @@
 							<th style="width: 20px;">
 								<input type="checkbox" id="checkAll" lay-filter="checkAll" lay-skin="primary">
 							</th>
-							<th>${logStr.path}</th>
+							<th>${denyAllowStr.name}</th>
+							<th>${denyAllowStr.ipCount}</th>
 							<th>${commonStr.operation}</th>
 						</tr>
 					</thead>
 					<tbody>
-						<#list page.records as log>
+						<#list page.records as ext>
 						<tr>
 							<td>
-								<input type="checkbox" name="ids" title="" lay-skin="primary" value="${log.id}">
+								<input type="checkbox" name="ids" title="" lay-skin="primary" value="${ext.denyAllow.id}">
 							</td>
-							<td>${log.path}</td>
+							<td>${ext.denyAllow.name}</td>
+							<td>${ext.ipCount}</td>
 							<td>
 								<div class="layui-inline">
-								<button type="button" class="layui-btn layui-btn-sm " onclick="tail('${log.id}','${log.path}')">${logStr.tail}</button>
+									<button type="button" class="layui-btn layui-btn-sm " onclick="edit('${ext.denyAllow.id}')">${commonStr.edit}</button>
 								</div>
-								
+
 								<div class="layui-inline">
-								<button type="button" class="layui-btn layui-btn-sm " onclick="down('${log.id}')">${logStr.download}</button>
-								</div>
-								
-								<div class="layui-inline">
-								<button type="button" class="layui-btn layui-btn-sm " onclick="edit('${log.id}')">${commonStr.edit}</button>
-								</div>
-								
-								<div class="layui-inline">
-								<button type="button" class="layui-btn layui-btn-sm layui-btn-danger " onclick="del('${log.id}')">${commonStr.del}</button>
+									<button type="button" class="layui-btn layui-btn-sm layui-btn-danger " onclick="del('${ext.denyAllow.id}')">${commonStr.del}</button>
 								</div>
 							</td>
 						</tr>
@@ -78,32 +80,33 @@
 		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none">
 			<form id="addForm">
 				<input type="hidden" name="id" id="id">
-				<div id="nameDiv">
-					<div class="layui-form-item">
-						<label class="layui-form-label">${logStr.path}</label>
-						<div class="layui-input-inline">
-							<input type="text" name="path" id="path" class="layui-input">
-						</div>
-						<div class="layui-input-inline">
-							<i class="layui-icon layui-icon-export" onclick="selectRootCustom()"></i>
-						</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">${denyAllowStr.name}</label>
+					<div class="layui-input-block">
+						<input type="text" name="name" id="name" class="layui-input">
 					</div>
 				</div>
 				
+				<div class="layui-form-item">
+					<label class="layui-form-label">${denyAllowStr.ipTip}</label>
+					<div class="layui-input-block">
+						<textarea name="ip" id="ip" class="layui-textarea" style="height: 400px;"></textarea>
+					</div>
+				</div>
+
 				<div class="layui-form-item center">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
-				
+
 			</form>
 		</div>
 
 	</div>
 	<#include '/adminPage/script.html'/>
-	<#include '/adminPage/select_root.html'/>
-	<script src="${ctx}/js/adminPage/log/index.js?v=${jsrandom}" type="text/javascript"></script>
-	
-	
+	<script src="${ctx}/js/adminPage/denyAllow/index.js?v=${jsrandom}" type="text/javascript"></script>
+
+
 </body>
 
 

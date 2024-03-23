@@ -37,6 +37,10 @@
 						</div>
 						
 						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="delMany()">${commonStr.delAll}</button>
+						</div>
+						
+						<div class="layui-inline">
 							<input type="text" name="keywords" class="layui-input layui-input-sm" value="${keywords}">
 						</div>
 
@@ -54,6 +58,9 @@
 				<table class="layui-table layui-form" lay-size="sm">
 					<thead>
 						<tr>
+							<th style="width: 20px;">
+								<input type="checkbox" id="checkAll" lay-filter="checkAll" lay-skin="primary">
+							</th>
 							<th>${certStr.domain}</th>
 							<th>${certStr.getWay}</th>
 							<th>${certStr.dnsProvider}</th>
@@ -67,6 +74,9 @@
 					<tbody>
 						<#list page.records as cert>
 						<tr>
+							<td>
+								<input type="checkbox" name="ids" title="" lay-skin="primary" value="${cert.id}">
+							</td>
 							<td>${cert.domain}</td>
 							<td>
 								<#if cert.type==1>
@@ -89,6 +99,7 @@
 									<#if cert.dnsType=='gd'> Godaddy </#if>
 									<#if cert.dnsType=='hw'> ${certStr.huawei} </#if>
 									<#if cert.dnsType=='aws'> ${certStr.aws} </#if> 
+									<#if cert.dnsType=='ipv64'> IPv64 </#if> 
 								</#if>
 							</td>
 
@@ -205,6 +216,7 @@
 								<option value="gd">Godaddy</option>
 								<option value="hw">${certStr.huawei}</option>
 								<option value="aws">${certStr.aws}</option>
+								<option value="ipv64">IPv64</option>
 							</select>
 						</div>
 					</div>
@@ -290,9 +302,6 @@
 								<input type="text" name="cfKey" id="cfKey" class="layui-input">
 							</div>
 						</div>
-						
-						
-
 					</div>
 
 					<div id="gd">
@@ -307,6 +316,15 @@
 							<label class="layui-form-label">GD_Secret</label>
 							<div class="layui-input-block">
 								<input type="text" name="gdSecret" id="gdSecret" class="layui-input">
+							</div>
+						</div>
+					</div>
+					
+					<div id="ipv64">
+						<div class="layui-form-item">
+							<label class="layui-form-label">IPv64_Token</label>
+							<div class="layui-input-block">
+								<input type="text" name="ipv64Token" id="ipv64Token" class="layui-input">
 							</div>
 						</div>
 					</div>

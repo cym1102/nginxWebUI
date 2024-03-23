@@ -246,25 +246,6 @@ function autoUpdate(url) {
 }
 
 
-function changeLang() {
-	$.ajax({
-		type: 'POST',
-		url: ctx + '/adminPage/main/changeLang',
-		data: $("#adminForm").serialize(),
-		dataType: 'json',
-		success: function(data) {
-			if (data.success) {
-				location.reload();
-			} else {
-				layer.msg(data.msg);
-			}
-		},
-		error: function() {
-			layer.alert(commonStr.errorInfo);
-		}
-	});
-}
-
 
 function setParamOrder(id, seq) {
 	if (seq == -1) {

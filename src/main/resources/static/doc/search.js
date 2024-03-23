@@ -78,144 +78,163 @@ api[1].list.push({
     desc: '下载证书文件',
 });
 api.push({
-    alias: 'NginxApiController',
+    alias: 'DenyAllowApiController',
     order: '3',
-    desc: 'nginx接口',
-    link: 'nginx接口',
+    desc: 'IP黑白名单接口',
+    link: 'ip黑白名单接口',
     list: []
 })
 api[2].list.push({
     order: '1',
-    desc: '获取nginx状态',
+    desc: '获取全部IP黑白名单列表',
 });
 api[2].list.push({
     order: '2',
-    desc: '替换conf文件',
+    desc: '添加或编辑IP黑白名单',
 });
 api[2].list.push({
     order: '3',
+    desc: '删除IP黑白名单',
+});
+api.push({
+    alias: 'NginxApiController',
+    order: '4',
+    desc: 'nginx接口',
+    link: 'nginx接口',
+    list: []
+})
+api[3].list.push({
+    order: '1',
+    desc: '获取nginx状态',
+});
+api[3].list.push({
+    order: '2',
+    desc: '替换conf文件',
+});
+api[3].list.push({
+    order: '3',
     desc: '效验conf文件',
 });
-api[2].list.push({
+api[3].list.push({
     order: '4',
     desc: '重载conf文件',
 });
-api[2].list.push({
+api[3].list.push({
     order: '5',
     desc: '获取nginx启动命令',
 });
-api[2].list.push({
+api[3].list.push({
     order: '6',
     desc: '获取nginx停止命令',
 });
-api[2].list.push({
+api[3].list.push({
     order: '7',
     desc: '执行nginx命令',
 });
 api.push({
     alias: 'ParamApiController',
-    order: '4',
+    order: '5',
     desc: '额外参数接口',
     link: '额外参数接口',
     list: []
 })
-api[3].list.push({
+api[4].list.push({
     order: '1',
     desc: '根据项目获取参数列表',
 });
-api[3].list.push({
+api[4].list.push({
     order: '2',
     desc: '添加或编辑参数',
 });
-api[3].list.push({
+api[4].list.push({
     order: '3',
     desc: '删除额外参数',
 });
 api.push({
     alias: 'PasswordApiController',
-    order: '5',
+    order: '6',
     desc: '密码文件接口',
     link: '密码文件接口',
     list: []
 })
-api[4].list.push({
+api[5].list.push({
     order: '1',
     desc: '获取全部密码文件列表',
 });
-api[4].list.push({
+api[5].list.push({
     order: '2',
     desc: '添加或编辑密码文件',
 });
-api[4].list.push({
+api[5].list.push({
     order: '3',
     desc: '删除密码文件',
 });
 api.push({
     alias: 'ServerApiController',
-    order: '6',
+    order: '7',
     desc: '反向代理(server)接口',
     link: '反向代理(server)接口',
     list: []
 })
-api[5].list.push({
+api[6].list.push({
     order: '1',
     desc: '获取server分页列表',
 });
-api[5].list.push({
+api[6].list.push({
     order: '2',
     desc: '添加或编辑server',
 });
-api[5].list.push({
+api[6].list.push({
     order: '3',
     desc: '删除server',
 });
-api[5].list.push({
+api[6].list.push({
     order: '4',
     desc: '根据serverId获取location列表',
 });
-api[5].list.push({
+api[6].list.push({
     order: '5',
     desc: '添加或编辑location',
 });
-api[5].list.push({
+api[6].list.push({
     order: '6',
     desc: '删除location',
 });
 api.push({
     alias: 'TokenController',
-    order: '7',
+    order: '8',
     desc: '获取token',
     link: '获取token',
     list: []
 })
-api[6].list.push({
+api[7].list.push({
     order: '1',
     desc: '获取Token',
 });
 api.push({
     alias: 'UpstreamApiController',
-    order: '8',
+    order: '9',
     desc: '负载均衡(upstream)接口',
     link: '负载均衡(upstream)接口',
     list: []
 })
-api[7].list.push({
+api[8].list.push({
     order: '1',
     desc: '获取upstream分页列表',
 });
-api[7].list.push({
+api[8].list.push({
     order: '2',
     desc: '添加或编辑upstream',
 });
-api[7].list.push({
+api[8].list.push({
     order: '3',
     desc: '删除upstream',
 });
-api[7].list.push({
+api[8].list.push({
     order: '4',
     desc: '根据upstreamId获取server列表',
 });
-api[7].list.push({
+api[8].list.push({
     order: '5',
     desc: '添加或编辑server',
 });

@@ -75,7 +75,9 @@ public class WwwController extends BaseController {
 
 	@Mapping("del")
 	public JsonResult del(String id) {
-		sqlHelper.deleteById(id, Www.class);
+		String[] ids = id.split(",");
+		
+		sqlHelper.deleteByIds(ids, Www.class);
 
 		return renderSuccess();
 	}

@@ -225,7 +225,7 @@ public class AppFilter implements Filter {
 		ctx.attrSet("admin", ctx.session("admin"));
 
 		// 显示版本更新
-		if (versionConfig.newVersion != null) {
+		if (versionConfig.newVersion != null && versionConfig.newVersion.getVersion() != null && versionConfig.currentVersion != null) {
 			ctx.attrSet("newVersion", versionConfig.newVersion);
 
 			int currentVersion = Integer.parseInt(versionConfig.currentVersion.replace(".", "").replace("v", ""));
@@ -238,14 +238,18 @@ public class AppFilter implements Filter {
 
 		// 读取配置文件
 		Properties properties = null;
-		String l = ctx.param("l");
-		if (StrUtil.isNotEmpty(l) && l.equals("en_US") || settingService.get("lang") != null && settingService.get("lang").equals("en_US")) {
-			settingService.set("lang", "en_US");
-			properties = m.getPropertiesEN();
-		} else {
-			settingService.set("lang", "");
+		String lang = settingService.get("lang");
+		if (StrUtil.isEmpty(lang)) {
 			properties = m.getProperties();
+			lang = "zh";
 		}
+		if ("en_US".equals(lang)) {
+			properties = m.getPropertiesEN();
+		}
+		if ("zh_TW".equals(lang)) {
+			properties = m.getPropertiesTW();
+		}
+		ctx.attrSet("lang", lang);
 
 		// js国际化
 		Set<String> messageHeaders = new HashSet<>();
@@ -274,10 +278,15 @@ public class AppFilter implements Filter {
 			ctx.attrSet(key, map);
 		}
 
-		if (settingService.get("lang") != null && settingService.get("lang").equals("en_US")) {
-			ctx.attrSet("langType", "切换到中文");
-		} else {
-			ctx.attrSet("langType", "Switch to English");
+		ctx.attrSet("langType", "简体中文");
+		if (settingService.get("lang") != null) {
+			if (settingService.get("lang").equals("en_US")) {
+				ctx.attrSet("langType", "English");
+			}
+
+			if (settingService.get("lang").equals("zh_TW")) {
+				ctx.attrSet("langType", "繁体中文");
+			}
 		}
 
 	}

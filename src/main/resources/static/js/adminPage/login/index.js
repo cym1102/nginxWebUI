@@ -188,7 +188,7 @@ function refreshCode(id) {
 }
 
 
-
+/*
 function changeLangLogin() {
 	$.ajax({
 		type: 'POST',
@@ -207,3 +207,4 @@ function changeLangLogin() {
 		}
 	});
 }
+*/

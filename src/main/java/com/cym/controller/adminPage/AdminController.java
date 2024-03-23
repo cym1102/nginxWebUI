@@ -110,10 +110,14 @@ public class AdminController extends BaseController {
 
 	@Mapping("del")
 	public JsonResult del(String id) {
-		sqlHelper.deleteById(id, Admin.class);
+		String[] ids = id.split(",");
+		sqlHelper.deleteByIds(ids, Admin.class);
 
 		return renderSuccess();
 	}
+	
+	
+	
 
 	@Mapping("getMailSetting")
 	public JsonResult getMailSetting() {

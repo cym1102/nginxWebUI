@@ -54,7 +54,7 @@ public class VersionConfig  {
 
 		}
 	}
-
+	
 	public String getFromPom() throws IOException, XmlPullParserException {
 
 		// 查看jar包里面pom.properties版本号

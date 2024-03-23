@@ -76,7 +76,7 @@
 				</div>
 				<div class="layui-form-item" style="text-align: center;">
 					
-					<button type="button" class="layui-btn layui-btn-primary" onclick="changeLangLogin()">${langType}</button>
+					<button type="button" class="layui-btn layui-btn-primary" onclick="changeLang()">Language ${langType}</button>
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addAdmin()">${loginStr.add}</button>
 				</div>
 			</form>
@@ -99,6 +99,8 @@
 	</div>
 
 	<#include '/adminPage/script.html'/>
+	<#include '/adminPage/select_lang.html'/>
+	
 	<script src="${ctx}/lib/base64/base64.js" type="text/javascript"></script>
 	<script src="${ctx}/js/adminPage/login/index.js?v=${jsrandom}" type="text/javascript"></script>
 </body>

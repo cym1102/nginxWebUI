@@ -61,8 +61,9 @@ public class ServerService {
 	}
 
 	public void deleteById(String id) {
-		sqlHelper.deleteById(id, Server.class);
-		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("serverId", id), Location.class);
+		String[] ids = id.split(",");
+		sqlHelper.deleteByIds(ids, Server.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper().in("serverId", ids), Location.class);
 	}
 
 	public List<Location> getLocationByServerId(String serverId) {

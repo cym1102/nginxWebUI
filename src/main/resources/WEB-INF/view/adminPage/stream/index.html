@@ -43,13 +43,18 @@ input[name='param'] {
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="preview(null,'stream')">${commonStr.preview}</button>
 						</div>
-
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="delMany()">${commonStr.delAll}</button>
+						</div>
 					</div>
 				</form>
 
-				<table class="layui-table" lay-size="sm">
+				<table class="layui-table layui-form" lay-size="sm">
 					<thead>
 						<tr>
+							<th style="width: 20px;">
+								<input type="checkbox" id="checkAll" lay-filter="checkAll" lay-skin="primary">
+							</th>
 							<th>${commonStr.name}</th>
 							<th>${commonStr.value}</th>
 							<th>${commonStr.operation}</th>
@@ -58,6 +63,9 @@ input[name='param'] {
 					<tbody>
 						<#list streamList as stream>
 						<tr>
+							<td>
+								<input type="checkbox" name="ids" title="" lay-skin="primary" value="${stream.id}">
+							</td>
 							<td>${stream.name}</td>
 							<td style="width: 50%;">${stream.value}</td>
 							<td>

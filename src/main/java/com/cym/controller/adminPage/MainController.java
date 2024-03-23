@@ -68,15 +68,17 @@ public class MainController extends BaseController {
 		return renderSuccess();
 	}
 
-	@Mapping("/adminPage/main/changeLang")
-	public JsonResult changeLang() {
-		if (settingService.get("lang") != null && settingService.get("lang").equals("en_US")) {
-			settingService.set("lang", "");
-		} else {
-			settingService.set("lang", "en_US");
-		}
-
-		return renderSuccess();
-	}
+//	@Mapping("/adminPage/main/changeLang")
+//	public JsonResult changeLang(String lang) {
+////		if (settingService.get("lang") != null && settingService.get("lang").equals("en_US")) {
+////			settingService.set("lang", "");
+////		} else {
+////			settingService.set("lang", "en_US");
+////		}
+//
+//		settingService.set("lang", lang);
+//		
+//		return renderSuccess();
+//	}
 
 }

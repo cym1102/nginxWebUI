@@ -20,6 +20,7 @@ import com.cym.model.BakSub;
 import com.cym.model.Basic;
 import com.cym.model.Cert;
 import com.cym.model.CertCode;
+import com.cym.model.DenyAllow;
 import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Param;
@@ -349,14 +350,20 @@ public class ConfService {
 				value += " proxy_protocol";
 			}
 
-			if (server.getSsl() != null && server.getSsl() == 1) {
+			if (server.getSsl() == 1) {
 				value += " ssl";
-				if (server.getHttp2() != null && server.getHttp2() == 1) {
+				if (server.getHttp2() == 1) { // http2旧版写法
 					value += " http2";
 				}
 			}
 			ngxParam.addValue(value);
 			ngxBlockServer.addEntry(ngxParam);
+
+			if (server.getSsl() == 1 && server.getHttp2() == 2) { // http2新版写法
+				ngxParam = new NgxParam();
+				ngxParam.addValue("http2 on");
+				ngxBlockServer.addEntry(ngxParam);
+			}
 
 			// 密码配置
 			if (StrUtil.isNotEmpty(server.getPasswordId())) {
@@ -376,6 +383,63 @@ public class ConfService {
 			// ssl配置
 			setServerSsl(server, ngxBlockServer);
 
+			// IP黑白名单
+			if (server.getDenyAllow() == 1) {
+				// 黑名单
+				ngxParam = new NgxParam();
+				ngxParam.addValue("allow all");
+				ngxBlockServer.addEntry(ngxParam);
+
+				DenyAllow denyAllow = sqlHelper.findById(server.getDenyId(), DenyAllow.class);
+				if (denyAllow != null) {
+					String[] ips = denyAllow.getIp().split("\n");
+					for (String ip : ips) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("deny " + ip.trim());
+						ngxBlockServer.addEntry(ngxParam);
+					}
+				}
+			}
+			if (server.getDenyAllow() == 2) {
+				// 白名单
+				ngxParam = new NgxParam();
+				ngxParam.addValue("deny all");
+				ngxBlockServer.addEntry(ngxParam);
+
+				DenyAllow denyAllow = sqlHelper.findById(server.getAllowId(), DenyAllow.class);
+				if (denyAllow != null) {
+					String[] ips = denyAllow.getIp().split("\n");
+					for (String ip : ips) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("allow " + ip.trim());
+						ngxBlockServer.addEntry(ngxParam);
+					}
+				}
+			}
+
+			if (server.getDenyAllow() == 3) {
+				// 黑白名单
+				DenyAllow denyAllow = sqlHelper.findById(server.getDenyId(), DenyAllow.class);
+				if (denyAllow != null) {
+					String[] ips = denyAllow.getIp().split("\n");
+					for (String ip : ips) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("deny " + ip.trim());
+						ngxBlockServer.addEntry(ngxParam);
+					}
+				}
+
+				denyAllow = sqlHelper.findById(server.getAllowId(), DenyAllow.class);
+				if (denyAllow != null) {
+					String[] ips = denyAllow.getIp().split("\n");
+					for (String ip : ips) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("allow " + ip.trim());
+						ngxBlockServer.addEntry(ngxParam);
+					}
+				}
+			}
+
 			// 自定义参数
 			String type = "server";
 			if (server.getProxyType() != 0) {
@@ -386,9 +450,8 @@ public class ConfService {
 				setSameParam(param, ngxBlockServer);
 			}
 
-			List<Location> locationList = serverService.getLocationByServerId(server.getId());
-
 			// location参数配置
+			List<Location> locationList = serverService.getLocationByServerId(server.getId());
 			for (Location location : locationList) {
 				NgxBlock ngxBlockLocation = new NgxBlock();
 				ngxBlockLocation.addValue("location");

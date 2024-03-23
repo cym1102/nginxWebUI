@@ -8,6 +8,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
        nginx-mod-stream \
        nginx-mod-http-headers-more \
        nginx-mod-http-lua \
+       nginx-mod-http-brotli \
        openjdk8-jre \
        net-tools \
        curl \

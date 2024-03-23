@@ -20,14 +20,21 @@
 				<form action="${ctx}/adminPage/basic" id="searchForm" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${basicStr.add}</button> 
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${basicStr.add}</button>
+						</div>
+
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="delMany()">${commonStr.delAll}</button>
 						</div>
 					</div>
 				</form>
 
-				<table class="layui-table" lay-size="sm">
+				<table class="layui-table layui-form" lay-size="sm">
 					<thead>
 						<tr>
+							<th style="width: 20px;">
+								<input type="checkbox" id="checkAll" lay-filter="checkAll" lay-skin="primary">
+							</th>
 							<th>${commonStr.name}</th>
 							<th>${commonStr.value}</th>
 							<th>${commonStr.operation}</th>
@@ -36,20 +43,23 @@
 					<tbody>
 						<#list basicList as basic>
 						<tr>
+							<td>
+								<input type="checkbox" name="ids" title="" lay-skin="primary" value="${basic.id}">
+							</td>
 							<td>${basic.name}</td>
 							<td style="width: 50%;">${basic.value}</td>
 							<td>
 								<div class="layui-inline">
-								<button type="button" class="layui-btn layui-btn-sm " onclick="edit('${basic.id}')">${commonStr.edit}</button>
+									<button type="button" class="layui-btn layui-btn-sm " onclick="edit('${basic.id}')">${commonStr.edit}</button>
 								</div>
 								<div class="layui-inline">
-								<button type="button" class="layui-btn layui-btn-danger layui-btn-sm " onclick="del('${basic.id}')">${commonStr.del}</button>
+									<button type="button" class="layui-btn layui-btn-danger layui-btn-sm " onclick="del('${basic.id}')">${commonStr.del}</button>
 								</div>
 								<div class="layui-inline">
-								<button type="button" class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${basic.id}', -1)">${commonStr.up}</button>
+									<button type="button" class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${basic.id}', -1)">${commonStr.up}</button>
 								</div>
 								<div class="layui-inline">
-								<button type="button" class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${basic.id}', 1)">${commonStr.down}</button>
+									<button type="button" class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${basic.id}', 1)">${commonStr.down}</button>
 								</div>
 							</td>
 						</tr>
@@ -76,7 +86,7 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label">${commonStr.value}</label>
 					<div class="layui-input-block">
-						<textarea  name="value" id="value" class="layui-textarea" ></textarea>
+						<textarea name="value" id="value" class="layui-textarea"></textarea>
 					</div>
 				</div>
 

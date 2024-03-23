@@ -31,6 +31,10 @@
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${adminStr.add}</button>
 						</div>
+						
+						<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="delMany()">${commonStr.delAll}</button>
+						</div>
 
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm" onclick="downApk()">${adminStr.downApk}</button>
@@ -46,16 +50,16 @@
 							<div class="layui-form-mid layui-word-aux">${adminStr.notice}</div>
 						</div>
 						
-						<div class="layui-inline">
-							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="apiPage()">${adminStr.apiPage}</button>
-						</div>
 						<input type="hidden" name="curr" value="${page.curr}"> <input type="hidden" name="limit" value="${page.limit}">
 					</div>
 				</form>
 
-				<table class="layui-table" lay-size="sm">
+				<table class="layui-table layui-form" lay-size="sm">
 					<thead>
 						<tr>
+							<th style="width: 20px;">
+								<input type="checkbox" id="checkAll" lay-filter="checkAll" lay-skin="primary">
+							</th>
 							<th>${adminStr.name}</th>
 							<th>${adminStr.twoStep}</th>
 							<th>${adminStr.privateKey} (${adminStr.remember})</th>
@@ -67,6 +71,9 @@
 					<tbody>
 						<#list page.records as admin>
 						<tr>
+							<td>
+								<input type="checkbox" name="ids" title="" lay-skin="primary" value="${admin.id}">
+							</td>
 							<td>${admin.name}</td>
 							<td><#if admin.auth> ${commonStr.yes} </#if> <#if !admin.auth> ${commonStr.no} </#if></td>
 							<td><#if admin.auth> ${admin.key} <a href="javascript:qr('${admin.name}','${admin.key}')" style="color: blue; text-decoration: underline;">${adminStr.qr}</a> <a

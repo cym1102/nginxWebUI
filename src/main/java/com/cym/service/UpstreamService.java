@@ -40,8 +40,10 @@ public class UpstreamService {
 
 	
 	public void deleteById(String id) {
-		sqlHelper.deleteById(id, Upstream.class);
-		sqlHelper.deleteByQuery(new ConditionAndWrapper().eq("upstreamId", id), UpstreamServer.class);
+		String[] ids = id.split(",");
+		
+		sqlHelper.deleteByIds(ids, Upstream.class);
+		sqlHelper.deleteByQuery(new ConditionAndWrapper().in("upstreamId", ids), UpstreamServer.class);
 	}
 
 	
