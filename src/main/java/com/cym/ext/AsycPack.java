@@ -5,6 +5,7 @@ import java.util.List;
 import com.cym.model.Basic;
 import com.cym.model.Cert;
 import com.cym.model.CertCode;
+import com.cym.model.DenyAllow;
 import com.cym.model.Http;
 import com.cym.model.Location;
 import com.cym.model.Param;
@@ -30,12 +31,22 @@ public class AsycPack {
 	List<Cert> certList;
 	List<CertCode> certCodeList;
 	
+	List<DenyAllow> denyAllowList;
+	
 	String acmeZip;
 	
 	String certZip;
 	
 	
 	
+	public List<DenyAllow> getDenyAllowList() {
+		return denyAllowList;
+	}
+
+	public void setDenyAllowList(List<DenyAllow> denyAllowList) {
+		this.denyAllowList = denyAllowList;
+	}
+
 	public String getCertZip() {
 		return certZip;
 	}

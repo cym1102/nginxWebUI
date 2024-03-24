@@ -896,6 +896,10 @@ public class ConfService {
 			asycPack.setCertZip(certService.getCertZipBase64());
 		}
 
+		if (hasStr(asycData, "denyAllow") || hasStr(asycData, "all")) {
+			asycPack.setDenyAllowList(sqlHelper.findAll(DenyAllow.class));
+		}
+
 		return asycPack;
 	}
 
@@ -961,6 +965,11 @@ public class ConfService {
 				sqlHelper.insertAll(asycPack.getTemplateList());
 				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Param.class);
 				sqlHelper.insertAll(asycPack.getParamList());
+			}
+
+			if (asycPack.getDenyAllowList() != null) {
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), DenyAllow.class);
+				sqlHelper.insertAll(asycPack.getDenyAllowList());
 			}
 
 			if (asycPack.getPasswordList() != null) {
