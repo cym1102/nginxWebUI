@@ -18,6 +18,7 @@ import com.cym.model.Log;
 import com.cym.model.Server;
 import com.cym.model.Upstream;
 import com.cym.service.DenyAllowService;
+import com.cym.service.SettingService;
 import com.cym.sqlhelper.bean.Page;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
@@ -30,6 +31,9 @@ public class DenyAllowController extends BaseController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Inject
 	DenyAllowService denyAllowService;
+
+	@Inject
+	SettingService settingService;
 
 	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView, Page page) {
@@ -57,14 +61,14 @@ public class DenyAllowController extends BaseController {
 
 	@Mapping("addOver")
 	public JsonResult addOver(DenyAllow denyAllow) {
-		
-		//ip去重
+		// ip去重
 		denyAllowService.removeSame(denyAllow);
-		
+
 		sqlHelper.insertOrUpdate(denyAllow);
 
 		return renderSuccess();
 	}
+
 
 	@Mapping("detail")
 	public JsonResult detail(String id) {

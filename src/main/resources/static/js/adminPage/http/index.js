@@ -17,7 +17,7 @@ $(function() {
 			}
 		});
 	});
-	
+
 	form.on('checkbox(checkAll)', function(data) {
 		if (data.elem.checked) {
 			$("input[name='ids']").prop("checked", true)
@@ -26,8 +26,31 @@ $(function() {
 		}
 
 		form.render();
-	});	
+	});
+
+	form.on('select(denyAllowValue)', function(data) {
+		checkDenyAllow(data.value);
+	});
+
 })
+
+
+function checkDenyAllow(value) {
+	$("#denyDiv").hide();
+	$("#allowDiv").hide();
+
+	if (value == 1) {
+		$("#denyDiv").show();
+	}
+	if (value == 2) {
+		$("#allowDiv").show();
+	}
+	if (value == 3) {
+		$("#denyDiv").show();
+		$("#allowDiv").show();
+	}
+}
+
 
 function search() {
 	$("input[name='curr']").val(1);
@@ -145,7 +168,7 @@ function delMany() {
 
 		$.ajax({
 			type: 'POST',
-			url : ctx + '/adminPage/http/del',
+			url: ctx + '/adminPage/http/del',
 			data: {
 				id: ids.join(",")
 			},
@@ -200,7 +223,7 @@ function addGiudeOver() {
 	var http = {
 		name: "gzip_types",
 		value: "",
-		unit : ""
+		unit: ""
 	};
 
 	$("input[name='type']").each(function() {
@@ -229,6 +252,7 @@ function addGiudeOver() {
 		url: ctx + '/adminPage/http/addGiudeOver',
 		data: {
 			json: JSON.stringify(params),
+			mimeTypes: $("#mimeTypes").prop("checked"),
 			logStatus: $("#logStatus").prop("checked"),
 			webSocket: $("#webSocket").prop("checked")
 		},
@@ -259,6 +283,73 @@ function setOrder(id, count) {
 		dataType: 'json',
 		success: function(data) {
 			closeLoad();
+			if (data.success) {
+				location.reload();
+			} else {
+				layer.msg(data.msg)
+			}
+		},
+		error: function() {
+			closeLoad();
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+}
+
+
+function setDenyAllow() {
+
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/http/getDenyAllow',
+		dataType: 'json',
+		success: function(data) {
+			closeLoad();
+			if (data.success) {
+				var map = data.obj;
+
+				$("#denyAllowValue").val(map.denyAllow);
+				if (map.denyId != null) {
+					$("#denyIdValue").val(map.denyId);
+				}
+				if (map.allowId != null) {
+					$("#allowIdValue").val(map.allowId);
+				}
+				checkDenyAllow(map.denyAllow);
+
+				form.render();
+				layer.open({
+					type: 1,
+					title: serverStr.denyAllowModel,
+					area: ['650px', '500px'], // 宽高
+					content: $('#denyAllowDiv')
+				});
+			} else {
+				layer.msg(data.msg)
+			}
+		},
+		error: function() {
+			closeLoad();
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+}
+
+function setDenyAllowOver() {
+	var denyAllow = $("#denyAllowValue").val();
+	var denyId = $("#denyIdValue").val();
+	var allowId = $("#allowIdValue").val();
+
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/http/setDenyAllow',
+		data: {
+			denyAllow: denyAllow,
+			denyId: denyId,
+			allowId: allowId
+		},
+		dataType: 'json',
+		success: function(data) {
 			if (data.success) {
 				location.reload();
 			} else {

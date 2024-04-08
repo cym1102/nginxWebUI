@@ -139,8 +139,7 @@ public class ServerController extends BaseController {
 				str.add("<span class='path'>" + location.getPath() + "</span>"//
 						+ "<a class='descrBtn' href='javascript:editLocationDescr(\"" + location.getId() + "\")'>" + descr + "</a>"//
 						+ "<br>"//
-						+ "<span class='value'>"//
-						+ location.getRootPath() + "</span>");
+						+ "<span class='value'>" + location.getRootPath() + "</span>");
 			} else if (location.getType() == 2) {
 				Upstream upstream = sqlHelper.findById(location.getUpstreamId(), Upstream.class);
 				if (upstream != null) {
@@ -149,6 +148,11 @@ public class ServerController extends BaseController {
 							+ "<br>"//
 							+ "<span class='value'>http://" + upstream.getName() + (location.getUpstreamPath() != null ? location.getUpstreamPath() : "") + "</span>");
 				}
+			} else if (location.getType() == 4) {
+				str.add("<span class='path'>" + location.getPath() + "</span>"//
+						+ "<a class='descrBtn' href='javascript:editLocationDescr(\"" + location.getId() + "\")'>" + descr + "</a>"//
+						+ "<br>"//
+						+ "<span class='value'>" + location.getReturnUrl() + "</span>");
 			} else if (location.getType() == 3) {
 				str.add("<span class='path'>" + location.getPath() + "</span>" //
 						+ "<a class='descrBtn' href='javascript:editLocationDescr(\"" + location.getId() + "\")'>" + descr + "</a>");
@@ -202,7 +206,7 @@ public class ServerController extends BaseController {
 
 	@Mapping("del")
 	public JsonResult del(String id) {
-		
+
 		serverService.deleteById(id);
 
 		return renderSuccess();
@@ -272,46 +276,6 @@ public class ServerController extends BaseController {
 		sqlHelper.updateById(server);
 
 		return renderSuccess();
-	}
-
-	@Mapping("preview")
-	public JsonResult preview(String id, String type) {
-		NgxBlock ngxBlock = null;
-		if (type.equals("server")) {
-			Server server = sqlHelper.findById(id, Server.class);
-			ngxBlock = confService.bulidBlockServer(server);
-		} else if (type.equals("upstream")) {
-			Upstream upstream = sqlHelper.findById(id, Upstream.class);
-			ngxBlock = confService.buildBlockUpstream(upstream);
-		} else if (type.equals("http")) {
-			List<Http> httpList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Http.class);
-			ngxBlock = new NgxBlock();
-			ngxBlock.addValue("http");
-			for (Http http : httpList) {
-				if (http.getEnable() == null || !http.getEnable()) {
-					continue;
-				}
-
-				NgxParam ngxParam = new NgxParam();
-				ngxParam.addValue(http.getName().trim() + " " + http.getValue().trim());
-				ngxBlock.addEntry(ngxParam);
-			}
-		} else if (type.equals("stream")) {
-			List<Stream> streamList = sqlHelper.findAll(new Sort("seq", Direction.ASC), Stream.class);
-			ngxBlock = new NgxBlock();
-			ngxBlock.addValue("stream");
-			for (Stream stream : streamList) {
-				NgxParam ngxParam = new NgxParam();
-				ngxParam.addValue(stream.getName() + " " + stream.getValue());
-				ngxBlock.addEntry(ngxParam);
-			}
-		}
-		NgxConfig ngxConfig = new NgxConfig();
-		ngxConfig.addEntry(ngxBlock);
-
-		String conf = ToolUtils.handleConf(new NgxDumper(ngxConfig).dump());
-
-		return renderSuccess(conf);
 	}
 
 	@Mapping("setOrder")

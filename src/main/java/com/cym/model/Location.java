@@ -25,10 +25,11 @@ public class Location extends BaseModel {
 	 */
 	String path;
 	/**
-	 * 代理类型 0:动态代理(默认) 1:静态代理 2:负载均衡 3:空白代理
+	 * 代理类型 0:动态代理(默认) 1:静态代理 2:负载均衡 3:空白代理 4:重定向
 	 */
 	@InitValue("0")
 	Integer type;
+	
 	@JsonIgnore
 	String locationParamJson;
 
@@ -88,6 +89,21 @@ public class Location extends BaseModel {
 	 * 描述
 	 */
 	String descr;
+	
+	/**
+	 * 重定向路径
+	 */
+	String returnUrl;
+	
+
+	
+	public String getReturnUrl() {
+		return returnUrl;
+	}
+
+	public void setReturnUrl(String returnUrl) {
+		this.returnUrl = returnUrl;
+	}
 
 	public Integer getCros() {
 		return cros;

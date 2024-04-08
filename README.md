@@ -13,7 +13,11 @@ QQ技术交流群2: 560797506
 
 官网地址: http://www.nginxwebui.cn
 
-github: https://github.com/cym1102/nginxWebUI
+Gitee: https://gitee.com/cym1102/nginxWebUI
+
+Github: https://github.com/cym1102/nginxWebUI
+
+视频教程: https://www.bilibili.com/video/BV18A4y1D7GZ
 
 微信捐赠二维码
 
@@ -83,9 +87,9 @@ Path : JDK安装目录\bin
 
 ```
 Linux: mkdir /home/nginxWebUI/ 
-       wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.9.7.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-4.0.2.jar
 
-Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-3.9.7.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
+Windows: 直接使用浏览器下载 http://file.nginxwebui.cn/nginxWebUI-4.0.2.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
 ```
 
 有新版本只需要修改路径中的版本即可

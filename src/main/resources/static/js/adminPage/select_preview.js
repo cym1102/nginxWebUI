@@ -3,7 +3,7 @@ function preview(id,type){
 	
 	$.ajax({
 		type: 'POST',
-		url: ctx + '/adminPage/server/preview',
+		url: ctx + '/adminPage/main/preview',
 		data: {
 			id: id,
 			type : type

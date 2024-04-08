@@ -341,8 +341,9 @@ function apiPage() {
 	window.open(ctx + "/doc.html")
 }
 
-
+/*
 function permission(id) {
 
 
 }
+*/

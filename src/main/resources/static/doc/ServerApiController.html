@@ -6,7 +6,7 @@
     <meta name="generator" content="smart-doc">
     <title>nginxWebUI</title>
     <link rel="stylesheet" href="font.css">
-    <link rel="stylesheet" href="AllInOne.css?v=1711155848366"/>
+    <link rel="stylesheet" href="AllInOne.css?v=1712470833132"/>
     
     <style>.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint {
         background: #f7f7f8;
@@ -607,7 +607,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdate?def=0&rewrite=0&ssl=0&http2=0&proxyProtocol=0&proxyType=0&enable=true&denyAllow=0&listen=&key=&proxyUpstreamId=&passwordId=&allowId=&rewriteListen=&pem=&denyId=&descr=&protocols=&id=&serverName=</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdate?def=0&rewrite=0&ssl=0&http2=0&proxyProtocol=0&proxyType=0&enable=true&denyAllow=0&pem=&descr=&serverName=&id=&key=&passwordId=&rewriteListen=&denyId=&proxyUpstreamId=&listen=&allowId=&protocols=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -883,7 +883,7 @@
                     <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">└─type</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理类型 0:动态代理(默认) 1:静态代理 2:负载均衡 3:空白代理</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理类型 0:动态代理(默认) 1:静态代理 2:负载均衡 3:空白代理 4:重定向</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
 
@@ -970,6 +970,13 @@
                         <td class="tableblock halign-left valign-top"><p class="tableblock">描述</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">└─returnUrl</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">重定向路径</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
                     </tbody>
                 </table>
                 <div class="paragraph"><p><strong>Response-example:</strong></p></div>
@@ -996,7 +1003,8 @@
       "headerHost": "",
       "websocket": 0,
       "cros": 0,
-      "descr": ""
+      "descr": "",
+      "returnUrl": ""
     }
   ]
 }</code></pre>
@@ -1059,7 +1067,7 @@
                     <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">int32</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理类型 0:动态代理(默认) 1:静态代理 2:负载均衡 3:空白代理</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">代理类型 0:动态代理(默认) 1:静态代理 2:负载均衡 3:空白代理 4:重定向</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
@@ -1159,12 +1167,20 @@
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">returnUrl</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">重定向路径</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
                     </tbody>
                 </table>
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdateLocation?type=0&header=0&websocket=0&cros=0&descr=&upstreamType=&upstreamId=&path=&id=&rootPage=&rootPath=&headerHost=&rootType=&serverId=&value=&upstreamPath=</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/server/insertOrUpdateLocation?type=0&header=0&websocket=0&cros=0&serverId=&rootPage=&rootType=&id=&rootPath=&value=&headerHost=&upstreamPath=&descr=&upstreamType=&returnUrl=&path=&upstreamId=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -1329,12 +1345,12 @@
             </div>
         </div>
     </div>
-    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2024-03-23 09:04:08</span><span
+    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2024-04-07 14:20:33</span><span
             class="footer-modification">Suggestions,contact,support and error reporting on<a
             href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">&nbsp;Gitee</a>&nbsp;or<a
             href="https://github.com/smart-doc-group/smart-doc.git" target="_blank">&nbsp;Github</a></span></footer>
 </div>
-<script src="search.js?v=1711155848366"></script>
+<script src="search.js?v=1712470833132"></script>
 <script>
     $(function () {
         const Accordion = function (el, multiple) {

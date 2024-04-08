@@ -41,6 +41,8 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 
@@ -157,7 +159,7 @@ public class AppFilter implements Filter {
 			String url = buildUrl(ctxStr, ctx, remote);
 
 			try {
-				String rs = null;
+				HttpResponse httpResponse = null;
 				if (url.contains("main/upload")) {
 					// 上传文件
 					Map<String, Object> map = new HashMap<>();
@@ -169,35 +171,20 @@ public class AppFilter implements Filter {
 					uploadedFile.transferTo(temp);
 					map.put("file", temp);
 
-					rs = HttpUtil.post(url, map);
-
+					httpResponse = HttpRequest.post(url).form(map).execute();
 				} else {
 					// 普通请求
 					Admin admin = new BaseController().getAdmin();
 					String body = buldBody(ctx.paramsMap(), remote, admin);
-					rs = HttpUtil.post(url, body);
-				}
 
+					httpResponse = HttpRequest.post(url).body(body).execute();
+				}
+				
 				ctx.charset("utf-8");
-				ctx.contentType("text/html;charset=utf-8");
-
-				if (JSONUtil.isTypeJSON(rs)) {
-					String date = DateUtil.format(new Date(), "yyyy-MM-dd_HH-mm-ss");
-					ctx.headerOrDefault("Content-Type", "application/octet-stream");
-					ctx.headerOrDefault("content-disposition", "attachment;filename=" + URLEncoder.encode(date + ".json", "UTF-8")); // 设置文件名
-
-					byte[] buffer = new byte[1024];
-					BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(rs.getBytes(StandardCharsets.UTF_8)));
-					OutputStream os = ctx.outputStream();
-					int i = bis.read(buffer);
-					while (i != -1) {
-						os.write(buffer, 0, i);
-						i = bis.read(buffer);
-					}
-				} else {
-					ctx.output(rs);
-				}
-
+				ctx.headerSet("Content-Type", httpResponse.header("Content-Type"));
+				ctx.headerSet("content-disposition",httpResponse.header("content-disposition")); // 设置文件名
+				ctx.output(httpResponse.body());
+				
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				ctx.redirect("/adminPage/login/noServer");

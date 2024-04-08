@@ -4,11 +4,19 @@
 Nginx web page configuration tool
 
 QQ Group1: 1106758598
+
 QQ Group2: 560797506
 
 Email: cym1102@qq.com
 
-official website: http://www.nginxwebui.cn
+Official website: http://www.nginxwebui.cn
+
+Gitee: https://gitee.com/cym1102/nginxWebUI
+
+Github: https://github.com/cym1102/nginxWebUI
+
+Video tutorial: https://www.bilibili.com/video/BV18A4y1D7GZ
+
 
 WeChat Donate: 
 
@@ -75,9 +83,9 @@ reboot
 
 ```
 Linux: mkdir /home/nginxWebUI/   
-       wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-3.9.7.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar http://file.nginxwebui.cn/nginxWebUI-4.0.2.jar
 
-Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-3.9.7.jar into D:/home/nginxWebUI/
+Windows: Download directly from your browser http://file.nginxwebui.cn/nginxWebUI-4.0.2.jar into D:/home/nginxWebUI/
 ```
 
 With a new version, you just need to change the version in the path

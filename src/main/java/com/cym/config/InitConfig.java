@@ -119,6 +119,11 @@ public class InitConfig {
 		// 把acme的证书转移回来
 		returnAcme(acmeShDir);
 
+		// 全局黑白名单
+		if (settingService.get("denyAllow") == null) {
+			settingService.set("denyAllow", "0");
+		}
+
 		if (SystemTool.isLinux()) {
 			// 查找ngx_stream_module模块
 			if (!basicService.contain("ngx_stream_module.so") && FileUtil.exist("/usr/lib/nginx/modules/ngx_stream_module.so")) {
