@@ -282,7 +282,7 @@
 							</div>
 
 
-							<div class="layui-form-item">
+							<div class="layui-form-item" style="margin-bottom: 0px;">
 								<label class="layui-form-label">
 									${serverStr.listen}
 									<span class="red">*</span>
@@ -290,11 +290,13 @@
 								<div class="layui-input-inline">
 									<input type="text" name="ip" id="ip" class="layui-input" style="width: 125px; display: inline-block;" placeholder="${serverStr.ipDefault}">
 									<input type="text" name="listen" id="listen" style="width: 60px; display: inline-block;" class="layui-input" placeholder="${serverStr.port}">
-									<div class="layui-input-inline" style="width: 250px;">
-									<input type="checkbox" name="def" id="def" title="default" lay-skin="primary">
-									<input type="checkbox" name="proxyProtocol" id="proxyProtocol" title="proxy protocol" lay-skin="primary">
-									</div>
 								</div>
+							</div>
+							
+							<div class="layui-form-item" style="padding-left: 30px;">
+								<input type="checkbox" name="def" id="def" title="default" lay-skin="primary">
+								<input type="checkbox" name="proxyProtocol" id="proxyProtocol" title="proxy protocol" lay-skin="primary">
+								<input type="checkbox" name="ipv6" id="ipv6" title="${serverStr.ipv6}" lay-skin="primary" >
 							</div>
 
 						
@@ -383,7 +385,7 @@
 							<div class="layui-form-item">
 
 								<label class="layui-form-label">${serverStr.http2}</label>
-								<div class="layui-input-inline" style="width: 150px;">
+								<div class="layui-input-inline" style="width: 250px;">
 									<select name="http2" id="http2" >
 										<option value="2">${commonStr.yes} (${serverStr.http2New})</option>
 										<option value="1">${commonStr.yes} (${serverStr.http2Old})</option>

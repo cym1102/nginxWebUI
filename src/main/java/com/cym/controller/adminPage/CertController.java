@@ -237,7 +237,7 @@ public class CertController extends BaseController {
 				cmd += homeConfig.acmeSh + " --issue --dns " + dnsType + domain + keylength + " --server letsencrypt";
 			} else if (cert.getType() == 2) {
 				// AcmeDNS验证
-				if (StrUtil.isEmpty(cert.getFulldomain())) { // 查看是否获取了参数
+				if (StrUtil.isEmpty(settingService.get("fulldomain"))) { // 查看是否获取了DNS记录
 					isInApply = false;
 					return renderError(m.get("certStr.error6"));
 				}
@@ -251,7 +251,7 @@ public class CertController extends BaseController {
 			cmd += homeConfig.acmeSh + " --renew --force " + ecc + " -d " + domain;
 		}
 
-		String rs = timeExeUtils.execCMD(cmd, envs, 5 * 60 * 1000);
+		String rs = timeExeUtils.execCMD(cmd, envs, 3 * 60 * 1000);
 
 		if (rs.contains("Your cert is in")) {
 			// 申请成功, 定位证书
@@ -335,9 +335,9 @@ public class CertController extends BaseController {
 			}
 		} else if (cert.getType() == 2) {
 			list.add("ACMEDNS_BASE_URL=" + acmeDnsAuth);
-			list.add("ACMEDNS_USERNAME=" + cert.getUsername());
-			list.add("ACMEDNS_PASSWORD=" + cert.getPassword());
-			list.add("ACMEDNS_SUBDOMAIN=" + cert.getSubdomain());
+			list.add("ACMEDNS_USERNAME=" + settingService.get("username"));
+			list.add("ACMEDNS_PASSWORD=" + settingService.get("password"));
+			list.add("ACMEDNS_SUBDOMAIN=" + settingService.get("subdomain"));
 		}
 
 		return list.toArray(new String[] {});
@@ -347,52 +347,36 @@ public class CertController extends BaseController {
 	public JsonResult getTxtValue(String id) {
 		Cert cert = sqlHelper.findById(id, Cert.class);
 
-		if (StrUtil.isNotEmpty(cert.getFulldomain())) {
-			List<CertCode> certCodes = new ArrayList<CertCode>();
-
-			CertCode certCode = new CertCode();
-			certCode.setDomain(buildDomain(cert.getDomain()));
-			certCode.setType("CNAME");
-			certCode.setValue(cert.getFulldomain());
-			certCodes.add(certCode);
-
-			return renderSuccess(certCodes);
-		} else {
+		if (StrUtil.isEmpty(settingService.get("fulldomain"))) {
 			// 从acme-dns服务器获取TXT
 			try {
-				if (StrUtil.isEmpty(cert.getFulldomain())) {
 
-					Map<String, Object> paramMap = new HashMap<>();
-					String rs = HttpUtil.post(acmeDnsAuth + "/register", paramMap);
-					logger.info(rs);
+				Map<String, Object> paramMap = new HashMap<>();
+				String rs = HttpUtil.post(acmeDnsAuth + "/register", paramMap);
+				logger.info(rs);
 
-					JSONObject jsonObject = JSONUtil.parseObj(rs);
+				JSONObject jsonObject = JSONUtil.parseObj(rs);
+				settingService.set("username", jsonObject.getStr("username"));
+				settingService.set("password", jsonObject.getStr("password"));
+				settingService.set("fulldomain", jsonObject.getStr("fulldomain"));
+				settingService.set("subdomain", jsonObject.getStr("subdomain"));
 
-					cert.setUsername(jsonObject.getStr("username"));
-					cert.setPassword(jsonObject.getStr("password"));
-					cert.setFulldomain(jsonObject.getStr("fulldomain"));
-					cert.setSubdomain(jsonObject.getStr("subdomain"));
-
-					sqlHelper.updateById(cert);
-
-				}
-
-				List<CertCode> certCodes = new ArrayList<CertCode>();
-
-				CertCode certCode = new CertCode();
-
-				certCode.setDomain(buildDomain(cert.getDomain()));
-				certCode.setType("CNAME");
-				certCode.setValue(cert.getFulldomain());
-				certCodes.add(certCode);
-
-				return renderSuccess(certCodes);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
+				return renderError(m.get("certStr.error7"));
 			}
 		}
 
-		return renderError(m.get("certStr.error7"));
+		List<CertCode> certCodes = new ArrayList<CertCode>();
+
+		CertCode certCode = new CertCode();
+		certCode.setDomain(buildDomain(cert.getDomain()));
+		certCode.setType("CNAME");
+		certCode.setValue(settingService.get("fulldomain"));
+		certCodes.add(certCode);
+
+		return renderSuccess(certCodes);
+
 	}
 
 	private static String buildDomain(String domain) {

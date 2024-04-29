@@ -181,6 +181,7 @@ function add() {
 	$("#id").val("");
 	$("#listen").val("");
 	$("#def").prop("checked", false);
+	$("#ipv6").prop("checked", false);
 	$("#proxyProtocol").prop("checked", false);
 	$("#ip").val("");
 	$("#serverName").val("");
@@ -286,6 +287,7 @@ function addOver() {
 
 	server.proxyProtocol = $("#proxyProtocol").prop("checked") ? "1" : "0";
 	server.def = $("#def").prop("checked") ? "1" : "0";
+	server.ipv6 = $("#ipv6").prop("checked") ? "1" : "0";
 	server.serverName = $("#serverName").val();
 	server.ssl = $("#ssl").val();
 	server.pem = $("#pem").val();
@@ -405,6 +407,7 @@ function edit(id, clone) {
 
 				$("#def").prop("checked", server.def == 1);
 				$("#proxyProtocol").prop("checked", server.proxyProtocol == 1);
+				$("#ipv6").prop("checked", server.ipv6 == 1);
 				$("#serverName").val(server.serverName);
 				$("#ssl").val(server.ssl);
 				$("#pem").val(server.pem);

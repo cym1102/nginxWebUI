@@ -18,6 +18,7 @@ public class Server extends BaseModel {
 	String serverName;
 	/**
 	 * 监听ip端口 (格式 ip:port或port)
+	 * 
 	 * @required
 	 */
 	String listen;
@@ -25,32 +26,39 @@ public class Server extends BaseModel {
 	 * 是否为默认server 0否(默认) 1是
 	 */
 	@InitValue("0")
-	Integer def; 
+	Integer def;
+
+	/**
+	 * 同时监控ipv6 0否(默认) 1是
+	 */
+	@InitValue("0")
+	Integer ipv6;
+
 	/**
 	 * 是否http跳转https 0否(默认) 1是
 	 */
 	@InitValue("0")
-	Integer rewrite; 
+	Integer rewrite;
 	/**
 	 * http跳转https监听ip端口,默认为80 (格式 ip:port或port)
 	 */
 	@InitValue("80")
-	String rewriteListen; 
+	String rewriteListen;
 	/**
 	 * 是否开启ssl 0否(默认) 1是
 	 */
 	@InitValue("0")
-	Integer ssl; 
+	Integer ssl;
 	/**
 	 * 是否开启http2 0否(默认) 1是(旧版写法) 2是(新版写法)
 	 */
 	@InitValue("0")
-	Integer http2; 
+	Integer http2;
 	/**
 	 * 是否开启proxy_protocol 0否(默认) 1是
 	 */
 	@InitValue("0")
-	Integer proxyProtocol; 
+	Integer proxyProtocol;
 	/**
 	 * ssl证书pem文件路径
 	 */
@@ -80,12 +88,12 @@ public class Server extends BaseModel {
 	/**
 	 * 描述
 	 */
-	String descr; 
+	String descr;
 	/**
 	 * 加密协议 (默认:TLSv1 TLSv1.1 TLSv1.2 TLSv1.3)
 	 */
 	@InitValue("TLSv1 TLSv1.1 TLSv1.2 TLSv1.3")
-	String protocols; 
+	String protocols;
 	/**
 	 * 使用的password文件Id
 	 */
@@ -96,9 +104,9 @@ public class Server extends BaseModel {
 	/**
 	 * IP黑白名单模式, 0:正常模式 1:黑名单模式 2:白名单模式 3:黑白名单模式
 	 */
-	@InitValue("0")	
+	@InitValue("0")
 	Integer denyAllow;
-	
+
 	/**
 	 * 黑名单id
 	 */
@@ -107,10 +115,6 @@ public class Server extends BaseModel {
 	 * 白名单id
 	 */
 	String allowId;
-	
-
-	
-
 
 	public String getDenyId() {
 		return denyId;
@@ -286,6 +290,14 @@ public class Server extends BaseModel {
 
 	public void setRewriteListen(String rewriteListen) {
 		this.rewriteListen = rewriteListen;
+	}
+
+	public Integer getIpv6() {
+		return ipv6;
+	}
+
+	public void setIpv6(Integer ipv6) {
+		this.ipv6 = ipv6;
 	}
 
 }

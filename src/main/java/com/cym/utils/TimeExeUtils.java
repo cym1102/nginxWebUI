@@ -1,15 +1,15 @@
 package com.cym.utils;
 
-import cn.hutool.core.util.ArrayUtil;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class TimeExeUtils {
@@ -28,20 +28,22 @@ public class TimeExeUtils {
 	 */
 	public String execCMD(String cmd, String[] envs, long timeout) {
 		logger.info(cmd);
-		
+
 		Process process = null;
 		StringBuilder sbStd = new StringBuilder();
 
-		String[] allEnvs = ArrayUtil.addAll(System.getenv() //
-				.entrySet()//
-				.stream()//
-				.map(r -> String.format("%s=%s", r.getKey(), r.getValue()))//
-				.toArray(String[]::new), envs);
-
 		long start = System.currentTimeMillis();
 		try {
-			process = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", cmd }, allEnvs);
 
+			ProcessBuilder processBuilder = new ProcessBuilder("/bin/sh", "-c", cmd);
+			Map<String, String> environmentMap = processBuilder.environment();
+			for (String env : envs) {
+				environmentMap.put(env.split("=")[0], env.split("=")[1]);
+			}
+			processBuilder.redirectErrorStream(true);// 将错误流中的数据合并到输入流
+			process = processBuilder.start();
+
+			// 输出正常信息
 			BufferedReader brStd = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			String line = null;
 
@@ -73,9 +75,10 @@ public class TimeExeUtils {
 				try {
 					TimeUnit.MILLISECONDS.sleep(500);
 				} catch (InterruptedException e) {
-					//System.err.println(e.getMessage());
+					System.err.println(e.getMessage());
 				}
 			}
+
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
 		} finally {
