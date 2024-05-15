@@ -21,8 +21,6 @@ import cn.hutool.core.util.StrUtil;
 /**
  * 基础参数接口
  * 
- * @author CYM
- *
  */
 @Mapping("/api/basic")
 @Controller

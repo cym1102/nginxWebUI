@@ -1,7 +1,9 @@
 package com.cym.controller.adminPage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
@@ -9,6 +11,7 @@ import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.ModelAndView;
 
 import com.cym.model.Stream;
+import com.cym.service.SettingService;
 import com.cym.service.StreamService;
 import com.cym.utils.BaseController;
 import com.cym.utils.JsonResult;
@@ -21,6 +24,8 @@ import cn.hutool.core.util.StrUtil;
 public class StreamController extends BaseController {
 	@Inject
 	StreamService streamService;
+	@Inject
+	SettingService settingService;
 
 	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView) {
@@ -94,6 +99,27 @@ public class StreamController extends BaseController {
 		}
 
 		streamService.setAll(streams);
+
+		return renderSuccess();
+	}
+
+	@Mapping("getDenyAllow")
+	public JsonResult getDenyAllow() {
+
+		Map<String, String> map = new HashMap<>();
+		map.put("denyAllowStream", settingService.get("denyAllowStream"));
+		map.put("denyIdStream", settingService.get("denyIdStream"));
+		map.put("allowIdStream", settingService.get("allowIdStream"));
+
+		return renderSuccess(map);
+	}
+
+	@Mapping("setDenyAllow")
+	public JsonResult setDenyAllow(String denyAllow, String denyId, String allowId) {
+
+		settingService.set("denyAllowStream", denyAllow);
+		settingService.set("denyIdStream", denyId);
+		settingService.set("allowIdStream", allowId);
 
 		return renderSuccess();
 	}

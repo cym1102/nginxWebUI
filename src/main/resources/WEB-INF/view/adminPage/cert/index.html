@@ -187,9 +187,9 @@
 					<label class="layui-form-label">${certStr.getWay}</label>
 					<div class="layui-input-inline">
 						<select name="type" id="type" lay-filter='type'>
+							<option value="2">${certStr.byDns} (${certStr.recommend})</option>
 							<option value="0">${certStr.byApply}</option>
 							<option value="1">${certStr.manualUp}</option>
-							<option value="2">${certStr.byDns}</option>
 						</select>
 					</div>
 				</div>
@@ -402,23 +402,20 @@
 		</div>
 
 		<div class="layui-form" id="txtDiv" style="padding: 15px; display: none">
-			<div>
-
-				<div class="layui-form-item">
-					<div>${certStr.dnsDescr}</div>
-					<table class="layui-table layui-form" lay-size="sm">
-						<thead>
-							<tr>
-								<th>${certStr.records}</th>
-								<th>${certStr.recordsType}</th>
-								<th>${certStr.recordsValue}</th>
-							</tr>
-						</thead>
-						<tbody id="notice">
-							
-						</tbody>
-					</table>
-				</div>
+			<div class="layui-form-item">
+				<div>${certStr.dnsDescr}</div>
+				<table class="layui-table layui-form" lay-size="sm">
+					<thead>
+						<tr>
+							<th>${certStr.records}</th>
+							<th>${certStr.recordsType}</th>
+							<th>${certStr.recordsValue}</th>
+						</tr>
+					</thead>
+					<tbody id="notice">
+						
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>

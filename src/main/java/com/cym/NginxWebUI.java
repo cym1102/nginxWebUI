@@ -16,6 +16,7 @@ import com.cym.utils.JarUtil;
 import com.cym.utils.SystemTool;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.RuntimeUtil;
 
 @EnableScheduling
@@ -61,7 +62,8 @@ public class NginxWebUI {
 			if (!pid.equals(myPid)) {
 				logger.info("杀掉旧进程:" + pid);
 				if (SystemTool.isWindows()) {
-					RuntimeUtil.exec("taskkill /im " + pid + " /f");
+					RuntimeUtil.exec("taskkill /F /PID " + pid);
+					ThreadUtil.safeSleep(1000); // win下等待1秒,否则文件不会被释放
 				} else if (SystemTool.isLinux()) {
 					RuntimeUtil.exec("kill -9 " + pid);
 				}
@@ -99,6 +101,7 @@ public class NginxWebUI {
 	private static void removeJar() {
 		File[] list = new File(JarUtil.getCurrentFilePath()).getParentFile().listFiles();
 		for (File file : list) {
+			logger.info("文件:" + file);
 			if (file.getName().startsWith("nginxWebUI") && file.getName().endsWith(".jar") && !file.getPath().equals(JarUtil.getCurrentFilePath())) {
 				FileUtil.del(file);
 				logger.info("删除文件:" + file);

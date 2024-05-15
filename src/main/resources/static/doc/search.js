@@ -212,29 +212,40 @@ api[7].list.push({
     desc: '获取Token',
 });
 api.push({
-    alias: 'UpstreamApiController',
+    alias: 'UploadController',
     order: '9',
-    desc: '负载均衡(upstream)接口',
-    link: '负载均衡(upstream)接口',
+    desc: '文件上传接口',
+    link: '文件上传接口',
     list: []
 })
 api[8].list.push({
     order: '1',
+    desc: '文件上传',
+});
+api.push({
+    alias: 'UpstreamApiController',
+    order: '10',
+    desc: '负载均衡(upstream)接口',
+    link: '负载均衡(upstream)接口',
+    list: []
+})
+api[9].list.push({
+    order: '1',
     desc: '获取upstream分页列表',
 });
-api[8].list.push({
+api[9].list.push({
     order: '2',
     desc: '添加或编辑upstream',
 });
-api[8].list.push({
+api[9].list.push({
     order: '3',
     desc: '删除upstream',
 });
-api[8].list.push({
+api[9].list.push({
     order: '4',
     desc: '根据upstreamId获取server列表',
 });
-api[8].list.push({
+api[9].list.push({
     order: '5',
     desc: '添加或编辑server',
 });

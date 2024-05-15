@@ -7,6 +7,7 @@ import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
 import org.noear.solon.annotation.Param;
+import org.noear.solon.core.handle.DownloadedFile;
 
 import com.cym.controller.adminPage.CertController;
 import com.cym.model.Cert;
@@ -30,6 +31,7 @@ public class CertApiController extends BaseController {
 	CertController certController;
 	@Inject
 	CertService certService;
+
 
 	/**
 	 * 获取证书分页列表
@@ -63,26 +65,14 @@ public class CertApiController extends BaseController {
 			return renderError("域名为空");
 		}
 
-		if (cert.getType() == 0) {
-			if (StrUtil.isEmpty(cert.getDnsType())) {
-				return renderError("dns提供商为空");
-			}
-
-			if (cert.getDnsType().equals("ali") && (StrUtil.isEmpty(cert.getAliKey()) || StrUtil.isEmpty(cert.getAliSecret()))) {
-				return renderError("aliKey 或 aliSecret为空");
-			}
-			if (cert.getDnsType().equals("dp") && (StrUtil.isEmpty(cert.getDpId()) || StrUtil.isEmpty(cert.getDpKey()))) {
-				return renderError("dpId 或 dpKey为空");
-			}
-			if (cert.getDnsType().equals("cf") && (StrUtil.isEmpty(cert.getCfEmail()) || StrUtil.isEmpty(cert.getCfKey()))) {
-				return renderError("cfEmail 或 cfKey为空");
-			}
-			if (cert.getDnsType().equals("gd") && (StrUtil.isEmpty(cert.getGdKey()) || StrUtil.isEmpty(cert.getGdSecret()))) {
-				return renderError("gdKey 或 gdSecret为空");
-			}
+		if (cert.getType() == 0 && StrUtil.isEmpty(cert.getDnsType())) {
+			return renderError("dns提供商为空");
 		}
 		return certController.addOver(cert, null, null, null);
 	}
+	
+	
+	
 
 	/**
 	 * 获取域名解析码
@@ -93,7 +83,7 @@ public class CertApiController extends BaseController {
 	@Mapping("getTxtValue")
 	public JsonResult getTxtValue(String certId) {
 		Cert cert = sqlHelper.findById(certId, Cert.class);
-		if(cert==null) {
+		if (cert == null) {
 			renderError("证书不存在");
 		}
 		JsonResult jsonResult = certController.getTxtValue(certId);
@@ -128,6 +118,7 @@ public class CertApiController extends BaseController {
 		return certController.del(id);
 	}
 
+
 	/**
 	 * 执行申请
 	 * 
@@ -154,7 +145,7 @@ public class CertApiController extends BaseController {
 	 * 
 	 */
 	@Mapping("download")
-	public void download(String id) throws IOException {
-		certController.download(id);
+	public DownloadedFile download(String id) throws IOException {
+		return certController.download(id);
 	}
 }

@@ -3,6 +3,8 @@ package com.cym.service;
 import java.io.File;
 import java.util.List;
 
+import com.cym.model.Stream;
+import com.cym.sqlhelper.bean.Sort;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 import org.slf4j.Logger;
@@ -66,6 +68,10 @@ public class CertService {
 			}
 		}
 
+	}
+
+	public List<Cert> findAll() {
+		return sqlHelper.findAll(new Sort(Cert::getId, Sort.Direction.ASC), Cert.class);
 	}
 
 	public Page getPage(String keywords, Page page) {

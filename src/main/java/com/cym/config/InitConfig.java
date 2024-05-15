@@ -89,15 +89,15 @@ public class InitConfig {
 			sqlHelper.insertAll(https);
 		}
 
-		// 释放nginx.conf,mime.types
+		// 释放基础nginx配置文件
 		if (!FileUtil.exist(homeConfig.home + "nginx.conf")) {
-			ClassPathResource resource = new ClassPathResource("nginx.conf");
-			FileUtil.writeFromStream(resource.getStream(), homeConfig.home + "nginx.conf");
+			ClassPathResource resource = new ClassPathResource("conf.zip");
+			InputStream inputStream = resource.getStream();
+			FileUtil.writeFromStream(inputStream, homeConfig.home + "conf.zip");
+			ZipUtil.unzip(homeConfig.home + "conf.zip", homeConfig.home);
+			FileUtil.del(homeConfig.home + "conf.zip");
 		}
-		if (!FileUtil.exist(homeConfig.home + "mime.types")) {
-			ClassPathResource resource = new ClassPathResource("mime.types");
-			FileUtil.writeFromStream(resource.getStream(), homeConfig.home + "mime.types");
-		}
+		
 
 		// 设置nginx配置文件
 		String nginxPath = settingService.get("nginxPath");
@@ -117,11 +117,14 @@ public class InitConfig {
 		FileUtil.del(homeConfig.home + "acme.zip");
 
 		// 把acme的证书转移回来
-		returnAcme(acmeShDir);
+//		returnAcme(acmeShDir);
 
 		// 全局黑白名单
 		if (settingService.get("denyAllow") == null) {
 			settingService.set("denyAllow", "0");
+		}
+		if (settingService.get("denyAllowStream") == null) {
+			settingService.set("denyAllowStream", "0");
 		}
 
 		if (SystemTool.isLinux()) {
@@ -157,36 +160,36 @@ public class InitConfig {
 		showLogo();
 	}
 
-	@Deprecated
-	private void returnAcme(String acmeShDir) {
-		// 把FileUtil.getUserHomeDir()/.acme.sh/下证书转移回去
-		File[] files = new File(FileUtil.getUserHomePath() + File.separator + ".acme.sh").listFiles();
-		if (files != null) {
-			for (File file : files) {
-				if (file.isDirectory() && notInAcmeFile(file)) {
-					FileUtil.move(file, new File(homeConfig.home + ".acme.sh"), true);
-				}
-			}
-		}
-
-		// 修改回数据库中证书路径
-		List<Cert> certs = sqlHelper.findAll(Cert.class);
-		for (Cert cert : certs) {
-			boolean changed = false;
-			if (StrUtil.isNotEmpty(cert.getPem()) && cert.getPem().contains(FileUtil.getUserHomePath() + File.separator + ".acme.sh")) {
-				cert.setPem(cert.getPem().replace(FileUtil.getUserHomePath() + File.separator + ".acme.sh" + File.separator, acmeShDir));
-				changed = true;
-			}
-			if (StrUtil.isNotEmpty(cert.getKey()) && cert.getKey().contains(FileUtil.getUserHomePath() + File.separator + ".acme.sh")) {
-				cert.setKey(cert.getKey().replace(FileUtil.getUserHomePath() + File.separator + ".acme.sh" + File.separator, acmeShDir));
-				changed = true;
-			}
-
-			if (changed) {
-				sqlHelper.updateById(cert);
-			}
-		}
-	}
+//	@Deprecated
+//	private void returnAcme(String acmeShDir) {
+//		// 把FileUtil.getUserHomeDir()/.acme.sh/下证书转移回去
+//		File[] files = new File(FileUtil.getUserHomePath() + File.separator + ".acme.sh").listFiles();
+//		if (files != null) {
+//			for (File file : files) {
+//				if (file.isDirectory() && notInAcmeFile(file)) {
+//					FileUtil.move(file, new File(homeConfig.home + ".acme.sh"), true);
+//				}
+//			}
+//		}
+//
+//		// 修改回数据库中证书路径
+//		List<Cert> certs = sqlHelper.findAll(Cert.class);
+//		for (Cert cert : certs) {
+//			boolean changed = false;
+//			if (StrUtil.isNotEmpty(cert.getPem()) && cert.getPem().contains(FileUtil.getUserHomePath() + File.separator + ".acme.sh")) {
+//				cert.setPem(cert.getPem().replace(FileUtil.getUserHomePath() + File.separator + ".acme.sh" + File.separator, acmeShDir));
+//				changed = true;
+//			}
+//			if (StrUtil.isNotEmpty(cert.getKey()) && cert.getKey().contains(FileUtil.getUserHomePath() + File.separator + ".acme.sh")) {
+//				cert.setKey(cert.getKey().replace(FileUtil.getUserHomePath() + File.separator + ".acme.sh" + File.separator, acmeShDir));
+//				changed = true;
+//			}
+//
+//			if (changed) {
+//				sqlHelper.updateById(cert);
+//			}
+//		}
+//	}
 
 	@Deprecated
 	private boolean notInAcmeFile(File file) {

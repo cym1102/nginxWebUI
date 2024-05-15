@@ -121,15 +121,4 @@ public class UpstreamApiController extends BaseController {
 		return renderSuccess(upstreamServer);
 	}
 
-//	/**
-//	 * 删除server
-//	 * @param id  upstream的id
-//	 * 
-//	 */
-//	@ApiOperation("删除server")
-//	@Mapping("deleteServer")
-//	public JsonResult deleteServer(String id) {
-//		upstreamService.del(id);
-//		return renderSuccess();
-//	}
 }
