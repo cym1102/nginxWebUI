@@ -1,6 +1,7 @@
 package com.cym.service;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,7 +47,10 @@ import com.github.odiszapc.nginxparser.NgxParam;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.resource.ClassPathResource;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.ZipUtil;
 
 @Component
 public class ConfService {
@@ -933,6 +937,11 @@ public class ConfService {
 				FileUtil.writeString(subContent.get(i), tagert, StandardCharsets.UTF_8); // 清空
 			}
 		}
+		
+		// 写入周边配置文件
+		ClassPathResource resource = new ClassPathResource("conf.zip");
+		InputStream inputStream = resource.getStream();
+		ZipUtil.unzip(inputStream, new File(new File(nginxPath).getParent().replace("\\", "/")), CharsetUtil.defaultCharset());
 
 		// 备份文件
 		if (isReplace) {

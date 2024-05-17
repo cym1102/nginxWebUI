@@ -181,9 +181,9 @@ public class ConfController extends BaseController {
 		confService.replace(fileTemp, nginxContent, subContent, subName, false, null);
 
 		try {
-			ClassPathResource resource = new ClassPathResource("conf.zip");
-			InputStream inputStream = resource.getStream();
-			ZipUtil.unzip(inputStream, new File(homeConfig.home + "temp/"), CharsetUtil.defaultCharset());
+//			ClassPathResource resource = new ClassPathResource("conf.zip");
+//			InputStream inputStream = resource.getStream();
+//			ZipUtil.unzip(inputStream, new File(homeConfig.home + "temp/"), CharsetUtil.defaultCharset());
 
 			cmd = nginxExe + " -t -c " + fileTemp;
 			if (StrUtil.isNotEmpty(nginxDir)) {
@@ -243,9 +243,9 @@ public class ConfController extends BaseController {
 		String cmd = null;
 
 		try {
-			ClassPathResource resource = new ClassPathResource("conf.zip");
-			InputStream inputStream = resource.getStream();
-			ZipUtil.unzip(inputStream, new File(homeConfig.home + "temp/"), CharsetUtil.defaultCharset());
+//			ClassPathResource resource = new ClassPathResource("conf.zip");
+//			InputStream inputStream = resource.getStream();
+//			ZipUtil.unzip(inputStream, new File(homeConfig.home + "temp/"), CharsetUtil.defaultCharset());
 
 			cmd = nginxExe + " -t -c " + fileTemp;
 			if (StrUtil.isNotEmpty(nginxDir)) {
