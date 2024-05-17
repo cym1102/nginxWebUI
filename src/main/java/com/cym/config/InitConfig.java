@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipInputStream;
 
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Init;
@@ -29,6 +30,7 @@ import com.cym.utils.SystemTool;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
@@ -90,14 +92,17 @@ public class InitConfig {
 		}
 
 		// 释放基础nginx配置文件
-		if (!FileUtil.exist(homeConfig.home + "nginx.conf")) {
+		if (!FileUtil.exist(homeConfig.home + "fastcgi.conf")) {
 			ClassPathResource resource = new ClassPathResource("conf.zip");
 			InputStream inputStream = resource.getStream();
-			FileUtil.writeFromStream(inputStream, homeConfig.home + "conf.zip");
-			ZipUtil.unzip(homeConfig.home + "conf.zip", homeConfig.home);
-			FileUtil.del(homeConfig.home + "conf.zip");
+			ZipUtil.unzip(inputStream, new File(homeConfig.home), CharsetUtil.defaultCharset());
 		}
-		
+		if (!FileUtil.exist(homeConfig.home + "nginx.conf")) {
+			ClassPathResource resource = new ClassPathResource("nginx.conf");
+			InputStream inputStream = resource.getStream();
+			FileUtil.writeFromStream(inputStream, homeConfig.home + "nginx.conf");
+
+		}
 
 		// 设置nginx配置文件
 		String nginxPath = settingService.get("nginxPath");
@@ -111,13 +116,8 @@ public class InitConfig {
 		String acmeShDir = homeConfig.home + ".acme.sh" + File.separator;
 		ClassPathResource resource = new ClassPathResource("acme.zip");
 		InputStream inputStream = resource.getStream();
-		FileUtil.writeFromStream(inputStream, homeConfig.home + "acme.zip");
-		FileUtil.mkdir(acmeShDir);
-		ZipUtil.unzip(homeConfig.home + "acme.zip", acmeShDir);
-		FileUtil.del(homeConfig.home + "acme.zip");
+		ZipUtil.unzip(inputStream, new File(acmeShDir), CharsetUtil.defaultCharset());
 
-		// 把acme的证书转移回来
-//		returnAcme(acmeShDir);
 
 		// 全局黑白名单
 		if (settingService.get("denyAllow") == null) {
@@ -160,46 +160,7 @@ public class InitConfig {
 		showLogo();
 	}
 
-//	@Deprecated
-//	private void returnAcme(String acmeShDir) {
-//		// 把FileUtil.getUserHomeDir()/.acme.sh/下证书转移回去
-//		File[] files = new File(FileUtil.getUserHomePath() + File.separator + ".acme.sh").listFiles();
-//		if (files != null) {
-//			for (File file : files) {
-//				if (file.isDirectory() && notInAcmeFile(file)) {
-//					FileUtil.move(file, new File(homeConfig.home + ".acme.sh"), true);
-//				}
-//			}
-//		}
-//
-//		// 修改回数据库中证书路径
-//		List<Cert> certs = sqlHelper.findAll(Cert.class);
-//		for (Cert cert : certs) {
-//			boolean changed = false;
-//			if (StrUtil.isNotEmpty(cert.getPem()) && cert.getPem().contains(FileUtil.getUserHomePath() + File.separator + ".acme.sh")) {
-//				cert.setPem(cert.getPem().replace(FileUtil.getUserHomePath() + File.separator + ".acme.sh" + File.separator, acmeShDir));
-//				changed = true;
-//			}
-//			if (StrUtil.isNotEmpty(cert.getKey()) && cert.getKey().contains(FileUtil.getUserHomePath() + File.separator + ".acme.sh")) {
-//				cert.setKey(cert.getKey().replace(FileUtil.getUserHomePath() + File.separator + ".acme.sh" + File.separator, acmeShDir));
-//				changed = true;
-//			}
-//
-//			if (changed) {
-//				sqlHelper.updateById(cert);
-//			}
-//		}
-//	}
 
-	@Deprecated
-	private boolean notInAcmeFile(File file) {
-		String name = file.getName();
-		if (name.equalsIgnoreCase(".github") || name.equalsIgnoreCase("deploy") || name.equalsIgnoreCase("dnsapi") || name.equalsIgnoreCase("notify") || name.equalsIgnoreCase("acme.sh")) {
-			return false;
-		}
-
-		return true;
-	}
 
 	private boolean hasNginx() {
 		String rs = RuntimeUtil.execForStr("which nginx");

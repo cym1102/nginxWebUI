@@ -1,10 +1,12 @@
 package com.cym.controller.adminPage;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
@@ -33,6 +35,7 @@ import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -53,7 +56,7 @@ public class ConfController extends BaseController {
 	MainController mainController;
 	@Inject
 	VersionConfig versionConfig;
-	
+
 	String aesKey = "aes";
 
 	@Mapping("")
@@ -147,7 +150,6 @@ public class ConfController extends BaseController {
 		}
 		return jsonObject.toStringPretty();
 	}
-	
 
 	/**
 	 * 检查数据库内部配置
@@ -163,19 +165,25 @@ public class ConfController extends BaseController {
 		settingService.set("nginxExe", nginxExe);
 		String nginxDir = ToolUtils.handleConf(settingService.get("nginxDir"));
 		settingService.set("nginxDir", nginxDir);
-		
+
 		String rs = null;
 		String cmd = null;
 
 		FileUtil.del(homeConfig.home + "temp");
 		String fileTemp = homeConfig.home + "temp/nginx.conf";
 
-		try {
-			ConfExt confExt = confService.buildConf(false, true);
-			FileUtil.writeString(confExt.getConf(), fileTemp, CharsetUtil.CHARSET_UTF_8);
+		ConfExt confExt = confService.buildConf(false, true);
 
-			ClassPathResource resource = new ClassPathResource("mime.types");
-			FileUtil.writeFromStream(resource.getStream(), homeConfig.home + "temp/mime.types");
+		String nginxContent = confExt.getConf();
+		List<String> subContent = confExt.getFileList().stream().map(ConfFile::getConf).collect(Collectors.toList());
+		List<String> subName = confExt.getFileList().stream().map(ConfFile::getName).collect(Collectors.toList());
+
+		confService.replace(fileTemp, nginxContent, subContent, subName, false, null);
+
+		try {
+			ClassPathResource resource = new ClassPathResource("conf.zip");
+			InputStream inputStream = resource.getStream();
+			ZipUtil.unzip(inputStream, new File(homeConfig.home + "temp/"), CharsetUtil.defaultCharset());
 
 			cmd = nginxExe + " -t -c " + fileTemp;
 			if (StrUtil.isNotEmpty(nginxDir)) {
@@ -218,20 +226,12 @@ public class ConfController extends BaseController {
 
 		JSONObject jsonObject = JSONUtil.parseObj(json);
 		String nginxContent = Base64.decodeStr(jsonObject.getStr("nginxContent"), CharsetUtil.CHARSET_UTF_8);
-
 		List<String> subContent = jsonObject.getJSONArray("subContent").toList(String.class);
-		for (int i = 0; i < subContent.size(); i++) {
+		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
+
+		for (int i = 0; i < subContent.size(); i++) { // 解码
 			String content = Base64.decodeStr(subContent.get(i), CharsetUtil.CHARSET_UTF_8);
 			subContent.set(i, content);
-		}
-
-		// 替换分解域名include路径中的目标conf.d为temp/conf.d
-		String confDir = ToolUtils.handlePath(new File(nginxPath).getParent()) + "/conf.d/";
-		String tempDir = homeConfig.home + "temp" + "/conf.d/";
-		List<String> subName = jsonObject.getJSONArray("subName").toList(String.class);
-		for (String sn : subName) {
-			nginxContent = nginxContent.replace("include " + confDir + sn, //
-					"include " + tempDir + sn);
 		}
 
 		FileUtil.del(homeConfig.home + "temp");
@@ -243,8 +243,9 @@ public class ConfController extends BaseController {
 		String cmd = null;
 
 		try {
-			ClassPathResource resource = new ClassPathResource("mime.types");
-			FileUtil.writeFromStream(resource.getStream(), homeConfig.home + "temp/mime.types");
+			ClassPathResource resource = new ClassPathResource("conf.zip");
+			InputStream inputStream = resource.getStream();
+			ZipUtil.unzip(inputStream, new File(homeConfig.home + "temp/"), CharsetUtil.defaultCharset());
 
 			cmd = nginxExe + " -t -c " + fileTemp;
 			if (StrUtil.isNotEmpty(nginxDir)) {
@@ -370,17 +371,17 @@ public class ConfController extends BaseController {
 
 		// 检查命令格式
 		switch (cmd) {
-			case "net start nginx":
-			case "service nginx start":
-			case "systemctl start nginx":
-			case "net stop nginx":
-			case "service nginx stop":
-			case "systemctl stop nginx":
-			case "taskkill /f /im nginx.exe":
-			case "pkill nginx":
-				return true;
-			default:
-				break;
+		case "net start nginx":
+		case "service nginx start":
+		case "systemctl start nginx":
+		case "net stop nginx":
+		case "service nginx stop":
+		case "systemctl stop nginx":
+		case "taskkill /f /im nginx.exe":
+		case "pkill nginx":
+			return true;
+		default:
+			break;
 		}
 
 		String dir = "";

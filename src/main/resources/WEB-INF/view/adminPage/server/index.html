@@ -428,9 +428,10 @@
 				</div>
 
 				<div class="layui-form-item">
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal proxyHttp" style="margin-left: 50px;" onclick="addItem()">${serverStr.addLocation}</button>
+					<div style="width: 50px;display: inline-block;"></div>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal proxyHttp"  onclick="addItem()">${serverStr.addLocation}</button>
 					
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal proxyHttp"  onclick="setDenyAllow()">${serverStr.ipDenyAllow}</button>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal"  onclick="setDenyAllow()">${serverStr.ipDenyAllow}</button>
 					
 					<button type="button" class="layui-btn layui-btn-sm"  onclick="serverParam()">${serverStr.extParm}</button>
 					<textarea style="display: none;" id="serverParamJson" name="serverParamJson"></textarea>
@@ -593,7 +594,7 @@
 			
 			<div class="layui-form-item" id="denyDiv">
 				<label class="layui-form-label">${serverStr.blacklist}</label>
-				<div class="layui-input-block">
+				<div class="layui-input-inline" style="width: 250px;">
 					<select id="denyIdValue">
 						<#list denyAllowList as denyAllow>
 						<option value="${denyAllow.id}">${denyAllow.name}</option>
@@ -604,7 +605,7 @@
 			
 			<div class="layui-form-item" id="allowDiv">
 				<label class="layui-form-label">${serverStr.whitelist}</label>
-				<div class="layui-input-block">
+				<div class="layui-input-inline" style="width: 250px;">
 					<select id="allowIdValue">
 						<#list denyAllowList as denyAllow>
 						<option value="${denyAllow.id}">${denyAllow.name}</option>

@@ -8,7 +8,28 @@ $(function() {
 
 		form.render();
 	});	
+	
+	form.on('select(denyAllowValue)', function(data) {
+		checkDenyAllow(data.value);
+	});
 })
+
+function checkDenyAllow(value) {
+	$("#denyDiv").hide();
+	$("#allowDiv").hide();
+
+	if (value == 1) {
+		$("#denyDiv").show();
+	}
+	if (value == 2) {
+		$("#allowDiv").show();
+	}
+	if (value == 3) {
+		$("#denyDiv").show();
+		$("#allowDiv").show();
+	}
+}
+
 
 function search() {
 	$("input[name='curr']").val(1);
@@ -195,6 +216,74 @@ function addGiudeOver(){
 			}
 		},
 		error: function() {
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+}
+
+
+
+function setDenyAllow() {
+
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/stream/getDenyAllow',
+		dataType: 'json',
+		success: function(data) {
+			closeLoad();
+			if (data.success) {
+				var map = data.obj;
+
+				$("#denyAllowValue").val(map.denyAllowStream);
+				if (map.denyId != null) {
+					$("#denyIdValue").val(map.denyIdStream);
+				}
+				if (map.allowId != null) {
+					$("#allowIdValue").val(map.allowIdStream);
+				}
+				checkDenyAllow(map.denyAllow);
+
+				form.render();
+				layer.open({
+					type: 1,
+					title: serverStr.denyAllowModel,
+					area: ['650px', '500px'], // 宽高
+					content: $('#denyAllowDiv')
+				});
+			} else {
+				layer.msg(data.msg)
+			}
+		},
+		error: function() {
+			closeLoad();
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+}
+
+function setDenyAllowOver() {
+	var denyAllow = $("#denyAllowValue").val();
+	var denyId = $("#denyIdValue").val();
+	var allowId = $("#allowIdValue").val();
+
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/stream/setDenyAllow',
+		data: {
+			denyAllow: denyAllow,
+			denyId: denyId,
+			allowId: allowId
+		},
+		dataType: 'json',
+		success: function(data) {
+			if (data.success) {
+				location.reload();
+			} else {
+				layer.msg(data.msg)
+			}
+		},
+		error: function() {
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});
