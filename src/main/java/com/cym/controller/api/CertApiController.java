@@ -50,6 +50,12 @@ public class CertApiController extends BaseController {
 		page.setLimit(limit);
 		page = certService.getPage(keywords, page);
 
+		for (Cert cert : (List<Cert>) page.getRecords()) {
+			if (cert.getMakeTime() != null && cert.getType() != 1) {
+				cert.setEndTime(cert.getMakeTime() + 90 * 24 * 60 * 60 * 1000l);
+			}
+		}
+		
 		return renderSuccess(page);
 	}
 

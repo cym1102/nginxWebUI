@@ -101,10 +101,9 @@ public class NginxWebUI {
 	private static void removeJar() {
 		File[] list = new File(JarUtil.getCurrentFilePath()).getParentFile().listFiles();
 		for (File file : list) {
-			logger.info("文件:" + file);
 			if (file.getName().startsWith("nginxWebUI") && file.getName().endsWith(".jar") && !file.getPath().equals(JarUtil.getCurrentFilePath())) {
 				FileUtil.del(file);
-				logger.info("删除文件:" + file);
+				logger.info("删除旧文件:" + file);
 			}
 		}
 	}
