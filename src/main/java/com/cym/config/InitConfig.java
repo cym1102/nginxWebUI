@@ -234,7 +234,11 @@ public class InitConfig {
 		for (Class<?> clazz : set) {
 			Table table = clazz.getAnnotation(Table.class);
 			if (table != null) {
-				map.put(clazz.getName(), sqlHelper.findAll(clazz));
+				try {
+					map.put(clazz.getName(), sqlHelper.findAll(clazz));
+				} catch (Exception e) {
+					logger.info(e.getMessage(), e);
+				}
 			}
 		}
 
