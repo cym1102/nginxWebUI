@@ -30,6 +30,8 @@ solon:
       "org.jboss":
         level: "WARN"
     appender:
+      console:
+        level: INFO
       file:
         name: ${project.home}/log/${solon.app.name}
         level: INFO

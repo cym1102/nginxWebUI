@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.zip.ZipInputStream;
+import java.util.Map;
+import java.util.Set;
 
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Init;
@@ -17,20 +19,25 @@ import org.slf4j.LoggerFactory;
 
 import com.cym.model.Admin;
 import com.cym.model.Basic;
-import com.cym.model.Cert;
 import com.cym.model.Http;
 import com.cym.service.BasicService;
 import com.cym.service.ConfService;
 import com.cym.service.SettingService;
+import com.cym.sqlhelper.config.DataSourceEmbed;
+import com.cym.sqlhelper.config.Table;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
 import com.cym.sqlhelper.utils.SqlHelper;
 import com.cym.utils.EncodePassUtils;
 import com.cym.utils.MessageUtils;
 import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
@@ -55,12 +62,20 @@ public class InitConfig {
 	SqlHelper sqlHelper;
 	@Inject
 	ConfService confService;
-
+	@Inject
+	DataSourceEmbed dataSourceEmbed;
+	@Inject("${project.beanPackage}")
+	String packageName;
 	@Inject("${project.findPass}")
 	Boolean findPass;
 
 	@Init
 	public void start() throws Throwable {
+		// h2转sqlite
+		if (FileUtil.exist(homeConfig.home + "h2.mv.db")) {
+			transferSql();
+		}
+
 		// 找回密码
 		if (findPass) {
 			List<Admin> admins = sqlHelper.findAll(Admin.class);
@@ -118,7 +133,6 @@ public class InitConfig {
 		InputStream inputStream = resource.getStream();
 		ZipUtil.unzip(inputStream, new File(acmeShDir), CharsetUtil.defaultCharset());
 
-
 		// 全局黑白名单
 		if (settingService.get("denyAllow") == null) {
 			settingService.set("denyAllow", "0");
@@ -160,8 +174,6 @@ public class InitConfig {
 		showLogo();
 	}
 
-
-
 	private boolean hasNginx() {
 		String rs = RuntimeUtil.execForStr("which nginx");
 		if (StrUtil.isNotEmpty(rs)) {
@@ -186,6 +198,59 @@ public class InitConfig {
 
 		logger.info(stringBuilder.toString());
 
+	}
+
+	private void transferSql() {
+		// 关闭sqlite连接
+		dataSourceEmbed.getDataSource().close();
+		// 建立h2连接
+		HikariConfig dbConfig = new HikariConfig();
+		dbConfig.setJdbcUrl("jdbc:h2:" + homeConfig.home + "h2");
+		dbConfig.setUsername("sa");
+		dbConfig.setPassword("");
+		dbConfig.setMaximumPoolSize(1);
+		HikariDataSource dataSourceH2 = new HikariDataSource(dbConfig);
+		dataSourceEmbed.setDataSource(dataSourceH2);
+		// 读取全部数据
+		Map<String, List<?>> map = readAll();
+
+		// 关闭h2连接
+		dataSourceH2.close();
+
+		// 重新建立sqlite连接
+		dataSourceEmbed.init();
+
+		// 导入数据
+		insertAll(map);
+
+		// 重命名h2文件
+		FileUtil.rename(new File(homeConfig.home + "h2.mv.db"), homeConfig.home + "h2.mv.db.bak", true);
+	}
+
+	private Map<String, List<?>> readAll() {
+		Map<String, List<?>> map = new HashMap<>();
+
+		Set<Class<?>> set = ClassUtil.scanPackage(packageName);
+		for (Class<?> clazz : set) {
+			Table table = clazz.getAnnotation(Table.class);
+			if (table != null) {
+				map.put(clazz.getName(), sqlHelper.findAll(clazz));
+			}
+		}
+
+		return map;
+	}
+
+	private void insertAll(Map<String, List<?>> map) {
+		try {
+			for (String key : map.keySet()) {
+				sqlHelper.deleteByQuery(new ConditionAndWrapper(), Class.forName(key));
+
+				sqlHelper.insertAll(map.get(key));
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
 	}
 
 }

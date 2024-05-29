@@ -25,12 +25,23 @@ public class NginxWebUI {
 	static Logger logger = LoggerFactory.getLogger(NginxWebUI.class);
 
 	public static void main(String[] args) {
-		try {
-			// 尝试杀掉旧版本
-			killSelf(args);
+		boolean findPass = false;
+		if (args != null) {
+			for (String arg : args) {
+				if (arg.equals("--project.findPass=true")) {
+					findPass = true;
+				}
+			}
+		}
 
-			// 删掉多余的jar
-			removeJar();
+		try {
+			if (!findPass) {
+				// 尝试杀掉旧版本
+				killSelf(args);
+
+				// 删掉多余的jar
+				removeJar();
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}

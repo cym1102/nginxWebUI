@@ -74,7 +74,7 @@ public class JdbcTemplate {
 		Set<String> set = new HashSet<>();
 		String uuid = snowFlake.nextId();
 		Entity entity = new Entity();
-		entity.setTableName("`" + StrUtil.toUnderlineCase(clazz.getSimpleName()) + "`");
+		entity.setTableName(StrUtil.toUnderlineCase(clazz.getSimpleName()));
 		entity.set("id", uuid);
 		Db.use(dataSourceEmbed.getDataSource()).insert(entity);
 		List<Entity> list = Db.use(dataSourceEmbed.getDataSource()).query("select * from `" + StrUtil.toUnderlineCase(clazz.getSimpleName()) + "` where id='" + uuid + "'");
