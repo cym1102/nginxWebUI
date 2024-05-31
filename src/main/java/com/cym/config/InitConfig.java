@@ -68,11 +68,13 @@ public class InitConfig {
 	String packageName;
 	@Inject("${project.findPass}")
 	Boolean findPass;
+	@Inject("${spring.database.type}")
+	String databaseType;
 
 	@Init
 	public void start() throws Throwable {
 		// h2转sqlite
-		if (FileUtil.exist(homeConfig.home + "h2.mv.db")) {
+		if ((databaseType.equalsIgnoreCase("sqlite") || databaseType.equalsIgnoreCase("h2")) && FileUtil.exist(homeConfig.home + "h2.mv.db")) {
 			transferSql();
 		}
 
