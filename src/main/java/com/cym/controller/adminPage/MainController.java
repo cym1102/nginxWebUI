@@ -91,7 +91,6 @@ public class MainController extends BaseController {
 	public JsonResult preview(String id, String type) {
 		ConfExt confExt = new ConfExt();
 		confExt.setFileList(new ArrayList<>());
-		//String nginxPath = settingService.get("nginxPath");
 
 		NgxBlock ngxBlock = null;
 		if (type.equals("server")) {

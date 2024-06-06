@@ -123,7 +123,6 @@ function checkType(value) {
 	if (value == 1) {
 		$("#type1").show();
 	}
-
 	if (value == 2) {
 		$("#encryptionDiv").show();
 	}

@@ -792,10 +792,10 @@ function setDenyAllow() {
 	var allowId = $("#allowId").val();
 
 	$("#denyAllowValue").val(denyAllow);
-	if (denyId != null) {
+	if (denyId != null && denyId != "") {
 		$("#denyIdValue").val(denyId);
 	}
-	if (allowId != null) {
+	if (allowId != null && allowId != "") {
 		$("#allowIdValue").val(allowId);
 	}
 	checkDenyAllow(denyAllow);
