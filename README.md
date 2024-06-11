@@ -84,9 +84,9 @@ Path : JDK安装目录\bin
 
 ```
 Linux: mkdir /home/nginxWebUI/ 
-       wget -O /home/nginxWebUI/nginxWebUI.jar https://file.nginxwebui.cn/nginxWebUI-4.1.4.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar https://file.nginxwebui.cn/nginxWebUI-4.1.5.jar
 
-Windows: 直接使用浏览器下载 https://file.nginxwebui.cn/nginxWebUI-4.1.4.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
+Windows: 直接使用浏览器下载 https://file.nginxwebui.cn/nginxWebUI-4.1.5.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -137,6 +137,10 @@ yum install docker
 
 ```
 docker pull cym1102/nginxwebui:latest
+
+或者
+
+docker pull registry.cn-hangzhou.aliyuncs.com/cym19871102/nginxwebui:latest
 ```
 
 3.启动容器: 
@@ -148,6 +152,15 @@ docker run -itd \
   --net=host \
   --restart=always \
   cym1102/nginxwebui:latest
+  
+或者
+
+docker run -itd \
+  -v /home/nginxWebUI:/home/nginxWebUI \
+  -e BOOT_OPTIONS="--server.port=8080" \
+  --net=host \
+  --restart=always \
+  registry.cn-hangzhou.aliyuncs.com/cym19871102/nginxwebui:latest
 ```
 
 注意: 
@@ -178,6 +191,20 @@ services:
     privileged: true
     network_mode: "host"
 
+或者
+
+version: "3.2"
+services:
+  nginxWebUi-server:
+    image: registry.cn-hangzhou.aliyuncs.com/cym19871102/nginxwebui:latest
+    volumes:
+      - type: bind
+        source: "/home/nginxWebUI"
+        target: "/home/nginxWebUI"
+    environment:
+      BOOT_OPTIONS: "--server.port=8080"
+    privileged: true
+    network_mode: "host"
 ```
 
 

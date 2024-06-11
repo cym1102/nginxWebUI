@@ -17,7 +17,7 @@
 					<legend>${menuStr.export}</legend>
 				</fieldset>
 
-				<form action="${ctx}/adminPage/export/dataImport" enctype="multipart/form-data" id="dataImport" method="post">
+				<form action="${ctx}/adminPage/export/dataImport" enctype="multipart/form-data" target="uploadTarget" id="dataImport" method="post">
 					<div class="layui-form">
 						<div class="layui-inline">
 							<button type="button" id="dataExport" class="layui-btn layui-btn-sm" onclick="dExport()">${exportStr.dExport}</button>
@@ -35,7 +35,7 @@
 						</div>
 					</div>
 				</form>
-
+				<iframe id="uploadTarget" name="uploadTarget" src="#" style="width: 0; height: 0; border: 0px solid #fff;"></iframe>
 
 			</div>
 		</div>

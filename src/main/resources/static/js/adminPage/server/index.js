@@ -339,7 +339,8 @@ function addOver() {
 		location.cros = $(this).find("input[name='cros']").prop("checked") ? 1 : 0;
 		location.headerHost = $(this).find("select[name='headerHost']").val();
 		location.returnUrl = $(this).find("input[name='returnUrl']").val();
-		
+		location.returnPath = $(this).find("input[name='returnPath']").prop("checked") ? 1 : 0;
+
 		locations.push(location);
 	})
 
@@ -483,7 +484,13 @@ function edit(id, clone) {
 					$("#" + uuid + " input[name='upstreamPath']").val(location.upstreamPath);
 					$("#" + uuid + " select[name='headerHost']").val(location.headerHost);
 					$("#" + uuid + " input[name='returnUrl']").val(location.returnUrl);
-					
+
+					if (location.returnPath == 1) {
+						$("#" + uuid + " input[name='returnPath']").prop("checked", true);
+					} else {
+						$("#" + uuid + " input[name='returnPath']").prop("checked", false);
+					}
+
 					if (location.header == 1) {
 						$("#" + uuid + " input[name='header']").prop("checked", true);
 					} else {
@@ -683,6 +690,9 @@ function buildHtml(uuid, location, upstreamSelect) {
 					<span name="returnSpan">
 						<div class="layui-inline">
 							<input type="text"  style="width: 277px;" name="returnUrl" id="returnUrl_${uuid}" class="layui-input long" value=""  placeholder="${serverStr.example}：https://www.baidu.com">
+						</div>
+						<div class="layui-inline" style="padding-left:7px;">
+							<input type="checkbox" name="returnPath" title="${serverStr.returnPath}" lay-skin="primary"> 
 						</div>
 					</span>
 				</td> 

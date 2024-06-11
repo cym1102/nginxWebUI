@@ -80,9 +80,9 @@ reboot
 
 ```
 Linux: mkdir /home/nginxWebUI/   
-       wget -O /home/nginxWebUI/nginxWebUI.jar https://file.nginxwebui.cn/nginxWebUI-4.1.4.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar https://file.nginxwebui.cn/nginxWebUI-4.1.5.jar
 
-Windows: Download directly from your browser https://file.nginxwebui.cn/nginxWebUI-4.1.4.jar into D:/home/nginxWebUI/
+Windows: Download directly from your browser https://file.nginxwebui.cn/nginxWebUI-4.1.5.jar into D:/home/nginxWebUI/
 ```
 
 With a new version, you just need to change the version in the path
@@ -133,6 +133,10 @@ yum install docker
 
 ```
 docker pull cym1102/nginxwebui:latest
+
+or
+
+docker pull registry.cn-hangzhou.aliyuncs.com/cym19871102/nginxwebui:latest
 ```
 
 3.start container
@@ -144,6 +148,15 @@ docker run -itd \
   --net=host \
   --restart=always \
   cym1102/nginxwebui:latest
+  
+or
+
+docker run -itd \
+  -v /home/nginxWebUI:/home/nginxWebUI \
+  -e BOOT_OPTIONS="--server.port=8080" \
+  --net=host \
+  --restart=always \
+  registry.cn-hangzhou.aliyuncs.com/cym19871102/nginxwebui:latest
 ```
 
 notice: 
@@ -173,7 +186,21 @@ services:
       BOOT_OPTIONS: "--server.port=8080"
     privileged: true
     network_mode: "host"
+    
+or
 
+version: "3.2"
+services:
+  nginxWebUi-server:
+    image: registry.cn-hangzhou.aliyuncs.com/cym19871102/nginxwebui:latest
+    volumes:
+      - type: bind
+        source: "/home/nginxWebUI"
+        target: "/home/nginxWebUI"
+    environment:
+      BOOT_OPTIONS: "--server.port=8080"
+    privileged: true
+    network_mode: "host"
 ```
 
 

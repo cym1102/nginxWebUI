@@ -29,9 +29,20 @@ public class Location extends BaseModel {
 	 */
 	@InitValue("0")
 	Integer type;
-	
+
 	@JsonIgnore
 	String locationParamJson;
+
+	/**
+	 * 重定向路径
+	 */
+	String returnUrl;
+
+	/**
+	 * 重定向是否携带源路径 0否 1是(默认)
+	 */
+	@InitValue("1")
+	Integer returnPath;
 
 	/**
 	 * 动态代理目标 (例:http://10.10.10.1:8080/)
@@ -72,7 +83,7 @@ public class Location extends BaseModel {
 	 */
 	@InitValue("$host")
 	String headerHost;
-	
+
 	/**
 	 * 是否开启websocket支持 0否(默认) 1是
 	 */
@@ -89,14 +100,15 @@ public class Location extends BaseModel {
 	 * 描述
 	 */
 	String descr;
-	
-	/**
-	 * 重定向路径
-	 */
-	String returnUrl;
-	
 
-	
+	public Integer getReturnPath() {
+		return returnPath;
+	}
+
+	public void setReturnPath(Integer returnPath) {
+		this.returnPath = returnPath;
+	}
+
 	public String getReturnUrl() {
 		return returnUrl;
 	}

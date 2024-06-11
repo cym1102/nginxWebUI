@@ -1,7 +1,5 @@
 $(function() {
-	if (getQueryString("over") == 'true') {
-		layer.msg(exportStr.importSuccess);
-	}
+	
 });
 
 function dExport() {
@@ -22,6 +20,10 @@ function dImportOver() {
 			$("#dataImport").submit();
 		}
 	}
+}
+
+function finisheUpload(){
+	layer.msg(exportStr.importSuccess);
 }
 
 function lExport() {

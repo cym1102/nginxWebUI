@@ -10,6 +10,8 @@ import java.util.Date;
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
+import org.noear.solon.annotation.Produces;
+import org.noear.solon.boot.web.MimeType;
 import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.DownloadedFile;
 import org.noear.solon.core.handle.ModelAndView;
@@ -18,11 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cym.ext.AsycPack;
-import com.cym.model.Cert;
-import com.cym.model.CertCode;
 import com.cym.service.CertService;
 import com.cym.service.ConfService;
-import com.cym.sqlhelper.utils.ConditionAndWrapper;
 import com.cym.utils.BaseController;
 
 import cn.hutool.core.date.DateUtil;
@@ -55,9 +54,10 @@ public class ExportController extends BaseController {
 		DownloadedFile downloadedFile = new DownloadedFile("application/octet-stream", new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)), date + ".json");
 		return downloadedFile;
 	}
-
+	
+	@Produces(MimeType.TEXT_HTML_VALUE)
 	@Mapping(value = "dataImport")
-	public void dataImport(UploadedFile file, Context context) throws IOException {
+	public String dataImport(UploadedFile file, Context context) throws IOException {
 		if (file != null) {
 			File tempFile = new File(homeConfig.home + "temp" + File.separator + file.getName().replace("..", ""));
 			FileUtil.mkdir(tempFile.getParentFile());
@@ -69,7 +69,7 @@ public class ExportController extends BaseController {
 			confService.setAsycPack(asycPack);
 			
 		}
-		context.redirect("/adminPage/export?over=true");
+		return "<script>window.parent.finisheUpload();</script> ";
 	}
 
 	@Mapping("logExport")
