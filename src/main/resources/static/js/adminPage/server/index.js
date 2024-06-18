@@ -485,29 +485,10 @@ function edit(id, clone) {
 					$("#" + uuid + " select[name='headerHost']").val(location.headerHost);
 					$("#" + uuid + " input[name='returnUrl']").val(location.returnUrl);
 
-					if (location.returnPath == 1) {
-						$("#" + uuid + " input[name='returnPath']").prop("checked", true);
-					} else {
-						$("#" + uuid + " input[name='returnPath']").prop("checked", false);
-					}
-
-					if (location.header == 1) {
-						$("#" + uuid + " input[name='header']").prop("checked", true);
-					} else {
-						$("#" + uuid + " input[name='header']").prop("checked", false);
-					}
-
-					if (location.websocket == 1) {
-						$("#" + uuid + " input[name='websocket']").prop("checked", true);
-					} else {
-						$("#" + uuid + " input[name='websocket']").prop("checked", false);
-					}
-
-					if (location.cros == 1) {
-						$("#" + uuid + " input[name='cros']").prop("checked", true);
-					} else {
-						$("#" + uuid + " input[name='cros']").prop("checked", false);
-					}
+					$("#" + uuid + " input[name='returnPath']").prop("checked", location.returnPath == 1);
+					$("#" + uuid + " input[name='header']").prop("checked", location.header == 1);
+					$("#" + uuid + " input[name='websocket']").prop("checked", location.websocket == 1);
+					$("#" + uuid + " input[name='cros']").prop("checked", location.cros == 1);
 
 					checkType(location.type, uuid)
 				}

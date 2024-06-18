@@ -1,4 +1,7 @@
 package com.cym.sqlhelper.utils;
+
+import cn.hutool.core.util.IdUtil;
+
 public class SnowFlake {
     //起始的时间戳
     private final static long START_STAMP = 1480166465631L;
@@ -74,4 +77,9 @@ public class SnowFlake {
     private long getNewStamp() {
         return System.currentTimeMillis();
     }
+    
+    
+    public static void main(String[] args) {
+		System.out.println( IdUtil.getSnowflake(0, 0).nextId());
+	}
 }

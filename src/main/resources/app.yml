@@ -39,7 +39,7 @@ solon:
         maxHistory: "7"
 spring:
   database:
-    type: h2
+    type: sqlite
   datasource:
     url: 
     username: 

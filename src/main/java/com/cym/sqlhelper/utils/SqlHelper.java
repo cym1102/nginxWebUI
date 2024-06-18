@@ -421,9 +421,9 @@ public class SqlHelper extends SqlUtils {
 			sql += " WHERE " + conditionWrapper.build(values);
 		}
 		if (sort != null) {
-			sql += " " + sort;
+			sql += " " + sort.toString();
 		} else {
-			sql += " ORDER BY id DESC";
+			sql += " ORDER BY CAST(id AS UNSIGNED) DESC";
 		}
 		sql += " LIMIT " + (page.getCurr() - 1) * page.getLimit() + "," + page.getLimit();
 
@@ -504,7 +504,7 @@ public class SqlHelper extends SqlUtils {
 		if (sort != null) {
 			sql += " " + sort;
 		} else {
-			sql += " ORDER BY id DESC";
+			sql += " ORDER BY CAST(id AS UNSIGNED) DESC";
 		}
 		sql += " limit 1";
 
@@ -555,7 +555,7 @@ public class SqlHelper extends SqlUtils {
 		if (sort != null) {
 			sql += " " + sort;
 		} else {
-			sql += " ORDER BY id DESC";
+			sql += " ORDER BY CAST(id AS UNSIGNED) DESC";
 		}
 
 		logQuery(formatSql(sql), values.toArray());

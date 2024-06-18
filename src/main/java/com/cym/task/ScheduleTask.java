@@ -27,6 +27,7 @@ import com.cym.service.LogService;
 import com.cym.service.RemoteService;
 import com.cym.service.SettingService;
 import com.cym.service.UpstreamService;
+import com.cym.sqlhelper.utils.ConditionAndWrapper;
 import com.cym.sqlhelper.utils.SqlHelper;
 import com.cym.utils.BLogFileTailer;
 import com.cym.utils.MessageUtils;
@@ -76,7 +77,7 @@ public class ScheduleTask {
 	// 续签证书
 	@Scheduled(cron = "0 0 2 * * ?")
 	public void certTasks() {
-		List<Cert> certList = sqlHelper.findAll(Cert.class);
+		List<Cert> certList = sqlHelper.findListByQuery(new ConditionAndWrapper().in(Cert::getType, new Integer[] { 0, 2 }), Cert.class);
 
 		// 检查需要续签的证书
 		long time = System.currentTimeMillis();
@@ -87,7 +88,6 @@ public class ScheduleTask {
 			}
 		}
 	}
-
 
 	// 检查远程服务器
 	@Scheduled(cron = "0/30 * * * * ?")

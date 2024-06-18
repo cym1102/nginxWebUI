@@ -190,13 +190,12 @@ public class CertController extends BaseController {
 			return renderError(m.get("certStr.error2"));
 		}
 
-		Cert cert = sqlHelper.findById(id, Cert.class);
-
 		if (isInApply) {
 			return renderError(m.get("certStr.error4"));
 		}
 		isInApply = true;
 
+		Cert cert = sqlHelper.findById(id, Cert.class);
 		String keylength = " --keylength 2048 "; // RSA模式
 		String ecc = "";
 		if ("ECC".equals(cert.getEncryption())) { // ECC模式

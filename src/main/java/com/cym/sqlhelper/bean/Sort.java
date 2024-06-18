@@ -45,17 +45,17 @@ public class Sort {
 		order.setDirection(direction);
 
 		orderList.add(order);
-		
+
 		return this;
 	}
-	
+
 	public <T, R> Sort add(SerializableFunction<T, R> column, Direction direction) {
 		Order order = new Order();
 		order.setColumn(ReflectionUtil.getFieldName(column));
 		order.setDirection(direction);
 
 		orderList.add(order);
-		
+
 		return this;
 	}
 
@@ -64,6 +64,9 @@ public class Sort {
 		for (Order order : orderList) {
 
 			String sql = StrUtil.toUnderlineCase(order.getColumn());
+			if (order.getColumn().equalsIgnoreCase("seq") || order.getColumn().equalsIgnoreCase("id")) {
+				sql = "CAST(" + StrUtil.toUnderlineCase(order.getColumn()) + " as UNSIGNED)";
+			}
 
 			if (order.getDirection() == Direction.ASC) {
 				sql += " ASC";
@@ -78,6 +81,4 @@ public class Sort {
 		return " ORDER BY " + StrUtil.join(",", sqlList);
 	}
 
-
-	
 }

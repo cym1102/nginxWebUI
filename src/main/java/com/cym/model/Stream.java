@@ -24,44 +24,6 @@ public class Stream extends BaseModel {
 	Long seq;
 	
 	
-//	/**
-//	 * IP黑白名单模式, 0:正常模式 1:黑名单模式 2:白名单模式 3:黑白名单模式
-//	 */
-//	@InitValue("0")
-//	Integer denyAllow;
-//
-//	/**
-//	 * 黑名单id
-//	 */
-//	String denyId;
-//	/**
-//	 * 白名单id
-//	 */
-//	String allowId;
-//
-//	public String getDenyId() {
-//		return denyId;
-//	}
-//
-//	public void setDenyId(String denyId) {
-//		this.denyId = denyId;
-//	}
-//
-//	public String getAllowId() {
-//		return allowId;
-//	}
-//
-//	public void setAllowId(String allowId) {
-//		this.allowId = allowId;
-//	}
-//
-//	public Integer getDenyAllow() {
-//		return denyAllow;
-//	}
-//
-//	public void setDenyAllow(Integer denyAllow) {
-//		this.denyAllow = denyAllow;
-//	}
 
 	public String getName() {
 		return name;
