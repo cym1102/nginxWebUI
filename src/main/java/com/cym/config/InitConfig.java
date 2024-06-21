@@ -26,6 +26,7 @@ import com.cym.service.SettingService;
 import com.cym.sqlhelper.config.DataSourceEmbed;
 import com.cym.sqlhelper.config.Table;
 import com.cym.sqlhelper.utils.ConditionAndWrapper;
+import com.cym.sqlhelper.utils.JdbcTemplate;
 import com.cym.sqlhelper.utils.SqlHelper;
 import com.cym.utils.EncodePassUtils;
 import com.cym.utils.MessageUtils;
@@ -60,6 +61,8 @@ public class InitConfig {
 	BasicService basicService;
 	@Inject
 	SqlHelper sqlHelper;
+	@Inject
+	JdbcTemplate jdbcTemplate;
 	@Inject
 	ConfService confService;
 	@Inject
@@ -237,7 +240,9 @@ public class InitConfig {
 			Table table = clazz.getAnnotation(Table.class);
 			if (table != null) {
 				try {
-					map.put(clazz.getName(), sqlHelper.findAll(clazz));
+					List<Map<String, Object>> list = jdbcTemplate.queryForList("SELECT * FROM `" + StrUtil.toUnderlineCase(clazz.getSimpleName()) + "`");
+
+					map.put(clazz.getName(), sqlHelper.buildObjects(list, clazz));
 				} catch (Exception e) {
 					logger.info(e.getMessage(), e);
 				}

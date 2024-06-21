@@ -80,9 +80,9 @@ reboot
 
 ```
 Linux: mkdir /home/nginxWebUI/   
-       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.1.6/nginxWebUI-4.1.6.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.1.8/nginxWebUI-4.1.8.jar
 
-Windows: Download directly from your browser https://gitee.com/cym1102/nginxWebUI/releases/download/4.1.6/nginxWebUI-4.1.6.jar into D:/home/nginxWebUI/
+Windows: Download directly from your browser https://gitee.com/cym1102/nginxWebUI/releases/download/4.1.8/nginxWebUI-4.1.8.jar into D:/home/nginxWebUI/
 ```
 
 With a new version, you just need to change the version in the path
@@ -184,8 +184,8 @@ services:
         target: "/home/nginxWebUI"
     environment:
       BOOT_OPTIONS: "--server.port=8080"
-    privileged: true
     network_mode: "host"
+    restart: always
     
 or
 
@@ -199,8 +199,8 @@ services:
         target: "/home/nginxWebUI"
     environment:
       BOOT_OPTIONS: "--server.port=8080"
-    privileged: true
     network_mode: "host"
+    restart: always
 ```
 
 
