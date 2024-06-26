@@ -328,7 +328,7 @@
 										<option value="${upstream.id}">${upstream.name}</option>
 										</#list>
 			
-										<#if upstreamTcpSize==0>
+										<#if upstreamTcpList?size==0>
 										<option value="">${serverStr.noUpstream}</option>
 										</#if>
 									</select>
@@ -509,7 +509,7 @@
 					<option value="${upstream.id}">${upstream.name}</option>
 					</#list>
 
-					<#if upstreamSize==0>
+					<#if upstreamList?size==0>
 					<option value="">${serverStr.noUpstream}</option>
 					</#if>
 				</select>
@@ -525,6 +525,10 @@
 					<label class="layui-form-label">${serverStr.selectCert}</label>
 					<div class="layui-input-inline">
 						<select name="certId" id="certId">
+							<#if certList?size==0>
+							<option value="">${commonStr.pleaseSelect}</option>
+							</#if>
+						
 							<#list certList as cert>
 							<option value="${cert.id}">${cert.domain}</option>
 							</#list>
@@ -596,6 +600,10 @@
 				<label class="layui-form-label">${serverStr.blacklist}</label>
 				<div class="layui-input-inline" style="width: 250px;">
 					<select id="denyIdValue">
+						<#if denyAllowList?size == 0>
+						<option value="">${commonStr.pleaseSelect}</option>
+						</#if>
+						
 						<#list denyAllowList as denyAllow>
 						<option value="${denyAllow.id}">${denyAllow.name}</option>
 						</#list>
@@ -607,6 +615,10 @@
 				<label class="layui-form-label">${serverStr.whitelist}</label>
 				<div class="layui-input-inline" style="width: 250px;">
 					<select id="allowIdValue">
+						<#if denyAllowList?size == 0>
+						<option value="">${commonStr.pleaseSelect}</option>
+						</#if>
+						
 						<#list denyAllowList as denyAllow>
 						<option value="${denyAllow.id}">${denyAllow.name}</option>
 						</#list>

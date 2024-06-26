@@ -3,11 +3,17 @@
 <head>
 <#include "/adminPage/common.html"/>
 <style type="text/css">
-.layui-form-label{
+.layui-form-label {
 	width: 150px;
 }
-.layui-input-block{
+
+.layui-input-block {
 	margin-left: 180px;
+}
+
+.name {
+	padding-left: 20px;
+	display: inline-block;
 }
 </style>
 </head>
@@ -27,40 +33,40 @@
 				<form action="${ctx}/adminPage/remote" id="searchForm" method="post">
 					<div class="layui-form">
 						<#if admin.type==0>
-							<div class="layui-inline">
+						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${remoteStr.add}</button>
-							</div>
-							
-							<div class="layui-inline">
+						</div>
+
+						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm" onclick="addGroup()">${remoteStr.addGroup}</button>
-							</div>
+						</div>
 						</#if>
-						
+
 						<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-sm" onclick="cmdGroup()">${remoteStr.cmdGroup}</button>
+							<button type="button" class="layui-btn layui-btn-sm" onclick="cmdGroup()">${remoteStr.cmdGroup}</button>
 						</div>
-						
+
 						<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="asycSelect()">${remoteStr.asycSelect}</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="asycSelect()">${remoteStr.asycSelect}</button>
 						</div>
-						
+
 						<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="nginxMonitor()">${remoteStr.nginxMonitor}</button>
+							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="nginxMonitor()">${remoteStr.nginxMonitor}</button>
 						</div>
-						
+
 						<div class="layui-inline">
 							<div class="layui-form-mid layui-word-aux">${remoteStr.tips}</div>
 						</div>
-						
+
 						<input type="hidden" id="projectVersion" value="${projectVersion}">
 					</div>
 				</form>
 
 
-				<table class="layui-table layui-form"  lay-size="sm" id="tree-table">
+				<table class="layui-hide" lay-size="sm" id="tree-table">
 
 				</table>
-				
+
 			</div>
 		</div>
 	</div>
@@ -68,12 +74,12 @@
 	<div style="height: 0px; width: 0px; overflow: hidden;">
 		<!-- 弹出框 -->
 		<div class="layui-form" id="windowDiv" style="padding: 15px; display: none">
-		
+
 			<!-- 添加远程服务器 -->
 			<form id="addForm">
 				<input type="hidden" name="id" id="id">
 				<!-- <input type="hidden" name="remote" value="1"> -->
-				
+
 				<div class="layui-form-item">
 					<label class="layui-form-label">${remoteStr.alias}</label>
 					<div class="layui-input-block">
@@ -97,7 +103,7 @@
 						<div id="parentId"></div>
 					</div>
 				</div>
-				
+
 				<div class="layui-form-item">
 					<label class="layui-form-label">${remoteStr.ip}</label>
 					<div class="layui-input-block">
@@ -125,13 +131,13 @@
 						<input type="password" name="pass" id="pass" class="layui-input">
 					</div>
 				</div>
-				
 
-			
+
+
 
 				<div class="layui-form-item center">
-					<input type="hidden" name="code" id="code"> 
-					<input type="hidden" name="auth" id="auth"> 
+					<input type="hidden" name="code" id="code">
+					<input type="hidden" name="auth" id="auth">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="addOver()">${commonStr.submit}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
@@ -174,14 +180,14 @@
 						<div id="remoteFromId"></div>
 					</div>
 				</div>
-				
+
 				<div class="layui-form-item">
 					<label class="layui-form-label">${remoteStr.serverSelect}</label>
 					<div class="layui-input-block">
 						<div id="remoteSelectId"></div>
 					</div>
 				</div>
-				
+
 				<div class="layui-form-item">
 					<label class="layui-form-label">${remoteStr.asycData}</label>
 					<div class="layui-input-block">
@@ -204,8 +210,8 @@
 				</div>
 			</form>
 		</div>
-		
-		
+
+
 		<div class="layui-form" id="nginxDiv" style="padding: 15px; display: none">
 			<!-- nginx监控 -->
 			<div class="layui-form-item">
@@ -220,7 +226,7 @@
 					<button type="button" class="layui-btn" onclick="testMail()">${remoteStr.testMail}</button>
 				</div>
 			</div>
-			
+
 			<div class="layui-form-item">
 				<label class="layui-form-label">${remoteStr.nginxMonitor}</label>
 				<div class="layui-input-inline">
@@ -236,7 +242,7 @@
 				<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 			</div>
 		</div>
-		
+
 
 
 		<div class="layui-form" id="cmdDiv" style="padding: 15px; display: none">
@@ -256,52 +262,52 @@
 							<option value="replace">${remoteStr.replace}</option>
 							<option value="reload">${remoteStr.reload}</option>
 							<option value="update">${remoteStr.update}</option>
-								
+
 							<optgroup label="${remoteStr.nginxStart}">
 								<#list startCmds as cmd>
-									<option value="startNginx ${cmd}">${cmd}</option>
+								<option value="startNginx ${cmd}">${cmd}</option>
 								</#list>
 							</optgroup>
 							<optgroup label="${remoteStr.nginxStop}">
 								<#list stopCmds as cmd>
-									<option value="stopNginx ${cmd}">${cmd}</option>
+								<option value="stopNginx ${cmd}">${cmd}</option>
 								</#list>
 							</optgroup>
 						</select>
 					</div>
 				</div>
-				
+
 				<div class="layui-form-item" id="intervalDiv" style="display: none;">
 					<label class="layui-form-label">${remoteStr.interval}</label>
 					<div class="layui-input-block">
 						<input type="number" id="interval" name="interval" class="layui-input" value="1">
 					</div>
 				</div>
-				
-				
+
+
 				<div class="layui-form-item center">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="cmdOver()">${remoteStr.execute}</button>
 					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 				</div>
 			</form>
 		</div>
-		
+
 		<div class="layui-form" id="codeDiv" style="padding: 15px; display: none">
 			<div class="layui-form-item" id="imgCode">
 				<label class="layui-form-label">${loginStr.code}</label>
 				<div class="layui-input-inline" style="width: 240px;">
-					<input type="text" id="codeInput" class="layui-input" style="width: 100px;display: inline-block;">
+					<input type="text" id="codeInput" class="layui-input" style="width: 100px; display: inline-block;">
 					<img src="" id="codeImg" onclick="refreshCode('codeImg')">
 				</div>
 			</div>
-			
-			<div class="layui-form-item" id="authCode" >
+
+			<div class="layui-form-item" id="authCode">
 				<label class="layui-form-label">${loginStr.authCode}</label>
 				<div class="layui-input-inline" style="width: 240px;">
 					<input type="text" id="authInput" class="layui-input" style="display: inline-block;">
 				</div>
 			</div>
-			
+
 			<div class="layui-form-item center" style="text-align: right;">
 				<button type="button" class="layui-btn layui-btn-normal" onclick="addOverSubmit()">${commonStr.submit}</button>
 				<button type="button" class="layui-btn" onclick="layer.close(codeIndex)">${commonStr.close}</button>
@@ -310,7 +316,7 @@
 
 	</div>
 
-	
+
 	<#include '/adminPage/script.html'/>
 	<#include '/adminPage/select_mail.html'/>
 	<#include '/adminPage/select_preview.html'/>

@@ -1,29 +1,32 @@
-$(function(){
-	  $.ajax({
-			type : 'POST',
-			url : ctx + '/adminPage/template/getTemplate',
-			dataType : 'json',
-			success : function(data) {
-				if (data.success) {
-					var list = data.obj;
-					
-					for(var i=0;i<list.length;i++){
+$(function() {
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/template/getTemplate',
+		dataType: 'json',
+		success: function(data) {
+			if (data.success) {
+				var list = data.obj;
+
+				if (list.length == 0) {
+					$("#selectTemplateId").append(`<option value="">${commonStr.pleaseSelect}</option>`);
+				} else {
+					for (var i = 0; i < list.length; i++) {
 						var template = list[i];
 						var html = `<option value="${template.id}">${template.name}</option>`;
-						
 						$("#selectTemplateId").append(html);
-						
-						form.render();
 					}
-					
-				} else {
-					layer.msg(data.msg);
 				}
-			},
-			error : function() {
-				layer.alert(commonStr.errorInfo);
+
+				form.render();
+
+			} else {
+				layer.msg(data.msg);
 			}
-		});
+		},
+		error: function() {
+			layer.alert(commonStr.errorInfo);
+		}
+	});
 })
 
 
@@ -33,7 +36,7 @@ var templateType;
 var isHttp = false;
 var isStream = false;
 
-function selectTemplate(id){
+function selectTemplate(id) {
 	selectTemplateTagertId = id;
 	templateType = "temp";
 	templateIndex = layer.open({
@@ -44,23 +47,23 @@ function selectTemplate(id){
 	});
 }
 
-function selectTemplateOver(){
-	var templateId = 	$("#selectTemplateId").val();
-	if(templateId == null){
+function selectTemplateOver() {
+	var templateId = $("#selectTemplateId").val();
+	if (templateId == null) {
 		layer.msg(templateStr.noSelect);
 		return;
 	}
-	
-		
-	if(isHttp){
+
+
+	if (isHttp) {
 		addHttpParam(templateId);
 		return;
 	}
-	if(isStream){
+	if (isStream) {
 		addStreamParam(templateId);
 		return;
 	}
-				
+
 	$.ajax({
 		type: 'GET',
 		url: ctx + '/adminPage/template/detail',
@@ -71,8 +74,8 @@ function selectTemplateOver(){
 		success: function(data) {
 			if (data.success) {
 				var ext = data.obj;
-				
-				if(templateType == 'temp'){
+
+				if (templateType == 'temp') {
 					var uuid = guid();
 					var html = `
 						<tr name="param" id="${uuid}">
@@ -92,14 +95,14 @@ function selectTemplateOver(){
 							</td>
 						</tr>
 					`;
-					
-					
+
+
 				} else {
 					var html = "";
 					for (var i = 0; i < data.obj.paramList.length; i++) {
 						var param = data.obj.paramList[i];
 						var uuid = guid();
-					
+
 						html += `
 						<tr name="param" id=${uuid}>
 							<td>
@@ -118,7 +121,7 @@ function selectTemplateOver(){
 						`;
 					}
 				}
-				
+
 				$("#" + selectTemplateTagertId).append(html);
 				layer.close(templateIndex);
 			} else {
@@ -131,7 +134,7 @@ function selectTemplateOver(){
 	});
 }
 
-function selectTemplateAsParam(id){
+function selectTemplateAsParam(id) {
 	selectTemplateTagertId = id;
 	templateType = "param";
 	templateIndex = layer.open({
@@ -142,7 +145,7 @@ function selectTemplateAsParam(id){
 	});
 }
 
-function selectTemplateAsHttp(){
+function selectTemplateAsHttp() {
 	isHttp = true;
 	templateIndex = layer.open({
 		type: 1,
@@ -152,7 +155,7 @@ function selectTemplateAsHttp(){
 	});
 }
 
-function selectTemplateAsStream(){
+function selectTemplateAsStream() {
 	isStream = true;
 	templateIndex = layer.open({
 		type: 1,
@@ -162,7 +165,7 @@ function selectTemplateAsStream(){
 	});
 }
 
-function buildTemplateParam(uuid, param){
+function buildTemplateParam(uuid, param) {
 	return `
 			<tr name="param" id="${uuid}">
 				<td>
@@ -183,49 +186,49 @@ function buildTemplateParam(uuid, param){
 			`;
 }
 
-function addHttpParam(templateId){
-	 $.ajax({
-		type : 'POST',
-		url : ctx + '/adminPage/http/addTemplate',
-		data : {
-			templateId : templateId
+function addHttpParam(templateId) {
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/http/addTemplate',
+		data: {
+			templateId: templateId
 		},
-		dataType : 'json',
-		success : function(data) {
+		dataType: 'json',
+		success: function(data) {
 			if (data.success) {
 				location.reload();
-				
+
 			} else {
 				layer.msg(data.msg);
 			}
 		},
-		error : function() {
+		error: function() {
 			layer.alert(commonStr.errorInfo);
 		}
 	});
-	
+
 }
 
 
-function addStreamParam(templateId){
-	 $.ajax({
-		type : 'POST',
-		url : ctx + '/adminPage/stream/addTemplate',
-		data : {
-			templateId : templateId
+function addStreamParam(templateId) {
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/stream/addTemplate',
+		data: {
+			templateId: templateId
 		},
-		dataType : 'json',
-		success : function(data) {
+		dataType: 'json',
+		success: function(data) {
 			if (data.success) {
 				location.reload();
-				
+
 			} else {
 				layer.msg(data.msg);
 			}
 		},
-		error : function() {
+		error: function() {
 			layer.alert(commonStr.errorInfo);
 		}
 	});
-	
+
 }

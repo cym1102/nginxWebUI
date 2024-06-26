@@ -1,4 +1,3 @@
-
 var changeLangIndex;
 function changeLang() {
 	changeLangIndex = layer.open({
@@ -15,7 +14,7 @@ function changeLangOver() {
 		type: 'POST',
 		url: ctx + '/adminPage/login/changeLang',
 		data: {
-			lang : $("#lang").val()
+			lang: $("#lang").val()
 		},
 		dataType: 'json',
 		success: function(data) {
@@ -29,5 +28,5 @@ function changeLangOver() {
 			layer.alert(commonStr.errorInfo);
 		}
 	});
-	
+
 }

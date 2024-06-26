@@ -21,13 +21,24 @@ public class Remote extends BaseModel{
 	Integer monitor;
 	
 	String parentId;
-	Integer type; //0 服务器 1分组
+	Integer type; // 0服务器 1分组
 	Integer nginx; //0未运行 1在运行 2未知
 	
 	Boolean select;
 	
-	
-	
+//	Boolean isParent;// tree控件需要用到
+//	
+//	
+//	
+//	
+//	public Boolean getIsParent() {
+//		return isParent;
+//	}
+//
+//	public void setIsParent(Boolean isParent) {
+//		this.isParent = isParent;
+//	}
+
 	public Boolean getSelect() {
 		return select;
 	}

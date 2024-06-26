@@ -1,6 +1,7 @@
 package com.cym.controller.adminPage;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.swing.JPanel;
@@ -331,5 +332,6 @@ public class LoginController extends BaseController {
 
 		return renderSuccess();
 	}
+
 
 }

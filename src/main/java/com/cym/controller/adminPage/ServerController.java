@@ -97,11 +97,11 @@ public class ServerController extends BaseController {
 
 		List<Upstream> upstreamList = upstreamService.getListByProxyType(0);
 		modelAndView.put("upstreamList", upstreamList);
-		modelAndView.put("upstreamSize", upstreamList.size());
+//		modelAndView.put("upstreamSize", upstreamList.size());
 
 		List<Upstream> upstreamTcpList = upstreamService.getListByProxyType(1);
 		modelAndView.put("upstreamTcpList", upstreamTcpList);
-		modelAndView.put("upstreamTcpSize", upstreamTcpList.size());
+//		modelAndView.put("upstreamTcpSize", upstreamTcpList.size());
 
 		List<Cert> certs = sqlHelper.findAll(Cert.class);
 		for (Cert cert : certs) {

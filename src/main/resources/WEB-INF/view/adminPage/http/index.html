@@ -278,6 +278,10 @@ input[name='param']{
 				<label class="layui-form-label long">${serverStr.blacklist}</label>
 				<div class="layui-input-inline" style="width: 250px;">
 					<select id="denyIdValue">
+						<#if denyAllowList?size == 0>
+						<option value="">${commonStr.pleaseSelect}</option>
+						</#if>
+						
 						<#list denyAllowList as denyAllow>
 						<option value="${denyAllow.id}">${denyAllow.name}</option>
 						</#list>
@@ -288,7 +292,11 @@ input[name='param']{
 			<div class="layui-form-item" id="allowDiv">
 				<label class="layui-form-label long">${serverStr.whitelist}</label>
 				<div class="layui-input-inline" style="width: 250px;">
-					<select id="allowIdValue">
+					<select id="allowIdValue" placeholder="123">
+						<#if denyAllowList?size == 0>
+						<option value="">${commonStr.pleaseSelect}</option>
+						</#if>
+						
 						<#list denyAllowList as denyAllow>
 						<option value="${denyAllow.id}">${denyAllow.name}</option>
 						</#list>

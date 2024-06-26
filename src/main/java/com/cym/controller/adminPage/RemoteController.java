@@ -95,13 +95,14 @@ public class RemoteController extends BaseController {
 	}
 
 	@Mapping("allTable")
-	public List<Remote> allTable(Context context) {
+	public Map<String, Object> allTable(Context context) {
 		Admin admin = getAdmin();
 		List<Remote> remoteList = sqlHelper.findAll(Remote.class);
 
 		for (Remote remote : remoteList) {
 			remote.setStatus(0);
 			remote.setType(0);
+//			remote.setIsParent(true);
 			if (remote.getParentId() == null) {
 				remote.setParentId("");
 			}
@@ -142,6 +143,7 @@ public class RemoteController extends BaseController {
 		remoteLocal.setPort(port);
 		remoteLocal.setStatus(1);
 		remoteLocal.setType(0);
+//		remoteLocal.setIsParent(true);
 		remoteLocal.setMonitor(settingService.get("monitorLocal") != null ? Integer.parseInt(settingService.get("monitorLocal")) : 0);
 		remoteLocal.setSystem(SystemTool.getSystem());
 		remoteLocal.setSelect(false);
@@ -158,7 +160,7 @@ public class RemoteController extends BaseController {
 			remoteGroup.setId(group.getId());
 			remoteGroup.setParentId(checkParent(group.getParentId(), groupList));
 			remoteGroup.setType(1);
-
+//			remoteLocal.setIsParent(false);
 			remoteGroup.setIp("");
 			remoteGroup.setProtocol("");
 			remoteGroup.setVersion("");
@@ -167,7 +169,11 @@ public class RemoteController extends BaseController {
 			remoteList.add(remoteGroup);
 		}
 
-		return remoteList;
+		Map<String, Object> mapResult = new HashMap<String, Object>();
+		mapResult.put("code", 0);
+		mapResult.put("data", remoteList);
+
+		return mapResult;
 	}
 
 	private String checkParent(String parentId, List<Group> groupList) {

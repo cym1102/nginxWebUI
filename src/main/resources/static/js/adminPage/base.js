@@ -15,7 +15,6 @@ $(function() {
 	element = layui.element;
 	form = layui.form;
 	laypage = layui.laypage;
-
 	// 执行一个laypage实例
 	laypage.render({
 		elem: 'pageInfo', // 渲染节点
@@ -23,6 +22,17 @@ $(function() {
 		curr: page.curr, // 起始页
 		limit: page.limit, // 每页记录数
 		layout: ['count', 'prev', 'page', 'next', 'skip', 'limit'],
+		// 翻译
+		first: pageStr.first,
+		last: pageStr.last,
+		prev: pageStr.prev,
+		next: pageStr.next,
+		skipText: [pageStr.skipTextStart, pageStr.skipTextEnd, pageStr.skipTextConfirm],
+		countText: [pageStr.countTextStart, pageStr.countTextEnd],
+		limitTemplet: function(item) {
+			return item + pageStr.limitTemplet;
+		},
+		// 跳转事件
 		jump: function(obj, first) {
 			// 首次不执行
 			if (!first) {
@@ -76,11 +86,9 @@ $(function() {
 		}
 	});
 
-	// 判断屏幕分辨率, 给table加上lay-size="sm"
-	//if (document.body.clientWidth <= 1600) {
-		//$(".layui-table").attr("lay-size", "sm");
-		//$(".layui-btn").addClass("layui-btn-sm");
-	//}
+
+	// 翻译layui原生字符
+	//translateLayui();
 })
 
 // 关闭AJAX相应的缓存
@@ -270,21 +278,50 @@ function closeLoad() {
 
 // 显示使用流程
 function showHelp() {
-	
+
 	var src = ctx + "/img/向导.png";
-	var width = document.body.clientWidth - 100; 
-	var height = width / 2.5; 
-	
+	var width = document.body.clientWidth - 100;
+	var height = width / 2.5;
+
 	var imgHtml = `<img src='${src}' style="width: ${width}px;height: ${height}px;" />`;
 	//弹出层
 	layer.open({
 		type: 1,
 		offset: 'auto',
 		area: [width + 'px', height + 'px'],
-		title : false,
+		title: false,
 		content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响  
 		cancel: function() {
 			//layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });  
 		}
 	});
+}
+
+
+function translateLayui() {
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/login/getLayuiWord',
+		data: {
+			lang: $("#lang").val()
+		},
+		dataType: 'json',
+		success: function(data) {
+			if (data.success && data.obj != null) {
+				var map = data.obj;
+
+				translateLayuiWord("layui-laypage-count", map);
+				translateLayuiWord("layui-laypage-prev", map);
+				translateLayuiWord("layui-laypage-next", map);
+				translateLayuiWord("layui-laypage-skip", map);
+				translateLayuiWordAll("layui-laypage-limits", map);
+
+				form.render();
+			}
+		},
+		error: function() {
+			layer.alert(commonStr.errorInfo);
+		}
+	});
+
 }
