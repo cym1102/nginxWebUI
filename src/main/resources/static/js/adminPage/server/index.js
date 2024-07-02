@@ -217,7 +217,7 @@ function add() {
 
 function showWindow(title) {
 
-	var width = "1350px";
+	var width = "1380px";
 	var height = "90%";
 	if (window.innerWidth <= 1000) {
 		// 手机端

@@ -75,7 +75,7 @@ public class ScheduleTask {
 	BLogFileTailer bLogFileTailer;
 
 	// 续签证书
-	@Scheduled(cron = "0 0 2 * * ?")
+	@Scheduled(cron = "0 0 0/2 * * ?")
 	public void certTasks() {
 		List<Cert> certList = sqlHelper.findListByQuery(new ConditionAndWrapper().in(Cert::getType, new Integer[] { 0, 2 }), Cert.class);
 
