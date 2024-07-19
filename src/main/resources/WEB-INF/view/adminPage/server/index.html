@@ -344,9 +344,6 @@
 									</select>
 								</div>
 							</div>
-							
-							
-							
 						</div>
 
 						<div class="layui-col-md8 pemDiv">
@@ -524,7 +521,7 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label">${serverStr.selectCert}</label>
 					<div class="layui-input-inline">
-						<select name="certId" id="certId">
+						<select name="certId" id="certId" lay-search>
 							<#if certList?size==0>
 							<option value="">${commonStr.pleaseSelect}</option>
 							</#if>

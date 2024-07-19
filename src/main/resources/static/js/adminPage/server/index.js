@@ -260,11 +260,13 @@ function addOver() {
 			over = false;
 		}
 	})
+	/*
 	$("select[name='proxyUpstreamId']").each(function() {
 		if ($("#proxyType").val() == 1 && ($(this).val() == '' || $(this).val() == null)) {
 			over = false;
 		}
 	})
+	*/
 	if (!over) {
 		layer.msg(serverStr.noFill);
 		return;
