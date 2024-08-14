@@ -81,9 +81,8 @@ public class AppFilter implements Filter {
 		}
 
 		// 登录过滤器
-		if (path.toLowerCase().contains("/adminPage/".toLowerCase()) //
+		if ((path.toLowerCase().contains("/adminPage/".toLowerCase()) || path.toLowerCase().contains("/doc.html") || path.toLowerCase().contains("/doc/api.html"))//
 				&& !path.contains("/lib/") //
-				&& !path.contains("/doc/") //
 				&& !path.contains("/js/") //
 				&& !path.contains("/img/") //
 				&& !path.contains("/css/")) {
@@ -179,12 +178,12 @@ public class AppFilter implements Filter {
 
 					httpResponse = HttpRequest.post(url).body(body).execute();
 				}
-				
+
 				ctx.charset("utf-8");
 				ctx.headerSet("Content-Type", httpResponse.header("Content-Type"));
-				ctx.headerSet("content-disposition",httpResponse.header("content-disposition")); // 设置文件名
+				ctx.headerSet("content-disposition", httpResponse.header("content-disposition")); // 设置文件名
 				ctx.output(httpResponse.body());
-				
+
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				ctx.redirect("/adminPage/login/noServer");

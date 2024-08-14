@@ -20,7 +20,7 @@ Video tutorial: https://www.bilibili.com/video/BV18A4y1D7GZ
 
 WeChat Donate: 
 
-<img src="http://www.nginxwebui.cn/img/weixin.png"  height="200" width="200">
+<img src="README/weixin.png"  height="200" width="200">
 
 #### Function description
 
@@ -257,47 +257,47 @@ systemctl start nginxwebui.service
 
 open http://xxx.xxx.xxx.xxx:8080 Enter the main page
 
-![输入图片说明](http://www.nginxwebui.cn/img/login.jpeg "login.jpg")
+![输入图片说明](README/login.jpeg "login.jpg")
 
 The login page, opened for the first time, asks to initialize the administrator account
 
-![输入图片说明](http://www.nginxwebui.cn/img/admin.jpeg "admin.jpg")
+![输入图片说明](README/admin.jpeg "admin.jpg")
 
 After entering the system, you can add and modify the administrator account in the administrator management
 
-![输入图片说明](http://www.nginxwebui.cn/img/http.jpeg "http.jpg")
+![输入图片说明](README/http.jpeg "http.jpg")
 
 In the HTTP parameters can be configured in the configuration of nginx HTTP project forward HTTP, the default will give several commonly used configuration, other configuration are free to add and delete. You can check the open log to track and generate log.
 
-![输入图片说明](http://www.nginxwebui.cn/img/tcp.jpeg "tcp.jpg")
+![输入图片说明](README/tcp.jpeg "tcp.jpg")
 
 Nginx's Stream project parameters can be configured in the TCP parameter configuration, but in most cases they are not.
 
-![输入图片说明](http://www.nginxwebui.cn/img/server.jpeg "server.jpg")
+![输入图片说明](README/server.jpeg "server.jpg")
 
 In the reverse proxy, the reverse proxy of Nginx, namely the Server item function, can be configured to enable SSL function, can directly upload PEM file and key file from the web page, or use the certificate applied in the system, can directly enable HTTP switch HTTPS function, or can open http2 protocol
 
-![输入图片说明](http://www.nginxwebui.cn/img/upstream.jpeg "upstream.jpg")
+![输入图片说明](README/upstream.jpeg "upstream.jpg")
 
 In load balancing, the upstream function of Nginx can be configured. In reverse agent management, the configured load balancing agent target can be selected
 
-![输入图片说明](http://www.nginxwebui.cn/img/html.jpeg "html.jpg")
+![输入图片说明](README/html.jpeg "html.jpg")
 
 In the HTML static file upload can be directly uploaded HTML compression package to the specified path, after uploading can be directly used in the reverse proxy, save the steps of uploading HTML files in Linux
 
-![输入图片说明](http://www.nginxwebui.cn/img/cert.jpeg "cert.jpg")
+![输入图片说明](README/cert.jpeg "cert.jpg")
 
 In the certificate management, you can add the certificate, issue and renew it. After the periodic renewal is started, the system will automatically renew the certificate which will expire soon. Note: the certificate is issued using the DNS mode of Acme. sh, and it needs to be used together with aliKey and aliSecret of Aliyun
 
-![输入图片说明](http://www.nginxwebui.cn/img/bak.jpeg "bak.jpg")
+![输入图片说明](README/bak.jpeg "bak.jpg")
 
 Backup file management. Here you can see the backup history version of Nginx.cnF. If an error occurs in Nginx, you can choose to roll back to a certain history version
 
-![输入图片说明](http://www.nginxwebui.cn/img/conf.jpeg "conf.jpg")
+![输入图片说明](README/conf.jpeg "conf.jpg")
 
 Finally, the conF file can be generated, which can be further modified manually. After the modification is confirmed to be correct, the native conF file can be overwritten, and the effectiveness and restart can be carried out. You can choose to generate a single Nginx.conf file or separate each configuration file under conF.d by domain name
  
-![输入图片说明](http://www.nginxwebui.cn/img/remote.jpeg "remote.jpg")
+![输入图片说明](README/remote.jpeg "remote.jpg")
 
 Remote server management. If you have multiple Nginx servers, you can deploy nginxWebUI, log in to one of them, add the IP and username and password of other servers to the remote management, and then you can manage all Nginx servers on one machine.
 
@@ -309,7 +309,7 @@ This system provides the HTTP interface to invoke. Open the page http://xxx.xxx.
 
 The interface invocation requires adding a token to the HTTP request header. To obtain the token, you need to enable the interface invocation permission of the user in the administrator management system, and then invoke the interface to obtain the token using the user name and password.  
 
-![输入图片说明](http://www.nginxwebui.cn/img/smart-doc.png "smart-doc.png")
+![输入图片说明](README/smart-doc.png "smart-doc.png")
 
 #### Forgot Password
 

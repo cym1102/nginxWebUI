@@ -10,7 +10,7 @@ public class EncodePassUtils {
 	public static String encode(String pass) {
 
 		if (StrUtil.isNotEmpty(pass)) {
-			pass = SecureUtil.md5(pass + salt);
+			pass = SecureUtil.md5(pass) + SecureUtil.md5(salt);
 		}
 
 		return pass;
