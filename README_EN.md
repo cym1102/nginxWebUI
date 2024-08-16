@@ -9,14 +9,15 @@ QQ Group2: 560797506
 
 Email: cym1102@qq.com
 
-Official website: http://www.nginxwebui.cn
+Official website: [http://www.nginxwebui.cn](http://www.nginxwebui.cn)
 
-Gitee: https://gitee.com/cym1102/nginxWebUI
+Professional edition address: [https://pro.nginxwebui.cn](https://pro.nginxwebui.cn)
 
-Github: https://github.com/cym1102/nginxWebUI
+Gitee: [https://gitee.com/cym1102/nginxWebUI](https://gitee.com/cym1102/nginxWebUI)
 
-Video tutorial: https://www.bilibili.com/video/BV18A4y1D7GZ
+Github: [https://github.com/cym1102/nginxWebUI](https://github.com/cym1102/nginxWebUI)
 
+Video tutorial: [https://www.bilibili.com/video/BV18A4y1D7GZ](https://www.bilibili.com/video/BV18A4y1D7GZ)
 
 WeChat Donate: 
 
@@ -35,7 +36,7 @@ After the deployment of this project, the configuration of nginx no longer need 
 
 #### Professional edition and open source edition difference
 
- address: [https://pro.nginxwebui.cn](https://pro.nginxwebui.cn)
+Professional edition address: [https://pro.nginxwebui.cn](https://pro.nginxwebui.cn)
 
 | function         | Professional edition        | Open source edition        |
 | ----------- | ----------- | ----------- |

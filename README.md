@@ -13,6 +13,8 @@ QQ技术交流群2: 560797506
 
 官网地址: [https://www.nginxwebui.cn](https://www.nginxwebui.cn)
 
+专业版地址: [https://pro.nginxwebui.cn](https://pro.nginxwebui.cn)
+
 Gitee: [https://gitee.com/cym1102/nginxWebUI](https://gitee.com/cym1102/nginxWebUI)
 
 Github: [https://github.com/cym1102/nginxWebUI](https://github.com/cym1102/nginxWebUI)
