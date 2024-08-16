@@ -1,6 +1,6 @@
 # nginxWebUI
 
-### [README.md English version](https://github.com/cym1102/nginxWebUI/blob/master/README_EN.md)
+### [README.md English version](README_EN.md)
 
 #### 介绍
 nginx网页配置工具
@@ -11,13 +11,13 @@ QQ技术交流群2: 560797506
 
 邮箱: cym1102@qq.com
 
-官网地址: http://www.nginxwebui.cn
+官网地址: [https://www.nginxwebui.cn](https://www.nginxwebui.cn)
 
-Gitee: https://gitee.com/cym1102/nginxWebUI
+Gitee: [https://gitee.com/cym1102/nginxWebUI](https://gitee.com/cym1102/nginxWebUI)
 
-Github: https://github.com/cym1102/nginxWebUI
+Github: [https://github.com/cym1102/nginxWebUI](https://github.com/cym1102/nginxWebUI)
 
-视频教程: https://www.bilibili.com/video/BV18A4y1D7GZ
+视频教程: [https://www.bilibili.com/video/BV18A4y1D7GZ](https://www.bilibili.com/video/BV18A4y1D7GZ)
 
 微信捐赠二维码
 
@@ -33,18 +33,43 @@ nginx本身功能复杂, nginxWebUI并不能涵盖nginx所有功能, 但能覆�
 
 部署此项目后, 配置nginx再也不用上网各种搜索配置代码, 再也不用手动申请和配置ssl证书, 只需要在本项目中进行增删改查就可方便的配置和启动nginx。
 
-```
-视频教程: https://www.bilibili.com/video/BV18A4y1D7GZ
-```
-
-
 #### 技术说明
 
-本项目是基于solon的web系统, 数据库使用h2, 因此服务器上不需要安装任何数据库
+本项目是基于solon的web系统, 数据库使用sqlite, 因此服务器上不需要安装任何数据库
 
 本系统通过Let's encrypt申请证书, 使用acme.sh脚本进行自动化申请和续签, 开启续签的证书将在每天凌晨2点进行续签, 只有超过60天的证书才会进行续签. 只支持在linux下签发证书.
 
 添加tcp/ip转发配置支持时, 一些低版本的nginx可能需要重新编译，通过添加–with-stream参数指定安装stream模块才能使用, 但在ubuntu 18.04下, 官方软件库中的nginx已经带有stream模块, 不需要重新编译. 本系统如果配置了tcp转发项的话, 会自动引入ngx_stream_module.so的配置项, 如果没有开启则不引入, 最大限度优化ngnix配置文件. 
+
+
+#### 专业版与开源版区别
+
+专业版地址: [https://pro.nginxwebui.cn](https://pro.nginxwebui.cn)
+
+| 功能         | 专业版        | 开源版        |
+| ----------- | ----------- | ----------- |
+| 基本参数配置       | √  | √ |
+| http参数配置      | √  | √ |
+| 反向代理配置       | √  | √ |
+| Stream参数配置    | √  | √ |
+| 负载均衡配置       | √  | √ |
+| 参数模板          | √  | √ |
+| 静态网页上传       | √  | √ |
+| 密码文件管理       | √  | √ |
+| 黑白名单IP        | √  | √ |
+| 证书申请          | √  | √ |
+| API接口文档       | √  | √ |
+| 远程管理          | √  | √ |
+| 节点及分组统一管理   | √  | × |
+| 节点配置文件统一同步 | √  | × |
+| 节点信息数据采集    | √  | × |
+| 节点状态统计       | √  | × |
+| 缓存配置         | √  | × |
+| nginx日志采集    | √  | × |
+| nginx日志查看    | √  | × |
+| nginx日志统计    | √  | × |
+| nginx流量统计    | √  | × |
+
 
 #### jar安装说明
 以Ubuntu操作系统为例,
@@ -105,7 +130,7 @@ Windows: java -jar -Dfile.encoding=UTF-8 D:/home/nginxWebUI/nginxWebUI.jar --ser
 
 --project.home 项目配置文件目录，存放数据库文件，证书文件，日志等, 默认为/home/nginxWebUI/
 
---spring.database.type=mysql 使用其他数据库，不填为使用本地h2数据库，可选mysql
+--spring.database.type=mysql 使用其他数据库，不填为使用本地sqlite数据库，可选mysql
 
 --spring.datasource.url=jdbc:mysql://ip:port/nginxwebui 数据库url
 

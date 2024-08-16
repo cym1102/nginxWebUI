@@ -32,9 +32,35 @@ The nginx web user interface (webui) does not cover all nginx functions, but cov
  
 After the deployment of this project, the configuration of nginx no longer need to search the web configuration code, no longer need to manually apply for and configure SSL certificates, just need to add, delete, change and check in this project can easily configure and start nginx.  
 
-```
-Video course: https://www.bilibili.com/video/BV18A4y1D7GZ
-```
+
+#### Professional edition and open source edition difference
+
+ address: [https://pro.nginxwebui.cn](https://pro.nginxwebui.cn)
+
+| function         | Professional edition        | Open source edition        |
+| ----------- | ----------- | ----------- |
+| Basic parameter configuration       | √  | √ |
+| http Parameter configuration      | √  | √ |
+| Reverse proxy configuration       | √  | √ |
+| Stream parameter configuration    | √  | √ |
+| Load balancing configuration       | √  | √ |
+| Parameterized template          | √  | √ |
+| Static web upload       | √  | √ |
+| Password file management       | √  | √ |
+| Whitelist IP        | √  | √ |
+| Certificate application          | √  | √ |
+| API interface documentation       | √  | √ |
+| Remote management          | √  | √ |
+| Manage nodes and groups   | √  | × |
+| Node configuration files synchronize | √  | × |
+| Node data collection    | √  | × |
+| Node status statistics       | √  | × |
+| Cache configuration         | √  | × |
+| nginx log collection    | √  | × |
+| nginx log view    | √  | × |
+| nginx log statistics    | √  | × |
+| nginx traffic statistics    | √  | × |
+
 
 #### Technical note
 
