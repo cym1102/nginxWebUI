@@ -81,12 +81,14 @@ function addOver() {
 		layer.alert(wwwStr.noUpload);
 		return;
 	}
+	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/www/addOver',
 		data: $('#addForm').serialize(),
 		dataType: 'json',
 		success: function(data) {
+			closeLoad();
 			if (data.success) {
 				location.reload();
 			} else {
@@ -94,6 +96,7 @@ function addOver() {
 			}
 		},
 		error: function() {
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});

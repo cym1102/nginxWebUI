@@ -1,8 +1,15 @@
 package com.cym.controller.adminPage;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
@@ -43,12 +50,19 @@ public class WwwController extends BaseController {
 		}
 
 		try {
-//			FileUtil.clean(www.getDir());  //太危险不要删了文件夹了 
+			try {
+				if (!checkZipSafe(dirTemp, www.getDir(), CharsetUtil.defaultCharset())) {
+					return renderError(m.get("wwwStr.zipNotSafe"));
+				}
+			} catch (IllegalArgumentException e) {
+				if (!checkZipSafe(dirTemp, www.getDir(), Charset.forName("GBK"))) {
+					return renderError(m.get("wwwStr.zipNotSafe"));
+				}
+			}
 
 			try {
 				ZipUtil.unzip(dirTemp, www.getDir());
-			} catch (Exception e) {
-				// 默认UTF-8下不能解压中文字符, 尝试使用gbk
+			} catch (IllegalArgumentException e) {
 				ZipUtil.unzip(dirTemp, www.getDir(), Charset.forName("GBK"));
 			}
 
@@ -63,20 +77,69 @@ public class WwwController extends BaseController {
 
 		return renderError(m.get("wwwStr.zipError"));
 	}
-	
+
+	/**
+	 * 检查zip是否包含../目录
+	 * 
+	 * @param dirTemp
+	 * @param dir
+	 * @param charset
+	 * @return
+	 */
+	private boolean checkZipSafe(String dirTemp, String dir, Charset charset) {
+		File zipFile = new File(dirTemp);
+		File outputFolder = new File(dir);
+		ZipInputStream zis = null;
+
+		try {
+			zis = new ZipInputStream(new FileInputStream(zipFile), charset);
+			ZipEntry entry = null;
+			while ((entry = zis.getNextEntry()) != null) {
+				String name = entry.getName();
+				// 检查并阻止任何尝试跳转到父目录的尝试
+				if (name.contains("..") || name.startsWith("/") || name.startsWith("\\")) {
+					return false;
+				}
+
+				// 通常还需要检查解压后文件的完整路径，以确保它仍然位于输出文件夹内
+				File file = new File(outputFolder, name);
+				if (!file.getCanonicalPath().startsWith(outputFolder.getCanonicalPath())) {
+					return false;
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			logger.error(e.getMessage(), e);
+			throw e;
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+			return false;
+		} finally {
+			try {
+				if (zis != null) {
+					zis.close();
+				}
+			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+
+		return true;
+
+	}
+
 	@Mapping("clean")
 	public JsonResult clean(String id) {
 		Www www = sqlHelper.findById(id, Www.class);
-		
+
 		FileUtil.clean(www.getDir());
-		
+
 		return renderSuccess();
 	}
 
 	@Mapping("del")
 	public JsonResult del(String id) {
 		String[] ids = id.split(",");
-		
+
 		sqlHelper.deleteByIds(ids, Www.class);
 
 		return renderSuccess();

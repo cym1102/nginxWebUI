@@ -283,11 +283,10 @@ function saveCmd() {
 		dataType: 'json',
 		success: function(data) {
 			if (data.success) {
-				var map = data.obj;
-				$("#nginxExe").val(map.nginxExe);
-				$("#nginxDir").val(map.nginxDir);
-				$("#nginxPath").val(map.nginxPath);
-				
+				//var map = data.obj;
+				//$("#nginxExe").val(map.nginxExe);
+				//$("#nginxDir").val(map.nginxDir);
+				//$("#nginxPath").val(map.nginxPath);
 			}
 		},
 		error: function() {
@@ -382,7 +381,7 @@ function runCmd(type) {
 					$("#stopNormal").prop("checked", true);
 
 					$("#nginxStop input[name='cmd']").each(function() {
-						if ($(this).attr("title") == cmd) {
+						if ($(this).attr("title") == cmd || $(this).attr("id") == cmd) {
 							$(this).prop("checked", true);
 						}
 					})
@@ -391,7 +390,7 @@ function runCmd(type) {
 					$("#startNormal").prop("checked", true);
 
 					$("#nginxStart input[name='cmd']").each(function() {
-						if ($(this).attr("title") == cmd) {
+						if ($(this).attr("title") == cmd || $(this).attr("id") == cmd) {
 							$(this).prop("checked", true);
 						}
 					})
@@ -423,7 +422,14 @@ function runCmdOver() {
 	var type = "";
 	$("input[name='cmd']").each(function() {
 		if ($(this).prop("checked")) {
-			cmd = $(this).attr("title");
+			if ($(this).attr("id") == 'stopNormal') {
+				cmd = "stopNormal";
+			} else if ($(this).attr("id") == 'startNormal') {
+				cmd = "startNormal";
+			} else {
+				cmd = $(this).attr("title");
+			}
+
 			type = $(this).attr("lang");
 		}
 	})

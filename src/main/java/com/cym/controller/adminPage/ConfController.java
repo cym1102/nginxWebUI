@@ -1,8 +1,9 @@
 package com.cym.controller.adminPage;
 
 import java.io.File;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,11 +32,10 @@ import com.cym.utils.ToolUtils;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.resource.ClassPathResource;
+import cn.hutool.core.io.file.PathUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -269,20 +269,59 @@ public class ConfController extends BaseController {
 	@Mapping(value = "saveCmd")
 	public JsonResult saveCmd(String nginxPath, String nginxExe, String nginxDir) {
 		nginxPath = ToolUtils.handlePath(nginxPath);
-		settingService.set("nginxPath", nginxPath);
-
 		nginxExe = ToolUtils.handlePath(nginxExe);
-		settingService.set("nginxExe", nginxExe);
-
 		nginxDir = ToolUtils.handlePath(nginxDir);
-		settingService.set("nginxDir", nginxDir);
+
+		if (StrUtil.isNotEmpty(nginxPath) && !isFile(nginxPath)) {
+			nginxPath = null;
+		}
+		if (StrUtil.isNotEmpty(nginxDir) && !isFile(nginxDir)) {
+			nginxDir = null;
+		}
+		if (StrUtil.isNotEmpty(nginxExe) && !isFile(nginxExe) && !isSafeCmd(nginxExe)) {
+			nginxExe = null;
+		}
+		if (StrUtil.isNotEmpty(nginxExe) && isFile(nginxExe) && !isSafeEnd(nginxExe)) {
+			nginxExe = null;
+		}
+
+		if (nginxPath != null) {
+			settingService.set("nginxPath", nginxPath);
+			System.out.println("nginxPath -> " + nginxPath);
+		}
+		if (nginxExe != null) {
+			settingService.set("nginxExe", nginxExe);
+			System.out.println("nginxExe -> " + nginxExe);
+		}
+		if (nginxDir != null) {
+			settingService.set("nginxDir", nginxDir);
+			System.out.println("nginxDir -> " + nginxDir);
+		}
 
 		Map<String, String> map = new HashMap<>();
 		map.put("nginxPath", nginxPath);
 		map.put("nginxExe", nginxExe);
 		map.put("nginxDir", nginxDir);
-
+		System.out.println("");
 		return renderSuccess(map);
+	}
+
+	private boolean isSafeEnd(String nginxExe) {
+		return nginxExe.endsWith("nginx") //
+				|| nginxExe.endsWith("openresty") //
+				|| nginxExe.endsWith("nginx.exe") //
+				|| nginxExe.endsWith("openrestys.exe");
+	}
+
+	private boolean isSafeCmd(String nginxExe) {
+		return nginxExe.equals("nginx") //
+				|| nginxExe.equals("openresty") //
+				|| nginxExe.equals("nginx.exe") //
+				|| nginxExe.equals("openrestys.exe");
+	}
+
+	private boolean isFile(String path) {
+		return FileUtil.isDirectory(path) || FileUtil.isFile(path);
 	}
 
 	@Mapping(value = "reload")
@@ -308,7 +347,7 @@ public class ConfController extends BaseController {
 			String rs = RuntimeUtil.execForStr(cmd);
 
 			cmd = "<span class='blue'>" + cmd + "</span>";
-			if (!rs.contains("[error]")) {
+			if (!rs.contains("[error]") && !rs.contains("[emerg]")) {
 				return renderSuccess(cmd + "<br>" + m.get("confStr.reloadSuccess") + "<br>" + rs.replace("\n", "<br>"));
 			} else {
 				if (rs.contains("The system cannot find the file specified") || rs.contains("nginx.pid") || rs.contains("PID")) {
@@ -331,7 +370,8 @@ public class ConfController extends BaseController {
 		}
 
 		// 仅执行nginx相关的命令，而不是其他的恶意命令
-		if (!isAvailableCmd(cmd)) {
+		cmd = buildRealCmd(cmd);
+		if (StrUtil.isEmpty(cmd)) {
 			return renderSuccess(m.get("confStr.notAvailableCmd"));
 		}
 
@@ -359,17 +399,12 @@ public class ConfController extends BaseController {
 		}
 	}
 
-	// 仅执行nginx相关的命令，而不是其他的恶意命令
-	private boolean isAvailableCmd(String cmd) {
-		// 过滤数据库中的路径
-		String nginxPath = ToolUtils.handleConf(settingService.get("nginxPath"));
-		settingService.set("nginxPath", nginxPath);
-		String nginxExe = ToolUtils.handleConf(settingService.get("nginxExe"));
-		settingService.set("nginxExe", nginxExe);
-		String nginxDir = ToolUtils.handleConf(settingService.get("nginxDir"));
-		settingService.set("nginxDir", nginxDir);
+	private String buildRealCmd(String cmd) {
+		String dir = "";
+		if (StrUtil.isNotEmpty(settingService.get("nginxDir"))) {
+			dir = " -p " + settingService.get("nginxDir");
+		}
 
-		// 检查命令格式
 		switch (cmd) {
 		case "net start nginx":
 		case "service nginx start":
@@ -379,26 +414,57 @@ public class ConfController extends BaseController {
 		case "systemctl stop nginx":
 		case "taskkill /f /im nginx.exe":
 		case "pkill nginx":
-			return true;
-		default:
-			break;
+			return cmd;
+
+		case "stopNormal":
+			return settingService.get("nginxExe") + " -s stop" + dir;
+		case "startNormal":
+			return settingService.get("nginxExe") + " -c " + settingService.get("nginxPath") + dir;
 		}
 
-		String dir = "";
-		if (StrUtil.isNotEmpty(settingService.get("nginxDir"))) {
-			dir = " -p " + settingService.get("nginxDir");
-		}
-
-		if (cmd.equals(settingService.get("nginxExe") + " -s stop" + dir)) {
-			return true;
-		}
-
-		if (cmd.equals(settingService.get("nginxExe") + " -c " + settingService.get("nginxPath") + dir)) {
-			return true;
-		}
-
-		return false;
+		return null;
 	}
+
+//	// 仅执行nginx相关的命令，而不是其他的恶意命令
+//	private boolean isAvailableCmd(String cmd) {
+//		// 过滤数据库中的路径
+//		String nginxPath = ToolUtils.handleConf(settingService.get("nginxPath"));
+//		settingService.set("nginxPath", nginxPath);
+//		String nginxExe = ToolUtils.handleConf(settingService.get("nginxExe"));
+//		settingService.set("nginxExe", nginxExe);
+//		String nginxDir = ToolUtils.handleConf(settingService.get("nginxDir"));
+//		settingService.set("nginxDir", nginxDir);
+//
+//		// 检查命令格式
+//		switch (cmd) {
+//		case "net start nginx":
+//		case "service nginx start":
+//		case "systemctl start nginx":
+//		case "net stop nginx":
+//		case "service nginx stop":
+//		case "systemctl stop nginx":
+//		case "taskkill /f /im nginx.exe":
+//		case "pkill nginx":
+//			return true;
+//		default:
+//			break;
+//		}
+//
+//		String dir = "";
+//		if (StrUtil.isNotEmpty(settingService.get("nginxDir"))) {
+//			dir = " -p " + settingService.get("nginxDir");
+//		}
+//
+//		if (cmd.equals(settingService.get("nginxExe") + " -s stop" + dir)) {
+//			return true;
+//		}
+//
+//		if (cmd.equals(settingService.get("nginxExe") + " -c " + settingService.get("nginxPath") + dir)) {
+//			return true;
+//		}
+//
+//		return false;
+//	}
 
 	@Mapping(value = "getLastCmd")
 	public JsonResult getLastCmd(String type) {

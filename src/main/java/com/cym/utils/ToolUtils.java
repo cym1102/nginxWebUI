@@ -27,19 +27,9 @@ public class ToolUtils {
 		if (StrUtil.isEmpty(path)) {
 			return path;
 		}
-		return path.replace("\\", "/") //
-				.replace("//", "/") //
-				// 删除 ?
-				// 删除 <>
-				// 删除 |
-				// 删除 "
-				// 删除 #
-				// 删除 &
-				// 删除 ;
-				// 删除 '
-				// 删除 `
-				// 删除 空格
-				.replaceAll("[\\s?<>|\"#&;'`]", "");
+		return path.replace("\\", "/") // 替换反斜杠
+				.replace("//", "/") // 替换双斜杠
+				.replaceAll("[\\s?<>|\"#&;'`]", ""); // 删除空格和特殊字符
 	}
 
 	/**
