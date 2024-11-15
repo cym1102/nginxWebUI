@@ -1,11 +1,12 @@
 package com.cym.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+import cn.hutool.json.JSONArray;
+//import com.alibaba.fastjson.JSONObject;
+import cn.hutool.json.JSONObject;
+import com.beust.jcommander.internal.Lists;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 import org.slf4j.Logger;
@@ -235,10 +236,13 @@ public class ServerService {
 			// 设置location
 			List<Location> locations = new ArrayList<>();
 			List<NgxEntry> locationBlocks = serverNgx.findAll(NgxBlock.class, "location");
+            NgxBlock locationBlockTemp;
 			for (NgxEntry item : locationBlocks) {
 				Location location = new Location();
 				// 目前只支持http段的 proxy_pass
-				NgxParam proxyPassParam = ((NgxBlock) item).findParam("proxy_pass");
+				locationBlockTemp = (NgxBlock) item;
+				
+				NgxParam proxyPassParam = locationBlockTemp.findParam("proxy_pass");
 
 				location.setPath(((NgxBlock) item).getValue());
 				// 如果没有proxy_pass type 0,说明可能是静态文件夹映射 type 1
@@ -264,7 +268,8 @@ public class ServerService {
 
 					location.setType(1);
 				}
-				location.setLocationParamJson(null);
+				location.setLocationParamJson(getParamJsonFromLocationBlock(locationBlockTemp));
+				location.setHeader(0);
 				locations.add(location);
 			}
 
@@ -272,11 +277,49 @@ public class ServerService {
 			server.setSeq(SnowFlakeUtils.getId());
 			addOver(server, "", locations);
 		}
+		
 
 		// 删除临时文件
 		FileUtil.del(initNginxPath);
 	}
-
+	
+	private String getParamJsonFromLocationBlock(NgxBlock locationBlock){
+		
+		List<String>  proxyConfigList = Lists.newArrayList("proxy_http_version", "proxy_redirect",
+				"proxy_set_header", "proxy_cache", "proxy_cache_valid", "proxy_cache_key", "proxy_connect_timeout",
+				"proxy_read_timeout", "proxy_send_timeout", "proxy_buffer_size", "proxy_buffers",
+				"proxy_busy_buffers_size", "proxy_cookie_path","proxy_intercept_errors","proxy_request_buffering",
+				"proxy_buffering",
+				"proxy_ignore_client_abort","expires","add_header","client_max_body_size"
+		);
+		
+		Collection<NgxEntry> entries = locationBlock.getEntries();
+		List<NgxEntry> paramsTemp;
+		JSONObject paramJsonTemp = null;
+		JSONArray paramJsonArray = new JSONArray();
+		NgxParam ngxParamTemp;
+		for (String proxyConfig : proxyConfigList) {
+			paramsTemp = locationBlock.findAll(NgxParam.class,proxyConfig);
+			if (paramsTemp != null && !paramsTemp.isEmpty()){
+				
+				for (NgxEntry paramEntry : paramsTemp) {
+					ngxParamTemp = (NgxParam) paramEntry;
+					ngxParamTemp.getName();
+					paramJsonTemp = new JSONObject();
+					paramJsonTemp.put("name",ngxParamTemp.getName());
+					paramJsonTemp.put("value",ngxParamTemp.getValue());
+					paramJsonArray.add(paramJsonTemp);
+				}
+			}
+			
+		}
+		if (!paramJsonArray.isEmpty()){
+			return paramJsonArray.toString();
+		}else {
+			return null;
+		}
+		
+	}
 	/**
 	 * 重新创建配置文件，删除影响解析的行（比如#号开头，但是此行没有其他内容）
 	 *

@@ -163,18 +163,16 @@ public class InitConfig {
 				settingService.set("nginxExe", "nginx");
 			}
 
-			// 尝试启动nginx
+			// 重启nginx, 拿到pid
 			String nginxExe = settingService.get("nginxExe");
 			String nginxDir = settingService.get("nginxDir");
-
-			logger.info("nginxIsRun:" + NginxUtils.isRun());
-			if (!NginxUtils.isRun() && StrUtil.isNotEmpty(nginxExe) && StrUtil.isNotEmpty(nginxPath)) {
+			if (StrUtil.isNotEmpty(nginxExe) && StrUtil.isNotEmpty(nginxPath)) {
+				RuntimeUtil.execForStr("/bin/sh", "-c", "pkill -9 nginx");
+				
 				String cmd = nginxExe + " -c " + nginxPath;
-
 				if (StrUtil.isNotEmpty(nginxDir)) {
 					cmd += " -p " + nginxDir;
 				}
-				logger.info("runCmd:" + cmd);
 				RuntimeUtil.execForStr("/bin/sh", "-c", cmd);
 			}
 		}

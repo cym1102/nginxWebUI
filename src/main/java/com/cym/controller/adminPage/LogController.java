@@ -2,13 +2,10 @@ package com.cym.controller.adminPage;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
-import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,17 +81,10 @@ public class LogController extends BaseController {
 	}
 
 	@Mapping("down")
-	public void down(ModelAndView modelAndView, String id) throws IOException {
+	public File down(String id) throws IOException {
 		Log log = sqlHelper.findById(id, Log.class);
-		File file = new File(log.getPath());
-
-		Context.current().contentType("application/octet-stream");
-		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=" + URLUtil.encode(file.getName());
-		Context.current().header(headerKey, headerValue);
-
-		InputStream inputStream = Files.newInputStream(file.toPath());
-		Context.current().output(inputStream);
+		//todo: 简化下载处理
+		return new File(log.getPath());
 	}
 
 	@Mapping("tailCmd")

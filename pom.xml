@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>org.noear</groupId>
 		<artifactId>solon-parent</artifactId>
-		<version>2.4.5</version>
+		<version>3.0.3</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cym</groupId>
 	<artifactId>nginxWebUI</artifactId>
-	<version>4.2.4</version>
+	<version>4.2.5</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,7 +19,7 @@
 		<java.version>1.8</java.version>
 		<nginxparser.version>0.9.6</nginxparser.version>
 		<h2.version>2.1.214</h2.version>
-		<sqlite-jdbc.version>3.46.0.0</sqlite-jdbc.version>
+		<sqlite-jdbc.version>3.47.0.0</sqlite-jdbc.version>
 		<mysql.version>8.0.33</mysql.version>
 		<googleauth.version>1.5.0</googleauth.version>
 		<hutool.version>5.8.25</hutool.version>
@@ -40,16 +40,21 @@
 
 		<dependency>
 			<groupId>org.noear</groupId>
-			<artifactId>solon.boot.undertow</artifactId>
+			<artifactId>solon-view-freemarker</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.noear</groupId>
-			<artifactId>solon.logging.logback</artifactId>
+			<artifactId>solon-boot-undertow</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.noear</groupId>
+			<artifactId>solon-logging-logback</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.noear</groupId>
-			<artifactId>solon.scheduling.simple</artifactId>
+			<artifactId>solon-scheduling-simple</artifactId>
 		</dependency>
 
 		<dependency>
@@ -134,7 +139,6 @@
 			<artifactId>expiringmap</artifactId>
 			<version>${expiringmap.version}</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>

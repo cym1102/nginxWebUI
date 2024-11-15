@@ -46,22 +46,7 @@ public class NginxWebUI {
 			logger.error(e.getMessage(), e);
 		}
 
-		Solon.start(NginxWebUI.class, args, app -> {
-			app.onError(e -> logger.error(e.getMessage(), e));
-
-			app.before(c -> {
-				String path = c.path();
-				while (path.contains("//")) {
-					path = path.replace("//", "/");
-				}
-				c.pathNew(path);
-			});
-
-			app.onEvent(freemarker.template.Configuration.class, cfg -> {
-				cfg.setSetting("classic_compatible", "true");
-				cfg.setSetting("number_format", "0.##");
-			});
-		});
+		Solon.start(NginxWebUI.class, args);
 	}
 
 	public static void killSelf(String[] args) {
