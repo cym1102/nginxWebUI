@@ -97,11 +97,9 @@ public class ServerController extends BaseController {
 
 		List<Upstream> upstreamList = upstreamService.getListByProxyType(0);
 		modelAndView.put("upstreamList", upstreamList);
-//		modelAndView.put("upstreamSize", upstreamList.size());
 
 		List<Upstream> upstreamTcpList = upstreamService.getListByProxyType(1);
 		modelAndView.put("upstreamTcpList", upstreamTcpList);
-//		modelAndView.put("upstreamTcpSize", upstreamTcpList.size());
 
 		List<Cert> certs = sqlHelper.findAll(Cert.class);
 		for (Cert cert : certs) {
@@ -125,37 +123,40 @@ public class ServerController extends BaseController {
 		List<Location> locations = serverService.getLocationByServerId(id);
 
 		for (Location location : locations) {
-			String descr = m.get("commonStr.descr");
-			if (StrUtil.isNotEmpty(location.getDescr())) {
-				descr = location.getDescr();
-			}
+			if (location.getEnable() == 1) {
 
-			if (location.getType() == 0) {
-				str.add("<span class='path'>" + location.getPath() + "</span>"//
-						+ "<a class='descrBtn' href='javascript:editLocationDescr(\"" + location.getId() + "\")'>" + descr + "</a>"//
-						+ "<br>"//
-						+ "<span class='value'>" + location.getValue() + "</span>");
-			} else if (location.getType() == 1) {
-				str.add("<span class='path'>" + location.getPath() + "</span>"//
-						+ "<a class='descrBtn' href='javascript:editLocationDescr(\"" + location.getId() + "\")'>" + descr + "</a>"//
-						+ "<br>"//
-						+ "<span class='value'>" + location.getRootPath() + "</span>");
-			} else if (location.getType() == 2) {
-				Upstream upstream = sqlHelper.findById(location.getUpstreamId(), Upstream.class);
-				if (upstream != null) {
+				String descr = m.get("commonStr.descr");
+				if (StrUtil.isNotEmpty(location.getDescr())) {
+					descr = location.getDescr();
+				}
+
+				if (location.getType() == 0) {
 					str.add("<span class='path'>" + location.getPath() + "</span>"//
 							+ "<a class='descrBtn' href='javascript:editLocationDescr(\"" + location.getId() + "\")'>" + descr + "</a>"//
 							+ "<br>"//
-							+ "<span class='value'>http://" + upstream.getName() + (location.getUpstreamPath() != null ? location.getUpstreamPath() : "") + "</span>");
+							+ "<span class='value'>" + location.getValue() + "</span>");
+				} else if (location.getType() == 1) {
+					str.add("<span class='path'>" + location.getPath() + "</span>"//
+							+ "<a class='descrBtn' href='javascript:editLocationDescr(\"" + location.getId() + "\")'>" + descr + "</a>"//
+							+ "<br>"//
+							+ "<span class='value'>" + location.getRootPath() + "</span>");
+				} else if (location.getType() == 2) {
+					Upstream upstream = sqlHelper.findById(location.getUpstreamId(), Upstream.class);
+					if (upstream != null) {
+						str.add("<span class='path'>" + location.getPath() + "</span>"//
+								+ "<a class='descrBtn' href='javascript:editLocationDescr(\"" + location.getId() + "\")'>" + descr + "</a>"//
+								+ "<br>"//
+								+ "<span class='value'>http://" + upstream.getName() + (location.getUpstreamPath() != null ? location.getUpstreamPath() : "") + "</span>");
+					}
+				} else if (location.getType() == 4) {
+					str.add("<span class='path'>" + location.getPath() + "</span>"//
+							+ "<a class='descrBtn' href='javascript:editLocationDescr(\"" + location.getId() + "\")'>" + descr + "</a>"//
+							+ "<br>"//
+							+ "<span class='value'>" + location.getReturnUrl() + "</span>");
+				} else if (location.getType() == 3) {
+					str.add("<span class='path'>" + location.getPath() + "</span>" //
+							+ "<a class='descrBtn' href='javascript:editLocationDescr(\"" + location.getId() + "\")'>" + descr + "</a>");
 				}
-			} else if (location.getType() == 4) {
-				str.add("<span class='path'>" + location.getPath() + "</span>"//
-						+ "<a class='descrBtn' href='javascript:editLocationDescr(\"" + location.getId() + "\")'>" + descr + "</a>"//
-						+ "<br>"//
-						+ "<span class='value'>" + location.getReturnUrl() + "</span>");
-			} else if (location.getType() == 3) {
-				str.add("<span class='path'>" + location.getPath() + "</span>" //
-						+ "<a class='descrBtn' href='javascript:editLocationDescr(\"" + location.getId() + "\")'>" + descr + "</a>");
 			}
 
 		}

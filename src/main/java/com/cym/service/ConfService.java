@@ -332,7 +332,7 @@ public class ConfService {
 					strs.add("deny " + ip.trim() + ";");
 				}
 			}
-			
+
 			strs.add("allow all;");
 		}
 		if (denyAllowValue == 2) {
@@ -517,139 +517,140 @@ public class ConfService {
 			// location参数配置
 			List<Location> locationList = serverService.getLocationByServerId(server.getId());
 			for (Location location : locationList) {
-				NgxBlock ngxBlockLocation = new NgxBlock();
-				ngxBlockLocation.addValue("location");
-				ngxBlockLocation.addValue(location.getPath());
+				if (location.getEnable() == 1) {
+					NgxBlock ngxBlockLocation = new NgxBlock();
+					ngxBlockLocation.addValue("location");
+					ngxBlockLocation.addValue(location.getPath());
 
-				if (StrUtil.isNotEmpty(location.getDescr())) {
-					String[] descrs = location.getDescr().split("\n");
-					for (String d : descrs) {
-						ngxParam = new NgxParam();
-						ngxParam.addValue("# " + d);
-						ngxBlockLocation.addEntry(ngxParam);
-					}
-				}
-
-				if (location.getType() == 0 || location.getType() == 2) { // 动态代理或负载均衡
-
-					if (location.getType() == 0) {
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_pass " + location.getValue());
-						ngxBlockLocation.addEntry(ngxParam);
-					} else if (location.getType() == 2) {
-						Upstream upstream = sqlHelper.findById(location.getUpstreamId(), Upstream.class);
-						if (upstream != null) {
+					if (StrUtil.isNotEmpty(location.getDescr())) {
+						String[] descrs = location.getDescr().split("\n");
+						for (String d : descrs) {
 							ngxParam = new NgxParam();
-							ngxParam.addValue("proxy_pass " + location.getUpstreamType() + "://" + upstream.getName() + (location.getUpstreamPath() != null ? location.getUpstreamPath() : ""));
+							ngxParam.addValue("# " + d);
 							ngxBlockLocation.addEntry(ngxParam);
 						}
 					}
 
-					if (location.getHeader() == 1) { // 设置header参数
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header Host " + location.getHeaderHost());
-						ngxBlockLocation.addEntry(ngxParam);
+					if (location.getType() == 0 || location.getType() == 2) { // 动态代理或负载均衡
 
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header X-Real-IP $remote_addr");
-						ngxBlockLocation.addEntry(ngxParam);
+						if (location.getType() == 0) {
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_pass " + location.getValue());
+							ngxBlockLocation.addEntry(ngxParam);
+						} else if (location.getType() == 2) {
+							Upstream upstream = sqlHelper.findById(location.getUpstreamId(), Upstream.class);
+							if (upstream != null) {
+								ngxParam = new NgxParam();
+								ngxParam.addValue("proxy_pass " + location.getUpstreamType() + "://" + upstream.getName() + (location.getUpstreamPath() != null ? location.getUpstreamPath() : ""));
+								ngxBlockLocation.addEntry(ngxParam);
+							}
+						}
 
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for");
-						ngxBlockLocation.addEntry(ngxParam);
+						if (location.getHeader() == 1) { // 设置header参数
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_set_header Host " + location.getHeaderHost());
+							ngxBlockLocation.addEntry(ngxParam);
 
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header X-Forwarded-Host $http_host");
-						ngxBlockLocation.addEntry(ngxParam);
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_set_header X-Real-IP $remote_addr");
+							ngxBlockLocation.addEntry(ngxParam);
 
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header X-Forwarded-Port $server_port");
-						ngxBlockLocation.addEntry(ngxParam);
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for");
+							ngxBlockLocation.addEntry(ngxParam);
 
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_set_header X-Forwarded-Host $http_host");
+							ngxBlockLocation.addEntry(ngxParam);
+
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_set_header X-Forwarded-Port $server_port");
+							ngxBlockLocation.addEntry(ngxParam);
+
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_set_header X-Forwarded-Proto $scheme");
+							ngxBlockLocation.addEntry(ngxParam);
+						}
+
+						if (location.getWebsocket() == 1) { // 设置websocket
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_http_version 1.1");
+							ngxBlockLocation.addEntry(ngxParam);
+
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_set_header Upgrade $http_upgrade");
+							ngxBlockLocation.addEntry(ngxParam);
+
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_set_header Connection \"upgrade\"");
+							ngxBlockLocation.addEntry(ngxParam);
+						}
+
+						if (location.getCros() == 1) { // 设置跨域
+							ngxParam = new NgxParam();
+							ngxParam.addValue("add_header Access-Control-Allow-Origin *");
+							ngxBlockLocation.addEntry(ngxParam);
+
+							ngxParam = new NgxParam();
+							ngxParam.addValue("add_header Access-Control-Allow-Methods *");
+							ngxBlockLocation.addEntry(ngxParam);
+
+							ngxParam = new NgxParam();
+							ngxParam.addValue("add_header Access-Control-Allow-Headers *");
+							ngxBlockLocation.addEntry(ngxParam);
+
+							ngxParam = new NgxParam();
+							ngxParam.addValue("add_header Access-Control-Allow-Credentials true");
+							ngxBlockLocation.addEntry(ngxParam);
+
+							NgxBlock ngxBlock = new NgxBlock();
+							ngxBlock.addValue("if ($request_method = 'OPTIONS')");
+							ngxParam = new NgxParam();
+
+							ngxParam.addValue("return 204");
+							ngxBlock.addEntry(ngxParam);
+
+							ngxBlockLocation.addEntry(ngxBlock);
+
+						}
+
+						if (server.getSsl() == 1 && server.getRewrite() == 1) { // redirect http转https
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_redirect http:// https://");
+							ngxBlockLocation.addEntry(ngxParam);
+						}
+
+					} else if (location.getType() == 1) { // 静态html
+						if (location.getRootType() != null && location.getRootType().equals("alias")) {
+							ngxParam = new NgxParam();
+							ngxParam.addValue("alias " + ToolUtils.handlePath(location.getRootPath()));
+							ngxBlockLocation.addEntry(ngxParam);
+						} else {
+							ngxParam = new NgxParam();
+							ngxParam.addValue("root " + ToolUtils.handlePath(location.getRootPath()));
+							ngxBlockLocation.addEntry(ngxParam);
+						}
+
+						if (StrUtil.isNotEmpty(location.getRootPage())) {
+							ngxParam = new NgxParam();
+							ngxParam.addValue("index " + location.getRootPage());
+							ngxBlockLocation.addEntry(ngxParam);
+						}
+
+					} else if (location.getType() == 4) { // 重定向
 						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header X-Forwarded-Proto $scheme");
+						ngxParam.addValue("return 301 " + location.getReturnUrl() + (location.getReturnPath() == 1 ? "$request_uri" : ""));
 						ngxBlockLocation.addEntry(ngxParam);
 					}
 
-					if (location.getWebsocket() == 1) { // 设置websocket
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_http_version 1.1");
-						ngxBlockLocation.addEntry(ngxParam);
-
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header Upgrade $http_upgrade");
-						ngxBlockLocation.addEntry(ngxParam);
-
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_set_header Connection \"upgrade\"");
-						ngxBlockLocation.addEntry(ngxParam);
+					// 自定义参数
+					paramList = paramService.getListByTypeId(location.getId(), "location");
+					for (Param param : paramList) {
+						setSameParam(param, ngxBlockLocation);
 					}
 
-					if (location.getCros() == 1) { // 设置跨域
-						ngxParam = new NgxParam();
-						ngxParam.addValue("add_header Access-Control-Allow-Origin *");
-						ngxBlockLocation.addEntry(ngxParam);
-
-						ngxParam = new NgxParam();
-						ngxParam.addValue("add_header Access-Control-Allow-Methods *");
-						ngxBlockLocation.addEntry(ngxParam);
-
-						ngxParam = new NgxParam();
-						ngxParam.addValue("add_header Access-Control-Allow-Headers *");
-						ngxBlockLocation.addEntry(ngxParam);
-
-						ngxParam = new NgxParam();
-						ngxParam.addValue("add_header Access-Control-Allow-Credentials true");
-						ngxBlockLocation.addEntry(ngxParam);
-
-						NgxBlock ngxBlock = new NgxBlock();
-						ngxBlock.addValue("if ($request_method = 'OPTIONS')");
-						ngxParam = new NgxParam();
-
-						ngxParam.addValue("return 204");
-						ngxBlock.addEntry(ngxParam);
-
-						ngxBlockLocation.addEntry(ngxBlock);
-
-					}
-
-					if (server.getSsl() == 1 && server.getRewrite() == 1) { // redirect http转https
-						ngxParam = new NgxParam();
-						ngxParam.addValue("proxy_redirect http:// https://");
-						ngxBlockLocation.addEntry(ngxParam);
-					}
-
-				} else if (location.getType() == 1) { // 静态html
-					if (location.getRootType() != null && location.getRootType().equals("alias")) {
-						ngxParam = new NgxParam();
-						ngxParam.addValue("alias " + ToolUtils.handlePath(location.getRootPath()));
-						ngxBlockLocation.addEntry(ngxParam);
-					} else {
-						ngxParam = new NgxParam();
-						ngxParam.addValue("root " + ToolUtils.handlePath(location.getRootPath()));
-						ngxBlockLocation.addEntry(ngxParam);
-					}
-
-					if (StrUtil.isNotEmpty(location.getRootPage())) {
-						ngxParam = new NgxParam();
-						ngxParam.addValue("index " + location.getRootPage());
-						ngxBlockLocation.addEntry(ngxParam);
-					}
-
-				} else if (location.getType() == 4) { // 重定向
-					ngxParam = new NgxParam();
-					ngxParam.addValue("return 301 " + location.getReturnUrl() + (location.getReturnPath() == 1 ? "$request_uri" : ""));
-					ngxBlockLocation.addEntry(ngxParam);
+					ngxBlockServer.addEntry(ngxBlockLocation);
 				}
-
-				// 自定义参数
-				paramList = paramService.getListByTypeId(location.getId(), "location");
-				for (Param param : paramList) {
-					setSameParam(param, ngxBlockLocation);
-				}
-
-				ngxBlockServer.addEntry(ngxBlockLocation);
-
 			}
 
 		} else {

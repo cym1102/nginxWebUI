@@ -100,6 +100,22 @@ public class Location extends BaseModel {
 	 * 描述
 	 */
 	String descr;
+	/**
+	 * 是否启用 1:启用(默认) 0:禁用
+	 */
+	@InitValue("1")
+	Integer enable;
+	
+	
+
+
+	public Integer getEnable() {
+		return enable;
+	}
+
+	public void setEnable(Integer enable) {
+		this.enable = enable;
+	}
 
 	public Integer getReturnPath() {
 		return returnPath;

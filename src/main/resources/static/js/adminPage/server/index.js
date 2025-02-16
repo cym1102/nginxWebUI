@@ -216,7 +216,7 @@ function add() {
 }
 
 function showWindow(title) {
-
+	/*
 	var width = "1380px";
 	var height = "90%";
 	if (window.innerWidth <= 1000) {
@@ -229,6 +229,16 @@ function showWindow(title) {
 		type: 1,
 		title: title,
 		area: [width, height], // 宽高
+		content: $('#windowDiv')
+	});
+	*/
+	
+	layer.open({
+		type: 1,
+		title: title,
+		offset: 'r',
+		anim: 'slideLeft', // 从右往左
+		area: ["90%", '100%'],
 		content: $('#windowDiv')
 	});
 }
@@ -272,7 +282,7 @@ function addOver() {
 		return;
 	}
 
-
+	showLoad();
 	var server = {};
 	server.id = $("#id").val();
 	server.proxyType = $("#proxyType").val();
@@ -326,6 +336,7 @@ function addOver() {
 
 	$(".itemList").children().each(function() {
 		var location = {};
+		location.enable = $(this).find("input[name='enable']").prop("checked") ? 1 : 0;
 		location.path = $(this).find("input[name='path']").val();
 		location.type = $(this).find("select[name='type']").val();
 		location.value = $(this).find("input[name='value']").val();
@@ -356,6 +367,7 @@ function addOver() {
 		},
 		dataType: 'json',
 		success: function(data) {
+			closeLoad();
 			if (data.success) {
 				location.reload();
 			} else {
@@ -363,6 +375,7 @@ function addOver() {
 			}
 		},
 		error: function() {
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});
@@ -589,13 +602,20 @@ function buildHtml(uuid, location, upstreamSelect) {
 		location = {
 			path: "/",
 			type: "0",
+			enable: 1,
 			locationParamJson: ""
 		};
 	}
 	//将双引号转义
 	location.path = location.path.replace(/\"/g, "&quot;");
 
+	var checked = location.enable?"checked":"";
 	var str = `<tr id='${uuid}'>
+				<td>
+					<div class="layui-inline" >
+						<input type="checkbox" name="enable" value="${location.id}" lay-skin="switch" ${checked}> 
+					</div>
+				</td>
 				<td>
 					<div class="layui-inline" >
 						<input type="text" name="path" class="layui-input short" value="${location.path}">

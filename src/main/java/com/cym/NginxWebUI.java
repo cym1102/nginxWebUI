@@ -84,7 +84,7 @@ public class NginxWebUI {
 			List<String> list = RuntimeUtil.execForLines("/bin/sh", "-c", "ps -ef | grep nginxWebUI");
 
 			for (String line : list) {
-				if (line.contains(".jar")) {
+				if (line.contains(".jar") && !line.contains("nginxWebUI-Website")) {
 					String[] lines = line.split("\\s+");
 					pids.add(lines[1]);
 				}
