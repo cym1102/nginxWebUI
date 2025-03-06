@@ -414,6 +414,67 @@ public class ConfService {
 		return ngxBlockServer;
 	}
 
+	public static Boolean processListenPort(Server server, NgxBlock ngxBlockServer, Boolean isIpv6) {
+		if (isIpv6 && server.getIpv6() != 1){
+			return false;
+		}
+		List<Integer> numbers = new ArrayList<>();
+
+		// 使用逗号分割字符串
+		String[] partsByComma = server.getListen().split(",");
+
+		for (String part : partsByComma) {
+			String[] range = part.split("-");
+			if (range.length == 2) {
+				// 处理为范围的情况
+				int start = Integer.parseInt(range[0]);
+				int end = Integer.parseInt(range[1]);
+
+				if (start <= end) {
+					for (int i = start; i <= end; i++) {
+						numbers.add(i);
+					}
+				} else {
+					for (int i = start; i >= end; i--) {
+						numbers.add(i);
+					}
+				}
+			} else {
+				// 处理单个数字的情况
+				int num = Integer.parseInt(part);
+				numbers.add(num);
+			}
+		}
+
+		String listenKey = "listen ";
+		if (isIpv6){
+			listenKey = "listen [::]:";
+		}
+
+		String value = "";
+		for (Integer port : numbers) {
+			NgxParam ngxParam = new NgxParam();
+			value = listenKey + port;
+			if (server.getDef() == 1) {
+				value += " default_server";
+			}
+			if (server.getProxyProtocol() == 1) {
+				value += " proxy_protocol";
+			}
+
+			if (server.getSsl() == 1) {
+				value += " ssl";
+				if (server.getHttp2() == 1) { // http2旧版写法
+					value += " http2";
+				}
+			}
+			ngxParam.addValue(value);
+			ngxBlockServer.addEntry(ngxParam);
+		}
+		return true;
+
+	}
+
 	public NgxBlock bulidBlockServer(Server server, ConfExt confExt) {
 		NgxParam ngxParam = null;
 
@@ -438,44 +499,10 @@ public class ConfService {
 			}
 
 			// 监听端口
-			ngxParam = new NgxParam();
-			String value = "listen " + server.getListen();
-			if (server.getDef() == 1) {
-				value += " default";
-			}
-			if (server.getProxyProtocol() == 1) {
-				value += " proxy_protocol";
-			}
-
-			if (server.getSsl() == 1) {
-				value += " ssl";
-				if (server.getHttp2() == 1) { // http2旧版写法
-					value += " http2";
-				}
-			}
-			ngxParam.addValue(value);
-			ngxBlockServer.addEntry(ngxParam);
-
+			processListenPort(server, ngxBlockServer, false);
 			// 监控ipv6
-			if (server.getIpv6() == 1) {
-				ngxParam = new NgxParam();
-				value = "listen [::]:" + replaceIp(server.getListen());
-				if (server.getDef() == 1) {
-					value += " default";
-				}
-				if (server.getProxyProtocol() == 1) {
-					value += " proxy_protocol";
-				}
+			processListenPort(server, ngxBlockServer, true);
 
-				if (server.getSsl() == 1) {
-					value += " ssl";
-					if (server.getHttp2() == 1) { // http2旧版写法
-						value += " http2";
-					}
-				}
-				ngxParam.addValue(value);
-				ngxBlockServer.addEntry(ngxParam);
-			}
 
 			if (server.getSsl() == 1 && server.getHttp2() == 2) { // http2新版写法
 				ngxParam = new NgxParam();
@@ -718,7 +745,7 @@ public class ConfService {
 
 	/**
 	 * 配置ssl
-	 * 
+	 *
 	 * @param server
 	 * @param ngxBlockServer
 	 */
@@ -776,7 +803,7 @@ public class ConfService {
 
 	/**
 	 * 替换掉listen中的ip
-	 * 
+	 *
 	 * @param listen
 	 * @return
 	 */
@@ -791,7 +818,7 @@ public class ConfService {
 
 	/**
 	 * include防止重复
-	 * 
+	 *
 	 * @param ngxBlockHttp
 	 * @param ngxParam
 	 * @return
