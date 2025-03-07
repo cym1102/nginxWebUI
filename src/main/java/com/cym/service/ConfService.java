@@ -414,14 +414,11 @@ public class ConfService {
 		return ngxBlockServer;
 	}
 
-	public static Boolean processListenPort(Server server, NgxBlock ngxBlockServer, Boolean isIpv6) {
-		if (isIpv6 && server.getIpv6() != 1){
-			return false;
-		}
+	public static List<Integer> processPort(String listenString){
 		List<Integer> numbers = new ArrayList<>();
 
 		// 使用逗号分割字符串
-		String[] partsByComma = server.getListen().split(",");
+		String[] partsByComma = listenString.split(",");
 
 		for (String part : partsByComma) {
 			String[] range = part.split("-");
@@ -445,14 +442,19 @@ public class ConfService {
 				numbers.add(num);
 			}
 		}
+		return numbers;
+	}
 
-		String listenKey = "listen ";
-		if (isIpv6){
-			listenKey = "listen [::]:";
+	public static Boolean processListenPort(Server server, NgxBlock ngxBlockServer, Boolean isIpv6) {
+		if (isIpv6 && server.getIpv6() != 1){
+			return false;
 		}
+		List<Integer> ports = processPort(server.getListen());
+
+		String listenKey = isIpv6 ? "listen [::]:" : "listen ";
 
 		String value = "";
-		for (Integer port : numbers) {
+		for (Integer port : ports) {
 			NgxParam ngxParam = new NgxParam();
 			value = listenKey + port;
 			if (server.getDef() == 1) {
