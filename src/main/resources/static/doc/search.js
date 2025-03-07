@@ -249,6 +249,41 @@ api[9].list.push({
     order: '5',
     desc: '添加或编辑server',
 });
+api.push({
+    alias: 'WwwApiController',
+    order: '11',
+    desc: '静态网页接口',
+    link: '静态网页接口',
+    list: []
+})
+api[10].list.push({
+    order: '1',
+    desc: '获取静态网页分页列表',
+});
+api[10].list.push({
+    order: '2',
+    desc: '添加或编辑静态网页',
+});
+api[10].list.push({
+    order: '3',
+    desc: '清空静态网页路径',
+});
+api[10].list.push({
+    order: '4',
+    desc: '删除静态网页',
+});
+api[10].list.push({
+    order: '5',
+    desc: '静态网页详情',
+});
+api[10].list.push({
+    order: '6',
+    desc: '获取静态网页描述',
+});
+api[10].list.push({
+    order: '7',
+    desc: '编辑静态网页描述',
+});
 document.onkeydown = keyDownSearch;
 function keyDownSearch(e) {
     const theEvent = e;

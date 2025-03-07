@@ -431,7 +431,7 @@ function delMany() {
 function issue(id) {
 
 	if (confirm(certStr.confirm1)) {
-		layer.load();
+		showLoad();
 		$.ajax({
 			type: 'POST',
 			url: ctx + '/adminPage/cert/apply',
@@ -441,7 +441,7 @@ function issue(id) {
 			},
 			dataType: 'json',
 			success: function(data) {
-				layer.closeAll();
+				closeLoad();
 				if (data.success) {
 					layer.alert(certStr.applySuccess, function(index) {
 						layer.close(index);
@@ -456,7 +456,7 @@ function issue(id) {
 				}
 			},
 			error: function() {
-				layer.closeAll();
+				closeLoad();
 				layer.alert(commonStr.errorInfo);
 			}
 		});
@@ -467,7 +467,7 @@ function issue(id) {
 function renew(id) {
 
 	if (confirm(certStr.confirm2)) {
-		layer.load();
+		showLoad();
 		$.ajax({
 			type: 'POST',
 			url: ctx + '/adminPage/cert/apply',
@@ -477,7 +477,7 @@ function renew(id) {
 			},
 			dataType: 'json',
 			success: function(data) {
-				layer.closeAll();
+				closeLoad();
 				if (data.success) {
 					layer.alert(certStr.renewSuccess, function(index) {
 						layer.close(index);
@@ -492,7 +492,7 @@ function renew(id) {
 				}
 			},
 			error: function() {
-				layer.closeAll();
+				closeLoad();
 				layer.alert(commonStr.errorInfo);
 			}
 		});

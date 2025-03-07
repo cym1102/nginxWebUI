@@ -442,7 +442,7 @@ function upstreamOver() {
 	//	return;
 	//}
 	
-	loadIndex = layer.load();
+	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/upstream/upstreamOver',
@@ -452,7 +452,7 @@ function upstreamOver() {
 		},
 		dataType: 'json',
 		success: function(data) {
-			layer.close(loadIndex);
+			closeLoad();
 			if (data.success) {
 				location.reload();
 			} else {
@@ -460,7 +460,7 @@ function upstreamOver() {
 			}
 		},
 		error: function() {
-			layer.close(loadIndex);
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});
@@ -474,7 +474,7 @@ function testMail() {
 			return;
 		}
 
-		loadIndex = layer.load();
+		showLoad();
 		$.ajax({
 			type: 'POST',
 			url: ctx + '/adminPage/admin/testMail',
@@ -483,7 +483,7 @@ function testMail() {
 			},
 			dataType: 'json',
 			success: function(data) {
-				layer.close(loadIndex);
+				closeLoad();
 				if (data.success) {
 					layer.msg(remoteStr.sendSuccess);
 				} else {
@@ -491,7 +491,7 @@ function testMail() {
 				}
 			},
 			error: function() {
-				layer.close(loadIndex);
+				closeLoad();
 				layer.alert(commonStr.errorInfo);
 			}
 		});

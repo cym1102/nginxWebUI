@@ -414,7 +414,7 @@ public class ConfService {
 		return ngxBlockServer;
 	}
 
-	public static List<Integer> processPort(String listenString){
+	public List<Integer> processPort(String listenString) {
 		List<Integer> numbers = new ArrayList<>();
 
 		// 使用逗号分割字符串
@@ -445,13 +445,26 @@ public class ConfService {
 		return numbers;
 	}
 
-	public static Boolean processListenPort(Server server, NgxBlock ngxBlockServer, Boolean isIpv6) {
-		if (isIpv6 && server.getIpv6() != 1){
-			return false;
+	public void httpListenPort(Server server, NgxBlock ngxBlockServer, Boolean isIpv6) {
+		String host = null;
+		List<Integer> ports = null;
+		// 分离host和port
+		if (server.getListen().contains(":")) {
+			int lastColonIndex = server.getListen().lastIndexOf(":");
+			host = server.getListen().substring(0, lastColonIndex);
+			ports = processPort(server.getListen().substring(lastColonIndex + 1));
+		} else {
+			ports = processPort(server.getListen());
 		}
-		List<Integer> ports = processPort(server.getListen());
-
-		String listenKey = isIpv6 ? "listen [::]:" : "listen ";
+		
+		String listenKey = null;
+		if (isIpv6) {
+			listenKey = "listen [::]:";
+		} else if (host != null) {
+			listenKey = "listen " + host + ":";
+		} else {
+			listenKey = "listen ";
+		}
 
 		String value = "";
 		for (Integer port : ports) {
@@ -473,7 +486,47 @@ public class ConfService {
 			ngxParam.addValue(value);
 			ngxBlockServer.addEntry(ngxParam);
 		}
-		return true;
+
+	}
+	
+	
+	public void tcpListenPort(Server server, NgxBlock ngxBlockServer, Boolean isIpv6) {
+		String host = null;
+		List<Integer> ports = null;
+		// 分离host和port
+		if (server.getListen().contains(":")) {
+			int lastColonIndex = server.getListen().lastIndexOf(":");
+			host = server.getListen().substring(0, lastColonIndex);
+			ports = processPort(server.getListen().substring(lastColonIndex + 1));
+		} else {
+			ports = processPort(server.getListen());
+		}
+		
+		String listenKey = null;
+		if (isIpv6) {
+			listenKey = "listen [::]:";
+		} else if (host != null) {
+			listenKey = "listen " + host + ":";
+		} else {
+			listenKey = "listen ";
+		}
+		
+		String value = "";
+		for (Integer port : ports) {
+			NgxParam ngxParam = new NgxParam();
+			value = listenKey + port;
+			if (server.getProxyProtocol() == 1) {
+				value += " proxy_protocol";
+			}
+			if (server.getProxyType() == 2) {
+				value += " udp";
+			}
+			if (server.getSsl() != null && server.getSsl() == 1) {
+				value += " ssl";
+			}
+			ngxParam.addValue(value);
+			ngxBlockServer.addEntry(ngxParam);
+		}
 
 	}
 
@@ -501,10 +554,10 @@ public class ConfService {
 			}
 
 			// 监听端口
-			processListenPort(server, ngxBlockServer, false);
-			// 监控ipv6
-			processListenPort(server, ngxBlockServer, true);
-
+			httpListenPort(server, ngxBlockServer, false);
+			if (server.getIpv6() == 1) {
+				httpListenPort(server, ngxBlockServer, true);
+			}
 
 			if (server.getSsl() == 1 && server.getHttp2() == 2) { // http2新版写法
 				ngxParam = new NgxParam();
@@ -685,38 +738,13 @@ public class ConfService {
 		} else {
 			ngxBlockServer.addValue("server");
 
+			
 			// 监听端口
-			ngxParam = new NgxParam();
-			String value = "listen " + server.getListen();
-			if (server.getProxyProtocol() == 1) {
-				value += " proxy_protocol";
-			}
-			if (server.getProxyType() == 2) {
-				value += " udp";
-			}
-			if (server.getSsl() != null && server.getSsl() == 1) {
-				value += " ssl";
-			}
-
-			ngxParam.addValue(value);
-			ngxBlockServer.addEntry(ngxParam);
-
-			// 监控ipv6
+			tcpListenPort(server, ngxBlockServer, false);
 			if (server.getIpv6() == 1) {
-				ngxParam = new NgxParam();
-				value = "listen [::]:" + replaceIp(server.getListen());
-				if (server.getProxyProtocol() == 1) {
-					value += " proxy_protocol";
-				}
-				if (server.getProxyType() == 2) {
-					value += " udp";
-				}
-				if (server.getSsl() != null && server.getSsl() == 1) {
-					value += " ssl";
-				}
-				ngxParam.addValue(value);
-				ngxBlockServer.addEntry(ngxParam);
+				tcpListenPort(server, ngxBlockServer, true);
 			}
+						
 
 			// 指向负载均衡
 			Upstream upstream = sqlHelper.findById(server.getProxyUpstreamId(), Upstream.class);

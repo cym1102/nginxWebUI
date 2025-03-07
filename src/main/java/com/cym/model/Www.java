@@ -3,10 +3,21 @@ package com.cym.model;
 import com.cym.sqlhelper.bean.BaseModel;
 import com.cym.sqlhelper.config.Table;
 
+/**
+ * 
+ * 静态网页
+ *
+ */
 @Table
 public class Www extends BaseModel {
+	/**
+	 * 路径
+	 */
 	String dir;
 
+	/**
+	 * 描述
+	 */
 	String descr;
 
 	public String getDescr() {

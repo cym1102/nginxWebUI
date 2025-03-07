@@ -195,7 +195,7 @@ function check() {
 
 	var json = buildJson();
 
-	layer.load();
+	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/conf/check',
@@ -207,7 +207,7 @@ function check() {
 		},
 		dataType: 'json',
 		success: function(data) {
-			layer.closeAll();
+			closeLoad();
 			if (data.success) {
 				layer.open({
 					type: 0,
@@ -217,7 +217,7 @@ function check() {
 			}
 		},
 		error: function() {
-			layer.closeAll();
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});
@@ -241,7 +241,7 @@ function reload() {
 		}
 	}
 
-	layer.load();
+	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/conf/reload',
@@ -252,7 +252,7 @@ function reload() {
 		},
 		dataType: 'json',
 		success: function(data) {
-			layer.closeAll();
+			closeLoad();
 			if (data.success) {
 				layer.open({
 					type: 0,
@@ -262,7 +262,7 @@ function reload() {
 			}
 		},
 		error: function() {
-			layer.closeAll();
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});
@@ -353,7 +353,7 @@ function diffUsingJS() {
 }
 
 function runCmd(type) {
-
+	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/conf/getLastCmd',
@@ -362,7 +362,7 @@ function runCmd(type) {
 		},
 		dataType: 'json',
 		success: function(data) {
-			//debugger;
+			closeLoad();
 			if (data.success) {
 				$("#nginxStop").hide();
 				$("#nginxStart").hide();
@@ -408,7 +408,7 @@ function runCmd(type) {
 			}
 		},
 		error: function() {
-
+			closeLoad();
 		}
 	});
 
@@ -434,7 +434,7 @@ function runCmdOver() {
 		}
 	})
 
-
+	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/conf/runCmd',
@@ -444,7 +444,7 @@ function runCmdOver() {
 		},
 		dataType: 'json',
 		success: function(data) {
-			layer.closeAll();
+			closeLoad();
 			if (data.success) {
 				layer.open({
 					type: 0,
@@ -458,7 +458,7 @@ function runCmdOver() {
 			}, 3000);
 		},
 		error: function() {
-
+			closeLoad();
 		}
 	});
 }

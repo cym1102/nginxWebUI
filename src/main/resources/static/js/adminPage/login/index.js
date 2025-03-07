@@ -5,6 +5,7 @@ $(function() {
 		
 		if(autoKey != null && autoKey != '' && new Date().getTime() - time < 7 * 24 * 60 * 60 * 1000){
 			// 自动登录
+			showLoad();
 			$.ajax({
 				type: 'POST',
 				url: ctx + '/adminPage/login/autoLogin',
@@ -13,12 +14,14 @@ $(function() {
 				},
 				dataType: 'json',
 				success: function(data) {
+					closeLoad();
 					if (data.success) {
 						window.localStorage.setItem("time", new Date().getTime());
 						location.href = ctx + "/adminPage/monitor";
 					} 
 				},
 				error: function() {
+					closeLoad();
 					layer.alert(commonStr.errorInfo);
 				}
 			});
@@ -54,6 +57,7 @@ function login() {
 	var code = Base64.encode(Base64.encode($("#code").val()));
 	var authCode = Base64.encode(Base64.encode($("#authCode").val()));
 	
+	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/login/login',
@@ -65,6 +69,7 @@ function login() {
 		},
 		dataType: 'json',
 		success: function(data) {
+			closeLoad();
 			if (data.success) {
 				if($("#remember").prop("checked")){
 					window.localStorage.setItem("time", new Date().getTime());
@@ -83,6 +88,7 @@ function login() {
 			
 		},
 		error: function() {
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});
@@ -94,7 +100,7 @@ function getAuth() {
 	var pass = Base64.encode(Base64.encode($("#pass").val()));
 	var code = Base64.encode(Base64.encode($("#code").val()));
 	
-	
+	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/login/getAuth',
@@ -105,6 +111,7 @@ function getAuth() {
 		},
 		dataType: 'json',
 		success: function(data) {
+			closeLoad();
 			if (data.success) {
 				if(data.obj.auth){
 					// 两步验证
@@ -124,6 +131,7 @@ function getAuth() {
 			
 		},
 		error: function() {
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});
@@ -152,13 +160,14 @@ function addAdmin() {
 		layer.msg(loginStr.error4);
 		return;
 	}
-
+	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/login/addAdmin',
 		data: $("#adminForm").serialize(),
 		dataType: 'json',
 		success: function(data) {
+			closeLoad();
 			if (data.success) {
 				location.reload();
 			} else {
@@ -166,6 +175,7 @@ function addAdmin() {
 			}
 		},
 		error: function() {
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});

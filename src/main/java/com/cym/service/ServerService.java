@@ -73,9 +73,9 @@ public class ServerService {
 
 	public void addOver(Server server, String serverParamJson, List<Location> locations) {
 
-		if (server.getDef() != null && server.getDef() == 1) {
-			clearDef();
-		}
+//		if (server.getDef() != null && server.getDef() == 1) {
+//			clearDef();
+//		}
 
 		sqlHelper.insertOrUpdate(server);
 
@@ -133,13 +133,13 @@ public class ServerService {
 		return null;
 	}
 
-	private void clearDef() {
-		List<Server> servers = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("def", 1), Server.class);
-		for (Server server : servers) {
-			server.setDef(0);
-			sqlHelper.updateById(server);
-		}
-	}
+//	private void clearDef() {
+//		List<Server> servers = sqlHelper.findListByQuery(new ConditionAndWrapper().eq("def", 1), Server.class);
+//		for (Server server : servers) {
+//			server.setDef(0);
+//			sqlHelper.updateById(server);
+//		}
+//	}
 
 	public void addOverTcp(Server server, String serverParamJson) {
 		sqlHelper.insertOrUpdate(server);

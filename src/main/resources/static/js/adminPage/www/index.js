@@ -7,10 +7,10 @@ $(function() {
 			url: '/adminPage/main/upload',
 			accept: 'file',
 			before: function(res) {
-				load = layer.load();
+				showLoad();
 			},
 			done: function(res) {
-				layer.close(load);
+				closeLoad();
 				// 上传完毕回调
 				if (res.success) {
 					var path = res.obj.split('/');
@@ -25,7 +25,7 @@ $(function() {
 
 			},
 			error: function() {
-				layer.close(load);
+				closeLoad();
 				// 请求异常回调
 			}
 		});

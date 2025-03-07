@@ -540,14 +540,14 @@ function asycOver() {
 	}
 
 
-	load = layer.load();
+	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/remote/asyc',
 		data: $("#asycForm").serialize(),
 		dataType: 'json',
 		success: function(data) {
-			layer.close(load);
+			closeLoad();
 			if (data.success) {
 				layer.msg(remoteStr.asycSuccess)
 			} else {
@@ -555,7 +555,7 @@ function asycOver() {
 			}
 		},
 		error: function() {
-			layer.closeAll();
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});
@@ -626,14 +626,14 @@ function cmdOver() {
 	}
 
 
-	layer.load();
+	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/remote/cmdOver',
 		data: $("#cmdForm").serialize(),
 		dataType: 'json',
 		success: function(data) {
-			layer.closeAll();
+			closeLoad();
 			if (data.success) {
 				layer.open({
 					type: 0,
@@ -645,7 +645,7 @@ function cmdOver() {
 			}
 		},
 		error: function() {
-			layer.closeAll();
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});
@@ -816,7 +816,7 @@ function testMail() {
 			return;
 		}
 
-		loadIndex = layer.load();
+		showLoad();
 		$.ajax({
 			type: 'POST',
 			url: ctx + '/adminPage/admin/testMail',
@@ -825,7 +825,7 @@ function testMail() {
 			},
 			dataType: 'json',
 			success: function(data) {
-				layer.close(loadIndex);
+				closeLoad();
 				if (data.success) {
 					layer.msg(remoteStr.sendSuccess);
 				} else {
@@ -833,6 +833,7 @@ function testMail() {
 				}
 			},
 			error: function() {
+				closeLoad();
 				layer.alert(commonStr.errorInfo);
 			}
 		});
@@ -847,14 +848,14 @@ function addOver() {
 		layer.msg(remoteStr.notFill);
 		return;
 	}
-	load = layer.load();
+	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/remote/getAuth',
 		data: $('#addForm').serialize(),
 		dataType: 'json',
 		success: function(data) {
-			layer.close(load);
+			closeLoad();
 			if (data.success) {
 				if (String(data.obj.auth) == 'true') {
 					$("#authCode").show();
@@ -876,7 +877,7 @@ function addOver() {
 			}
 		},
 		error: function() {
-			layer.close(load);
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});
@@ -886,14 +887,14 @@ function addOver() {
 function addOverSubmit() {
 	$("#code").val($("#codeInput").val());
 	$("#auth").val($("#authInput").val());
-	load = layer.load();
+	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/remote/addOver',
 		data: $('#addForm').serialize(),
 		dataType: 'json',
 		success: function(data) {
-			layer.close(load);
+			closeLoad();
 			if (data.success) {
 				location.reload();
 			} else {
@@ -902,7 +903,7 @@ function addOverSubmit() {
 			}
 		},
 		error: function() {
-			layer.close(load);
+			closeLoad();
 			layer.alert(commonStr.errorInfo);
 		}
 	});

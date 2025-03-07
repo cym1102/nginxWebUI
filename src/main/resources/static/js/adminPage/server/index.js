@@ -993,7 +993,7 @@ function selectRootCustom(inputId) {
 
 function testPort() {
 	if (confirm(serverStr.testAllPort)) {
-		layer.load();
+		showLoad();
 		$.ajax({
 			type: 'POST',
 			url: ctx + '/adminPage/server/testPort',
@@ -1009,7 +1009,7 @@ function testPort() {
 				}
 			},
 			error: function() {
-				layer.closeAll();
+				closeLoad();
 				layer.alert(commonStr.errorInfo);
 			}
 		});
