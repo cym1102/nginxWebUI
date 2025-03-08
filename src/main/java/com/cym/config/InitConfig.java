@@ -38,6 +38,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -88,7 +89,7 @@ public class InitConfig {
 			List<Admin> admins = sqlHelper.findAll(Admin.class);
 			for (Admin admin : admins) {
 				String randomPass = RandomUtil.randomString(8);
-				
+
 				System.out.println(m.get("adminStr.name") + ":" + admin.getName() + " " + m.get("adminStr.pass") + ":" + randomPass);
 				admin.setAuth(false); // 关闭二次验证
 				admin.setPass(EncodePassUtils.encode(randomPass));
@@ -163,22 +164,35 @@ public class InitConfig {
 				settingService.set("nginxExe", "nginx");
 			}
 
-			// 重启nginx, 拿到pid
-			String nginxExe = settingService.get("nginxExe");
-			String nginxDir = settingService.get("nginxDir");
-			if (StrUtil.isNotEmpty(nginxExe) && StrUtil.isNotEmpty(nginxPath)) {
-				RuntimeUtil.exec("/bin/sh", "-c", "pkill -9 nginx");
-				
-				String cmd = nginxExe + " -c " + nginxPath;
-				if (StrUtil.isNotEmpty(nginxDir)) {
-					cmd += " -p " + nginxDir;
+			// 异步重启nginx, 拿到pid
+			ThreadUtil.execute(new Runnable() {
+
+				@Override
+				public void run() {
+
+					String nginxExe = settingService.get("nginxExe");
+					String nginxDir = settingService.get("nginxDir");
+					String nginxPath = settingService.get("nginxPath");
+					if (StrUtil.isNotEmpty(nginxExe) && StrUtil.isNotEmpty(nginxPath)) {
+						runCmd("pkill -9 nginx");
+						String cmd = nginxExe + " -c " + nginxPath;
+						if (StrUtil.isNotEmpty(nginxDir)) {
+							cmd += " -p " + nginxDir;
+						}
+						runCmd(cmd);
+					}
 				}
-				RuntimeUtil.exec("/bin/sh", "-c", cmd);
-			}
+
+			});
 		}
 
 		// 展示logo
 		showLogo();
+	}
+
+	private void runCmd(String cmd) {
+		logger.info("run: " + cmd);
+		RuntimeUtil.execForStr("/bin/sh", "-c", cmd);
 	}
 
 	private boolean hasNginx() {

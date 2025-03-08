@@ -111,9 +111,9 @@ Path : JDK安装目录\bin
 
 ```
 Linux: mkdir /home/nginxWebUI/ 
-       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.2.7/nginxWebUI-4.2.7.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.2.8/nginxWebUI-4.2.8.jar
 
-Windows: 直接使用浏览器下载 https://gitee.com/cym1102/nginxWebUI/releases/download/4.2.7/nginxWebUI-4.2.7.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
+Windows: 直接使用浏览器下载 https://gitee.com/cym1102/nginxWebUI/releases/download/4.2.8/nginxWebUI-4.2.8.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
 ```
 
 有新版本只需要修改路径中的版本即可
