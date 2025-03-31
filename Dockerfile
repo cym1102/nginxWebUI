@@ -5,11 +5,7 @@ ENV LANG=zh_CN.UTF-8 \
 # RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
 RUN    apk add --update --no-cache \
        nginx \
-       nginx-mod-stream \
-       nginx-mod-http-headers-more \
-       nginx-mod-http-lua \
-       nginx-mod-http-brotli \
-       nginx-mod-rtmp \
+       nginx-mod-* \
        openjdk8-jre \
        net-tools \
        curl \

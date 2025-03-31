@@ -77,6 +77,13 @@ public class InitConfig {
 	@Inject("${spring.database.type}")
 	String databaseType;
 
+	@Inject("${initAdmin}")
+	String initAdmin;
+	@Inject("${initPass}")
+	String initPass;
+	@Inject("${initApi}")
+	Boolean initApi;
+
 	@Init
 	public void start() throws Throwable {
 		// h2转sqlite
@@ -96,6 +103,11 @@ public class InitConfig {
 				sqlHelper.updateById(admin);
 			}
 			System.exit(1);
+		}
+
+		// 初始化管理员账号
+		if (StrUtil.isNotBlank(initAdmin) && StrUtil.isNotBlank(initPass)) {
+			addAdmin();
 		}
 
 		// 初始化base值
@@ -280,4 +292,19 @@ public class InitConfig {
 		}
 	}
 
+	private void addAdmin() {
+		Long adminCount = sqlHelper.findAllCount(Admin.class);
+		if (adminCount > 0) {
+			return;
+		}
+
+		Admin admin = new Admin();
+		admin.setName(initAdmin);
+		admin.setPass(EncodePassUtils.encode(initPass));
+		admin.setApi(initApi);
+		admin.setType(0);
+
+		sqlHelper.insert(admin);
+
+	}
 }

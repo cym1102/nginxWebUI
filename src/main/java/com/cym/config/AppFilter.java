@@ -63,11 +63,11 @@ public class AppFilter implements Filter {
 
 	@Override
 	public void doFilter(Context ctx, FilterChain chain) throws Throwable {
-		//todo: 原异常处理改为正常的上抛了
+		// todo: 原异常处理改为正常的上抛了
 		try {
 			doFilterDo(ctx, chain);
 		} catch (StatusException e) {
-			//4xx 相关状态异常
+			// 4xx 相关状态异常
 			ctx.status(e.getCode());
 
 			if (404 != e.getCode()) {
@@ -111,6 +111,25 @@ public class AppFilter implements Filter {
 				&& !path.contains("/img/") //
 				&& !path.contains("/css/")) {
 			if (!apiInterceptor(ctx)) {
+				// 设置为已处理
+				ctx.setHandled(true);
+				return;
+			}
+		}
+
+		// 管理员过滤器
+		if (path.toLowerCase().contains("/adminPage/admin".toLowerCase())) {
+			Admin admin = (Admin) ctx.session("admin");
+			String showAdmin = ctx.param("showAdmin");
+
+			if (admin.getType() != 0 && !"true".equals(showAdmin)) {
+				JsonResult result = new JsonResult();
+				result.setSuccess(false);
+				result.setStatus("401");
+				result.setMsg(m.get("loginStr.notPermission"));
+
+				ctx.output(JSONUtil.toJsonPrettyStr(result));
+
 				// 设置为已处理
 				ctx.setHandled(true);
 				return;
@@ -184,7 +203,7 @@ public class AppFilter implements Filter {
 				} else {
 					// 普通请求
 					Admin admin = new BaseController().getAdmin();
-					//todo: ctx.paramsMap() 已取消，复用 ctx.paramMap()
+					// todo: ctx.paramsMap() 已取消，复用 ctx.paramMap()
 					String body = buldBody(ctx.paramMap(), remote, admin);
 
 					httpResponse = HttpRequest.post(url).body(body).execute();

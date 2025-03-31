@@ -107,9 +107,9 @@ reboot
 
 ```
 Linux: mkdir /home/nginxWebUI/   
-       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.2.8/nginxWebUI-4.2.8.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.2.9/nginxWebUI-4.2.9.jar
 
-Windows: Download directly from your browser https://gitee.com/cym1102/nginxWebUI/releases/download/4.2.8/nginxWebUI-4.2.8.jar into D:/home/nginxWebUI/
+Windows: Download directly from your browser https://gitee.com/cym1102/nginxWebUI/releases/download/4.2.9/nginxWebUI-4.2.9.jar into D:/home/nginxWebUI/
 ```
 
 With a new version, you just need to change the version in the path
@@ -135,6 +135,12 @@ Parameter description (both non-required)
 --spring.datasource.username=root  Databases user
 
 --spring.datasource.password=pass  Databases password
+
+--initAdmin=admin  Initial user name
+
+--initPass=admin  Initial user password
+
+--initApi=true  Initial user enables the api permission
 
 Note that the Linux command ends with an & to indicate that the project is running in the background
 
