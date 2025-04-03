@@ -65,7 +65,7 @@ function showWindow(title) {
 	layer.open({
 		type: 1,
 		title: title,
-		area: ['1000px', '600px'], // 宽高
+		area: ['1200px', '600px'], // 宽高
 		content: $('#windowDiv')
 	});
 }
@@ -107,6 +107,7 @@ function addOver() {
 	$(".itemList").children().each(function() {
 
 		var upstreamServer = {};
+		upstreamServer.enable = $(this).find("input[name='enable']").prop("checked") ? 1 : 0;
 		upstreamServer.server = $(this).find("input[name='server']").val();
 		upstreamServer.port = $(this).find("input[name='port']").val();
 		upstreamServer.weight = $(this).find("input[name='weight']").val();
@@ -185,7 +186,14 @@ function edit(id,clone) {
 				for (let i = 0; i < list.length; i++) {
 					var upstreamServer = list[i];
 					var uuid = guid();
+					
+					var checked = upstreamServer.enable?"checked":"";
 					html += `<tr id='${uuid}'>
+									<td>
+										<div class="layui-inline" >
+											<input type="checkbox" name="enable" value="${upstreamServer.id}" lay-skin="switch" ${checked}> 
+										</div>
+									</td>
 									<td><input type="text" name="server" class="layui-input" value="${upstreamServer.server}"></td>
 									<td><input type="number" name="port" class="layui-input" value="${upstreamServer.port}"></td>
 									<td><input type="number" name="weight" class="layui-input" value="${upstreamServer.weight}"></td>
@@ -284,6 +292,11 @@ function delMany() {
 function addItem() {
 	var uuid = guid();
 	var html = `<tr id='${uuid}'>
+						<td>
+							<div class="layui-inline" >
+								<input type="checkbox" name="enable" value="${uuid}" lay-skin="switch" checked> 
+							</div>
+						</td>
 						<td><input type="text" name="server" class="layui-input"></td>
 						<td><input type="number" name="port" class="layui-input"></td>
 						<td><input type="number" name="weight" class="layui-input"></td>

@@ -144,9 +144,11 @@ public class ConfService {
 
 				List<UpstreamServer> upstreamServers = upstreamService.getUpstreamServers(upstream.getId());
 				for (UpstreamServer upstreamServer : upstreamServers) {
-					ngxParam = new NgxParam();
-					ngxParam.addValue("server " + buildNodeStr(upstreamServer));
-					ngxBlockServer.addEntry(ngxParam);
+					if (upstreamServer.getEnable()  == 1) {
+						ngxParam = new NgxParam();
+						ngxParam.addValue("server " + buildNodeStr(upstreamServer));
+						ngxBlockServer.addEntry(ngxParam);
+					}
 				}
 
 				// 自定义参数
@@ -400,9 +402,11 @@ public class ConfService {
 
 		List<UpstreamServer> upstreamServers = upstreamService.getUpstreamServers(upstream.getId());
 		for (UpstreamServer upstreamServer : upstreamServers) {
-			ngxParam = new NgxParam();
-			ngxParam.addValue("server " + buildNodeStr(upstreamServer));
-			ngxBlockServer.addEntry(ngxParam);
+			if (upstreamServer.getEnable() == 1) {
+				ngxParam = new NgxParam();
+				ngxParam.addValue("server " + buildNodeStr(upstreamServer));
+				ngxBlockServer.addEntry(ngxParam);
+			}
 		}
 
 		// 自定义参数
@@ -456,7 +460,7 @@ public class ConfService {
 		} else {
 			ports = processPort(server.getListen());
 		}
-		
+
 		String listenKey = null;
 		if (isIpv6) {
 			listenKey = "listen [::]:";
@@ -488,8 +492,7 @@ public class ConfService {
 		}
 
 	}
-	
-	
+
 	public void tcpListenPort(Server server, NgxBlock ngxBlockServer, Boolean isIpv6) {
 		String host = null;
 		List<Integer> ports = null;
@@ -501,7 +504,7 @@ public class ConfService {
 		} else {
 			ports = processPort(server.getListen());
 		}
-		
+
 		String listenKey = null;
 		if (isIpv6) {
 			listenKey = "listen [::]:";
@@ -510,7 +513,7 @@ public class ConfService {
 		} else {
 			listenKey = "listen ";
 		}
-		
+
 		String value = "";
 		for (Integer port : ports) {
 			NgxParam ngxParam = new NgxParam();
@@ -738,13 +741,11 @@ public class ConfService {
 		} else {
 			ngxBlockServer.addValue("server");
 
-			
 			// 监听端口
 			tcpListenPort(server, ngxBlockServer, false);
 			if (server.getIpv6() == 1) {
 				tcpListenPort(server, ngxBlockServer, true);
 			}
-						
 
 			// 指向负载均衡
 			Upstream upstream = sqlHelper.findById(server.getProxyUpstreamId(), Upstream.class);

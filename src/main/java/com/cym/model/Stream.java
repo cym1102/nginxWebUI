@@ -22,8 +22,6 @@ public class Stream extends BaseModel {
 	String value;
 	@JsonIgnore
 	Long seq;
-	
-	
 
 	public String getName() {
 		return name;

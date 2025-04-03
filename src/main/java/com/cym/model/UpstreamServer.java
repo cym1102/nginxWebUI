@@ -60,6 +60,23 @@ public class UpstreamServer extends BaseModel {
 	Integer monitorStatus;
 
 	
+	/**
+	 * 是否启用 1:启用(默认) 0:禁用
+	 */
+	@InitValue("1")
+	Integer enable;
+	
+	
+
+
+	public Integer getEnable() {
+		return enable;
+	}
+
+	public void setEnable(Integer enable) {
+		this.enable = enable;
+	}
+	
 	public String getParam() {
 		return param;
 	}
