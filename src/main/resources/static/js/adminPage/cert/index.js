@@ -144,6 +144,7 @@ function add() {
 	$("#awsSecretAccessKey").val("");
 	$("#cfEmail").val("");
 	$("#cfKey").val("");
+	$("#cfToken").val("");
 	$("#gdKey").val("");
 	$("#gdSecret").val("");
 	$("#ipv64Token").val("");
@@ -205,6 +206,7 @@ function edit(id, clone) {
 				$("#awsSecretAccessKey").val(cert.awsSecretAccessKey);
 				$("#cfEmail").val(cert.cfEmail);
 				$("#cfKey").val(cert.cfKey);
+				$("#cfToken").val(cert.cfToken);
 
 				$("#gdKey").val(cert.gdKey);
 				$("#gdSecret").val(cert.gdSecret);
@@ -303,7 +305,7 @@ function addOver() {
 			}
 		}
 		if ($("#dnsType").val() == 'cf') {
-			if ($("#cfEmail").val() == '' || $("#cfKey").val() == '') {
+			if ($("#cfEmail").val() == '' || ($("#cfKey").val() == '' && $("#cfToken").val() == '')) {
 				layer.msg(commonStr.IncompleteEntry);
 				return;
 			}
