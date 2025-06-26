@@ -82,9 +82,13 @@ public class Cert extends BaseModel {
 	 */
 	String cfEmail;
 	/**
-	 * cfKey(Cloudflare需要的参数)
+	 * cfKey(Cloudflare需要的参数, 兼容老用户)
 	 */
 	String cfKey;
+	/**
+	 * cfToken(Cloudflare需要的参数, 推荐)
+	 */
+	String cfToken;
 
 	/**
 	 * gdKey(Godaddy需要的参数)
@@ -224,6 +228,14 @@ public class Cert extends BaseModel {
 
 	public void setCfKey(String cfKey) {
 		this.cfKey = cfKey;
+	}
+
+	public String getCfToken() {
+		return cfToken;
+	}
+
+	public void setCfToken(String cfToken) {
+		this.cfToken = cfToken;
 	}
 
 	public Integer getType() {

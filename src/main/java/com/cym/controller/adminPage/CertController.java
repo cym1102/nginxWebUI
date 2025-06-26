@@ -321,7 +321,12 @@ public class CertController extends BaseController {
 			}
 			if (cert.getDnsType().equals("cf")) {
 				list.add("CF_Email=" + cert.getCfEmail());
-				list.add("CF_Key=" + cert.getCfKey());
+				if (cert.getCfToken() != null && !cert.getCfToken().isEmpty()) {
+					list.add("CF_Token=" + cert.getCfToken());
+				}
+				if (cert.getCfKey() != null && !cert.getCfKey().isEmpty()) {
+					list.add("CF_Key=" + cert.getCfKey());
+				}
 			}
 			if (cert.getDnsType().equals("gd")) {
 				list.add("GD_Key=" + cert.getGdKey());
