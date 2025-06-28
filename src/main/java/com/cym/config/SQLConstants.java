@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.script.SimpleBindings;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.script.ScriptUtil;
 
 public class SQLConstants {
@@ -17,6 +18,9 @@ public class SQLConstants {
         params.put("curr", curr);
         params.put("offset", (curr - 1) * limit );
         params.put("limit", limit);
-        return (String)ScriptUtil.eval(LIMIT_SCRIPT, new SimpleBindings(params));
+        //return (String)ScriptUtil.eval(LIMIT_SCRIPT, new SimpleBindings(params));
+        
+        return StrUtil.format(LIMIT_SCRIPT, params);
+        
     }
 }

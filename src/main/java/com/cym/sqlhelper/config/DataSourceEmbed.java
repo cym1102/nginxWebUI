@@ -34,8 +34,9 @@ public class DataSourceEmbed {
 
 			SQLConstants.SUFFIX = "`";
 			SQLConstants.ORDER_TYPE_INT = "SIGNED";
-			SQLConstants.LIMIT_SCRIPT = "(function() { return \" LIMIT \" + offset + \",\" + limit;})();";
-
+			//SQLConstants.LIMIT_SCRIPT = "(function() { return \" LIMIT \" + offset + \",\" + limit;})();";
+			SQLConstants.LIMIT_SCRIPT = " LIMIT {offset},{limit}";
+			
 			// 建立新的sqlite数据源
 			HikariConfig dbConfig = new HikariConfig();
 			dbConfig.setJdbcUrl("jdbc:sqlite:" + homeConfig.home + "sqlite.db");
@@ -48,8 +49,9 @@ public class DataSourceEmbed {
 
 			SQLConstants.SUFFIX = "`";
 			SQLConstants.ORDER_TYPE_INT = "SIGNED";
-			SQLConstants.LIMIT_SCRIPT = "(function() { return \" LIMIT \" + offset + \",\" + limit;})();";
-
+			//SQLConstants.LIMIT_SCRIPT = "(function() { return \" LIMIT \" + offset + \",\" + limit;})();";
+			SQLConstants.LIMIT_SCRIPT = " LIMIT {offset},{limit}";
+			
 			HikariConfig dbConfig = new HikariConfig();
 			dbConfig.setJdbcUrl(url);
 			dbConfig.setUsername(username);
@@ -61,8 +63,9 @@ public class DataSourceEmbed {
 
 			SQLConstants.SUFFIX = "\"";
 			SQLConstants.ORDER_TYPE_INT = "BIGINT";
-			SQLConstants.LIMIT_SCRIPT = "(function() { return \" LIMIT \" + limit + \" offset \" + offset; })();";
-
+			//SQLConstants.LIMIT_SCRIPT = "(function() { return \" LIMIT \" + limit + \" offset \" + offset; })();";
+			SQLConstants.LIMIT_SCRIPT = " LIMIT {limit} offset {offset}";
+			
 			HikariConfig dbConfig = new HikariConfig();
 			dbConfig.setJdbcUrl(url);
 			dbConfig.setUsername(username);
