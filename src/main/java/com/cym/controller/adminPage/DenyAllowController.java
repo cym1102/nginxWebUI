@@ -37,7 +37,7 @@ public class DenyAllowController extends BaseController {
 
 	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView, Page page) {
-
+		setPage(page);
 		page = denyAllowService.search(page);
 
 		List<DenyAllowExt> exts = new ArrayList<DenyAllowExt>();

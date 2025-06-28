@@ -58,7 +58,7 @@ public class ImportOrExportUtil {
 								lines.add(JSONUtil.toJsonStr(object));
 							}
 							FileUtil.appendLines(lines, path + File.separator + clazz.getSimpleName() + ".json", "UTF-8");
-							System.out.println(clazz.getSimpleName() + "表导出了" + page.getRecords().size() + "条数据");
+							//System.out.println(clazz.getSimpleName() + "表导出了" + page.getRecords().size() + "条数据");
 							page.setCurr(page.getCurr() + 1);
 						}
 					}
@@ -78,7 +78,7 @@ public class ImportOrExportUtil {
 
 	public void importDb(String path) {
 		if (!FileUtil.exist(path)) {
-			System.out.println(path + "文件不存在");
+			//System.out.println(path + "文件不存在");
 			return;
 		}
 		BufferedReader reader = null;
@@ -101,14 +101,14 @@ public class ImportOrExportUtil {
 							String json = reader.readLine();
 							if (StrUtil.isEmpty(json)) {
 								sqlHelper.insertAll(list);
-								System.out.println(clazz.getSimpleName() + "表导入了" + list.size() + "条数据");
+								//System.out.println(clazz.getSimpleName() + "表导入了" + list.size() + "条数据");
 								list.clear();
 								break;
 							}
 							list.add(JSONUtil.toBean(json, clazz));
 							if (list.size() == 1000) {
 								sqlHelper.insertAll(list);
-								System.out.println(clazz.getSimpleName() + "表导入了" + list.size() + "条数据");
+								//System.out.println(clazz.getSimpleName() + "表导入了" + list.size() + "条数据");
 								list.clear();
 							}
 						}

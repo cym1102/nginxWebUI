@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
+import com.cym.config.ViewConfig;
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
@@ -327,6 +328,7 @@ public class LoginController extends BaseController {
 			if (lang.equals("zh")) {
 				lang = "";
 			}
+			ViewConfig.lang = lang;
 			settingService.set("lang", lang);
 		}
 

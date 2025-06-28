@@ -61,6 +61,7 @@ public class AppFilter implements Filter {
 	@Inject
 	SettingService settingService;
 
+
 	@Override
 	public void doFilter(Context ctx, FilterChain chain) throws Throwable {
 		// todo: 原异常处理改为正常的上抛了
@@ -115,6 +116,11 @@ public class AppFilter implements Filter {
 				ctx.setHandled(true);
 				return;
 			}
+		}
+
+		// 分页保存过滤
+		if (StrUtil.isNotEmpty(ctx.param("limit"))) {
+			ctx.sessionSet("limit", ctx.param("limit"));
 		}
 
 		// 管理员过滤器

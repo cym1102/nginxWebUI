@@ -33,6 +33,6 @@ public class JarUtil {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(getCurrentFilePath());
+		//System.out.println(getCurrentFilePath());
 	}
 }

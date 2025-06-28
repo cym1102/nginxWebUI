@@ -1,11 +1,11 @@
 package com.cym.sqlhelper.utils;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.cym.config.SQLConstants;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class SqlUtils {
 	}
 
 	public void checkOrCreateTable(Class<?> clazz) {
-		String sql = "CREATE TABLE IF NOT EXISTS `" + StrUtil.toUnderlineCase(clazz.getSimpleName()) + "` (id VARCHAR(32) NOT NULL PRIMARY KEY)";
+		String sql = "CREATE TABLE IF NOT EXISTS " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(clazz.getSimpleName()) + SQLConstants.SUFFIX + " (id VARCHAR(32) NOT NULL PRIMARY KEY)";
 		logQuery(formatSql(sql));
 		jdbcTemplate.execute(formatSql(sql));
 
@@ -95,10 +95,10 @@ public class SqlUtils {
 
 			columList = new ArrayList<String>();
 			for (String colum : colums) {
-				columList.add(StrUtil.toUnderlineCase("`" + colum + "`" + length));
+				columList.add(StrUtil.toUnderlineCase(SQLConstants.SUFFIX + colum + SQLConstants.SUFFIX + length));
 			}
 
-			String sql = "CREATE " + type + "  `" + StrUtil.toUnderlineCase(name) + "` ON `" + StrUtil.toUnderlineCase(clazz.getSimpleName()) + "`(" + StrUtil.join(",", columList) + ")";
+			String sql = "CREATE " + type + "  " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(name) + SQLConstants.SUFFIX + " ON " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(clazz.getSimpleName()) + SQLConstants.SUFFIX + "(" + StrUtil.join(",", columList) + ")";
 			logQuery(formatSql(sql));
 			jdbcTemplate.execute(formatSql(sql));
 		}
@@ -107,19 +107,23 @@ public class SqlUtils {
 
 	public void checkOrCreateColumn(Class<?> clazz, String name, Set<String> columns) {
 		if (!columns.contains(StrUtil.toUnderlineCase(name).toLowerCase())) {
-			String sql = "ALTER TABLE `" + StrUtil.toUnderlineCase(clazz.getSimpleName()) + "` ADD COLUMN `" + StrUtil.toUnderlineCase(name) + "` TEXT";
+			String sql = "ALTER TABLE " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(clazz.getSimpleName()) + SQLConstants.SUFFIX + " ADD COLUMN " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(name) + SQLConstants.SUFFIX + " TEXT";
 			logQuery(formatSql(sql));
+			logger.debug("checkOrCreateColumn sql:{} ",formatSql(sql));
+			//System.out.println("checkOrCreateColumn sql: "+formatSql(sql));
 			jdbcTemplate.execute(formatSql(sql));
 		}
 
 	}
 
 	public void updateDefaultValue(Class<?> clazz, String column, String value) {
-		String sql = "SELECT COUNT(*) FROM `" + StrUtil.toUnderlineCase(clazz.getSimpleName()) + "` WHERE `" + StrUtil.toUnderlineCase(column) + "` IS NULL";
+		String sql = "SELECT COUNT(*) FROM " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(clazz.getSimpleName()) + SQLConstants.SUFFIX + " WHERE " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(column) + SQLConstants.SUFFIX + " IS NULL";
 		logQuery(formatSql(sql));
+		logger.debug("updateDefaultValue sql:{} ",formatSql(sql));
+		//System.out.println("updateDefaultValue sql: "+formatSql(sql));
 		Long count = jdbcTemplate.queryForCount(formatSql(sql));
 		if (count != null && count > 0) {
-			sql = "UPDATE `" + StrUtil.toUnderlineCase(clazz.getSimpleName()) + "` SET `" + StrUtil.toUnderlineCase(column) + "` = ? WHERE `" + StrUtil.toUnderlineCase(column) + "` IS NULL";
+			sql = "UPDATE " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(clazz.getSimpleName()) + SQLConstants.SUFFIX + " SET " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(column) + SQLConstants.SUFFIX + " = ? WHERE " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(column) + SQLConstants.SUFFIX + " IS NULL";
 			logQuery(formatSql(sql));
 			jdbcTemplate.execute(formatSql(sql), value);
 		}

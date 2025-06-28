@@ -55,6 +55,7 @@ public class AdminController extends BaseController {
 
 	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView, Page page) {
+		setPage(page);
 		page = adminService.search(page);
 		modelAndView.put("page", page);
 		modelAndView.view("/adminPage/admin/index.html");

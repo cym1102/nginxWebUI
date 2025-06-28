@@ -3,6 +3,7 @@ package com.cym.sqlhelper.bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cym.config.SQLConstants;
 import com.cym.sqlhelper.reflection.ReflectionUtil;
 import com.cym.sqlhelper.reflection.SerializableFunction;
 
@@ -65,7 +66,7 @@ public class Sort {
 
 			String sql = StrUtil.toUnderlineCase(order.getColumn());
 			if (order.getColumn().equalsIgnoreCase("seq") || order.getColumn().equalsIgnoreCase("id")) {
-				sql = "CAST(" + StrUtil.toUnderlineCase(order.getColumn()) + " as SIGNED)";
+				sql = "CAST(" + StrUtil.toUnderlineCase(order.getColumn()) + " as " + SQLConstants.ORDER_TYPE_INT + ")";
 			}
 
 			if (order.getDirection() == Direction.ASC) {

@@ -13,7 +13,17 @@ public class ServerExt {
 	
 	String href;
 	
+	Boolean overflow;
 	
+	
+	public Boolean getOverflow() {
+		return overflow;
+	}
+
+	public void setOverflow(Boolean overflow) {
+		this.overflow = overflow;
+	}
+
 	public String getHref() {
 		return href;
 	}

@@ -24,6 +24,7 @@ public class PasswordController extends BaseController {
 
 	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView, Page page) {
+		setPage(page);
 		page = passwordService.search(page);
 
 		modelAndView.put("page", page);

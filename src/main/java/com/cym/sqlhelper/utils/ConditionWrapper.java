@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import cn.hutool.core.util.StrUtil;
+import com.cym.config.SQLConstants;
 
 /**
  * 查询语句生成器
@@ -77,7 +78,7 @@ public abstract class ConditionWrapper {
 
 	public String buildColumn(String column, Class<?> clazz) {
 
-		return "`" + StrUtil.toUnderlineCase(column) + "`";
+		return SQLConstants.SUFFIX + StrUtil.toUnderlineCase(column) + SQLConstants.SUFFIX;
 	}
 
 	public String buildIn(Object value) {

@@ -6,6 +6,7 @@ import org.noear.solon.view.freemarker.FreemarkerRender;
 
 @Configuration
 public class ViewConfig {
+    public static String lang;
     @Bean
     public void init(FreemarkerRender render) throws Exception {
         //todo: 从 “app.onEvent(freemarker.template.Configuration.class, cfg->{})“ 迁移过来

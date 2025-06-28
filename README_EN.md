@@ -107,9 +107,9 @@ reboot
 
 ```
 Linux: mkdir /home/nginxWebUI/   
-       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.0/nginxWebUI-4.3.0.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.1/nginxWebUI-4.3.1.jar
 
-Windows: Download directly from your browser https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.0/nginxWebUI-4.3.0.jar into D:/home/nginxWebUI/
+Windows: Download directly from your browser https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.1/nginxWebUI-4.3.1.jar into D:/home/nginxWebUI/
 ```
 
 With a new version, you just need to change the version in the path
@@ -128,7 +128,7 @@ Parameter description (both non-required)
 
 --project.home Project profile directory for database files, certificate files, logs, etc. Default is /home/nginxwebui/
 
---spring.database.type=mysql Use other databases, not filled with native h2, options include mysql
+--spring.database.type=mysql Use other databases, not filled with native sqlite, options include mysql postgresql
 
 --spring.datasource.url=jdbc:mysql://ip:port/nginxwebui Databases url
 

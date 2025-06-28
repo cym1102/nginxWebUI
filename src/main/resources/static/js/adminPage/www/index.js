@@ -4,7 +4,7 @@ $(function() {
 		var upload = layui.upload;
 		upload.render({
 			elem: '#upload',
-			url: '/adminPage/main/upload',
+			url: ctx + '/adminPage/main/upload',
 			accept: 'file',
 			before: function(res) {
 				showLoad();

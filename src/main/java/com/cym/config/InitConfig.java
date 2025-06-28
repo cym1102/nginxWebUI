@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import org.noear.solon.annotation.Component;
@@ -31,7 +30,6 @@ import com.cym.sqlhelper.utils.JdbcTemplate;
 import com.cym.sqlhelper.utils.SqlHelper;
 import com.cym.utils.EncodePassUtils;
 import com.cym.utils.MessageUtils;
-import com.cym.utils.NginxUtils;
 import com.cym.utils.SystemTool;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -87,9 +85,9 @@ public class InitConfig {
 	@Init
 	public void start() throws Throwable {
 		// h2转sqlite
-		if ((databaseType.equalsIgnoreCase("sqlite") || databaseType.equalsIgnoreCase("h2")) && FileUtil.exist(homeConfig.home + "h2.mv.db")) {
-			transferSql();
-		}
+//		if ((databaseType.equalsIgnoreCase("sqlite") || databaseType.equalsIgnoreCase("h2")) && FileUtil.exist(homeConfig.home + "h2.mv.db")) {
+//			transferSql();
+//		}
 
 		// 找回密码
 		if (findPass) {
@@ -97,7 +95,8 @@ public class InitConfig {
 			for (Admin admin : admins) {
 				String randomPass = RandomUtil.randomString(8);
 
-				System.out.println(m.get("adminStr.name") + ":" + admin.getName() + " " + m.get("adminStr.pass") + ":" + randomPass);
+				// System.out.println(m.get("adminStr.name") + ":" + admin.getName() + " " +
+				// m.get("adminStr.pass") + ":" + randomPass);
 				admin.setAuth(false); // 关闭二次验证
 				admin.setPass(EncodePassUtils.encode(randomPass));
 				sqlHelper.updateById(admin);
@@ -176,7 +175,7 @@ public class InitConfig {
 				settingService.set("nginxExe", "nginx");
 			}
 
-			// 异步重启nginx, 拿到pid
+			// 异步重启nginx, 重建pid
 			ThreadUtil.execute(new Runnable() {
 
 				@Override
@@ -268,7 +267,7 @@ public class InitConfig {
 			Table table = clazz.getAnnotation(Table.class);
 			if (table != null) {
 				try {
-					List<Map<String, Object>> list = jdbcTemplate.queryForList("SELECT * FROM `" + StrUtil.toUnderlineCase(clazz.getSimpleName()) + "`");
+					List<Map<String, Object>> list = jdbcTemplate.queryForList("SELECT * FROM " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(clazz.getSimpleName()) + SQLConstants.SUFFIX);
 
 					map.put(clazz.getName(), sqlHelper.buildObjects(list, clazz));
 				} catch (Exception e) {

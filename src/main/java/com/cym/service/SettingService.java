@@ -1,5 +1,6 @@
 package com.cym.service;
 
+import com.cym.config.ViewConfig;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 
@@ -25,11 +26,17 @@ public class SettingService {
 	}
 
 	public String get(String key) {
+		if ("lang".equals(key) && ViewConfig.lang != null) {
+			return ViewConfig.lang;
+		}
 		Setting setting = sqlHelper.findOneByQuery(new ConditionAndWrapper().eq("key", key), Setting.class);
 
 		if (setting == null) {
 			return null;
 		} else {
+			if ("lang".equals(key) && ViewConfig.lang == null) {
+				ViewConfig.lang = setting.getValue();
+			}
 			return setting.getValue();
 		}
 	}

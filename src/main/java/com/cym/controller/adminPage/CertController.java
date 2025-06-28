@@ -59,6 +59,7 @@ public class CertController extends BaseController {
 
 	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView, Page page, String keywords) {
+		setPage(page);
 		page = certService.getPage(keywords, page);
 
 		for (Cert cert : (List<Cert>) page.getRecords()) {
@@ -224,6 +225,8 @@ public class CertController extends BaseController {
 					dnsType = "dns_tencent";
 				} else if (cert.getDnsType().equals("cf")) {
 					dnsType = "dns_cf";
+				} else if (cert.getDnsType().equals("cfToken")) {
+					dnsType = "dns_cf";
 				} else if (cert.getDnsType().equals("gd")) {
 					dnsType = "dns_gd";
 				} else if (cert.getDnsType().equals("hw")) {
@@ -321,12 +324,12 @@ public class CertController extends BaseController {
 			}
 			if (cert.getDnsType().equals("cf")) {
 				list.add("CF_Email=" + cert.getCfEmail());
-				if (cert.getCfToken() != null && !cert.getCfToken().isEmpty()) {
-					list.add("CF_Token=" + cert.getCfToken());
-				}
-				if (cert.getCfKey() != null && !cert.getCfKey().isEmpty()) {
-					list.add("CF_Key=" + cert.getCfKey());
-				}
+				list.add("CF_Key=" + cert.getCfKey());
+			}
+			if (cert.getDnsType().equals("cfToken")) {
+				list.add("CF_Token=" + cert.getCfToken());
+				list.add("CF_Account_ID=" + cert.getCfAccountId());
+				list.add("CF_Zone_ID=" + cert.getCfZoneId());
 			}
 			if (cert.getDnsType().equals("gd")) {
 				list.add("GD_Key=" + cert.getGdKey());

@@ -279,22 +279,22 @@ public class ConfController extends BaseController {
 
 		if (nginxPath != null) {
 			settingService.set("nginxPath", nginxPath);
-			System.out.println("nginxPath -> " + nginxPath);
+			// System.out.println("nginxPath -> " + nginxPath);
 		}
 		if (nginxExe != null) {
 			settingService.set("nginxExe", nginxExe);
-			System.out.println("nginxExe -> " + nginxExe);
+			// System.out.println("nginxExe -> " + nginxExe);
 		}
 		if (nginxDir != null) {
 			settingService.set("nginxDir", nginxDir);
-			System.out.println("nginxDir -> " + nginxDir);
+			// System.out.println("nginxDir -> " + nginxDir);
 		}
 
 		Map<String, String> map = new HashMap<>();
 		map.put("nginxPath", nginxPath);
 		map.put("nginxExe", nginxExe);
 		map.put("nginxDir", nginxDir);
-		System.out.println("");
+		// System.out.println("");
 		return renderSuccess(map);
 	}
 
@@ -412,6 +412,11 @@ public class ConfController extends BaseController {
 			return settingService.get("nginxExe") + " -s stop" + dir;
 		case "startNormal":
 			return settingService.get("nginxExe") + " -c " + settingService.get("nginxPath") + dir;
+		}
+
+		if (cmd.trim().equalsIgnoreCase((settingService.get("nginxExe") + " -s stop" + dir).trim())
+				|| cmd.trim().equalsIgnoreCase((settingService.get("nginxExe") + " -c " + settingService.get("nginxPath") + dir).trim())) {
+			return cmd;
 		}
 
 		return null;

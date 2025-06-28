@@ -359,9 +359,9 @@ public class ServerService {
 				}
 			} else {
 				// 上移
-				System.out.println(server.getSeq());
+				//System.out.println(server.getSeq());
 				for (int i = serverList.size() - 1; i >= 0; i--) {
-					System.out.println(serverList.get(i).getSeq());
+					//System.out.println(serverList.get(i).getSeq());
 					if (serverList.get(i).getSeq() > server.getSeq()) {
 						tagert = serverList.get(i);
 						break;

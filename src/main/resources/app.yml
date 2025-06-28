@@ -45,6 +45,6 @@ spring:
     username: 
     password: 
 
-initAdmin:
-initPass:
-initApi:
+initAdmin: 
+initPass: 
+initApi: 

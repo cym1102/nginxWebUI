@@ -118,6 +118,6 @@ public class NetWorkUtil {
 
 	public static void main(String[] args) {
 		String line = "RX packets:8889 errors:0 dropped:0 overruns:0 frame:0";
-		System.out.println(formatLong(line));
+		//System.out.println(formatLong(line));
 	}
 }

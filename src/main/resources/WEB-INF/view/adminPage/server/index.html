@@ -36,7 +36,7 @@
 	overflow: hidden;
 }
 
-.descrBtn{
+.descrBtn {
 	display: inline-block;
 	margin-bottom: 5px;
 	padding-left: 5px;
@@ -45,9 +45,8 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
-	color: #bbbbbb!important;
+	color: #bbbbbb !important;
 	text-decoration: underline;
-	
 }
 
 .liteBtn {
@@ -65,7 +64,7 @@
 	width: 40px;
 }
 
-.descr{
+.descr {
 	color: teal;
 }
 
@@ -93,6 +92,8 @@
 	padding-bottom: 0px !important;
 	height: 110px;
 }
+
+
 </style>
 </head>
 <body class="layui-layout-body">
@@ -113,7 +114,7 @@
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${serverStr.add}</button>
 						</div>
-						
+
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm layui-input-inline" onclick="openImport()">${serverStr.importServer}</button>
 						</div>
@@ -121,15 +122,15 @@
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="testPort()">${serverStr.testPort}</button>
 						</div>
-						
+
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="delMany()">${commonStr.delAll}</button>
 						</div>
 
 						<div class="layui-inline">
-							<input type="text" name="keywords" class="layui-input layui-input-sm"  value="${keywords}" onkeydown="if(event.keyCode==13)return false;">
+							<input type="text" name="keywords" class="layui-input layui-input-sm" value="${keywords}" onkeydown="if(event.keyCode==13)return false;">
 						</div>
-						
+
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm" onclick="search()">${commonStr.search}</button>
 						</div>
@@ -144,15 +145,9 @@
 								<th style="width: 20px;">
 									<input type="checkbox" id="checkAll" lay-filter="checkAll" lay-skin="primary">
 								</th>
-								<th>
-									${serverStr.transpondType}
-								</th>
-								<th>
-									${serverStr.listen}
-								</th>
-								<th>
-									${serverStr.serverName}
-								</th>
+								<th>${serverStr.transpondType}</th>
+								<th>${serverStr.listen}</th>
+								<th>${serverStr.serverName}</th>
 								<th>${serverStr.sslOption}</th>
 								<th>${serverStr.proxyTarget}</th>
 								<th>${serverStr.status}</th>
@@ -171,21 +166,17 @@
 									<#if ext.server.proxyType==0>http/https</#if>
 									<#if ext.server.proxyType==1>TCP</#if>
 									<#if ext.server.proxyType==2>UDP</#if>
-									
+
 								</td>
 								<td>
 									${ext.server.listen}
 									<#if ext.server.def==1>default_server</#if>
 								</td>
-								<td>	
-									
+								<td>
+
 									<#if ext.server.serverName==''>${serverStr.all}</#if>
-									<#if ext.server.serverName!=''>
-										<a href='${ext.href}' target="_blank" style="text-decoration: underline;">
-											${ext.server.serverName}
-										</a>
-									</#if>
-									
+									<#if ext.server.serverName!=''> <a href='${ext.href}' target="_blank" style="text-decoration: underline;"> ${ext.server.serverName} </a> </#if>
+
 								</td>
 								<td>
 									<span class="blk">${serverStr.ssl}：</span>
@@ -193,62 +184,61 @@
 										<#if ext.server.ssl==0>${commonStr.no}</#if>
 										<#if ext.server.ssl==1>${commonStr.yes}</#if>
 									</span>
-									<#if ext.server.ssl==1> 
-										<br>
-										<span class="blk">${serverStr.httpToHttps}：</span> 
-										<span class="descr">
-										<#if ext.server.rewrite==0>${commonStr.no}</#if> 
-										<#if ext.server.rewrite==1>${commonStr.yes}</#if> 
-										</span>
-										<br>
-										<span class="blk">${serverStr.http2}：</span> 
-										<span class="descr">
-										<#if ext.server.http2==0>${commonStr.no}</#if> 
-										<#if ext.server.http2==1 || ext.server.http2==2>${commonStr.yes}</#if> 
-										</span>
-									</#if>
+									<#if ext.server.ssl==1> <br>
+									<span class="blk">${serverStr.httpToHttps}：</span> <span class="descr">
+										<#if ext.server.rewrite==0>${commonStr.no}</#if>
+										<#if ext.server.rewrite==1>${commonStr.yes}</#if>
+									</span> <br>
+									<span class="blk">${serverStr.http2}：</span> <span class="descr">
+										<#if ext.server.http2==0>${commonStr.no}</#if>
+										<#if ext.server.http2==1 || ext.server.http2==2>${commonStr.yes}</#if>
+									</span> </#if>
 								</td>
 
 
-								<td>${ext.locationStr}</td>
+								<td>
+									<div style="max-height: 300px;overflow: hidden;" id="${ext.server.id}_str">
+									${ext.locationStr}
+									</div>
+									
+									<#if ext.overflow>
+										<div id="${ext.server.id}_a"><a style="color: #bbbbbb" href="javascript:showLocation('${ext.server.id}')">--${commonStr.showAll}--</a></div>
+									</#if>
+								</td>
 
 								<td>
-									<input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="ON|OFF" lay-skin="switch" ${(ext.server.enable)?string('checked','')}>
+									<input type="checkbox" name="enable" lay-filter="enable" value="${ext.server.id}" lay-text="ON|OFF" lay-skin="switch"${(ext.server.enable)?string('checked','')}>
 								</td>
 
 								<td style="max-width: 150px;">
-									<#if ext.server.descr != null && ext.server.descr != "">
-										<a href="javascript:editDescr('${ext.server.id}')" style="color: #bbbbbb; text-decoration: underline;">${ext.server.descr}</a>
-									</#if>
-									<#if ext.server.descr == null || ext.server.descr == "">
-										<a href="javascript:editDescr('${ext.server.id}')" style="color: #bbbbbb; text-decoration: underline;">${commonStr.edit}</a>
-									</#if>
+									<#if ext.server.descr !=null && ext.server.descr !=""> <a href="javascript:editDescr('${ext.server.id}')" style="color: #bbbbbb; text-decoration: underline;">${ext.server.descr}</a> </#if>
+									<#if ext.server.descr== null || ext.server.descr==""> <a href="javascript:editDescr('${ext.server.id}')" style="color: #bbbbbb; text-decoration: underline;">${commonStr.edit}</a> </#if>
 								</td>
 
 
 								<td>
 									<div class="layui-inline">
-									<button type="button" class="layui-btn layui-btn-sm layui-btn-normal " onclick="preview('${ext.server.id}','server')">${commonStr.preview}</button>
+										<button type="button" class="layui-btn layui-btn-sm layui-btn-normal " onclick="preview('${ext.server.id}','server')">${commonStr.preview}</button>
 									</div>
-									
+
 									<div class="layui-inline">
-									<button type="button" class="layui-btn layui-btn-sm " onclick="edit('${ext.server.id}', false)">${commonStr.edit}</button>
+										<button type="button" class="layui-btn layui-btn-sm " onclick="edit('${ext.server.id}', false)">${commonStr.edit}</button>
 									</div>
-									
+
 									<div class="layui-inline">
-									<button type="button" class="layui-btn layui-btn-sm " onclick="clone('${ext.server.id}')">${commonStr.clone}</button>
+										<button type="button" class="layui-btn layui-btn-sm " onclick="clone('${ext.server.id}')">${commonStr.clone}</button>
 									</div>
-									
+
 									<div class="layui-inline">
-									<button type="button" class="layui-btn layui-btn-danger layui-btn-sm " onclick="del('${ext.server.id}')">${commonStr.del}</button>
+										<button type="button" class="layui-btn layui-btn-danger layui-btn-sm " onclick="del('${ext.server.id}')">${commonStr.del}</button>
 									</div>
-									
+
 									<div class="layui-inline">
-									<button type="button" class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${ext.server.id}', 1)">${commonStr.up}</button>
+										<button type="button" class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${ext.server.id}', 1)">${commonStr.up}</button>
 									</div>
-									
+
 									<div class="layui-inline">
-									<button type="button" class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${ext.server.id}', -1)">${commonStr.down}</button>
+										<button type="button" class="layui-btn layui-btn-normal layui-btn-sm " onclick="setOrder('${ext.server.id}', -1)">${commonStr.down}</button>
 									</div>
 								</td>
 							</tr>
@@ -292,34 +282,34 @@
 									<input type="text" name="listen" id="listen" style="width: 60px; display: inline-block;" class="layui-input" placeholder="${serverStr.port}">
 								</div>
 							</div>
-							
+
 							<div class="layui-form-item" style="padding-left: 20px;">
 								<input type="checkbox" name="def" id="def" title="default_server" lay-skin="primary">
 								<input type="checkbox" name="proxyProtocol" id="proxyProtocol" title="proxy protocol" lay-skin="primary">
-								<input type="checkbox" name="ipv6" id="ipv6" title="${serverStr.ipv6}" lay-skin="primary" >
+								<input type="checkbox" name="ipv6" id="ipv6" title="${serverStr.ipv6}" lay-skin="primary">
 							</div>
 
-						
+
 							<div class="layui-form-item proxyHttp">
 								<label class="layui-form-label">${serverStr.serverName}</label>
 								<div class="layui-input-inline">
 									<input type="text" name="serverName" id="serverName" class="layui-input" placeholder="${serverStr.example}: www.baidu.com">
 								</div>
 							</div>
-							
-							
+
+
 							<div class="layui-form-item proxyHttp">
 								<label class="layui-form-label">${serverStr.pass}</label>
 								<div class="layui-input-inline">
-									<select name="passwordId" id="passwordId" >
+									<select name="passwordId" id="passwordId">
 										<option value="">--${serverStr.noPass}--</option>
 										<#list passwordList as password>
-											<option value="${password.id}">${password.name}</option>
+										<option value="${password.id}">${password.name}</option>
 										</#list>
 									</select>
 								</div>
 							</div>
-							
+
 							<div class="layui-form-item proxyTcp">
 								<label class="layui-form-label">${serverStr.toUpstream}</label>
 								<div class="layui-input-inline">
@@ -327,14 +317,14 @@
 										<#list upstreamTcpList as upstream>
 										<option value="${upstream.id}">${upstream.name}</option>
 										</#list>
-			
+
 										<#if upstreamTcpList?size==0>
 										<option value="">${serverStr.noUpstream}</option>
 										</#if>
 									</select>
 								</div>
 							</div>
-							
+
 							<div class="layui-form-item">
 								<label class="layui-form-label">${serverStr.ssl}</label>
 								<div class="layui-input-inline">
@@ -383,7 +373,7 @@
 
 								<label class="layui-form-label">${serverStr.http2}</label>
 								<div class="layui-input-inline" style="width: 250px;">
-									<select name="http2" id="http2" >
+									<select name="http2" id="http2">
 										<option value="2">${commonStr.yes} (${serverStr.http2New})</option>
 										<option value="1">${commonStr.yes} (${serverStr.http2Old})</option>
 										<option value="0">${commonStr.no}</option>
@@ -401,7 +391,7 @@
 									<input type="checkbox" class="protocols" id="TLSv1_3" lay-skin="primary" value="TLSv1.3" title="TLSv1.3">
 								</div>
 							</div>
-							
+
 							<div class="layui-form-item proxyHttp">
 								<label class="layui-form-label">${serverStr.httpToHttps}</label>
 								<div class="layui-input-inline" style="width: 100px;">
@@ -410,8 +400,8 @@
 										<option value="0">${commonStr.no}</option>
 									</select>
 								</div>
-								
-								<div  id="rewriteListenDiv">
+
+								<div id="rewriteListenDiv">
 									<label class="layui-form-label">${serverStr.rewriteListen}</label>
 									<div class="layui-input-inline">
 										<input type="text" name="rewriteIp" id="rewriteIp" class="layui-input" style="width: 125px; display: inline-block;" placeholder="${serverStr.ipDefault}">
@@ -419,26 +409,26 @@
 									</div>
 								</div>
 							</div>
-							
+
 						</div>
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<div style="width: 50px;display: inline-block;"></div>
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal proxyHttp"  onclick="addItem()">${serverStr.addLocation}</button>
-					
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal"  onclick="setDenyAllow()">${serverStr.ipDenyAllow}</button>
-					
-					<button type="button" class="layui-btn layui-btn-sm"  onclick="serverParam()">${serverStr.extParm}</button>
+					<div style="width: 50px; display: inline-block;"></div>
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal proxyHttp" onclick="addItem()">${serverStr.addLocation}</button>
+
+					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="setDenyAllow()">${serverStr.ipDenyAllow}</button>
+
+					<button type="button" class="layui-btn layui-btn-sm" onclick="serverParam()">${serverStr.extParm}</button>
 					<textarea style="display: none;" id="serverParamJson" name="serverParamJson"></textarea>
-					
+
 					<input type="hidden" id="denyAllow" name="denyAllow">
 					<input type="hidden" id="denyId" name="denyId">
 					<input type="hidden" id="allowId" name="allowId">
 				</div>
-				
-							
+
+
 				<div class="proxyHttp">
 					<table class="layui-table" lay-size="sm">
 						<thead>
@@ -470,7 +460,7 @@
 
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectTemplate('paramList')">${serverStr.addTemplate}</button>
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectTemplateAsParam('paramList')">${serverStr.addTemplateAsParam}</button>
-		
+
 			</div>
 			<div class="layui-form-item">
 				<input type="hidden" id="targertId">
@@ -526,7 +516,7 @@
 							<#if certList?size==0>
 							<option value="">${commonStr.pleaseSelect}</option>
 							</#if>
-						
+
 							<#list certList as cert>
 							<option value="${cert.id}">${cert.domain}</option>
 							</#list>
@@ -579,8 +569,8 @@
 				<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
 			</div>
 		</div>
-		
-		
+
+
 		<div class="layui-form" id="denyAllowDiv" style="padding: 15px; display: none">
 			<div class="layui-form-item">
 				<label class="layui-form-label">${serverStr.denyAllowModel}</label>
@@ -593,44 +583,44 @@
 					</select>
 				</div>
 			</div>
-			
+
 			<div class="layui-form-item" id="denyDiv">
 				<label class="layui-form-label">${serverStr.blacklist}</label>
 				<div class="layui-input-inline" style="width: 250px;">
 					<select id="denyIdValue">
-						<#if denyAllowList?size == 0>
+						<#if denyAllowList?size==0>
 						<option value="">${commonStr.pleaseSelect}</option>
 						</#if>
-						
+
 						<#list denyAllowList as denyAllow>
 						<option value="${denyAllow.id}">${denyAllow.name}</option>
 						</#list>
 					</select>
 				</div>
 			</div>
-			
+
 			<div class="layui-form-item" id="allowDiv">
 				<label class="layui-form-label">${serverStr.whitelist}</label>
 				<div class="layui-input-inline" style="width: 250px;">
 					<select id="allowIdValue">
-						<#if denyAllowList?size == 0>
+						<#if denyAllowList?size==0>
 						<option value="">${commonStr.pleaseSelect}</option>
 						</#if>
-						
+
 						<#list denyAllowList as denyAllow>
 						<option value="${denyAllow.id}">${denyAllow.name}</option>
 						</#list>
 					</select>
 				</div>
 			</div>
-			
-			
+
+
 			<div class="layui-form-item center">
 				<button type="button" class="layui-btn layui-btn-normal" onclick="setDenyAllowOver()">${commonStr.ok}</button>
 				<button type="button" class="layui-btn" onclick="layer.close(denyAllowIndex)">${commonStr.close}</button>
 			</div>
 		</div>
-		
+
 	</div>
 
 	<#include '/adminPage/script.html'/>

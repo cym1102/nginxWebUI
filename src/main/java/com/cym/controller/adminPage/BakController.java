@@ -32,6 +32,7 @@ public class BakController extends BaseController {
 
 	@Mapping("")
 	public ModelAndView index( ModelAndView modelAndView, Page page) {
+		setPage(page);
 		page = bakService.getList(page);
 
 		modelAndView.put("page", page);

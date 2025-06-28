@@ -95,7 +95,8 @@
 									<#if cert.dnsType=='tencent'> ${certStr.tencent} </#if> 
 									<#if cert.dnsType=='dp'> ${certStr.dnsPod} </#if> 
 									<#if cert.dnsType=='ali'> ${certStr.aliDns} </#if>
-									<#if cert.dnsType=='cf'> Cloudflare </#if>
+									<#if cert.dnsType=='cf'> Cloudflare Global </#if>
+									<#if cert.dnsType=='cfToken'> Cloudflare Token </#if>
 									<#if cert.dnsType=='gd'> Godaddy </#if>
 									<#if cert.dnsType=='hw'> ${certStr.huawei} </#if>
 									<#if cert.dnsType=='aws'> ${certStr.aws} </#if> 
@@ -212,7 +213,8 @@
 								<option value="ali">${certStr.aliDns}</option>
 								<option value="dp">${certStr.dnsPod}</option>
 								<option value="tencent">${certStr.tencent}</option>
-								<option value="cf">Cloudflare</option>
+								<option value="cf">Cloudflare Global</option>
+								<option value="cfToken">Cloudflare Token</option>
 								<option value="gd">Godaddy</option>
 								<option value="hw">${certStr.huawei}</option>
 								<option value="aws">${certStr.aws}</option>
@@ -302,11 +304,27 @@
 								<input type="text" name="cfKey" id="cfKey" class="layui-input">
 							</div>
 						</div>
-
+					</div>
+					
+					<div id="cfToken">
 						<div class="layui-form-item">
 							<label class="layui-form-label">CF_Token</label>
 							<div class="layui-input-block">
-								<input type="text" name="cfToken" id="cfToken" class="layui-input">
+								<input type="text" name="cfToken" id="cft" class="layui-input">
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">CF_Account_ID</label>
+							<div class="layui-input-block">
+								<input type="text" name="cfAccountId" id="cfAccountId" class="layui-input">
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">CF_Zone_ID</label>
+							<div class="layui-input-block">
+								<input type="text" name="cfZoneId" id="cfZoneId" class="layui-input">
 							</div>
 						</div>
 					</div>

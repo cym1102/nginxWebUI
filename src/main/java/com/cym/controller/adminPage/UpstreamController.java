@@ -36,7 +36,7 @@ public class UpstreamController extends BaseController {
 
 	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView, Page page, String keywords) {
-
+		setPage(page);
 		page = upstreamService.search(page, keywords);
 
 		List<UpstreamExt> list = new ArrayList<UpstreamExt>();

@@ -111,9 +111,9 @@ Path : JDK安装目录\bin
 
 ```
 Linux: mkdir /home/nginxWebUI/ 
-       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.0/nginxWebUI-4.3.0.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.1/nginxWebUI-4.3.1.jar
 
-Windows: 直接使用浏览器下载 https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.0/nginxWebUI-4.3.0.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
+Windows: 直接使用浏览器下载 https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.1/nginxWebUI-4.3.1.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -132,9 +132,9 @@ Windows: java -jar -Dfile.encoding=UTF-8 D:/home/nginxWebUI/nginxWebUI.jar --ser
 
 --project.home 项目配置文件目录，存放数据库文件，证书文件，日志等, 默认为/home/nginxWebUI/
 
---spring.database.type=mysql 使用其他数据库，不填为使用本地sqlite数据库，可选mysql
+--spring.database.type=mysql 使用其他数据库，不填为使用本地sqlite数据库，可选mysql, postgresql
 
---spring.datasource.url=jdbc:mysql://ip:port/nginxwebui 数据库url
+--spring.datasource.url=jdbc:mysql://ip:port/nginxwebui 数据库url 
 
 --spring.datasource.username=root  数据库用户
 

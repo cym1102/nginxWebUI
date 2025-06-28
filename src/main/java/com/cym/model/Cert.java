@@ -48,7 +48,7 @@ public class Cert extends BaseModel {
 	@InitValue("0")
 	Integer autoRenew;
 	/**
-	 * dns提供商 ali:阿里云 dp:dnsPod cf:Cloudflare gd:Godaddy hw:华为云 tencent:腾讯云 aws:亚马逊云
+	 * dns提供商 ali:阿里云 dp:dnsPod cf:Cloudflare_Global cfToken:Cloudflare_Token gd:Godaddy hw:华为云 tencent:腾讯云 aws:亚马逊云
 	 * ipv64:IPv64
 	 */
 	String dnsType;
@@ -78,18 +78,28 @@ public class Cert extends BaseModel {
 	 */
 	String aliSecret;
 	/**
-	 * cfEmail(Cloudflare需要的参数)
+	 * cfEmail(Cloudflare Global需要的参数)
 	 */
 	String cfEmail;
 	/**
-	 * cfKey(Cloudflare需要的参数, 兼容老用户)
+	 * cfKey(Cloudflare Global需要的参数)
 	 */
 	String cfKey;
+	
 	/**
-	 * cfToken(Cloudflare需要的参数, 推荐)
+	 * cfToken(Cloudflare Token需要的参数)
 	 */
 	String cfToken;
-
+	/**
+	 * cfAccountId(Cloudflare Token需要的参数)
+	 */
+	String cfAccountId;
+	/**
+	 * cfZoneId(Cloudflare Token需要的参数)
+	 */
+	String cfZoneId;
+	
+	
 	/**
 	 * gdKey(Godaddy需要的参数)
 	 */
@@ -230,14 +240,6 @@ public class Cert extends BaseModel {
 		this.cfKey = cfKey;
 	}
 
-	public String getCfToken() {
-		return cfToken;
-	}
-
-	public void setCfToken(String cfToken) {
-		this.cfToken = cfToken;
-	}
-
 	public Integer getType() {
 		return type;
 	}
@@ -356,6 +358,30 @@ public class Cert extends BaseModel {
 
 	public void setTencentSecretKey(String tencentSecretKey) {
 		this.tencentSecretKey = tencentSecretKey;
+	}
+
+	public String getCfToken() {
+		return cfToken;
+	}
+
+	public void setCfToken(String cfToken) {
+		this.cfToken = cfToken;
+	}
+
+	public String getCfAccountId() {
+		return cfAccountId;
+	}
+
+	public void setCfAccountId(String cfAccountId) {
+		this.cfAccountId = cfAccountId;
+	}
+
+	public String getCfZoneId() {
+		return cfZoneId;
+	}
+
+	public void setCfZoneId(String cfZoneId) {
+		this.cfZoneId = cfZoneId;
 	}
 
 }

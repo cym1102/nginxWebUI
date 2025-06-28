@@ -8,5 +8,12 @@ public class SnowFlakeUtils {
 	public static Long getId() {
 		return Long.parseLong(snowFlake.nextId());
 	}
+	
+	public static void main(String[] args) {
+		
+		System.err.println(getId());
+		System.err.println(getId());
+		System.err.println(getId());
+	}
 
 }

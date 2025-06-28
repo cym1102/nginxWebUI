@@ -76,7 +76,7 @@ public final class OshiUtils {
 
 	public static void main(String[] args) {
 		ServerDomain serverDomain = getOshiServerInfo();
-		System.out.println(JSONUtil.toJsonPrettyStr(serverDomain));
+		//System.out.println(JSONUtil.toJsonPrettyStr(serverDomain));
 	}
 
 	/**

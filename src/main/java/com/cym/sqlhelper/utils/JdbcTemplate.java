@@ -10,12 +10,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.h2.jdbc.JdbcClob;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cym.config.SQLConstants;
 import com.cym.sqlhelper.config.DataSourceEmbed;
 
 import cn.hutool.core.util.StrUtil;
@@ -31,17 +31,18 @@ public class JdbcTemplate {
 	
 	public List<Map<String, Object>> queryForList(String formatSql, Object... array) {
 		try {
+//			System.out.println(">>>queryForList sql:"+formatSql+" array:"+ Arrays.toString(array));
 			List<Entity> list = Db.use(dataSourceEmbed.getDataSource()).query(formatSql, array);
 
 			List<Map<String, Object>> mapList = new ArrayList<>();
 			for (Entity entity : list) {
 				Map<String, Object> map = new HashMap<>();
 				for (Map.Entry entry : entity.entrySet()) {
-					if (entry.getValue() instanceof JdbcClob) {
-						map.put(entry.getKey().toString(), clobToStr((JdbcClob) entry.getValue()));
-					} else {
+//					if (entry.getValue() instanceof JdbcClob) {
+//						map.put(entry.getKey().toString(), clobToStr((JdbcClob) entry.getValue()));
+//					} else {
 						map.put(entry.getKey().toString(), entry.getValue());
-					}
+//					}
 
 				}
 				mapList.add(map);
@@ -54,21 +55,21 @@ public class JdbcTemplate {
 		}
 	}
 
-	public String clobToStr(JdbcClob jdbcClob) {
-		try {
-			StringBuilder builder = new StringBuilder();
-			Reader rd = jdbcClob.getCharacterStream();
-			char[] str = new char[1];
-			while (rd.read(str) != -1) {
-				builder.append(new String(str));
-			}
-			return builder.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
+//	public String clobToStr(JdbcClob jdbcClob) {
+//		try {
+//			StringBuilder builder = new StringBuilder();
+//			Reader rd = jdbcClob.getCharacterStream();
+//			char[] str = new char[1];
+//			while (rd.read(str) != -1) {
+//				builder.append(new String(str));
+//			}
+//			return builder.toString();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//
+//		return null;
+//	}
 
 	public Set<String> queryForColumn(Class clazz) throws SQLException {
 		Set<String> set = new HashSet<>();
@@ -77,7 +78,7 @@ public class JdbcTemplate {
 		entity.setTableName(StrUtil.toUnderlineCase(clazz.getSimpleName()));
 		entity.set("id", uuid);
 		Db.use(dataSourceEmbed.getDataSource()).insert(entity);
-		List<Entity> list = Db.use(dataSourceEmbed.getDataSource()).query("select * from `" + StrUtil.toUnderlineCase(clazz.getSimpleName()) + "` where id='" + uuid + "'");
+		List<Entity> list = Db.use(dataSourceEmbed.getDataSource()).query("select * from " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(clazz.getSimpleName()) + SQLConstants.SUFFIX + " where id='" + uuid + "'");
 
 		for (Entity entityOne : list) {
 			set = entityOne.getFieldNames();
@@ -109,6 +110,7 @@ public class JdbcTemplate {
 
 	public void execute(String formatSql, Object... array) {
 		try {
+//			System.out.println(">>>execute sql:"+formatSql);
 			Db.use(dataSourceEmbed.getDataSource()).execute(formatSql, array);
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e);

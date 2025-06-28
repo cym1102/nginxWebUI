@@ -49,7 +49,7 @@ $(function() {
 		var upload = layui.upload;
 		upload.render({
 			elem: '#pemBtn',
-			url: '/adminPage/server/upload',
+			url: ctx + '/adminPage/server/upload',
 			accept: 'file',
 			done: function(res) {
 				// 上传完毕回调
@@ -66,7 +66,7 @@ $(function() {
 
 		upload.render({
 			elem: '#keyBtn',
-			url: '/adminPage/server/upload',
+			url: ctx + '/adminPage/server/upload',
 			accept: 'file',
 			done: function(res) {
 				// 上传完毕回调
@@ -232,7 +232,7 @@ function showWindow(title) {
 		content: $('#windowDiv')
 	});
 	*/
-	
+
 	layer.open({
 		type: 1,
 		title: title,
@@ -609,7 +609,7 @@ function buildHtml(uuid, location, upstreamSelect) {
 	//将双引号转义
 	location.path = location.path.replace(/\"/g, "&quot;");
 
-	var checked = location.enable?"checked":"";
+	var checked = location.enable ? "checked" : "";
 	var str = `<tr id='${uuid}'>
 				<td>
 					<div class="layui-inline" >
@@ -1160,3 +1160,7 @@ function editLocationDescr(id) {
 }
 
 
+function showLocation(id){
+	$("#" + id + "_str").removeAttr('style');
+	$("#" + id + "_a").hide();
+}

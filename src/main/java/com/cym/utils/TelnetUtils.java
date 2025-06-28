@@ -34,6 +34,6 @@ public class TelnetUtils {
 	}
 
 	public static void main(String[] args) {
-		System.out.println( isRunning("127.0.0.1", 8080));
+		//System.out.println( isRunning("127.0.0.1", 8080));
 	}
 }

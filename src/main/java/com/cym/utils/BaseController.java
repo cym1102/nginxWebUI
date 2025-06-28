@@ -6,7 +6,10 @@ import org.noear.solon.core.handle.Context;
 import com.cym.config.HomeConfig;
 import com.cym.model.Admin;
 import com.cym.service.AdminService;
+import com.cym.sqlhelper.bean.Page;
 import com.cym.sqlhelper.utils.SqlHelper;
+
+import cn.hutool.core.util.StrUtil;
 
 /**
  * Author: D.Yang Email: koyangslash@gmail.com Date: 16/10/9 Time: 下午1:37
@@ -55,18 +58,25 @@ public class BaseController {
 		return result;
 	}
 
+	public void setPage(Page page) {
+		String limit = (String) Context.current().session("limit");
+		if (StrUtil.isNotEmpty(limit)) {
+			page.setLimit(Integer.parseInt(limit));
+		}
+	}
+
 	public Admin getAdmin() {
-		
+
 		Admin admin = (Admin) Context.current().session("admin");
 		if (admin == null) {
 			String token = Context.current().header("token");
 			admin = adminService.getByToken(token);
 		}
 		if (admin == null) {
-			String creditKey =  Context.current().param("creditKey");
+			String creditKey = Context.current().param("creditKey");
 			admin = adminService.getByCreditKey(creditKey);
 		}
-		
+
 		return admin;
 	}
 }

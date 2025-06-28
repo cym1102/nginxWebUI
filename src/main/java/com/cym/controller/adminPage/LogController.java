@@ -39,6 +39,7 @@ public class LogController extends BaseController {
 
 	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView, Page page) {
+		setPage(page);
 		page = logService.search(page);
 		modelAndView.put("page", page);
 

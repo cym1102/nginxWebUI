@@ -80,6 +80,6 @@ public class SnowFlake {
     
     
     public static void main(String[] args) {
-		System.out.println( IdUtil.getSnowflake(0, 0).nextId());
+		//System.out.println( IdUtil.getSnowflake(0, 0).nextId());
 	}
 }

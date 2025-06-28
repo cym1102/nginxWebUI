@@ -6,7 +6,7 @@
     <meta name="generator" content="smart-doc">
     <title>nginxWebUI</title>
     <link rel="stylesheet" href="font.css">
-    <link rel="stylesheet" href="AllInOne.css?v=1741231346993"/>
+    <link rel="stylesheet" href="AllInOne.css?v=1750921063368"/>
     
     <style>.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint {
         background: #f7f7f8;
@@ -444,6 +444,8 @@
         "cfEmail": "",
         "cfKey": "",
         "cfToken": "",
+        "cfAccountId": "",
+        "cfZoneId": "",
         "gdKey": "",
         "gdSecret": "",
         "hwUsername": "",
@@ -563,7 +565,7 @@
                     <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">dnsType</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">dns提供商 ali:阿里云 dp:dnsPod cf:Cloudflare gd:Godaddy hw:华为云 tencent:腾讯云 aws:亚马逊云<br>ipv64:IPv64</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">dns提供商 ali:阿里云 dp:dnsPod cf:Cloudflare_Global cfToken:Cloudflare_Token gd:Godaddy hw:华为云 tencent:腾讯云 aws:亚马逊云<br>ipv64:IPv64</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
@@ -619,7 +621,7 @@
                     <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">cfEmail</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">cfEmail(Cloudflare需要的参数)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">cfEmail(Cloudflare Global需要的参数)</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
@@ -627,7 +629,7 @@
                     <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">cfKey</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">cfKey(Cloudflare需要的参数, 兼容老用户)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">cfKey(Cloudflare Global需要的参数)</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
@@ -635,7 +637,23 @@
                     <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">cfToken</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-                        <td class="tableblock halign-left valign-top"><p class="tableblock">cfToken(Cloudflare需要的参数, 推荐)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">cfToken(Cloudflare Token需要的参数)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">cfAccountId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">cfAccountId(Cloudflare Token需要的参数)</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">cfZoneId</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+                        <td class="tableblock halign-left valign-top"><p class="tableblock">cfZoneId(Cloudflare Token需要的参数)</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
                     </tr>
@@ -708,7 +726,7 @@
                 <div class="paragraph"><p><strong>Request-example:</strong></p></div>
                 <div class="listingblock">
                     <div class="content">
-                        <pre><code class="bash">curl -X GET -i /api/cert/addOver?type=0&makeTime=0&endTime=0&autoRenew=0&gdSecret=&cfEmail=&tencentSecretId=&tencentSecretKey=&ipv64Token=&gdKey=&dpId=&dpKey=&dnsType=&aliSecret=&awsAccessKeyId=&key=&hwPassword=&hwUsername=&awsSecretAccessKey=&aliKey=&encryption=&domain=&hwDomainName=&pem=&cfToken=&id=</code></pre>
+                        <pre><code class="bash">curl -X GET -i /api/cert/addOver?type=0&makeTime=0&endTime=0&autoRenew=0&aliKey=&dpId=&ipv64Token=&cfKey=&id=&awsAccessKeyId=&encryption=&tencentSecretKey=&gdKey=&domain=&cfZoneId=&awsSecretAccessKey=&gdSecret=&hwDomainName=&hwUsername=&key=&dnsType=&dpKey=&pem=&tencentSecretId=&cfToken=&hwPassword=&cfEmail=&aliSecret=&cfAccountId=</code></pre>
                     </div>
                 </div>
                 <div class="paragraph"><p><strong>Response-fields:</strong></p></div>
@@ -1377,12 +1395,12 @@
             </div>
         </div>
     </div>
-    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2025-03-06 11:22:26</span><span
+    <footer class="page-footer"><span class="copyright">Generated by smart-doc at 2025-06-26 14:57:43</span><span
             class="footer-modification">Suggestions,contact,support and error reporting on<a
             href="https://gitee.com/smart-doc-team/smart-doc" target="_blank">&nbsp;Gitee</a>&nbsp;or<a
             href="https://github.com/smart-doc-group/smart-doc.git" target="_blank">&nbsp;Github</a></span></footer>
 </div>
-<script src="search.js?v=1741231346993"></script>
+<script src="search.js?v=1750921063368"></script>
 <script>
     $(function () {
         const Accordion = function (el, multiple) {
