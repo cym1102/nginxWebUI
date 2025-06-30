@@ -290,8 +290,8 @@ public class CertController extends BaseController {
 	private String getPem(String rs) {
 		String[] lines = rs.split("\n");
 		for (String line : lines) {
-			if (line.contains("And the full chain certs is there:")) {
-				return line.split("And the full chain certs is there:")[1].trim().replace("\\", "/").replace("//", "/");
+			if (line.contains("And the full-chain cert is in:")) {
+				return line.split("And the full-chain cert is in:")[1].trim().replace("\\", "/").replace("//", "/");
 			}
 		}
 
@@ -328,8 +328,12 @@ public class CertController extends BaseController {
 			}
 			if (cert.getDnsType().equals("cfToken")) {
 				list.add("CF_Token=" + cert.getCfToken());
-				list.add("CF_Account_ID=" + cert.getCfAccountId());
-				list.add("CF_Zone_ID=" + cert.getCfZoneId());
+				if (StrUtil.isNotEmpty(cert.getCfAccountId())) {
+					list.add("CF_Account_ID=" + cert.getCfAccountId());
+				}
+				if (StrUtil.isNotEmpty(cert.getCfZoneId())) {
+					list.add("CF_Zone_ID=" + cert.getCfZoneId());
+				}
 			}
 			if (cert.getDnsType().equals("gd")) {
 				list.add("GD_Key=" + cert.getGdKey());

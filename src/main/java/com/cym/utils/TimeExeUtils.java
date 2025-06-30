@@ -38,7 +38,11 @@ public class TimeExeUtils {
 			ProcessBuilder processBuilder = new ProcessBuilder("/bin/sh", "-c", cmd);
 			Map<String, String> environmentMap = processBuilder.environment();
 			for (String env : envs) {
-				environmentMap.put(env.split("=")[0], env.split("=")[1]);
+				String[] arrays = env.split("=");
+				String key = arrays.length > 0 ? arrays[0] : "";
+				String value = arrays.length > 1 ? arrays[1] : "";
+				
+				environmentMap.put(key, value);
 			}
 			processBuilder.redirectErrorStream(true);// 将错误流中的数据合并到输入流
 			process = processBuilder.start();
@@ -60,7 +64,7 @@ public class TimeExeUtils {
 						process.exitValue();
 						break;
 					} catch (IllegalThreadStateException e) {
-						//System.err.println(e.getMessage());
+						// System.err.println(e.getMessage());
 					}
 				}
 
