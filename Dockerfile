@@ -1,4 +1,4 @@
-FROM alpine:3.22
+FROM alpine:3.21
 ENV LANG=zh_CN.UTF-8 \
     TZ=Asia/Shanghai \
     PS1="\u@\h:\w \$ "
@@ -13,8 +13,6 @@ RUN    apk add --update --no-cache \
 	   nginx-mod-http-headers-more \
 	   nginx-mod-http-js \
 	   nginx-mod-http-keyval \
-	   nginx-mod-http-lua \
-	   nginx-mod-http-lua-upstream \
 	   nginx-mod-http-brotli \
 	   nginx-mod-rtmp \
 	   nginx-mod-mail \
