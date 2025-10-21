@@ -107,9 +107,9 @@ reboot
 
 ```
 Linux: mkdir /home/nginxWebUI/   
-       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.2/nginxWebUI-4.3.2.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.3/nginxWebUI-4.3.3.jar
 
-Windows: Download directly from your browser https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.2/nginxWebUI-4.3.2.jar into D:/home/nginxWebUI/
+Windows: Download directly from your browser https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.3/nginxWebUI-4.3.3.jar into D:/home/nginxWebUI/
 ```
 
 With a new version, you just need to change the version in the path
@@ -278,7 +278,7 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
-Then execute
+2. Then execute
 
 ```
 systemctl daemon-reload

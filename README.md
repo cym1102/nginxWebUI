@@ -111,9 +111,9 @@ Path : JDK安装目录\bin
 
 ```
 Linux: mkdir /home/nginxWebUI/ 
-       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.2/nginxWebUI-4.3.2.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.3/nginxWebUI-4.3.3.jar
 
-Windows: 直接使用浏览器下载 https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.2/nginxWebUI-4.3.2.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
+Windows: 直接使用浏览器下载 https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.3/nginxWebUI-4.3.3.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -282,7 +282,7 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
-之后执行
+2. 之后执行
 
 ```
 systemctl daemon-reload
