@@ -75,19 +75,15 @@ public class InitConfig {
 	@Inject("${spring.database.type}")
 	String databaseType;
 
-	@Inject("${initAdmin}")
+	@Inject("${init.admin}")
 	String initAdmin;
-	@Inject("${initPass}")
+	@Inject("${init.pass}")
 	String initPass;
-	@Inject("${initApi}")
+	@Inject("${init.api}")
 	Boolean initApi;
 
 	@Init
 	public void start() throws Throwable {
-		// h2转sqlite
-//		if ((databaseType.equalsIgnoreCase("sqlite") || databaseType.equalsIgnoreCase("h2")) && FileUtil.exist(homeConfig.home + "h2.mv.db")) {
-//			transferSql();
-//		}
 
 		// 找回密码
 		if (findPass) {
@@ -95,8 +91,6 @@ public class InitConfig {
 			for (Admin admin : admins) {
 				String randomPass = RandomUtil.randomString(8);
 
-				// System.out.println(m.get("adminStr.name") + ":" + admin.getName() + " " +
-				// m.get("adminStr.pass") + ":" + randomPass);
 				admin.setAuth(false); // 关闭二次验证
 				admin.setPass(EncodePassUtils.encode(randomPass));
 				sqlHelper.updateById(admin);
@@ -105,6 +99,9 @@ public class InitConfig {
 		}
 
 		// 初始化管理员账号
+//		logger.info("initAdmin:" + initAdmin);
+//		logger.info("initPass:" + initPass);
+//		logger.info("initApi:" + initApi);
 		if (StrUtil.isNotBlank(initAdmin) && StrUtil.isNotBlank(initPass)) {
 			addAdmin();
 		}

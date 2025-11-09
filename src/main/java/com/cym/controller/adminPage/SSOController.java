@@ -88,7 +88,7 @@ public class SSOController extends BaseController {
 
 		ctx.redirect(url);
 	}
-
+	
 	@Mapping("code")
 	public void code(String code, Context ctx) {
 
@@ -106,14 +106,15 @@ public class SSOController extends BaseController {
 
 		JSONObject entries = JSONUtil.parseObj(post);
 		String accessToken = entries.getStr("access_token");
-
 		String userInfoUrl = userinfoUrl + "?access_token=" + accessToken;
-
 		String userinfoStr = HttpUtil.get(userInfoUrl);
-
 		String read = JsonPath.read(userinfoStr, jsonpath);
 
 		Admin admin = sqlHelper.findOneByQuery(new ConditionAndWrapper().eq(Admin::getName, read), Admin.class);
+		if (admin == null) {
+			ctx.outputAsJson(JSONUtil.toJsonPrettyStr(renderError(m.get("ssoStr.userNotExist")))); 
+			return;
+		}
 
 		admin.setAutoKey(UUID.randomUUID().toString()); // 生成自动登录code
 		sqlHelper.updateById(admin);

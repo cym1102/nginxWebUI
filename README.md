@@ -111,9 +111,9 @@ Path : JDK安装目录\bin
 
 ```
 Linux: mkdir /home/nginxWebUI/ 
-       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.3/nginxWebUI-4.3.3.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.5/nginxWebUI-4.3.5.jar
 
-Windows: 直接使用浏览器下载 https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.3/nginxWebUI-4.3.3.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
+Windows: 直接使用浏览器下载 https://gitee.com/cym1102/nginxWebUI/releases/download/4.3.5/nginxWebUI-4.3.5.jar 到 D:/home/nginxWebUI/nginxWebUI.jar
 ```
 
 有新版本只需要修改路径中的版本即可
@@ -140,11 +140,11 @@ Windows: java -jar -Dfile.encoding=UTF-8 D:/home/nginxWebUI/nginxWebUI.jar --ser
 
 --spring.datasource.password=pass  数据库密码
 
---initAdmin=admin 初始用户名
+--init.admin=admin 初始用户名
 
---initPass=admin 初始用户密码
+--init.pass=admin 初始用户密码
 
---initApi=true 初始用户开启api权限
+--init.api=true 初始用户开启api权限
 
 注意Linux命令最后加一个&号, 表示项目后台运行
 
