@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cym.config.HomeConfig;
+import com.cym.config.VersionConfig;
 import com.cym.controller.adminPage.CertController;
 import com.cym.controller.adminPage.ConfController;
 import com.cym.controller.adminPage.RemoteController;
@@ -73,7 +74,15 @@ public class ScheduleTask {
 	HomeConfig homeConfig;
 	@Inject
 	BLogFileTailer bLogFileTailer;
+	@Inject
+	VersionConfig versionConfig;
 
+	// 检查更新
+	@Scheduled(cron = "0 0 0 * * ?")
+	public void checkUpdate() {
+		versionConfig.checkVersion();
+	}
+		
 	// 续签证书
 	@Scheduled(cron = "0 0 0/2 * * ?")
 	public void certTasks() {

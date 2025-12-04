@@ -18,7 +18,6 @@ import com.cym.utils.SystemTool;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
 
 @EnableScheduling
 @SolonMain
@@ -27,8 +26,6 @@ public class NginxWebUI {
 
 	public static void main(String[] args) {
 		boolean findPass = false;
-		String initAdmin = null;
-		String initPass = null;
 		
 		if (args != null) {
 			for (String arg : args) {
@@ -37,8 +34,6 @@ public class NginxWebUI {
 				}
 			}
 		}
-
-	
 		
 		try {
 			if (!findPass) {

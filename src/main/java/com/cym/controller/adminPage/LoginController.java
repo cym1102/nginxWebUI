@@ -30,6 +30,7 @@ import com.wf.captcha.base.Captcha;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 
 /**
@@ -142,9 +143,6 @@ public class LoginController extends BaseController {
 		Context.current().sessionSet("admin", admin);
 		Context.current().sessionRemove("imgCode"); // 立刻销毁验证码
 
-		// 检查更新
-		versionConfig.checkVersion();
-
 		return renderSuccess(admin);
 	}
 
@@ -160,8 +158,6 @@ public class LoginController extends BaseController {
 			Context.current().sessionSet("admin", admin);
 			Context.current().sessionRemove("imgCode"); // 立刻销毁验证码
 
-			// 检查更新
-			versionConfig.checkVersion();
 
 			return renderSuccess(admin);
 		} else {
@@ -334,6 +330,5 @@ public class LoginController extends BaseController {
 
 		return renderSuccess();
 	}
-
 
 }

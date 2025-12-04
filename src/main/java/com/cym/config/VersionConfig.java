@@ -23,7 +23,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 
 @Component
-public class VersionConfig  {
+public class VersionConfig {
 	Logger logger = LoggerFactory.getLogger(VersionConfig.class);
 
 	public Version newVersion;
@@ -32,17 +32,15 @@ public class VersionConfig  {
 
 	@Init
 	public void afterInjection() {
-		checkVersion();
-	}
-
-	public void checkVersion(){
 		// 获取版本号
 		try {
 			currentVersion = getFromPom();
 		} catch (Exception e) {
 			logger.info(e.getMessage(), e);
 		}
+	}
 
+	public void checkVersion() {
 		// 获取服务器最新版本
 		try {
 			String json = HttpUtil.get("https://www.nginxwebui.cn/download/version.json", 1000);
@@ -54,7 +52,7 @@ public class VersionConfig  {
 
 		}
 	}
-	
+
 	public String getFromPom() throws IOException, XmlPullParserException {
 
 		// 查看jar包里面pom.properties版本号

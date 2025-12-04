@@ -229,6 +229,7 @@ public class InitConfig {
 
 	}
 
+	@Deprecated
 	private void transferSql() {
 		// 关闭sqlite连接
 		dataSourceEmbed.getDataSource().close();
