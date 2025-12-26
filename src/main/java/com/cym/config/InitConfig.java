@@ -90,18 +90,17 @@ public class InitConfig {
 			List<Admin> admins = sqlHelper.findAll(Admin.class);
 			for (Admin admin : admins) {
 				String randomPass = RandomUtil.randomString(8);
-
+				
 				admin.setAuth(false); // 关闭二次验证
 				admin.setPass(EncodePassUtils.encode(randomPass));
 				sqlHelper.updateById(admin);
+				
+				System.out.println(m.get("adminStr.name") + ":" + admin.getName() + " " + m.get("adminStr.pass") + ":" + randomPass);
 			}
 			System.exit(1);
 		}
 
 		// 初始化管理员账号
-//		logger.info("initAdmin:" + initAdmin);
-//		logger.info("initPass:" + initPass);
-//		logger.info("initApi:" + initApi);
 		if (StrUtil.isNotBlank(initAdmin) && StrUtil.isNotBlank(initPass)) {
 			addAdmin();
 		}
