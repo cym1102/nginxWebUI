@@ -5,7 +5,7 @@ import com.cym.sqlhelper.config.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * 
+ *
  * 额外参数
  *
  */
@@ -23,7 +23,7 @@ public class Param extends BaseModel {
 	 * 所属负载均衡id
 	 */
 	String upstreamId;
-	
+
 	@JsonIgnore
 	String templateId;
 	/**
@@ -38,8 +38,20 @@ public class Param extends BaseModel {
 	String templateValue;
 	@JsonIgnore
 	String templateName;
-	
-	
+
+	/**
+	 * 参数位置 0:追加到末尾(默认) 1:插入到开头
+	 */
+	Integer position;
+
+	public Integer getPosition() {
+		return position;
+	}
+
+	public void setPosition(Integer position) {
+		this.position = position;
+	}
+
 	public String getTemplateValue() {
 		return templateValue;
 	}

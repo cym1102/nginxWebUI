@@ -616,6 +616,14 @@ public class ConfService {
 						}
 					}
 
+					// 自定义参数 - 前置模式 (position=1)
+					paramList = paramService.getListByTypeId(location.getId(), "location");
+					for (Param param : paramList) {
+						if (param.getPosition() != null && param.getPosition() == 1) {
+							setSameParam(param, ngxBlockLocation);
+						}
+					}
+
 					if (location.getType() == 0 || location.getType() == 2) { // 动态代理或负载均衡
 
 						if (location.getType() == 0) {
@@ -728,10 +736,11 @@ public class ConfService {
 						ngxBlockLocation.addEntry(ngxParam);
 					}
 
-					// 自定义参数
-					paramList = paramService.getListByTypeId(location.getId(), "location");
+					// 自定义参数 - 追加模式 (position=0 或 null，默认)
 					for (Param param : paramList) {
-						setSameParam(param, ngxBlockLocation);
+						if (param.getPosition() == null || param.getPosition() == 0) {
+							setSameParam(param, ngxBlockLocation);
+						}
 					}
 
 					ngxBlockServer.addEntry(ngxBlockLocation);
