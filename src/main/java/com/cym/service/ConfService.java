@@ -142,6 +142,14 @@ public class ConfService {
 					ngxBlockServer.addEntry(ngxParam);
 				}
 
+				// 自定义参数 - 前置模式 (position=1)
+				List<Param> paramList = paramService.getListByTypeId(upstream.getId(), "upstream");
+				for (Param param : paramList) {
+					if (param.getPosition() != null && param.getPosition() == 1) {
+						setSameParam(param, ngxBlockServer);
+					}
+				}
+
 				List<UpstreamServer> upstreamServers = upstreamService.getUpstreamServers(upstream.getId());
 				for (UpstreamServer upstreamServer : upstreamServers) {
 					if (upstreamServer.getEnable()  == 1) {
@@ -151,10 +159,11 @@ public class ConfService {
 					}
 				}
 
-				// 自定义参数
-				List<Param> paramList = paramService.getListByTypeId(upstream.getId(), "upstream");
+				// 自定义参数 - 追加模式 (position=0 或 null，默认)
 				for (Param param : paramList) {
-					setSameParam(param, ngxBlockServer);
+					if (param.getPosition() == null || param.getPosition() == 0) {
+						setSameParam(param, ngxBlockServer);
+					}
 				}
 
 				hasHttp = true;

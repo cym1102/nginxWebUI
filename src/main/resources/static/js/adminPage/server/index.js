@@ -866,7 +866,7 @@ function fillTable(params) {
 			</tr>
 			`;
 		} else {
-			html += buildTemplateParam(uuid, param);
+			html += buildTemplateParam(uuid, param, true);
 		}
 	}
 

@@ -64,15 +64,15 @@
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="add()">${upstreamStr.add}</button>
 						</div>
-						
+
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="upstreamMonitor()">${upstreamStr.upstreamMonitor}</button>
 						</div>
-						
+
 						<div class="layui-inline">
 							<button type="button" class="layui-btn layui-btn-danger layui-btn-sm" onclick="delMany()">${commonStr.delAll}</button>
 						</div>
-						
+
 						<div class="layui-input-inline">
 							<input type="text" name="keywords" class="layui-input layui-input-sm" value="${keywords}" onkeydown="if(event.keyCode==13)return false;">
 						</div>
@@ -118,16 +118,16 @@
 									<a href="javascript:editDescr('${ext.upstream.id}')" style="color: #bbbbbb; text-decoration: underline;">${commonStr.edit}</a>
 								</#if>
 							</td>
-							
+
 							<td>
-								<#if ext.upstream.tactics==""> ${upstreamStr.default} </#if> 
-								<#if ext.upstream.tactics=="ip_hash"> ${upstreamStr.ipHash} </#if> 
+								<#if ext.upstream.tactics==""> ${upstreamStr.default} </#if>
+								<#if ext.upstream.tactics=="ip_hash"> ${upstreamStr.ipHash} </#if>
 								<#if ext.upstream.tactics=="sticky">
-									${upstreamStr.sticky} 
-								</#if> 
-								<#if ext.upstream.tactics=="least_conn"> ${upstreamStr.leastConn} </#if> 
-								<#if ext.upstream.tactics=="least_time"> ${upstreamStr.leastTime} </#if> 
-								<#if ext.upstream.tactics=="fair"> ${upstreamStr.fair} </#if> 
+									${upstreamStr.sticky}
+								</#if>
+								<#if ext.upstream.tactics=="least_conn"> ${upstreamStr.leastConn} </#if>
+								<#if ext.upstream.tactics=="least_time"> ${upstreamStr.leastTime} </#if>
+								<#if ext.upstream.tactics=="fair"> ${upstreamStr.fair} </#if>
 								<#if ext.upstream.tactics=="url_hash"> ${upstreamStr.urlHash} </#if>
 							</td>
 							<td style="padding: 0px;">
@@ -220,7 +220,7 @@
 					<div class="layui-inline">
 						<button type="button" class="layui-btn layui-btn-sm" onclick="upstreamParam()">${upstreamStr.extParam}</button>
 					</div>
-					
+
 					<textarea style="display: none;" id="upstreamParamJson" name="upstreamParamJson"></textarea>
 				</div>
 
@@ -239,7 +239,7 @@
 								<th>${upstreamStr.status}</th>
 								<th>${upstreamStr.otherParm}</th>
 								<th>${commonStr.operation}</th>
-								
+
 							</tr>
 						</thead>
 						<tbody id="itemList" class="itemList">
@@ -317,6 +317,7 @@
 						<tr>
 							<th>${commonStr.name}</th>
 							<th>${commonStr.value}</th>
+							<th style="width: 120px;">${serverStr.paramPosition}</th>
 							<th style="width: 170px;">${commonStr.operation}</th>
 						</tr>
 					</thead>
@@ -331,19 +332,19 @@
 				<button type="button" class="layui-btn" onclick="layer.close(paramIndex)">${commonStr.close}</button>
 			</div>
 		</div>
-		
-		<!-- 
+
+		<!--
 		<div class="layui-form" id="previewDiv" style="padding: 15px; display: none">
 			<div class="layui-form-item">
 				<div class="layui-input-inline" style="width: 100%">
 					<textarea id="preview" name="preview" readonly="readonly" class="layui-textarea" style="height: 500px;">
-					
+
 					</textarea>
 				</div>
 			</div>
 		</div>
 		 -->
-		
+
 		<div class="layui-form" id="descrDiv" style="padding: 15px; display: none">
 			<input type="hidden" id="upstreamId" name="upstreamId">
 			<div class="layui-form-item">
