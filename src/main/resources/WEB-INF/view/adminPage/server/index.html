@@ -204,7 +204,7 @@
 									<div style="max-height: 300px;overflow: hidden;" id="${ext.server.id}_str">
 									${ext.locationStr}
 									</div>
-									
+
 									<#if ext.overflow>
 										<div id="${ext.server.id}_a"><a style="color: #bbbbbb" href="javascript:showLocation('${ext.server.id}')">--${commonStr.showAll}--</a></div>
 									</#if>
@@ -473,6 +473,7 @@
 						<tr>
 							<th>${commonStr.name}</th>
 							<th>${commonStr.value}</th>
+							<th style="width: 120px;">${serverStr.paramPosition}</th>
 							<th style="width: 170px;">${commonStr.operation}</th>
 						</tr>
 					</thead>
