@@ -25,10 +25,10 @@ import cn.hutool.db.Entity;
 @Component
 public class JdbcTemplate {
 	@Inject
-	DataSourceEmbed dataSourceEmbed; 
+	DataSourceEmbed dataSourceEmbed;
 	SnowFlake snowFlake = new SnowFlake(1, 1);
 	static Logger logger = LoggerFactory.getLogger(JdbcTemplate.class);
-	
+
 	public List<Map<String, Object>> queryForList(String formatSql, Object... array) {
 		try {
 //			System.out.println(">>>queryForList sql:"+formatSql+" array:"+ Arrays.toString(array));
@@ -41,7 +41,7 @@ public class JdbcTemplate {
 //					if (entry.getValue() instanceof JdbcClob) {
 //						map.put(entry.getKey().toString(), clobToStr((JdbcClob) entry.getValue()));
 //					} else {
-						map.put(entry.getKey().toString(), entry.getValue());
+					map.put(entry.getKey().toString(), entry.getValue());
 //					}
 
 				}
@@ -78,7 +78,8 @@ public class JdbcTemplate {
 		entity.setTableName(StrUtil.toUnderlineCase(clazz.getSimpleName()));
 		entity.set("id", uuid);
 		Db.use(dataSourceEmbed.getDataSource()).insert(entity);
-		List<Entity> list = Db.use(dataSourceEmbed.getDataSource()).query("select * from " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(clazz.getSimpleName()) + SQLConstants.SUFFIX + " where id='" + uuid + "'");
+		List<Entity> list = Db.use(dataSourceEmbed.getDataSource()).query("select * from " + SQLConstants.SUFFIX + StrUtil.toUnderlineCase(clazz.getSimpleName()) + SQLConstants.SUFFIX + " where id = ?",
+				uuid);
 
 		for (Entity entityOne : list) {
 			set = entityOne.getFieldNames();

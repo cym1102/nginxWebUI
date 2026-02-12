@@ -34,6 +34,14 @@ public class PasswordController extends BaseController {
 
 	@Mapping("addOver")
 	public JsonResult addOver(Password password) {
+		// 验证文件名，防止路径遍历攻击
+		String fileName = password.getName();
+		if (StrUtil.isEmpty(fileName) || fileName.contains("..") || fileName.contains("/") || fileName.contains("\\")) {
+			return renderError(m.get("confStr.error2"));
+		}
+		// 过滤文件名中的特殊字符
+		fileName = fileName.replaceAll("[\\s?<>|\"#&;'`]", "");
+		password.setName(fileName);
 
 		if (StrUtil.isEmpty(password.getId())) {
 			Long count = passwordService.getCountByName(password.getName());

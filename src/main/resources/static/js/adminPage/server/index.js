@@ -852,16 +852,21 @@ function fillTable(params) {
 					<textarea  name="value" class="layui-textarea">${param.value}</textarea>
 				</td>
 				<td style="width: 100px;">
-					<select name="position" class="layui-input" style="height: 30px;">
+					<select name="position" style="height: 30px;">
 						<option value="0" ${position == 0 ? 'selected' : ''}>${serverStr.paramAppend}</option>
 						<option value="1" ${position == 1 ? 'selected' : ''}>${serverStr.paramPrepend}</option>
 					</select>
 				</td>
 				<td>
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
-
-					<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
-					<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
+					</div>
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
+					</div>
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
+					</div>
 				</td>
 			</tr>
 			`;
@@ -871,7 +876,7 @@ function fillTable(params) {
 	}
 
 	$("#paramList").html(html);
-
+	form.render();
 	paramIndex = layer.open({
 		type: 1,
 		title: serverStr.extParm,
@@ -892,22 +897,27 @@ function addParam() {
 			<textarea  name="value" class="layui-textarea"></textarea>
 		</td>
 		<td style="width: 100px;">
-			<select name="position" class="layui-input" style="height: 30px;">
+			<select name="position" style="height: 30px;">
 				<option value="0" selected>${serverStr.paramAppend}</option>
 				<option value="1">${serverStr.paramPrepend}</option>
 			</select>
 		</td>
 		<td>
-			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
-
-			<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
-			<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
+			<div class="layui-inline">
+				<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
+			</div>
+			<div class="layui-inline">
+				<button type="button" class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
+			</div>
+			<div class="layui-inline">
+				<button type="button" class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
+			</div>
 		</td>
 	</tr>
 	`;
 
 	$("#paramList").append(html);
-
+	form.render();
 }
 
 

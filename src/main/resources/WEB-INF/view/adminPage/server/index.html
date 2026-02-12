@@ -418,13 +418,18 @@
 					</div>
 				</div>
 
-				<div class="layui-form-item">
+				<div class="layui-container" style="margin-left: 0px;">
 					<div style="width: 50px; display: inline-block;"></div>
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal proxyHttp" onclick="addItem()">${serverStr.addLocation}</button>
-
-					<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="setDenyAllow()">${serverStr.ipDenyAllow}</button>
-
-					<button type="button" class="layui-btn layui-btn-sm" onclick="serverParam()">${serverStr.extParm}</button>
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-normal proxyHttp" onclick="addItem()">${serverStr.addLocation}</button>
+					</div>
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="setDenyAllow()">${serverStr.ipDenyAllow}</button>
+					</div>
+					<div class="layui-inline">
+						<button type="button" class="layui-btn layui-btn-sm" onclick="serverParam()">${serverStr.extParm}</button>
+					</div>
+					
 					<textarea style="display: none;" id="serverParamJson" name="serverParamJson"></textarea>
 
 					<input type="hidden" id="denyAllow" name="denyAllow">
@@ -459,16 +464,20 @@
 		</div>
 
 		<div id="paramJsonDiv" style="display: none; padding: 15px;">
-			<div class="layui-form-item">
+			<div >
+				<div class="layui-inline">
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">${serverStr.addParm}</button>
-
+				</div>
+				<div class="layui-inline">
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectTemplate('paramList')">${serverStr.addTemplate}</button>
+				</div>
+				<div class="layui-inline">
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectTemplateAsParam('paramList')">${serverStr.addTemplateAsParam}</button>
-
+				</div>
 			</div>
-			<div class="layui-form-item">
+			<div>
 				<input type="hidden" id="targertId">
-				<table class="layui-table" lay-size="sm">
+				<table class="layui-table layui-form" lay-size="sm">
 					<thead>
 						<tr>
 							<th>${commonStr.name}</th>

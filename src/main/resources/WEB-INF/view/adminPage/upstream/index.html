@@ -303,16 +303,20 @@
 
 
 		<div id="paramJsonDiv" style="display: none; padding: 15px;">
-			<div class="layui-form-item">
+			<div>
+				<div class="layui-inline">
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="addParam()">${upstreamStr.addParam}</button>
-
+				</div>
+				<div class="layui-inline">
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectTemplate('paramList')">${upstreamStr.selectTemplate}</button>
-
+				</div>
+				<div class="layui-inline">
 				<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="selectTemplateAsParam('paramList')">${upstreamStr.selectTemplateAsParam}</button>
+				</div>
 			</div>
-			<div class="layui-form-item">
+			<div>
 				<input type="hidden" id="targertId">
-				<table class="layui-table" lay-size="sm">
+				<table class="layui-table layui-form" lay-size="sm">
 					<thead>
 						<tr>
 							<th>${commonStr.name}</th>
