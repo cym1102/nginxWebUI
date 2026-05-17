@@ -28,7 +28,6 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositor
     nginx-mod-http-upload=1.30.1-r0 \
     nginx-mod-http-upload-progress=1.30.1-r0 \
     nginx-mod-http-upstream-fair=1.30.1-r0 \
-    nginx-mod-http-upstream-jdomain=1.30.1-r0 \
     nginx-mod-http-echo=1.30.1-r0 \
     nginx-mod-http-cache-purge=1.30.1-r0 \
     nginx-mod-dynamic-upstream=1.30.1-r0 \
