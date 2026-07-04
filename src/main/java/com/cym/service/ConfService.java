@@ -152,7 +152,7 @@ public class ConfService {
 
 				List<UpstreamServer> upstreamServers = upstreamService.getUpstreamServers(upstream.getId());
 				for (UpstreamServer upstreamServer : upstreamServers) {
-					if (upstreamServer.getEnable()  == 1) {
+					if (upstreamServer.getEnable() == 1) {
 						ngxParam = new NgxParam();
 						ngxParam.addValue("server " + buildNodeStr(upstreamServer));
 						ngxBlockServer.addEntry(ngxParam);
@@ -662,7 +662,7 @@ public class ConfService {
 							ngxBlockLocation.addEntry(ngxParam);
 
 							ngxParam = new NgxParam();
-							ngxParam.addValue("proxy_set_header X-Forwarded-Host $http_host");
+							ngxParam.addValue("proxy_set_header X-Forwarded-Host " + location.getHeaderHost());
 							ngxBlockLocation.addEntry(ngxParam);
 
 							ngxParam = new NgxParam();

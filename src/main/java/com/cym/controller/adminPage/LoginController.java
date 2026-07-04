@@ -199,7 +199,6 @@ public class LoginController extends BaseController {
 
 		Admin ad = new Admin();
 		ad.setAuth(admin.getAuth());
-		ad.setKey(admin.getKey());
 
 		return renderSuccess(ad);
 	}

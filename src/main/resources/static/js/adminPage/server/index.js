@@ -685,7 +685,7 @@ function buildHtml(uuid, location, upstreamSelect) {
 								<option ${location.headerHost == '$http_host' ? 'selected' : ''}>$http_host</option>
 								<option ${location.headerHost == '$host:$proxy_port' ? 'selected' : ''}>$host:$proxy_port</option>
 								<option ${location.headerHost == '$host:$server_port' ? 'selected' : ''}>$host:$server_port</option>
-
+								<option ${location.headerHost == '$proxy_host:$proxy_port' ? 'selected' : ''}>$proxy_host:$proxy_port</option>
 							</select>
 						</div>
 					</span>
@@ -702,16 +702,16 @@ function buildHtml(uuid, location, upstreamSelect) {
 				<td>
 					<textarea style="display: none;" id="locationParamJson_${uuid}" name="locationParamJson" >${location.locationParamJson}</textarea>
 					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-sm" onclick="locationParam('${uuid}')">${serverStr.extParm}</button>
+						<button type="button" class="layui-btn layui-btn-xs" onclick="locationParam('${uuid}')">${serverStr.extParm}</button>
 					</div>
 					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
+						<button type="button" class="layui-btn layui-btn-xs layui-btn-danger" onclick="delTr('${uuid}')">${commonStr.del}</button>
 					</div>
 					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
+						<button type="button" class="layui-btn layui-btn-normal layui-btn-xs" onclick="setParamOrder('${uuid}', -1)">${commonStr.up}</button>
 					</div>
 					<div class="layui-inline">
-						<button type="button" class="layui-btn layui-btn-normal layui-btn-sm" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
+						<button type="button" class="layui-btn layui-btn-normal layui-btn-xs" onclick="setParamOrder('${uuid}', 1)">${commonStr.down}</button>
 					</div>
 				</td>
 			</tr>`
