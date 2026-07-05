@@ -68,9 +68,11 @@ $(function() {
 	$("input").attr("autocomplete", "off");
 
 	// 菜单选中
-	var url = location.pathname + location.search;
-	$("a[href='" + ctx + url + "']").parent().addClass("layui-this");
+	var url = location.pathname.replace(/\//g, "/");
+	$("a[href*='" + url + "']:first").parent().addClass("layui-this");
 
+	// 只显示当前大类菜单
+	$("a[href*='" + url + "']").parent().parent().parent().addClass("layui-nav-itemed");
 
 	$.ajax({
 		type: 'POST',

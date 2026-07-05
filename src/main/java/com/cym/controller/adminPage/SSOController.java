@@ -78,15 +78,19 @@ public class SSOController extends BaseController {
 	}
 
 	@Mapping("redirect")
-	public void redirect(Context ctx) {
+	public JsonResult redirect(Context ctx) {
 
 		String codeUrl = settingService.get("sso_codeUrl");
 		String clientID = settingService.get("sso_clientID");
 		String callbackUrl = settingService.get("sso_callbackUrl");
 
+		if(StrUtil.isBlank(codeUrl) ||StrUtil.isBlank(clientID) ||StrUtil.isBlank(callbackUrl)  ) {
+			return renderError(m.get("ssoStr.noConf"));
+		}
+		
 		String url = codeUrl + "?client_id=" + clientID + "&response_type=code&redirect_uri=" + callbackUrl + "&oauth_timestamp=" + System.currentTimeMillis() + "&state=";
 
-		ctx.redirect(url);
+		return renderSuccess(url);
 	}
 	
 	@Mapping("code")

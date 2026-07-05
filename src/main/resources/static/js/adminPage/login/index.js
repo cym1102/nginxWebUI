@@ -2,15 +2,15 @@ $(function() {
 	if ($("#adminCount").val() > 0) {
 		var autoKey = window.localStorage.getItem("autoKey");
 		var time = window.localStorage.getItem("time");
-		
-		if(autoKey != null && autoKey != '' && new Date().getTime() - time < 7 * 24 * 60 * 60 * 1000){
+
+		if (autoKey != null && autoKey != '' && new Date().getTime() - time < 7 * 24 * 60 * 60 * 1000) {
 			// 自动登录
 			showLoad();
 			$.ajax({
 				type: 'POST',
 				url: ctx + '/adminPage/login/autoLogin',
 				data: {
-					autoKey : autoKey
+					autoKey: autoKey
 				},
 				dataType: 'json',
 				success: function(data) {
@@ -18,7 +18,7 @@ $(function() {
 					if (data.success) {
 						window.localStorage.setItem("time", new Date().getTime());
 						location.href = ctx + "/adminPage/monitor";
-					} 
+					}
 				},
 				error: function() {
 					closeLoad();
@@ -26,7 +26,7 @@ $(function() {
 				}
 			});
 		}
-		
+
 		layer.open({
 			type: 1,
 			shade: false,
@@ -51,41 +51,41 @@ $(function() {
 
 function login() {
 	$("#authCode").val($("#codeInput").val());
-	
+
 	var name = Base64.encode(Base64.encode($("#name").val()));
 	var pass = Base64.encode(Base64.encode($("#pass").val()));
 	var code = Base64.encode(Base64.encode($("#code").val()));
 	var authCode = Base64.encode(Base64.encode($("#authCode").val()));
-	
+
 	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/login/login',
 		data: {
-			name : name,
-			pass : pass,
-			code : code,
-			authCode : authCode
+			name: name,
+			pass: pass,
+			code: code,
+			authCode: authCode
 		},
 		dataType: 'json',
 		success: function(data) {
 			closeLoad();
 			if (data.success) {
-				if($("#remember").prop("checked")){
+				if ($("#remember").prop("checked")) {
 					window.localStorage.setItem("time", new Date().getTime());
 					window.localStorage.setItem("autoKey", data.obj.autoKey);
 				} else {
 					window.localStorage.removeItem("autoKey");
 				}
-				
+
 				location.href = ctx + "/adminPage/monitor";
 			} else {
 				layer.msg(data.msg);
 				refreshCode('codeImg');
 			}
-			
-		
-			
+
+
+
 		},
 		error: function() {
 			closeLoad();
@@ -99,27 +99,27 @@ function getAuth() {
 	var name = Base64.encode(Base64.encode($("#name").val()));
 	var pass = Base64.encode(Base64.encode($("#pass").val()));
 	var code = Base64.encode(Base64.encode($("#code").val()));
-	
+
 	showLoad();
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/login/getAuth',
 		data: {
-			name : name,
-			pass : pass,
-			code : code
+			name: name,
+			pass: pass,
+			code: code
 		},
 		dataType: 'json',
 		success: function(data) {
 			closeLoad();
 			if (data.success) {
-				if(data.obj.auth){
+				if (data.obj.auth) {
 					// 两步验证
 					codeIndex = layer.open({
-						type : 1,
-						title : loginStr.googleAuth,
-						area : [ '500px', '200px' ], // 宽高
-						content : $('#codeDiv')
+						type: 1,
+						title: loginStr.googleAuth,
+						area: ['500px', '200px'], // 宽高
+						content: $('#codeDiv')
 					});
 				} else {
 					login();
@@ -128,7 +128,7 @@ function getAuth() {
 				layer.msg(data.msg);
 				refreshCode('codeImg');
 			}
-			
+
 		},
 		error: function() {
 			closeLoad();
@@ -198,16 +198,15 @@ function refreshCode(id) {
 }
 
 
-/*
-function changeLangLogin() {
+function ssoRedirect() {
+
 	$.ajax({
 		type: 'POST',
-		url: ctx + '/adminPage/login/changeLang',
-		data: $("#adminForm").serialize(),
+		url: ctx + '/adminPage/sso/redirect',
 		dataType: 'json',
 		success: function(data) {
 			if (data.success) {
-				location.reload();
+				location.href = data.obj;
 			} else {
 				layer.msg(data.msg);
 			}
@@ -217,4 +216,3 @@ function changeLangLogin() {
 		}
 	});
 }
-*/
