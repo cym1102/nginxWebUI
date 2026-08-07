@@ -22,10 +22,14 @@ import org.slf4j.LoggerFactory;
 import com.cym.config.VersionConfig;
 import com.cym.controller.api.NginxApiController;
 import com.cym.ext.AsycPack;
+import com.cym.ext.CertPack;
 import com.cym.ext.Tree;
 import com.cym.model.Admin;
+import com.cym.model.Cert;
 import com.cym.model.Group;
 import com.cym.model.Remote;
+import com.cym.model.RemoteCert;
+import com.cym.service.CertSyncService;
 import com.cym.service.ConfService;
 import com.cym.service.GroupService;
 import com.cym.service.RemoteService;
@@ -62,6 +66,8 @@ public class RemoteController extends BaseController {
 	NginxApiController nginxApiController;
 	@Inject
 	VersionConfig versionConfig;
+	@Inject
+	com.cym.service.CertSyncService certSyncService;
 	@Inject("${server.port}")
 	Integer port;
 
@@ -435,6 +441,77 @@ public class RemoteController extends BaseController {
 		return renderSuccess();
 	}
 
+	@Mapping("certSyncPage")
+	public JsonResult certSyncPage(String remoteId) {
+		Map<String, Object> obj = new HashMap<>();
+		java.util.List<java.util.Map<String, String>> proj = new java.util.ArrayList<>();
+		for (Cert c : sqlHelper.findAll(Cert.class)) {
+			java.util.Map<String, String> map = new java.util.HashMap<>();
+			map.put("id", c.getId());
+			map.put("domain", c.getDomain());
+			proj.add(map);
+		}
+		obj.put("allCerts", proj);
+		obj.put("selectedCertIds", certSyncService.findCertIdsByRemote(remoteId));
+		return renderSuccess(obj);
+	}
+
+	@Mapping("saveCertSync")
+	public JsonResult saveCertSync(String remoteId, String[] certIds) {
+		if (StrUtil.isEmpty(remoteId)) {
+			return renderError(m.get("remoteStr.noChoice"));
+		}
+		// 现有关联
+		List<String> existIds = certSyncService.findCertIdsByRemote(remoteId);
+		java.util.Set<String> existSet = new java.util.HashSet<>(existIds);
+		java.util.Set<String> newSet = certIds == null ? new java.util.HashSet<>()
+				: new java.util.HashSet<>(java.util.Arrays.asList(certIds));
+
+		// 删除被取消的关联
+		for (String oldId : existSet) {
+			if (!newSet.contains(oldId)) {
+				sqlHelper.deleteByQuery(new com.cym.sqlhelper.utils.ConditionAndWrapper()
+						.eq(RemoteCert::getRemoteId, remoteId)
+						.eq(RemoteCert::getCertId, oldId), RemoteCert.class);
+			}
+		}
+		// 新增关联并立即同步
+		java.util.List<String> messages = new java.util.ArrayList<>();
+		for (String newId : newSet) {
+			if (!existSet.contains(newId)) {
+				RemoteCert rc = new RemoteCert();
+				rc.setRemoteId(remoteId);
+				rc.setCertId(newId);
+				sqlHelper.insert(rc);
+				JsonResult r = certSyncService.syncCertToRemote(remoteId, newId);
+				messages.add("[" + (r.isSuccess() ? "成功" : "失败") + "] " + r.getMsg());
+			}
+		}
+		return renderSuccess((Object) String.join("\n", messages));
+	}
+
+	@Mapping("syncCertOver")
+	public JsonResult syncCertOver(String remoteId, String certId) {
+		return certSyncService.syncCertToRemote(remoteId, certId);
+	}
+
+	@Mapping("receiveCert")
+	public JsonResult receiveCert(String json) {
+		CertPack pack = JSONUtil.toBean(json, CertPack.class);
+		return certSyncService.applyCertPack(pack);
+	}
+
+	@Mapping("syncAll")
+	public JsonResult syncAll(String remoteId) {
+		List<String> certIds = certSyncService.findCertIdsByRemote(remoteId);
+		java.util.List<String> messages = new java.util.ArrayList<>();
+		for (String certId : certIds) {
+			JsonResult r = certSyncService.syncCertToRemote(remoteId, certId);
+			messages.add((r.isSuccess() ? "[成功] " : "[失败] ") + r.getMsg());
+		}
+		return renderSuccess((Object) String.join("\n", messages));
+	}
+
 	@Mapping("addOver")
 	public JsonResult addOver(Remote remote, String code, String auth) {
 		remote.setIp(remote.getIp().trim());
@@ -487,6 +564,7 @@ public class RemoteController extends BaseController {
 
 	@Mapping("del")
 	public JsonResult del(String id) {
+		sqlHelper.deleteByQuery(new com.cym.sqlhelper.utils.ConditionAndWrapper().eq(RemoteCert::getRemoteId, id), RemoteCert.class);
 		sqlHelper.deleteById(id, Remote.class);
 
 		return renderSuccess();

@@ -292,6 +292,23 @@
 			</form>
 		</div>
 
+		<div class="layui-form" id="certSyncDiv" style="padding: 15px; display: none">
+			<form id="certSyncForm">
+				<input type="hidden" name="remoteId" id="certSyncRemoteId">
+				<div class="layui-form-item">
+					<label class="layui-form-label">${remoteStr.certSync}</label>
+					<div class="layui-input-block">
+						<div id="certSelectId"></div>
+					</div>
+				</div>
+				<div class="layui-form-item center">
+					<button type="button" class="layui-btn layui-btn-normal" onclick="saveCertSync()">${commonStr.submit}</button>
+					<button type="button" class="layui-btn layui-btn-warm" onclick="syncAllCert()">${remoteStr.certSyncAll}</button>
+					<button type="button" class="layui-btn" onclick="layer.closeAll()">${commonStr.close}</button>
+				</div>
+			</form>
+		</div>
+
 		<div class="layui-form" id="codeDiv" style="padding: 15px; display: none">
 			<div class="layui-form-item" id="imgCode">
 				<label class="layui-form-label">${loginStr.code}</label>

@@ -312,6 +312,9 @@ $(function() {
 
 						html += `
 								<div class="layui-inline" style="vertical-align: baseline">
+									<button class="layui-btn layui-btn-xs layui-btn-warm" onclick="certSync('${remote.id}')">${remoteStr.certSync}</button>
+								</div>
+								<div class="layui-inline" style="vertical-align: baseline">
 									<button class="layui-btn layui-btn-xs" onclick="edit('${remote.id}')">${commonStr.edit}</button>
 								</div>
 								<div class="layui-inline" style="vertical-align: baseline">
@@ -913,4 +916,65 @@ function refreshCode() {
 	var src = encodeURIComponent($("#protocol").val() + "://" + $("#ip").val() + ":" + $("#port").val() + "/adminPage/login/getRemoteCode?t=" + guid());
 
 	$("#codeImg").attr("src", ctx + "/adminPage/remote/src?url=" + src)
+}
+
+var certSelectInstance;
+function certSync(id) {
+	$('#certSyncRemoteId').val(id);
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/remote/certSyncPage',
+		data: { remoteId: id },
+		dataType: 'json',
+		success: function (data) {
+			if (data.success) {
+				var selected = data.obj.selectedCertIds || [];
+				var options = (data.obj.allCerts || []).map(function (c) {
+					return { name: c.domain, value: c.id, selected: selected.indexOf(c.id) >= 0 };
+				});
+				certSelectInstance = xmSelect.render({
+					el: '#certSelectId',
+					name: 'certIds',
+					model: { label: { type: 'text' } },
+					radio: false,
+					clickClose: false,
+					prop: { name: 'name', value: 'value' },
+					data: options
+				});
+				layer.open({ type: 1, title: remoteStr.certSync, area: ['600px', '500px'], content: $('#certSyncDiv') });
+			} else {
+				layer.msg(data.msg);
+			}
+		}
+	});
+}
+
+function saveCertSync() {
+	var certIds = certSelectInstance ? certSelectInstance.getValue('value') : [];
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/remote/saveCertSync',
+		traditional: true,
+		data: { remoteId: $('#certSyncRemoteId').val(), certIds: certIds },
+		dataType: 'json',
+		success: function (data) {
+			layer.msg(data.success ? remoteStr.certSyncSaved : data.msg);
+			if (data.success) layer.closeAll();
+		}
+	});
+}
+
+function syncAllCert() {
+	showLoad();
+	$.ajax({
+		type: 'POST',
+		url: ctx + '/adminPage/remote/syncAll',
+		data: { remoteId: $('#certSyncRemoteId').val() },
+		dataType: 'json',
+		success: function (data) {
+			closeLoad();
+			layer.alert(data.success ? (remoteStr.certSyncResult + '\n' + data.obj) : data.msg);
+		},
+		error: function () { closeLoad(); layer.alert(commonStr.errorInfo); }
+	});
 }
