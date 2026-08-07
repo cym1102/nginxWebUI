@@ -50,6 +50,8 @@ public class CertController extends BaseController {
 	TimeExeUtils timeExeUtils;
 	@Inject
 	ConfController confController;
+	@Inject
+	com.cym.service.CertSyncService certSyncService;
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -262,6 +264,9 @@ public class CertController extends BaseController {
 
 			cert.setMakeTime(System.currentTimeMillis());
 			sqlHelper.updateById(cert);
+
+			// 续期/申请成功后，同步到所有关联的远程服务器（单点失败不影响本地）
+			certSyncService.syncCertToAllRemotes(cert.getId());
 
 			// 续签,重载nginx使证书生效
 			if (type.equals("renew")) {
