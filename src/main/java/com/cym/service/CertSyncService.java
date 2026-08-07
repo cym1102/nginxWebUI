@@ -143,7 +143,10 @@ public class CertSyncService {
         List<RemoteCert> list = findRemoteCertsByCert(certId);
         for (RemoteCert rc : list) {
             try {
-                syncCertToRemote(rc.getRemoteId(), certId);
+                JsonResult result = syncCertToRemote(rc.getRemoteId(), certId);
+                if (!result.isSuccess()) {
+                    logger.error("续期后同步证书失败，certId={}, remoteId={}, msg={}", certId, rc.getRemoteId(), result.getMsg());
+                }
             } catch (Exception e) {
                 logger.error("续期后同步证书失败，certId={}, remoteId={}", certId, rc.getRemoteId(), e);
             }
