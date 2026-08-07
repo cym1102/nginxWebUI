@@ -183,6 +183,7 @@ public class CertController extends BaseController {
 			}
 
 			sqlHelper.deleteById(i, Cert.class);
+			sqlHelper.deleteByQuery(new com.cym.sqlhelper.utils.ConditionAndWrapper().eq(com.cym.model.RemoteCert::getCertId, i), com.cym.model.RemoteCert.class);
 		}
 		return renderSuccess();
 	}

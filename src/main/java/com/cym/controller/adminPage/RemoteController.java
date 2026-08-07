@@ -444,7 +444,14 @@ public class RemoteController extends BaseController {
 	@Mapping("certSyncPage")
 	public JsonResult certSyncPage(String remoteId) {
 		Map<String, Object> obj = new HashMap<>();
-		obj.put("allCerts", sqlHelper.findAll(Cert.class));
+		java.util.List<java.util.Map<String, String>> proj = new java.util.ArrayList<>();
+		for (Cert c : sqlHelper.findAll(Cert.class)) {
+			java.util.Map<String, String> map = new java.util.HashMap<>();
+			map.put("id", c.getId());
+			map.put("domain", c.getDomain());
+			proj.add(map);
+		}
+		obj.put("allCerts", proj);
 		obj.put("selectedCertIds", certSyncService.findCertIdsByRemote(remoteId));
 		return renderSuccess(obj);
 	}
@@ -469,16 +476,18 @@ public class RemoteController extends BaseController {
 			}
 		}
 		// 新增关联并立即同步
+		java.util.List<String> messages = new java.util.ArrayList<>();
 		for (String newId : newSet) {
 			if (!existSet.contains(newId)) {
 				RemoteCert rc = new RemoteCert();
 				rc.setRemoteId(remoteId);
 				rc.setCertId(newId);
 				sqlHelper.insert(rc);
-				certSyncService.syncCertToRemote(remoteId, newId);
+				JsonResult r = certSyncService.syncCertToRemote(remoteId, newId);
+				messages.add("[" + (r.isSuccess() ? "成功" : "失败") + "] " + r.getMsg());
 			}
 		}
-		return renderSuccess();
+		return renderSuccess((Object) String.join("\n", messages));
 	}
 
 	@Mapping("syncCertOver")
@@ -555,6 +564,7 @@ public class RemoteController extends BaseController {
 
 	@Mapping("del")
 	public JsonResult del(String id) {
+		sqlHelper.deleteByQuery(new com.cym.sqlhelper.utils.ConditionAndWrapper().eq(RemoteCert::getRemoteId, id), RemoteCert.class);
 		sqlHelper.deleteById(id, Remote.class);
 
 		return renderSuccess();

@@ -24,7 +24,6 @@ import com.cym.utils.JsonResult;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 
 /**
@@ -67,14 +66,18 @@ public class CertSyncService {
         pack.setEndTime(cert.getEndTime());
 
         try {
-            Map<String, Object> form = new HashMap<>();
-            form.put("json", JSONUtil.toJsonStr(pack));
-            String resp = HttpUtil.post(
+            cn.hutool.http.HttpResponse response = cn.hutool.http.HttpRequest.post(
                     remote.getProtocol() + "://" + remote.getIp() + ":" + remote.getPort()
-                            + "/adminPage/remote/receiveCert?creditKey=" + remote.getCreditKey(),
-                    form, 5000);
-            JsonResult result = JSONUtil.toBean(resp, JsonResult.class);
-            return result;
+                            + "/adminPage/remote/receiveCert?creditKey=" + remote.getCreditKey())
+                    .form("json", JSONUtil.toJsonStr(pack))
+                    .timeout(30000)
+                    .execute();
+            int status = response.getStatus();
+            String body = response.body();
+            if (status == 302 || status == 401 || !JSONUtil.isJson(body)) {
+                return renderError("远端授权失败，请重新获取 creditKey");
+            }
+            return JSONUtil.toBean(body, JsonResult.class);
         } catch (Exception e) {
             logger.error("证书同步到远程失败，certId={}, remoteId={}", certId, remoteId, e);
             return renderError("同步失败：" + e.getMessage());
@@ -95,6 +98,9 @@ public class CertSyncService {
             Cert cert;
             if (existList != null && !existList.isEmpty()) {
                 cert = existList.get(0);
+                if (cert.getType() != null && cert.getType() != 3) {
+                    return renderError("远端已存在同名且非同步来源的证书，拒绝覆盖");
+                }
             } else {
                 cert = new Cert();
                 cert.setDomain(pack.getDomain());
@@ -106,9 +112,19 @@ public class CertSyncService {
             cert.setEndTime(pack.getEndTime());
 
             // 写文件到 home/cert/<安全域名>/
-            String safeDomain = pack.getDomain().replaceAll("[,*]", "_");
+            String safeDomain = pack.getDomain().replaceAll("[^A-Za-z0-9._-]", "_");
+            if (safeDomain.contains("..")) {
+                return renderError("非法域名");
+            }
             String dir = homeConfig.home + "cert" + File.separator + safeDomain + File.separator;
-            FileUtil.mkdir(dir);
+            java.io.File dirFile = new java.io.File(dir);
+            FileUtil.mkdir(dirFile);
+            // 断言规范化路径仍在 home/cert 下
+            String canonBase = new java.io.File(homeConfig.home + "cert").getCanonicalPath();
+            String canonDir = dirFile.getCanonicalPath();
+            if (!canonDir.startsWith(canonBase + File.separator)) {
+                return renderError("非法域名");
+            }
             String pemPath = dir + safeDomain + ".pem";
             String keyPath = dir + safeDomain + ".key";
             FileUtil.writeBytes(Base64.decode(pack.getPem()), pemPath);

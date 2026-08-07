@@ -954,6 +954,7 @@ function saveCertSync() {
 	$.ajax({
 		type: 'POST',
 		url: ctx + '/adminPage/remote/saveCertSync',
+		traditional: true,
 		data: { remoteId: $('#certSyncRemoteId').val(), certIds: certIds },
 		dataType: 'json',
 		success: function (data) {
