@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.noear.solon.annotation.Controller;
@@ -77,6 +78,12 @@ public class MainController extends BaseController {
 
 	@Mapping("/adminPage/main/autoUpdate")
 	public JsonResult autoUpdate(String url) {
+		// 仅允许从受信任的官方更新源下载，防止任意 URL 下载并执行 JAR 导致 RCE
+		if (!isTrustedUpdateUrl(url)) {
+			LOG.warn("非法更新地址被拒绝: {}", url);
+			return renderError("更新地址非法，仅允许官方更新源");
+		}
+
 		File jar = JarUtil.getCurrentFile();
 		String path = jar.getParent();
 		LOG.info("download:" + path);
@@ -85,6 +92,35 @@ public class MainController extends BaseController {
 		String fileName = url.split("/")[url.split("/").length - 1];
 		updateUtils.run(path + File.separator + fileName);
 		return renderSuccess();
+	}
+
+	// 受信任的更新源域名，对应 VersionConfig 中获取版本信息的官方地址及 GitHub 发布源
+	private static final List<String> TRUSTED_UPDATE_HOSTS = Arrays.asList( //
+			"www.nginxwebui.cn", //
+			"nginxwebui.cn", //
+			"github.com", //
+			"raw.githubusercontent.com");
+
+	private boolean isTrustedUpdateUrl(String url) {
+		if (url == null || url.isEmpty()) {
+			return false;
+		}
+		try {
+			URI uri = URI.create(url);
+			String host = uri.getHost();
+			if (host == null) {
+				return false;
+			}
+			host = host.toLowerCase();
+			for (String trusted : TRUSTED_UPDATE_HOSTS) {
+				if (host.equals(trusted) || host.endsWith("." + trusted)) {
+					return true;
+				}
+			}
+			return false;
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
 	}
 
 	@Mapping("/adminPage/main/preview")

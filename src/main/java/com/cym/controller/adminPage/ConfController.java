@@ -36,6 +36,7 @@ import cn.hutool.core.io.file.PathUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HtmlUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -211,13 +212,21 @@ public class ConfController extends BaseController {
 	 */
 	@Mapping(value = "check")
 	public JsonResult check(String nginxPath, String nginxExe, String nginxDir, String json) {
-		if (nginxExe == null) {
+		if (StrUtil.isEmpty(nginxExe)) {
 			nginxExe = ToolUtils.handleConf(settingService.get("nginxExe"));
 			settingService.set("nginxExe", nginxExe);
+		} else {
+			// 校验前端传入的 nginx 执行路径，防止命令注入 (上游 issue #204)
+			String checked = sanitizeNginxExe(nginxExe);
+			nginxExe = checked != null ? checked : ToolUtils.handleConf(settingService.get("nginxExe"));
 		}
-		if (nginxDir == null) {
+		if (StrUtil.isEmpty(nginxDir)) {
 			nginxDir = ToolUtils.handleConf(settingService.get("nginxDir"));
 			settingService.set("nginxDir", nginxDir);
+		} else {
+			// 校验前端传入的 nginx 目录，防止命令注入 / XSS (上游 issue #203 #204)
+			String checked = sanitizeNginxDir(nginxDir);
+			nginxDir = checked != null ? checked : ToolUtils.handleConf(settingService.get("nginxDir"));
 		}
 
 		JSONObject jsonObject = JSONUtil.parseObj(json);
@@ -249,7 +258,8 @@ public class ConfController extends BaseController {
 			rs = e.getMessage().replace("\n", "<br>");
 		}
 
-		cmd = "<span class='blue'>" + cmd + "</span>";
+		// 对返回前端展示的命令做 HTML 转义，防止 nginxDir 等可控参数注入脚本 (上游 issue #203)
+		cmd = "<span class='blue'>" + HtmlUtil.escape(cmd) + "</span>";
 		if (rs.contains("test is successful")) {
 			return renderSuccess(cmd + "<br>" + m.get("confStr.verifySuccess") + "<br>" + rs.replace("\n", "<br>"));
 		} else {
@@ -316,19 +326,73 @@ public class ConfController extends BaseController {
 		return FileUtil.isDirectory(path) || FileUtil.isFile(path);
 	}
 
+	// 校验 nginx 执行路径：必须是真实存在的 nginx/openresty 可执行文件，或受信任的纯命令名
+	// 防止前端传入 "bash -c ..." 等恶意命令导致命令注入 (上游 issue #204)
+	private String sanitizeNginxExe(String nginxExe) {
+		nginxExe = ToolUtils.handlePath(nginxExe);
+		if (StrUtil.isEmpty(nginxExe)) {
+			return nginxExe;
+		}
+		if (!isFile(nginxExe) && !isSafeCmd(nginxExe)) {
+			logger.warn("非法的 nginx 执行路径被拒绝: {}", nginxExe);
+			return null;
+		}
+		if (isFile(nginxExe) && !isSafeEnd(nginxExe)) {
+			logger.warn("非法的 nginx 执行路径被拒绝: {}", nginxExe);
+			return null;
+		}
+		return nginxExe;
+	}
+
+	// 校验 nginx 目录：必须是真实存在的文件/目录路径
+	private String sanitizeNginxDir(String nginxDir) {
+		nginxDir = ToolUtils.handlePath(nginxDir);
+		if (StrUtil.isEmpty(nginxDir)) {
+			return nginxDir;
+		}
+		if (!isFile(nginxDir)) {
+			logger.warn("非法的 nginx 目录被拒绝: {}", nginxDir);
+			return null;
+		}
+		return nginxDir;
+	}
+
+	// 校验 nginx 配置文件路径：必须是真实存在的文件 (防止命令注入)
+	private String sanitizeNginxPath(String nginxPath) {
+		nginxPath = ToolUtils.handlePath(nginxPath);
+		if (StrUtil.isEmpty(nginxPath)) {
+			return nginxPath;
+		}
+		if (!isFile(nginxPath)) {
+			logger.warn("非法的 nginx 配置路径被拒绝: {}", nginxPath);
+			return null;
+		}
+		return nginxPath;
+	}
+
 	@Mapping(value = "reload")
 	public synchronized JsonResult reload(String nginxPath, String nginxExe, String nginxDir) {
-		if (nginxPath == null) {
+		if (StrUtil.isEmpty(nginxPath)) {
 			nginxPath = ToolUtils.handlePath(settingService.get("nginxPath"));
 			settingService.set("nginxPath", nginxPath);
+		} else {
+			// 校验前端传入的 nginx 配置路径，防止命令注入 (同 check #204)
+			String checked = sanitizeNginxPath(nginxPath);
+			nginxPath = checked != null ? checked : ToolUtils.handlePath(settingService.get("nginxPath"));
 		}
-		if (nginxExe == null) {
+		if (StrUtil.isEmpty(nginxExe)) {
 			nginxExe = ToolUtils.handlePath(settingService.get("nginxExe"));
 			settingService.set("nginxExe", nginxExe);
+		} else {
+			String checked = sanitizeNginxExe(nginxExe);
+			nginxExe = checked != null ? checked : ToolUtils.handlePath(settingService.get("nginxExe"));
 		}
-		if (nginxDir == null) {
+		if (StrUtil.isEmpty(nginxDir)) {
 			nginxDir = ToolUtils.handlePath(settingService.get("nginxDir"));
 			settingService.set("nginxDir", nginxDir);
+		} else {
+			String checked = sanitizeNginxDir(nginxDir);
+			nginxDir = checked != null ? checked : ToolUtils.handlePath(settingService.get("nginxDir"));
 		}
 
 		try {
@@ -338,7 +402,7 @@ public class ConfController extends BaseController {
 			}
 			String rs = RuntimeUtil.execForStr(cmd);
 
-			cmd = "<span class='blue'>" + cmd + "</span>";
+			cmd = "<span class='blue'>" + HtmlUtil.escape(cmd) + "</span>";
 			if (!rs.contains("[error]") && !rs.contains("[emerg]")) {
 				return renderSuccess(cmd + "<br>" + m.get("confStr.reloadSuccess") + "<br>" + rs.replace("\n", "<br>"));
 			} else {
