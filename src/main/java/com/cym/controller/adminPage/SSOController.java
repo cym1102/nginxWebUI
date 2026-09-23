@@ -59,12 +59,13 @@ public class SSOController extends BaseController {
 		modelAndView.put("jsonpath", settingService.get("sso_jsonpath"));
 		modelAndView.put("clientID", settingService.get("sso_clientID"));
 		modelAndView.put("clientSecret", settingService.get("sso_clientSecret"));
+		modelAndView.put("scope", settingService.get("sso_scope"));
 		modelAndView.view("/adminPage/sso/index.html");
 		return modelAndView;
 	}
 
 	@Mapping("save")
-	public JsonResult save(String codeUrl, String tokenUrl, String userinfoUrl, String jsonpath, String clientID, String clientSecret, String callbackUrl) {
+	public JsonResult save(String codeUrl, String tokenUrl, String userinfoUrl, String jsonpath, String clientID, String clientSecret, String callbackUrl, String scope) {
 
 		settingService.set("sso_codeUrl", codeUrl);
 		settingService.set("sso_tokenUrl", tokenUrl);
@@ -73,6 +74,7 @@ public class SSOController extends BaseController {
 		settingService.set("sso_clientID", clientID);
 		settingService.set("sso_clientSecret", clientSecret);
 		settingService.set("sso_callbackUrl", callbackUrl);
+		settingService.set("sso_scope", scope);
 
 		return renderSuccess();
 	}
@@ -83,12 +85,12 @@ public class SSOController extends BaseController {
 		String codeUrl = settingService.get("sso_codeUrl");
 		String clientID = settingService.get("sso_clientID");
 		String callbackUrl = settingService.get("sso_callbackUrl");
-
+		String scope = settingService.get("sso_scope");
 		if(StrUtil.isBlank(codeUrl) ||StrUtil.isBlank(clientID) ||StrUtil.isBlank(callbackUrl)  ) {
 			return renderError(m.get("ssoStr.noConf"));
 		}
 		
-		String url = codeUrl + "?client_id=" + clientID + "&response_type=code&redirect_uri=" + callbackUrl + "&oauth_timestamp=" + System.currentTimeMillis() + "&state=";
+		String url = codeUrl + "?client_id=" + clientID  + "&response_type=code&redirect_uri=" + callbackUrl + "&oauth_timestamp=" + System.currentTimeMillis() + "&state=" + "&scope=" + scope;
 
 		return renderSuccess(url);
 	}
