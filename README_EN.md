@@ -65,9 +65,9 @@ Professional edition address: [https://pro.nginxwebui.cn](https://pro.nginxwebui
 
 #### Technical note
 
-This project is a Web system based on solon. The database use h2, so there is no need to install any database on the server.
+This project is a Web system based on solon. The database use SQLite by default, so there is no need to install any database on the server.
 
-This system applies for the certificate through Let's ENCRYPT and USES acme.sh script to automatically apply for and renew the certificate. Once the certificate is renewed, it will be renewed at 2 am every day, and only certificates exceeding 60 days will be renewed.
+This system applies for the certificate through Let's ENCRYPT and USES acme.sh script to automatically apply for and renew the certificate. Certificates with automatic renewal enabled are checked every two hours, and only certificates issued more than 60 days ago will be renewed.
 
 When adding TCP/IP forwarding configuration support, some lower versions of Nginx may need to be recompiled,You can install the stream module by adding the -with-stream parameter, but under Ubuntu 18.04, the nginx in the official software library already has the stream module, which does not need to be recompiled. If the TCP forwarding item is configured in this system, the configuration item of ngx_stream_module.so will be introduced automatically, and the configuration file of Ngnix will be optimized to the maximum.
 
