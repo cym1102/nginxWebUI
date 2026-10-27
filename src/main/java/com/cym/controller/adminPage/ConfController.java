@@ -288,7 +288,6 @@ public class ConfController extends BaseController {
 			return renderSuccess(m.get("confStr.notAvailableCmd"));
 		}
 
-		
 		if (!FileUtil.isFile(nginxPath)) {
 			nginxPath = null;
 		}
@@ -318,14 +317,26 @@ public class ConfController extends BaseController {
 	}
 
 	private static boolean isSafePath(String nginxPath) {
+		if (StrUtil.isBlank(nginxPath)) {
+			return true;
+		}
+
 		return FileUtil.isFile(nginxPath);
 	}
 
 	private static boolean isSafeDir(String nginxDir) {
+		if (StrUtil.isBlank(nginxDir)) {
+			return true;
+		}
+
 		return FileUtil.isDirectory(nginxDir);
 	}
 
 	private static boolean isSafeExe(String nginxExe) {
+		if (StrUtil.isBlank(nginxExe)) {
+			return true;
+		}
+		
 		return nginxExe.toLowerCase().endsWith("nginx") //
 				|| nginxExe.toLowerCase().endsWith("openresty") //
 				|| nginxExe.toLowerCase().endsWith("nginx.exe") //
