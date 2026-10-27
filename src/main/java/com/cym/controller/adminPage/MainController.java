@@ -77,14 +77,19 @@ public class MainController extends BaseController {
 
 	@Mapping("/adminPage/main/autoUpdate")
 	public JsonResult autoUpdate(String url) {
-		File jar = JarUtil.getCurrentFile();
-		String path = jar.getParent();
-		LOG.info("download:" + path);
-		HttpUtil.downloadFile(url, path);
+		if (url.contains("https://gitee.com/cym1102/nginxWebUI")) {
 
-		String fileName = url.split("/")[url.split("/").length - 1];
-		updateUtils.run(path + File.separator + fileName);
-		return renderSuccess();
+			File jar = JarUtil.getCurrentFile();
+			String path = jar.getParent();
+			LOG.info("download:" + path);
+			HttpUtil.downloadFile(url, path);
+
+			String fileName = url.split("/")[url.split("/").length - 1];
+			updateUtils.run(path + File.separator + fileName);
+			return renderSuccess();
+		} else {
+			return renderError("Not safe url");
+		}
 	}
 
 	@Mapping("/adminPage/main/preview")

@@ -200,7 +200,6 @@ function check() {
 		type: 'POST',
 		url: ctx + '/adminPage/conf/check',
 		data: {
-			nginxPath: $("#nginxPath").val(),
 			nginxExe: $("#nginxExe").val(),
 			nginxDir: $("#nginxDir").val(),
 			json: JSON.stringify(json)

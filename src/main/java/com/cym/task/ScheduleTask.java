@@ -91,8 +91,8 @@ public class ScheduleTask {
 		// 检查需要续签的证书
 		long time = System.currentTimeMillis();
 		for (Cert cert : certList) {
-			// 大于60天的续签
-			if (cert.getMakeTime() != null && cert.getAutoRenew() == 1 && time - cert.getMakeTime() > TimeUnit.DAYS.toMillis(60)) {
+			// 大于30天的续签
+			if (cert.getMakeTime() != null && cert.getAutoRenew() == 1 && time - cert.getMakeTime() > TimeUnit.DAYS.toMillis(30)) {
 				certController.apply(cert.getId(), "renew");
 			}
 		}

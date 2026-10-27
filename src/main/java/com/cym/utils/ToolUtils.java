@@ -27,11 +27,13 @@ public class ToolUtils {
 		if (StrUtil.isEmpty(path)) {
 			return path;
 		}
+		
 		return path.replace("\\", "/") // 替换反斜杠
 				.replace("//", "/") // 替换双斜杠
 				.replaceAll("[\\s?<>|\"#&;'`]", ""); // 删除空格和特殊字符
 	}
 
+	
 	/**
 	 * 处理目录最后的斜杠
 	 * 

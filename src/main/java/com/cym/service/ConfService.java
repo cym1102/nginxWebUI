@@ -718,7 +718,11 @@ public class ConfService {
 
 						if (server.getSsl() == 1 && server.getRewrite() == 1) { // redirect http转https
 							ngxParam = new NgxParam();
-							ngxParam.addValue("proxy_redirect http:// https://");
+							ngxParam.addValue("proxy_redirect ~^http://([^/]+):\\d+(/.*)?$ https://$host$2");
+							ngxBlockLocation.addEntry(ngxParam);
+
+							ngxParam = new NgxParam();
+							ngxParam.addValue("proxy_redirect ~^https://([^/]+):\\d+(/.*)?$ https://$host$2");
 							ngxBlockLocation.addEntry(ngxParam);
 						}
 

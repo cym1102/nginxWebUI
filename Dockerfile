@@ -1,4 +1,4 @@
-FROM alpine:3.24
+FROM alpine:3.24.3
 ENV LANG=zh_CN.UTF-8 \
     TZ=Asia/Shanghai \
     PS1="\u@\h:\w \$ "
@@ -32,6 +32,7 @@ RUN apk add --update --no-cache \
     net-tools \
     curl \
     wget \
+	vim \
     ttf-dejavu \
     fontconfig \
     tzdata \

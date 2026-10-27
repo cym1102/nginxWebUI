@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cym</groupId>
 	<artifactId>nginxWebUI</artifactId>
-	<version>4.4.1</version>
+	<version>4.4.3</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -71,7 +71,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.7.2</version>
+			<version>42.7.14</version>
 		</dependency>
 		<dependency>
 			<groupId>com.warrenstrange</groupId>
