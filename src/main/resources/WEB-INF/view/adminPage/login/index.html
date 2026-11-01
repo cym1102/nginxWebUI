@@ -46,7 +46,9 @@
 				<div class="layui-form-item" style="text-align: center;">
 					<input type="hidden" name="authCode" id="authCode">
 					<button type="button" class="layui-btn layui-btn-normal" onclick="getAuth()">${loginStr.login}</button>
+					<#if ssoEnable>
 					<button type="button" class="layui-btn layui-btn-normal" onclick="ssoRedirect()"  >${menuStr.sso}</button>
+					</#if>
 				</div>
 			</form>
 		</div>

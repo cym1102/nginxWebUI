@@ -53,6 +53,7 @@ public class SSOController extends BaseController {
 	@Mapping("")
 	public ModelAndView index(ModelAndView modelAndView) {
 
+		modelAndView.put("enable", settingService.get("sso_enable"));
 		modelAndView.put("codeUrl", settingService.get("sso_codeUrl"));
 		modelAndView.put("tokenUrl", settingService.get("sso_tokenUrl"));
 		modelAndView.put("userinfoUrl", settingService.get("sso_userinfoUrl"));
@@ -65,8 +66,9 @@ public class SSOController extends BaseController {
 	}
 
 	@Mapping("save")
-	public JsonResult save(String codeUrl, String tokenUrl, String userinfoUrl, String jsonpath, String clientID, String clientSecret, String callbackUrl, String scope) {
+	public JsonResult save(String codeUrl, String tokenUrl, String userinfoUrl, String jsonpath, String clientID, String clientSecret, String callbackUrl, String scope, String enable) {
 
+		settingService.set("sso_enable", "true".equals(enable) ? "true" : "false");
 		settingService.set("sso_codeUrl", codeUrl);
 		settingService.set("sso_tokenUrl", tokenUrl);
 		settingService.set("sso_userinfoUrl", userinfoUrl);
@@ -81,6 +83,10 @@ public class SSOController extends BaseController {
 
 	@Mapping("redirect")
 	public JsonResult redirect(Context ctx) {
+
+		if (!"true".equals(settingService.get("sso_enable"))) {
+			return renderError(m.get("ssoStr.disabled"));
+		}
 
 		String codeUrl = settingService.get("sso_codeUrl");
 		String clientID = settingService.get("sso_clientID");
@@ -98,6 +104,11 @@ public class SSOController extends BaseController {
 	
 	@Mapping("code")
 	public void code(String code, Context ctx) {
+
+		if (!"true".equals(settingService.get("sso_enable"))) {
+			ctx.outputAsJson(JSONUtil.toJsonPrettyStr(renderError(m.get("ssoStr.disabled"))));
+			return;
+		}
 
 		String tokenUrl = settingService.get("sso_tokenUrl");
 		String userinfoUrl = settingService.get("sso_userinfoUrl");

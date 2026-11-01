@@ -54,7 +54,14 @@ input[type='radio'] {
 			<fieldset class="layui-elem-field layui-field-title">
 				<legend>SSO-OAuth2.0配置</legend>
 			</fieldset>
-			<form id="addForm" style="margin-top: 48px">
+			<form id="addForm" class="layui-form" style="margin-top: 48px">
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">${ssoStr.enable}</label>
+					<div class="layui-input-block">
+						<input type="checkbox" name="enable" value="true" lay-text="ON|OFF" lay-skin="switch" ${((enable!'')=='true')?string('checked','')}>
+					</div>
+				</div>
 
 				<div class="layui-form-item">
 					<label class="layui-form-label">${ssoStr.codeAddr}</label>
