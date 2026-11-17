@@ -183,6 +183,7 @@ function add() {
 	$("#def").prop("checked", false);
 	$("#ipv6").prop("checked", false);
 	$("#proxyProtocol").prop("checked", false);
+	$("#backlog").val("");
 	$("#ip").val("");
 	$("#serverName").val("");
 	$("#ssl option:first").prop("selected", true);
@@ -300,6 +301,8 @@ function addOver() {
 	server.proxyProtocol = $("#proxyProtocol").prop("checked") ? "1" : "0";
 	server.def = $("#def").prop("checked") ? "1" : "0";
 	server.ipv6 = $("#ipv6").prop("checked") ? "1" : "0";
+	var backlogVal = $.trim($("#backlog").val());
+	server.backlog = backlogVal === "" ? "0" : backlogVal;
 	server.serverName = $("#serverName").val();
 	server.ssl = $("#ssl").val();
 	server.pem = $("#pem").val();
@@ -424,6 +427,11 @@ function edit(id, clone) {
 				$("#def").prop("checked", server.def == 1);
 				$("#proxyProtocol").prop("checked", server.proxyProtocol == 1);
 				$("#ipv6").prop("checked", server.ipv6 == 1);
+				if (server.backlog != null && server.backlog > 0) {
+					$("#backlog").val(server.backlog);
+				} else {
+					$("#backlog").val("");
+				}
 				$("#serverName").val(server.serverName);
 				$("#ssl").val(server.ssl);
 				$("#pem").val(server.pem);
