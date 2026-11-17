@@ -1,16 +1,21 @@
 package com.cym.config;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSONUtil;
+import com.cym.model.Admin;
+import com.cym.model.Message;
+import com.cym.model.Remote;
+import com.cym.service.AdminService;
+import com.cym.service.CreditService;
+import com.cym.service.SettingService;
+import com.cym.utils.BaseController;
+import com.cym.utils.JsonResult;
+import com.cym.utils.MessageUtils;
+import com.cym.utils.PropertiesUtils;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.core.exception.StatusException;
@@ -23,23 +28,10 @@ import org.noear.solon.core.util.MultiMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cym.model.Admin;
-import com.cym.model.Message;
-import com.cym.model.Remote;
-import com.cym.service.AdminService;
-import com.cym.service.CreditService;
-import com.cym.service.SettingService;
-import com.cym.utils.BaseController;
-import com.cym.utils.JsonResult;
-import com.cym.utils.MessageUtils;
-import com.cym.utils.PropertiesUtils;
-
-import cn.hutool.core.codec.Base64;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.json.JSONUtil;
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
 
 @Component
 public class AppFilter implements Filter {
@@ -183,7 +175,7 @@ public class AppFilter implements Filter {
 
 		Boolean isLogin = (Boolean) ctx.session("isLogin");
 		if (!((isLogin != null && isLogin) || isCredit)) {
-			ctx.redirect("/adminPage/login");
+			ctx.redirect(BaseController.contextPath() + "/adminPage/login");
 			return false;
 		}
 
@@ -228,7 +220,7 @@ public class AppFilter implements Filter {
 
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
-				ctx.redirect("/adminPage/login/noServer");
+				ctx.redirect(BaseController.contextPath() + "/adminPage/login/noServer");
 			}
 
 			return false;
@@ -337,7 +329,8 @@ public class AppFilter implements Filter {
 	}
 
 	private String buildUrl(String ctxStr, Context ctx, Remote remote) {
-		String url = ctx.url().replace(ctxStr, "//" + remote.getIp() + ":" + remote.getPort() + "/");
+		// 只替换主机部分，保留原始请求里的 contextPath 前缀，避免重复拼接
+		String url = ctx.url().replace(getHostStr(ctx), "//" + remote.getIp() + ":" + remote.getPort());
 
 		if (url.startsWith("http")) {
 			url = url.replace("http:", "").replace("https:", "");
@@ -357,6 +350,10 @@ public class AppFilter implements Filter {
 	}
 
 	public String getCtxStr(Context context) {
+		return getHostStr(context) + BaseController.contextPath();
+	}
+
+	private String getHostStr(Context context) {
 		String httpHost = context.header("X-Forwarded-Host");
 		String realPort = context.header("X-Forwarded-Port");
 		String host = context.header("Host");

@@ -1,15 +1,14 @@
 package com.cym.utils;
 
-import org.noear.solon.annotation.Inject;
-import org.noear.solon.core.handle.Context;
-
+import cn.hutool.core.util.StrUtil;
 import com.cym.config.HomeConfig;
 import com.cym.model.Admin;
 import com.cym.service.AdminService;
 import com.cym.sqlhelper.bean.Page;
 import com.cym.sqlhelper.utils.SqlHelper;
-
-import cn.hutool.core.util.StrUtil;
+import org.noear.solon.Solon;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.core.handle.Context;
 
 /**
  * Author: D.Yang Email: koyangslash@gmail.com Date: 16/10/9 Time: 下午1:37
@@ -78,5 +77,29 @@ public class BaseController {
 		}
 
 		return admin;
+	}
+
+	/**
+	 * 读取并规范化 server.contextPath，供所有 URL 拼接使用。
+	 * 兼容 /web/、!/web/、web、/ 等写法，未配置时返回空串。
+	 */
+	public static String contextPath() {
+		String contextPath = Solon.cfg().get("server.contextPath");
+		if (StrUtil.isEmpty(contextPath)) {
+			return "";
+		}
+		if (contextPath.startsWith("!")) {
+			contextPath = contextPath.substring(1);
+		}
+		while (contextPath.length() > 1 && contextPath.endsWith("/")) {
+			contextPath = contextPath.substring(0, contextPath.length() - 1);
+		}
+		if ("/".equals(contextPath)) {
+			return "";
+		}
+		if (!contextPath.startsWith("/")) {
+			contextPath = "/" + contextPath;
+		}
+		return contextPath;
 	}
 }
