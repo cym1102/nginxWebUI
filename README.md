@@ -130,6 +130,8 @@ Windows: java -jar -Dfile.encoding=UTF-8 D:/home/nginxWebUI/nginxWebUI.jar --ser
 
 --server.port 占用端口, 默认以8080端口启动
 
+--server.contextPath=/web/ 应用访问前缀, 默认无前缀(根路径)。配置后通过 http://ip:port/web/ 访问, 页面、静态资源、接口和跳转会自动带上该前缀
+
 --project.home 项目配置文件目录，存放数据库文件，证书文件，日志等, 默认为/home/nginxWebUI/
 
 --spring.database.type=mysql 使用其他数据库，不填为使用本地sqlite数据库，可选mysql, postgresql
