@@ -60,6 +60,11 @@ public class Server extends BaseModel {
 	@InitValue("0")
 	Integer proxyProtocol;
 	/**
+	 * listen backlog（写入 listen 的 backlog=N；0 或不填表示不输出，沿用 nginx 默认 511）
+	 */
+	@InitValue("0")
+	Integer backlog;
+	/**
 	 * ssl证书pem文件路径
 	 */
 	String pem;
@@ -298,6 +303,14 @@ public class Server extends BaseModel {
 
 	public void setIpv6(Integer ipv6) {
 		this.ipv6 = ipv6;
+	}
+
+	public Integer getBacklog() {
+		return backlog;
+	}
+
+	public void setBacklog(Integer backlog) {
+		this.backlog = backlog;
 	}
 
 }

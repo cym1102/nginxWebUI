@@ -175,6 +175,7 @@
 								<td>
 									${ext.server.listen}
 									<#if ext.server.def==1>default_server</#if>
+									<#if ext.server.backlog?? && ext.server.backlog gt 0>backlog=${ext.server.backlog}</#if>
 								</td>
 								<td>
 
@@ -291,6 +292,14 @@
 								<input type="checkbox" name="def" id="def" title="default_server" lay-skin="primary">
 								<input type="checkbox" name="proxyProtocol" id="proxyProtocol" title="proxy protocol" lay-skin="primary">
 								<input type="checkbox" name="ipv6" id="ipv6" title="${serverStr.ipv6}" lay-skin="primary">
+							</div>
+
+							<div class="layui-form-item">
+								<label class="layui-form-label">${serverStr.backlog}</label>
+								<div class="layui-input-inline">
+									<input type="number" min="0" step="1" name="backlog" id="backlog" class="layui-input" style="width: 140px;" placeholder="${serverStr.backlogPlaceholder}">
+								</div>
+								<div class="layui-form-mid layui-word-aux">${serverStr.backlogTips}</div>
 							</div>
 
 
