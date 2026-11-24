@@ -496,6 +496,7 @@ public class ConfService {
 					value += " http2";
 				}
 			}
+			value = appendListenBacklog(value, server);
 			ngxParam.addValue(value);
 			ngxBlockServer.addEntry(ngxParam);
 		}
@@ -536,6 +537,7 @@ public class ConfService {
 			if (server.getSsl() != null && server.getSsl() == 1) {
 				value += " ssl";
 			}
+			value = appendListenBacklog(value, server);
 			ngxParam.addValue(value);
 			ngxBlockServer.addEntry(ngxParam);
 		}
@@ -826,14 +828,14 @@ public class ConfService {
 			if (server.getProxyType() == 0 && server.getRewrite() == 1) {
 				if (StrUtil.isNotEmpty(server.getRewriteListen())) {
 					ngxParam = new NgxParam();
-					String reValue = "listen " + server.getRewriteListen();
+					String reValue = appendListenBacklog("listen " + server.getRewriteListen(), server);
 					ngxParam.addValue(reValue);
 					ngxBlockServer.addEntry(ngxParam);
 
 					// ipv6
 					if (server.getIpv6() == 1) {
 						ngxParam = new NgxParam();
-						reValue = "listen [::]:" + replaceIp(server.getRewriteListen());
+						reValue = appendListenBacklog("listen [::]:" + replaceIp(server.getRewriteListen()), server);
 						ngxParam.addValue(reValue);
 						ngxBlockServer.addEntry(ngxParam);
 					}
@@ -852,6 +854,16 @@ public class ConfService {
 
 			}
 		}
+	}
+
+	/**
+	 * 若配置了 backlog 大于 0，则追加到 listen 指令参数中。
+	 */
+	private String appendListenBacklog(String listenValue, Server server) {
+		if (server != null && server.getBacklog() != null && server.getBacklog() > 0) {
+			return listenValue + " backlog=" + server.getBacklog();
+		}
+		return listenValue;
 	}
 
 	/**
