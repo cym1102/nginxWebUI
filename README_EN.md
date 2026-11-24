@@ -107,9 +107,9 @@ reboot
 
 ```
 Linux: mkdir /home/nginxWebUI/   
-       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.4.3/nginxWebUI-4.4.3.jar
+       wget -O /home/nginxWebUI/nginxWebUI.jar https://gitee.com/cym1102/nginxWebUI/releases/download/4.4.4/nginxWebUI-4.4.4.jar
 
-Windows: Download directly from your browser https://gitee.com/cym1102/nginxWebUI/releases/download/4.4.3/nginxWebUI-4.4.3.jar into D:/home/nginxWebUI/
+Windows: Download directly from your browser https://gitee.com/cym1102/nginxWebUI/releases/download/4.4.4/nginxWebUI-4.4.4.jar into D:/home/nginxWebUI/
 ```
 
 With a new version, you just need to change the version in the path
