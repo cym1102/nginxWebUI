@@ -126,6 +126,8 @@ Parameter description (both non-required)
 
 --server.port Occupied port, default starts at port 8080
 
+--server.contextPath=/web/ Application access prefix, no prefix by default (root path). Once configured, access via http://ip:port/web/; pages, static resources, APIs, and redirects will automatically include this prefix.
+
 --project.home Project profile directory for database files, certificate files, logs, etc. Default is /home/nginxwebui/
 
 --spring.database.type=mysql Use other databases, not filled with native sqlite, options include mysql postgresql
