@@ -1,23 +1,23 @@
 package com.cym;
 
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.util.ArrayList;
-import java.util.List;
-
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
+import com.cym.utils.BaseController;
+import com.cym.utils.JarUtil;
+import com.cym.utils.SystemTool;
 import org.noear.solon.Solon;
 import org.noear.solon.annotation.SolonMain;
 import org.noear.solon.scheduling.annotation.EnableScheduling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cym.utils.JarUtil;
-import com.cym.utils.SystemTool;
-
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.RuntimeUtil;
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.ArrayList;
+import java.util.List;
 
 @EnableScheduling
 @SolonMain
@@ -48,6 +48,14 @@ public class NginxWebUI {
 		}
 
 		Solon.start(NginxWebUI.class, args);
+
+		// 输出实际生效的访问地址
+		String contextPath = BaseController.contextPath();
+		String port = Solon.cfg().get("server.port");
+		if (StrUtil.isEmpty(port)) {
+			port = "8080";
+		}
+		logger.info("URL: http://localhost:{}{}/", port, contextPath);
 	}
 
 	public static void killSelf(String[] args) {

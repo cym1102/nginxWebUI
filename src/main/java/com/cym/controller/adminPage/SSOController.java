@@ -5,22 +5,15 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.cym.ext.AdminExt;
-import com.cym.ext.Tree;
 import com.cym.model.Admin;
-import com.cym.model.Group;
 import com.cym.service.AdminService;
 import com.cym.service.GroupService;
 import com.cym.service.SettingService;
-import com.cym.sqlhelper.bean.Page;
 import com.cym.sqlhelper.utils.ConditionAndWrapper;
-import com.cym.utils.*;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
+import com.cym.utils.AuthUtils;
+import com.cym.utils.BaseController;
+import com.cym.utils.JsonResult;
+import com.cym.utils.SendMailUtils;
 import com.jayway.jsonpath.JsonPath;
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
@@ -29,9 +22,6 @@ import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.ModelAndView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.*;
 
 @Controller
 @Mapping("/adminPage/sso")
@@ -142,6 +132,6 @@ public class SSOController extends BaseController {
 		Context.current().sessionSet("admin", admin);
 		Context.current().sessionRemove("imgCode"); // 立刻销毁验证码
 
-		ctx.redirect("/adminPage/monitor");
+		ctx.redirect(BaseController.contextPath() + "/adminPage/monitor");
 	}
 }
